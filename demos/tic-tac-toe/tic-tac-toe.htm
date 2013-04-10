@@ -1,0 +1,34 @@
+<!doctype html>
+  <html>
+    <head>
+      <style>
+        html{background-color:black}
+        canvas{margin:20px auto; display:block}
+      </style>
+   	</head>
+    <body>
+      <canvas id="ttt" width="450px" height="450px"/>
+        <script type="text/javascript" src="iioEngine-1.2.1.min.js"></script>
+        <script type="text/javascript">
+            TicTacToe = function(io){
+			 
+              var grid = io.addObj((new iio.ioGrid(0,0,3,3,120))
+                             .setStrokeStyle('white'));
+              var xTurn=true;
+              io.canvas.addEventListener('mousedown', function(event){
+                var c = grid.getCellAt(io.getEventPosition(event),true);
+                if (typeof grid.cells[c.x][c.y].taken == 'undefined'){
+                  if (xTurn) 
+                    io.addObj(new iio.ioX(grid.getCellCenter(c),80)
+                                    .setStrokeStyle('red',2));
+                  else 
+                    io.addObj(new iio.ioCircle(grid.getCellCenter(c),40)
+                                      .setStrokeStyle('#00baff',2));
+                  grid.cells[c.x][c.y].taken=true;
+                  xTurn=!xTurn;
+                }
+              });
+            }; iio.start(TicTacToe,'ttt');
+        </script>
+    </body>
+</html>
