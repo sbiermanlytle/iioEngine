@@ -3,9 +3,16 @@ iioengine
 
 The iio Engine is a JavaScript framework that streamlines the development of HTML5 applications. This repo contains the most recent version of the iio Engine core framework, all publicly available extension packages, and some demo application scripts.
 
-The core platform is open source and free to use, re-purpose, and extend for any purpose.
+The core platform is open source, and free to use and extend for any purpose.
 
-Official Website: http://iioengine.com/
+Branches with new functionality will be merged only if they can run all of the demo applications included in this repo without any errors. 
+
+Documentation for new functions will only be added to the API once a complete versioned update of the iio Engine is published. See the contributer' github notes or the iio Forums for tips on usage. 
+
+Versioned updates may include structural changes to iio's existing architecture, and may alter or extend the usage of previously merged functions.
+
+
+Website: http://iioengine.com/
 
 Documentation: http://iioengine.com/docs/iio-basics.php
 
@@ -15,7 +22,8 @@ Tutorials: http://iioengine.com/tutorials.php
 
 Forums: http://iioengine.com/forums/
 
-Box2DWeb Extension: https://code.google.com/p/box2dweb/
+Twitter: @iioEngine
+
 
 License:
 
@@ -33,4 +41,5 @@ not required.
 2. Altered source versions must be plainly marked as such, and must not be 
 misrepresented as being the original software.
 
-3. This notice may not be removed or altered from any source distribution.
+3. This notice and the authorship header that accompanies this notice in 
+the code files must not be removed or altered from any source distribution.
