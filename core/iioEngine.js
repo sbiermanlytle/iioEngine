@@ -573,11 +573,15 @@ var iio = {};
    ioText.prototype.clone = function(){
       var t = new ioText(this.text, this.pos)
                  .setFont(this.font)
-                 .setTextAlign(this.textAlign);
+                 .setTextAlign(this.textAlign)
+                 .setWrap(this.wrap)
+                 .setLineHeight(this.lineheight);
       return t;
    }
    ioText.prototype.setText = function(t){this.text = t;return this;}
    ioText.prototype.setFont = function(f){this.font = f;return this;}
+   ioText.prototype.setWrap	=	function(w) { this.wrap = w;return this;}
+   ioText.prototype.setLineHeight	=	function(l) { this.lineheight = l;return this;}
    ioText.prototype.setTextAlign = function(tA){this.textAlign = tA;return this;}
 })();
 
@@ -778,6 +782,7 @@ var iio = {};
       ctx.lineWidth = styles.lineWidth;
       ctx.shadowColor = styles.shadowColor;
       ctx.shadowBlur = styles.shadowBlur;
+      ctx.globalAlpha = styles.alpha || 1;
       if (typeof styles.shadowOffset !='undefined'){
          ctx.shadowOffsetX = styles.shadowOffset.x;
          ctx.shadowOffsetY = styles.shadowOffset.y;
@@ -1111,10 +1116,33 @@ var iio = {};
       iio.Graphics.transformContext(ctx,this.pos,this.rotation);
       ctx.font = this.font;
       ctx.textAlign = this.textAlign;
-      if (typeof this.styles.fillStyle!='undefined')
-         ctx.fillText(this.text,0,0);
-      if (typeof this.styles.strokeStyle!='undefined')
-         ctx.strokeText(this.text,0,0);
+      if(typeof(this.wrap) == 'undefined' || this.wrap <= 0) {
+	      if (typeof this.styles.fillStyle!='undefined')
+	         ctx.fillText(this.text,0,0);
+	      if (typeof this.styles.strokeStyle!='undefined')
+	         ctx.strokeText(this.text,0,0);
+	  } else {
+	  	  var lineHeight	=	this.lineheight || 28;
+		  var words 		= 	this.text.split(' ');
+	      var line 			= 	'',
+	      	  y 			=	0,
+	      	  n 			=	0;
+	
+	      for(; n < words.length; n++) {
+	          var testLine = line + words[n] + ' ';
+	          var metrics = ctx.measureText(testLine);
+	          var testWidth = metrics.width;
+	          if(testWidth > this.wrap) {
+	            ctx.fillText(line, 0, y);
+	            line = words[n] + ' ';
+	            y += lineHeight;
+	          }
+	          else {
+	            line = testLine;
+	          }
+	        }
+	        ctx.fillText(line, 0, y);
+	  }
       ctx.restore();
       return this;
    }
@@ -1532,18 +1560,27 @@ var iio = {};
       if (typeof ctx != 'undefined')
          obj.ctx=ctx;
       iio.requestTimeout(fps,obj.lastTime, function(dt){
-         obj.lastTime=dt;
-         io.setFramerate(fps,callback,obj);
-         if (typeof obj.update!='undefined')
-            obj.update(dt);
-         if (typeof callback!='undefined')
-            callback(dt);
-         if (obj.redraw){
-            obj.draw();
-            obj.redraw=false;
+      var _this = this;
+      	if(!_this.pause) { // PAUSE
+	         obj.lastTime=dt;
+	         io.setFramerate(fps,callback,obj);
+	         if (typeof obj.update!='undefined')
+	            obj.update(dt);
+	         if (typeof callback!='undefined')
+	            callback(dt);
+	         if (obj.redraw){
+	            obj.draw();
+	            obj.redraw=false;
+	         }
+	     } else {
+	         io.setFramerate(fps,callback,obj);
          }
       }.bind([io=this,obj]));
       return this;
+   }
+   ioAppManager.prototype.pauseFramerate = function(pause) {
+	   this.pause = ((pause) ? true:false);
+	   return this;
    }
    ioAppManager.prototype.setAnimFPS = function(fps,obj,c){
       c=c||0;
@@ -1792,6 +1829,21 @@ var iio = {};
          i = this.addGroup(tag, zIndex, c);
       this.cnvs[c].groups[i].addObj(obj, c);
       return obj;
+   }
+   ioAppManager.prototype.getGroup = function(tag,c,from,to) {
+   		c=c||0;
+   		var i = this.indexOfTag(tag,c),
+	   	   	a = iio.isNumber(i);
+	   	   
+	    if(typeof(this.cnvs[c].groups)=='undefined'||!a)
+		   return false;
+		var objs	=	this.cnvs[c].groups[i].objs;
+		
+		if(typeof(from) !== 'undefined' && from >= 0) {
+			to=to||(from+1);
+			return objs.slice(from,to);
+		}
+		return objs;
    }
    ioAppManager.prototype.addObj = function(obj, zIndex, c){
       c=c||0;
