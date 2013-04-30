@@ -1304,8 +1304,13 @@ var iio = {};
       ,ioObj = iio.ioObj;
 
    function update(dt){
-      if ((typeof this.vel != 'undefined' && this.vel.length() > 0) || (typeof this.torque != 'undefined' && this.torque > 0))
+      if ((typeof this.acc != 'undefined' && this.acc.length() > 0) || (typeof this.vel != 'undefined' && this.vel.length() > 0) || (typeof this.torque != 'undefined' && this.torque > 0))
          this.clearDraw();
+      if (typeof this.acc != 'undefined') {
+         if (typeof this.vel != 'undefined') this.vel = new ioVec(0, 0)
+         this.vel.x += this.acc.x;
+         this.vel.y += this.acc.y;
+      }
       if (typeof this.vel != 'undefined') this.translate(new ioVec(this.vel.x, this.vel.y));
       if (typeof this.torque != 'undefined'){
          this.rotation+=this.torque;
@@ -1357,6 +1362,7 @@ var iio = {};
       return true;
    }
    function setVel(v,y){this.vel = new ioVec(v,y);return this}
+   function setAcc(v,y){this.acc = new ioVec(v,y);return this}
    function setTorque(t){
       this.torque = t;
       if (typeof this.rotation == 'undefined')
@@ -1415,6 +1421,7 @@ var iio = {};
    function enableKinematics(){
       this.update=update;
       this.setVel=setVel;
+      this.setAcc=setAcc;
       this.setTorque=setTorque;
       this.setBounds=setBounds;
       this.setBound=setBound;
