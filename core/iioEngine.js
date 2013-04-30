@@ -1532,6 +1532,7 @@ var iio = {};
       if (typeof ctx != 'undefined')
          obj.ctx=ctx;
       iio.requestTimeout(fps,obj.lastTime, function(dt){
+      var _this = this;
       	if(!_this.pause) { // PAUSE
 	         obj.lastTime=dt;
 	         io.setFramerate(fps,callback,obj);
