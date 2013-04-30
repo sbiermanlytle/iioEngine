@@ -1802,6 +1802,21 @@ var iio = {};
       this.cnvs[c].groups[i].addObj(obj, c);
       return obj;
    }
+   ioAppManager.prototype.getGroup = function(tag,c,from,to) {
+   		c=c||0;
+   		var i = this.indexOfTag(tag,c),
+	   	   	a = iio.isNumber(i);
+	   	   
+	    if(typeof(this.cnvs[c].groups)=='undefined'||!a)
+		   return false;
+		var objs	=	this.cnvs[c].groups[i].objs;
+		
+		if(typeof(from) !== 'undefined' && from >= 0) {
+			to=to||(from+1);
+			return objs.slice(from,to);
+		}
+		return objs;
+   }
    ioAppManager.prototype.addObj = function(obj, zIndex, c){
       c=c||0;
       if (typeof(this.cnvs[c].groups)=='undefined') this.cnvs[c].groups = [];
