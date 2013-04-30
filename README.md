@@ -1,9 +1,9 @@
 iioengine
 =========
 
-The iio Engine is an extensive JavaScript framework that streamlines the development of HTML5 applications. This repo contains the most recent version of the iio Engine core framework, all publicly available extension packages, and some demo application scripts.
+The iio Engine is a JavaScript framework that streamlines the development of HTML5 applications. This repo contains the most recent version of the iio Engine core framework, all publicly available extension packages, and some demo application scripts.
 
-The framework provides a feature rich SDK, an advanced debugging system, and a cross-platform deployment engine. The iio Engine has no dependencies and can be interfaced with Box2D. The core platform is open source and totally free.
+The core platform is open source and free to use, re-purpose, and extend for any purpose.
 
 Official Website: http://iioengine.com/
 
