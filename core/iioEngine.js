@@ -1532,18 +1532,26 @@ var iio = {};
       if (typeof ctx != 'undefined')
          obj.ctx=ctx;
       iio.requestTimeout(fps,obj.lastTime, function(dt){
-         obj.lastTime=dt;
-         io.setFramerate(fps,callback,obj);
-         if (typeof obj.update!='undefined')
-            obj.update(dt);
-         if (typeof callback!='undefined')
-            callback(dt);
-         if (obj.redraw){
-            obj.draw();
-            obj.redraw=false;
+      	if(!_this.pause) { // PAUSE
+	         obj.lastTime=dt;
+	         io.setFramerate(fps,callback,obj);
+	         if (typeof obj.update!='undefined')
+	            obj.update(dt);
+	         if (typeof callback!='undefined')
+	            callback(dt);
+	         if (obj.redraw){
+	            obj.draw();
+	            obj.redraw=false;
+	         }
+	     } else {
+	         io.setFramerate(fps,callback,obj);
          }
       }.bind([io=this,obj]));
       return this;
+   }
+   ioAppManager.prototype.pauseFramerate = function(pause) {
+	   this.pause = ((pause) ? true:false);
+	   return this;
    }
    ioAppManager.prototype.setAnimFPS = function(fps,obj,c){
       c=c||0;
