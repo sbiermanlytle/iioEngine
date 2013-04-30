@@ -573,11 +573,15 @@ var iio = {};
    ioText.prototype.clone = function(){
       var t = new ioText(this.text, this.pos)
                  .setFont(this.font)
-                 .setTextAlign(this.textAlign);
+                 .setTextAlign(this.textAlign)
+                 .setWrap(this.wrap)
+                 .setLineHeight(this.lineheight);
       return t;
    }
    ioText.prototype.setText = function(t){this.text = t;return this;}
    ioText.prototype.setFont = function(f){this.font = f;return this;}
+   ioText.prototype.setWrap	=	function(w) { this.wrap = w;return this;}
+   ioText.prototype.setLineHeight	=	function(l) { this.lineheight = l;return this;}
    ioText.prototype.setTextAlign = function(tA){this.textAlign = tA;return this;}
 })();
 
@@ -1112,10 +1116,33 @@ var iio = {};
       iio.Graphics.transformContext(ctx,this.pos,this.rotation);
       ctx.font = this.font;
       ctx.textAlign = this.textAlign;
-      if (typeof this.styles.fillStyle!='undefined')
-         ctx.fillText(this.text,0,0);
-      if (typeof this.styles.strokeStyle!='undefined')
-         ctx.strokeText(this.text,0,0);
+      if(typeof(this.wrap) == 'undefined' || this.wrap <= 0) {
+	      if (typeof this.styles.fillStyle!='undefined')
+	         ctx.fillText(this.text,0,0);
+	      if (typeof this.styles.strokeStyle!='undefined')
+	         ctx.strokeText(this.text,0,0);
+	  } else {
+	  	  var lineHeight	=	this.lineheight || 28;
+		  var words 		= 	this.text.split(' ');
+	      var line 			= 	'',
+	      	  y 			=	0,
+	      	  n 			=	0;
+	
+	      for(; n < words.length; n++) {
+	          var testLine = line + words[n] + ' ';
+	          var metrics = ctx.measureText(testLine);
+	          var testWidth = metrics.width;
+	          if(testWidth > this.wrap) {
+	            ctx.fillText(line, 0, y);
+	            line = words[n] + ' ';
+	            y += lineHeight;
+	          }
+	          else {
+	            line = testLine;
+	          }
+	        }
+	        ctx.fillText(line, 0, y);
+	  }
       ctx.restore();
       return this;
    }
