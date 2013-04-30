@@ -1,16 +1,15 @@
 iioengine
 =========
 
-The iio Engine is a JavaScript framework that streamlines the development of HTML5 applications. This repo contains the most recent version of the iio Engine core framework, all publicly available extension packages, and some demo application scripts.
+The iio Engine is a JavaScript framework that streamlines the development of HTML5 applications. This repo contains the most recent versions of the iio Engine core framework, all publicly available extension packages, and some demo application scripts.
 
 The core platform is open source, and free to use and extend for any purpose.
 
-Branches with new functionality will be merged only if they can run all of the demo applications included in this repo without any errors. 
+Branches with new functionality will be merged only if they can run all of the demo applications included in this repo without error. Versioned updates may alter or extend the usage of previously merged functions, but conflicts will be determinately avoided.
 
-Documentation for new functions will only be added to the API once a complete versioned update of the iio Engine is published. See the contributer' github notes or the iio Forums for tips on usage. 
+Formal documentation for new functions is added when a function is finalized within the iio Engine core. See the contributor's github notes or the iio Forums for tips on usage.
 
-Versioned updates may include structural changes to iio's existing architecture, and may alter or extend the usage of previously merged functions.
-
+If you do not require iio's cutting edge features, download the latest versioned release on the website. This file is included in the SDK package on the homepage.
 
 Website: http://iioengine.com/
 
