@@ -47,10 +47,13 @@
       //it would be better to set a framerate update on the object
       //itself to reduce the amount of re-rendering work
       // - you can add framerates to as many objects as you want
+      // - you can also set framerates to object groups
       //
       //Right now though, the engine doesn't connect re-rendering  
       //with direct positional changes (only via kinematics)
       //this is a bug that will be fixed in the next engine update
+      //a cancelFramerate function will also be added to allow
+      //an even more efficient design
 
     }; iio.start(SimpleDragAndDropApp);
 
