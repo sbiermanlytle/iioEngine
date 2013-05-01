@@ -11,7 +11,7 @@
 
       var dV; //remember where the mouse is relative to 
               //circle center
-              
+
       //handle mouse down
       io.canvas.addEventListener('mousedown', function(event){
           if (mCircle.contains(io.getEventPosition(event))){
@@ -34,9 +34,23 @@
       io.canvas.addEventListener('mousemove', function(event){
           if (mCircle.active) 
               mCircle.clearDraw().setPos(io.getEventPosition(event).add(dV));
+              //NOTE: the call to clearDraw is temporarily necessary
+              //      it will be taken out in the next engine update
       });    
 
       io.setFramerate(60);
+
+      //NOTE
+      //
+      //io.setFramerate(60, mCircle);
+      //
+      //it would be better to set a framerate update on the object
+      //itself to reduce the amount of re-rendering work
+      // - you can add framerates to as many objects as you want
+      //
+      //Right now though, the engine doesn't connect re-rendering  
+      //with direct positional changes (only via kinematics)
+      //this is a bug that will be fixed in the next engine update
 
     }; iio.start(SimpleDragAndDropApp);
 
