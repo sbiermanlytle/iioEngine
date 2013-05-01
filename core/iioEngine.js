@@ -1070,9 +1070,10 @@ var iio = {};
 
    //Draw Functions
    iio.ioShape.prototype.clearDraw = function(ctx){
+      ctx=ctx||this.ctx;
       this.redraw=true;
-      if (typeof this.clearSelf != 'undefined' && typeof this.ctx!='undefined')
-         this.clearSelf(this.ctx)
+      if (typeof this.clearSelf != 'undefined' && typeof ctx!='undefined')
+         this.clearSelf(ctx);
       return this;
    }
    iio.ioLine.prototype.draw = function(ctx){

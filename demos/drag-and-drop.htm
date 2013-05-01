@@ -1,0 +1,45 @@
+<!doctype html>
+  <body>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript">
+ 
+    SimpleDragAndDropApp = function(io){
+
+      //create a draggable blue circle at canvas center with radius 40
+      var mCircle = io.addObj(new iio.ioCircle(io.canvas.center,40)
+                                    .setFillStyle('blue'));
+
+      var dV; //remember where the mouse is relative to 
+              //circle center
+              
+      //handle mouse down
+      io.canvas.addEventListener('mousedown', function(event){
+          if (mCircle.contains(io.getEventPosition(event))){
+              mCircle.active = true;
+              dV=iio.ioVec.sub(mCircle.pos, io.getEventPosition(event));
+          }
+      });
+
+      //handle mouse up
+      io.canvas.addEventListener('mouseup', function(event){
+          mCircle.active = false;
+      });
+
+      //release circle when mouse moves off canvas
+      this.focusOff = function(event, canvasID){
+          mCircle.active = false;
+      }
+
+      //handle mouse move
+      io.canvas.addEventListener('mousemove', function(event){
+          if (mCircle.active) 
+              mCircle.clearDraw().setPos(io.getEventPosition(event).add(dV));
+      });    
+
+      io.setFramerate(60);
+
+    }; iio.start(SimpleDragAndDropApp);
+
+    </script>
+  </body>
+</html>
