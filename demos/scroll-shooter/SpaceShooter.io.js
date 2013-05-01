@@ -1,7 +1,7 @@
 /*
 * Author: Sebastian Bierman-Lytle
-* Released: 3/16/2013
 * Website: iioEngine.com
+* Last Update: 5/1/2013
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
