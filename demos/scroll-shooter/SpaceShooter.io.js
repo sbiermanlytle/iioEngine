@@ -150,6 +150,10 @@ function SpaceShooter(io){
 
         window.addEventListener('keydown', function(event){
             updateInput(event, true);
+
+            //check for pause
+            if (iio.keyCodeIs('pause', event) || iio.keyCodeIs('p', event))
+                io.pauseFramerate();
         });
 
         window.addEventListener('keyup', function(event){

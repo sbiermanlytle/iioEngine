@@ -1567,8 +1567,7 @@ var iio = {};
       if (typeof ctx != 'undefined')
          obj.ctx=ctx;
       iio.requestTimeout(fps,obj.lastTime, function(dt){
-      var _this = this;
-      	if(!_this.pause) { // PAUSE
+      	if(!this[0].pause) { // PAUSE
 	         obj.lastTime=dt;
 	         io.setFramerate(fps,callback,obj);
 	         if (typeof obj.update!='undefined')
@@ -1586,7 +1585,7 @@ var iio = {};
       return this;
    }
    ioAppManager.prototype.pauseFramerate = function(pause) {
-	   this.pause = ((pause) ? true:false);
+	   this.pause = pause||!this.pause;
 	   return this;
    }
    ioAppManager.prototype.setAnimFPS = function(fps,obj,c){
