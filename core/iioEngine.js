@@ -545,7 +545,7 @@ var iio = {};
    }
    ioGrid.prototype.getCellAt = function(pos,y){
       var cell = new iio.ioVec(Math.floor((pos.x-this.pos.x)/this.res.x), Math.floor((pos.y-this.pos.y)/this.res.y));
-      if (cell.x >= 0 && cell.x < this.R && cell.y >=0 && cell.y < this.C)
+      if (cell.x >= 0 && cell.x < this.C && cell.y >=0 && cell.y < this.R)
          return cell;
       return false;
    }
