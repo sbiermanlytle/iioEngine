@@ -1,0 +1,50 @@
+<!doctype html>
+  <body>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript">
+
+        //author: Tyilo https://github.com/sbiermanlytle/iioengine/pull/5
+        var Test = function(io) {
+
+            var r = 25;
+            var a = 0.1;
+            var s = 50;
+            var s0;
+
+            var ball;
+
+            function onBottom(ball) {
+                ball.vel.y *= -0.9;
+
+                if(ball.pos.y > s0) {
+                ball.pos.y = s0;
+                }
+                if(-ball.vel.y < ball.acc.y) {
+                ball.acc.y = -ball.vel.y;
+                }
+
+                return true;
+            }
+
+            function init() {
+                s0 = io.canvas.height - r;
+                ball.setBound('bottom', s0 + r, onBottom);
+                ball.acc.y = a;
+            }
+
+            this.onResize = init;
+
+            ball = io.addObj(new iio.ioCircle(io.canvas.center.x, s, r)
+                        .setFillStyle('blue')
+                        .enableKinematics()
+                        .setAcc(0, a));
+
+            init();
+
+            io.setFramerate(60);
+        };
+        iio.start(Test);
+
+    </script>
+  </body>
+</html>
