@@ -141,6 +141,86 @@ var iio = {};
             v=vertices[i];
       return v;
    }
+   iio.sign = function(n) {
+      return (n == 0)? 0: ((n > 0)? 1: -1);
+   }
+   iio.isBetween = function(value, min, max) {
+      if(max < min) {
+         var tmp = min;
+         min = max;
+         max = min;
+      }
+      return (value >= min && value <= max);
+   }
+   iio.lineIntersects = function(v1, v2, v3, v4) {
+      var a1 = (v2.y - v1.y) / (v2.x - v1.x);
+      var a2 = (v4.y - v3.y) / (v4.x - v3.x);
+      
+      var a = a1;
+      var x1 = v1.x;
+      var y1 = v1.y;
+      
+      var x;
+      if(a1 === Infinity || a2 === Infinity) {
+         if(a1 === a2) {
+            return v1.x === v3.x;
+         }
+         
+         if(a1 === Infinity) {
+            x = v1.x;
+            a = a2;
+            x1 = v3.x;
+            y1 = v3.y;
+         } else {
+            x = v3.x;
+         }
+      } else {
+         x = (a1*v1.x - a2*v3.x - v1.y + v3.y) / (a1 - a2);  
+      }
+      
+      var y = a * (x - x1) + y1;
+
+      if(iio.isBetween(x, v1.x, v2.x) && iio.isBetween(x, v3.x, v4.x) && iio.isBetween(y, v1.y, v2.y) && iio.isBetween(y, v3.y, v4.y)) {
+         return true;
+      }
+
+      return false;
+   }
+   iio.intersects = function(obj1, obj2) {
+      (obj1 instanceof iio.ioRect) && obj1.updateVertices();
+      (obj2 instanceof iio.ioRect) && obj2.updateVertices();
+      
+      // Does one of the objects contain one of the others vertices?
+      var objs = [obj1, obj2];
+      for(var i = 0; i < objs.length; i++) {
+         var o1 = objs[i];
+         var o2 = objs[1 - i];
+         var vertices = o2.vertices;
+         for(var j = 0; j < vertices.length; j++) {
+            if(o1.contains(iio.ioVec.add(vertices[j], o2.pos))) {
+               return true;
+            }
+         }
+      }
+      
+      // Does one of the first objects edges cross the one the others?
+      var vertices1 = obj1.vertices;
+      var vertices2 = obj2.vertices;
+
+      for(var i = 0; i < vertices1.length; i++) {
+         var v1 = iio.ioVec.add(vertices1[i], obj1.pos);
+         var v2 = iio.ioVec.add(vertices1[(i + 1) % vertices1.length], obj1.pos);
+         for(var j = 0; j < vertices2.length; j++) {
+            if(iio.lineIntersects(v1, v2,
+                                  iio.ioVec.add(vertices2[j], obj2.pos),
+                                  iio.ioVec.add(vertices2[(j + 1) % vertices2.length], obj2.pos))) {
+               return true;
+            }
+         }
+      }
+
+      return false;
+   }
    iio.keyCodeIs = function(key, event){
       switch(event.keyCode){
          case 8: if (key == 'backspace') return true; break;
@@ -623,6 +703,8 @@ var iio = {};
          this.width=w||0;
          this.height=h||w||0;
       }
+      
+      this.updateVertices();
    }
    //Functions
    ioRect.prototype.clone = function(){
@@ -641,6 +723,12 @@ var iio = {};
          this.height=y||0;
       } 
       return this;
+   }
+   ioRect.prototype.updateVertices = function() {
+      this.vertices = iio.getioVecsFromPointList([-this.width / 2,  -this.height / 2,
+                                                  -this.width / 2,  this.height / 2,
+                                                  this.width / 2,   this.height / 2,
+                                                  this.width / 2,   -this.height / 2]);
    }
    ioRect.prototype.contains = function(v,y){
       y=v.y||y;
@@ -1736,7 +1824,7 @@ var iio = {};
             for (var j=0; j<group2.objs.length; j++)
                if (typeof(group1.objs[i]) != 'undefined' 
                   && group1.objs[i] != group2.objs[j]
-                  && group1.objs[i].intersectsWith(group2.objs[j])){
+                  && iio.intersects(group1.objs[i], group2.objs[j])){
                   if (cPairs instanceof Array){
                      alreadyDealtWith = false;
                      for (p=0; p<cPairs.length;p++)
