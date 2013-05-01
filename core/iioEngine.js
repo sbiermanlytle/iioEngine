@@ -1850,7 +1850,7 @@ var iio = {};
       if (typeof(this.cnvs[c].groups)=='undefined') this.cnvs[c].groups = [];
       zIndex = zIndex || 0;
       for (var i=0; i<this.cnvs[c].groups.length; i++)
-         if (this.cnvs[c].groups[i].zIndex == zIndex){
+         if (this.cnvs[c].groups[i].tag == 0){
             this.cnvs[c].groups[i].addObj(obj);
             if (typeof this.fps == 'undefined' && typeof obj.pos!='undefined')
                obj.draw(this.ctxs[c]);
