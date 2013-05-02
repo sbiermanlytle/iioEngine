@@ -20,6 +20,9 @@
 
 * 3. This notice may not be removed or altered from any source distribution.
 */
+
+//NOTICE: this app currently only works with the Github distribution of iio
+    //  a new versioned package will be put up on the website shortly
 function SpaceShooter(io){
 
     var ioRect = iio.ioRect;

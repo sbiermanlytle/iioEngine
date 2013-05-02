@@ -3,6 +3,9 @@
     <script type="text/javascript" src="../core/iioEngine.js"></script>
     <script type="text/javascript">
 
+    //NOTICE: this app currently only works with the Github distribution of iio
+    //  a new versioned package will be put up on the website shortly
+
     SimpleDragAndDropApp = function(io){
 
       //print instructions
@@ -52,8 +55,12 @@
               //mCircle.clearSelf(io.context, true);
               //mCircle.setPos(io.getEventPosition(event).add(dV));
               //mCircle.draw(io.context);
+              // - And get rid of io.setFramerate()
+              //Note though that you will probably want to use
+              //a second background canvas for any static objects
           }
       });
+      //redraw canvas when objects have moved
       io.setFramerate(60);
 
     }; iio.start(SimpleDragAndDropApp);
