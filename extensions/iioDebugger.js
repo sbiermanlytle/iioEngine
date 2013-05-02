@@ -147,7 +147,7 @@ POSSIBILITY OF SUCH DAMAGE.
 		var totalCanvasObjects = 0;
 		this.polygons = [];
 		for (var g=0;g<this.io.cnvs[c].groups.length;g++){
-			if(this.io.cnvs[c].groups[g].tag.substr(0, 7) === '_hidden') {
+			if(String(this.io.cnvs[c].groups[g].tag).substr(0, 7) === '_hidden') {
 				continue;
 			}
 			
