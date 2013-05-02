@@ -163,7 +163,9 @@ var iio = {};
       var x;
       if(a1 === Infinity || a2 === Infinity) {
          if(a1 === a2) {
-            return iio.isBetween(v1.x, v3.x, v4.x) || iio.isBetween(v2.x, v3.x, v4.x) || iio.isBetween(v3.x, v1.x, v2.x) || iio.isBetween(v4.x, v1.x, v2.x);
+            return v1.x === v3.x &&
+                  (iio.isBetween(v1.y, v3.y, v4.y) || iio.isBetween(v2.y, v3.y, v4.y) ||
+                   iio.isBetween(v3.y, v1.y, v2.y) || iio.isBetween(v4.y, v1.y, v2.y));
          }
 
          if(a1 === Infinity) {
@@ -843,6 +845,10 @@ var iio = {};
    ioPoly.prototype.clone = function(){
       return new ioPoly(this.pos,this.vertices);
    }
+   ioPoly.prototype.left = function() { return this.pos.x + this.originToLeft; };
+   ioPoly.prototype.right = function() { return this.pos.x + this.originToLeft + this.width; };
+   ioPoly.prototype.top = function() { return this.pos.y + this.originToTop; };
+   ioPoly.prototype.bottom = function() { return this.pos.y + this.originToTop + this.height; };
    ioPoly.prototype.contains = function(v,y){
       y=v.y||y;
       v=v.x||v;
