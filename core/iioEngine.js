@@ -39,7 +39,7 @@
    if (!window.cancelAnimationFrame)
       window.cancelAnimationFrame = function(id) {
       clearTimeout(id);
-   };   
+   };
 })();
 
 //iio Engine :: Definition of iio package
@@ -72,7 +72,7 @@ var iio = {};
        //https://gist.github.com/1579671=
        var currTime = new Date().getTime();
        var timeToCall = Math.max(0, (1000/fps) - (currTime - lastTime));
-       var id = setTimeout(function() { callback(currTime + timeToCall); }, 
+       var id = setTimeout(function() { callback(currTime + timeToCall); },
          timeToCall);
        lastTime = currTime + timeToCall;
        return id;
@@ -95,16 +95,16 @@ var iio = {};
     iio.isNumber=function(o){
       return ! isNaN (o-0) && o !== null && o !== "" && o !== false;
     }
-   iio.addEvent = function(obj,evt,fn,capt){  
-      if(obj.addEventListener) {  
-         obj.addEventListener(evt, fn, capt);  
-         return true;  
-      }  
-      else if(obj.attachEvent) {  
-         obj.attachEvent('on'+evt, fn);  
-         return true;  
-      }  
-      else return false;  
+   iio.addEvent = function(obj,evt,fn,capt){
+      if(obj.addEventListener) {
+         obj.addEventListener(evt, fn, capt);
+         return true;
+      }
+      else if(obj.attachEvent) {
+         obj.attachEvent('on'+evt, fn);
+         return true;
+      }
+      else return false;
    }
    iio.getRandomNum = function(min, max) {
       min=min||0;
@@ -155,17 +155,17 @@ var iio = {};
    iio.lineIntersects = function(v1, v2, v3, v4) {
       var a1 = (v2.y - v1.y) / (v2.x - v1.x);
       var a2 = (v4.y - v3.y) / (v4.x - v3.x);
-      
+
       var a = a1;
       var x1 = v1.x;
       var y1 = v1.y;
-      
+
       var x;
       if(a1 === Infinity || a2 === Infinity) {
          if(a1 === a2) {
-            return v1.x === v3.x;
+            return iio.isBetween(v1.x, v3.x, v4.x) || iio.isBetween(v2.x, v3.x, v4.x) || iio.isBetween(v3.x, v1.x, v2.x) || iio.isBetween(v4.x, v1.x, v2.x);
          }
-         
+
          if(a1 === Infinity) {
             x = v1.x;
             a = a2;
@@ -175,9 +175,15 @@ var iio = {};
             x = v3.x;
          }
       } else {
-         x = (a1*v1.x - a2*v3.x - v1.y + v3.y) / (a1 - a2);  
+         x = (a1*v1.x - a2*v3.x - v1.y + v3.y) / (a1 - a2);
+         if(x === Infinity) {
+            return (iio.isBetween(v1.x, v3.x, v4.x) && iio.isBetween(v1.y, v3.y, v4.y) ||
+                    iio.isBetween(v2.x, v3.x, v4.x) && iio.isBetween(v2.y, v3.y, v4.y) ||
+                    iio.isBetween(v3.x, v1.x, v2.x) && iio.isBetween(v3.y, v1.y, v2.y) ||
+                    iio.isBetween(v4.x, v1.x, v2.x) && iio.isBetween(v4.y, v1.y, v2.y));
+         }
       }
-      
+
       var y = a * (x - x1) + y1;
 
       if(iio.isBetween(x, v1.x, v2.x) && iio.isBetween(x, v3.x, v4.x) && iio.isBetween(y, v1.y, v2.y) && iio.isBetween(y, v3.y, v4.y)) {
@@ -189,7 +195,7 @@ var iio = {};
    iio.intersects = function(obj1, obj2) {
       (obj1 instanceof iio.ioRect) && obj1.updateVertices();
       (obj2 instanceof iio.ioRect) && obj2.updateVertices();
-      
+
       // Does one of the objects contain one of the others vertices?
       var objs = [obj1, obj2];
       for(var i = 0; i < objs.length; i++) {
@@ -202,7 +208,7 @@ var iio = {};
             }
          }
       }
-      
+
       // Does one of the first objects edges cross the one the others?
       var vertices1 = obj1.vertices;
       var vertices2 = obj2.vertices;
@@ -352,7 +358,7 @@ var iio = {};
       return "x:"+this.x+" y:"+this.y;
    }
    ioVec.toString = function(v){
-      return "x:"+v.x+" y:"+v.y; 
+      return "x:"+v.x+" y:"+v.y;
    }
    ioVec.prototype.set = function (v,y){
       if (typeof v.x != 'undefined'){
@@ -522,7 +528,7 @@ var iio = {};
          if(p2 instanceof ioVec)
             this.endPos = new ioVec(p2);
          else this.endPos = new ioVec(p2,p3);
-      } 
+      }
       else if (p3 instanceof ioVec)
          this.endPos = new ioVec(p3);
       else this.endPos = new ioVec(p3,p4)
@@ -548,7 +554,7 @@ var iio = {};
          this.pos.y = end;
          this.endPos.x = x2;
          this.enPos.y = y2;
-      } 
+      }
    }
    ioLine.prototype.setEndPos = function(v, y){
       if (typeof v === 'ioVec') this.endPos = v;
@@ -660,8 +666,8 @@ var iio = {};
    }
    ioText.prototype.setText = function(t){this.text = t;return this;}
    ioText.prototype.setFont = function(f){this.font = f;return this;}
-   ioText.prototype.setWrap	=	function(w) { this.wrap = w;return this;}
-   ioText.prototype.setLineHeight	=	function(l) { this.lineheight = l;return this;}
+   ioText.prototype.setWrap   =  function(w) { this.wrap = w;return this;}
+   ioText.prototype.setLineHeight   =  function(l) { this.lineheight = l;return this;}
    ioText.prototype.setTextAlign = function(tA){this.textAlign = tA;return this;}
 })();
 
@@ -703,7 +709,7 @@ var iio = {};
          this.width=w||0;
          this.height=h||w||0;
       }
-      
+
       this.updateVertices();
    }
    //Functions
@@ -721,7 +727,7 @@ var iio = {};
       } else {
          this.width=v||0;
          this.height=y||0;
-      } 
+      }
       return this;
    }
    ioRect.prototype.updateVertices = function() {
@@ -859,10 +865,10 @@ var iio = {};
 (function (){
    iio.Graphics={};
    iio.Graphics.transformContext = function(ctx,pos,r){
-      //if (this.partialPixels) 
+      //if (this.partialPixels)
       ctx.translate(pos.x, pos.y);
       //else ctx.translate(Math.round(pos.x), Math.round(pos.y));
-      if (typeof(r) != 'undefined') 
+      if (typeof(r) != 'undefined')
          ctx.rotate(r);
    }
    iio.Graphics.applyContextStyles = function(ctx,styles){
@@ -924,7 +930,7 @@ var iio = {};
          if (typeof x2.x !='undefined')
             ctx.lineTo(x2.x, x2.y);
          else ctx.lineTo(x2, y2);
-      } 
+      }
       ctx.stroke();
    }
    iio.Graphics.drawShadow = function(ctx,obj){
@@ -1205,32 +1211,32 @@ var iio = {};
       ctx.font = this.font;
       ctx.textAlign = this.textAlign;
       if(typeof(this.wrap) == 'undefined' || this.wrap <= 0) {
-	      if (typeof this.styles.fillStyle!='undefined')
-	         ctx.fillText(this.text,0,0);
-	      if (typeof this.styles.strokeStyle!='undefined')
-	         ctx.strokeText(this.text,0,0);
-	  } else {
-	  	  var lineHeight	=	this.lineheight || 28;
-		  var words 		= 	this.text.split(' ');
-	      var line 			= 	'',
-	      	  y 			=	0,
-	      	  n 			=	0;
-	
-	      for(; n < words.length; n++) {
-	          var testLine = line + words[n] + ' ';
-	          var metrics = ctx.measureText(testLine);
-	          var testWidth = metrics.width;
-	          if(testWidth > this.wrap) {
-	            ctx.fillText(line, 0, y);
-	            line = words[n] + ' ';
-	            y += lineHeight;
-	          }
-	          else {
-	            line = testLine;
-	          }
-	        }
-	        ctx.fillText(line, 0, y);
-	  }
+         if (typeof this.styles.fillStyle!='undefined')
+            ctx.fillText(this.text,0,0);
+         if (typeof this.styles.strokeStyle!='undefined')
+            ctx.strokeText(this.text,0,0);
+     } else {
+        var lineHeight  =  this.lineheight || 28;
+        var words       =  this.text.split(' ');
+         var line          =  '',
+              y         =  0,
+              n         =  0;
+
+         for(; n < words.length; n++) {
+             var testLine = line + words[n] + ' ';
+             var metrics = ctx.measureText(testLine);
+             var testWidth = metrics.width;
+             if(testWidth > this.wrap) {
+               ctx.fillText(line, 0, y);
+               line = words[n] + ' ';
+               y += lineHeight;
+             }
+             else {
+               line = testLine;
+             }
+           }
+           ctx.fillText(line, 0, y);
+     }
       ctx.restore();
       return this;
    }
@@ -1324,7 +1330,7 @@ var iio = {};
       ctx.closePath();
       iio.Graphics.finishPathShape(ctx,this,this.originToLeft,this.originToTop,this.width,this.height);
    }
-   if (typeof Box2D != 'undefined') 
+   if (typeof Box2D != 'undefined')
       Box2D.Collision.Shapes.b2PolygonShape.prototype.draw = function(ctx,pos,r,scale){
       ctx=iio.Graphics.prepTransformedContext(ctx,this,pos,r);
       ctx.beginPath();
@@ -1344,7 +1350,7 @@ var iio = {};
    if (typeof Box2D != 'undefined'){
       Box2D.Dynamics.b2Body.draw=function(ctx,scale){
          for (f=this.objs[i].GetFixtureList();f;f=f.m_next){
-               s=f.GetShape(); 
+               s=f.GetShape();
                if (typeof s.draw!='undefined')
                   s.draw(ctx,new iio.ioVec(this.objs[i].m_xf.position.x*scale,this.objs[i].m_xf.position.y*scale),this.objs[i].GetAngle(),scale);
             }
@@ -1415,8 +1421,8 @@ var iio = {};
             this.setSize(this.width*(1-this.shrinkRate), this.height*(1-this.shrinkRate));
             if (Math.abs(this.width < .1) && Math.abs(this.height < .1))
                return false;
-         } 
-         
+         }
+
       }
       if (this.bounds != null){
          var w = this.width/2||this.radius||0;
@@ -1583,7 +1589,7 @@ var iio = {};
             this.objs[i].draw(ctx);
          else if (typeof this.objs[i].m_I!='undefined')
             for (f=this.objs[i].GetFixtureList();f;f=f.m_next){
-               s=f.GetShape(); 
+               s=f.GetShape();
                if (typeof s.draw!='undefined')
                   s.draw(ctx,new ioVec(this.objs[i].m_xf.position.x*scale,this.objs[i].m_xf.position.y*scale),this.objs[i].GetAngle(),scale);
            }
@@ -1655,26 +1661,26 @@ var iio = {};
          obj.ctx=ctx;
       iio.requestTimeout(fps,obj.lastTime, function(dt){
       var _this = this;
-      	if(!_this.pause) { // PAUSE
-	         obj.lastTime=dt;
-	         io.setFramerate(fps,callback,obj);
-	         if (typeof obj.update!='undefined')
-	            obj.update(dt);
-	         if (typeof callback!='undefined')
-	            callback(dt);
-	         if (obj.redraw){
-	            obj.draw();
-	            obj.redraw=false;
-	         }
-	     } else {
-	         io.setFramerate(fps,callback,obj);
+         if(!_this.pause) { // PAUSE
+            obj.lastTime=dt;
+            io.setFramerate(fps,callback,obj);
+            if (typeof obj.update!='undefined')
+               obj.update(dt);
+            if (typeof callback!='undefined')
+               callback(dt);
+            if (obj.redraw){
+               obj.draw();
+               obj.redraw=false;
+            }
+        } else {
+            io.setFramerate(fps,callback,obj);
          }
       }.bind([io=this,obj]));
       return this;
    }
    ioAppManager.prototype.pauseFramerate = function(pause) {
-	   this.pause = ((pause) ? true:false);
-	   return this;
+      this.pause = ((pause) ? true:false);
+      return this;
    }
    ioAppManager.prototype.setAnimFPS = function(fps,obj,c){
       c=c||0;
@@ -1711,14 +1717,14 @@ var iio = {};
       return world;
    }
    ioAppManager.prototype.activateDebugger = function(){
-      if (typeof iio.ioAppDebugger == 'undefined') 
+      if (typeof iio.ioAppDebugger == 'undefined')
             console.warn("ioAppManager.startDebugger: the ioAppDebugger package is missing");
       else this.debugger = new iio.ioAppDebugger(this);
    }
    /* CANVAS CONTROL FUNCTIONS
     */
-   ioAppManager.prototype.update = function(dt){ 
-      for (var c=0;c<this.cnvs.length;c++) 
+   ioAppManager.prototype.update = function(dt){
+      for (var c=0;c<this.cnvs.length;c++)
          this.cnvs[c].update(dt);
    }
 
@@ -1736,7 +1742,7 @@ var iio = {};
             throw new Error("ioAppManager.addCanvas: Invalid canvas id '"+zIndex+"'");
          this.cnvs[i]=document.getElementById(zIndex);
          this.ctxs[i] = this.cnvs[i].getContext('2d');
-         if (typeof this.cnvs[i].getContext=='undefined') 
+         if (typeof this.cnvs[i].getContext=='undefined')
             throw new Error("ioAppManager.addCanvas: given id did not correspond to a canvas object");
          this.setCanvasProperties(i);
          this.setCanvasFunctions(i);
@@ -1749,7 +1755,7 @@ var iio = {};
       this.cnvs[i].width = w || this.cnvs[0].width;
       this.cnvs[i].height = h || this.cnvs[0].height;
       this.cnvs[i].style.zIndex = zIndex || -i;
-      
+
       //Attach the canvas
       if (typeof attachId == 'string' || attachId instanceof String)
          document.getElementById(id).appendChild(this.cnvs[i])
@@ -1763,12 +1769,12 @@ var iio = {};
          this.cnvs[0].parentNode.appendChild(this.cnvs[i]);
       } else document.body.appendChild(this.cnvs[i]);
       this.cnvs[i].className += "ioCanvas";
-      
+
       if (attachId instanceof Array)
-         for (var j=0;j<attachId.length;j++) 
+         for (var j=0;j<attachId.length;j++)
             this.cnvs[i].className += " "+attachId[j];
       if (cssClasses instanceof Array)
-         for (var j=0;j<cssClasses.length;j++) 
+         for (var j=0;j<cssClasses.length;j++)
             this.cnvs[i].className += " "+cssClasses[j];
       else if (typeof cssClasses == 'string' || cssClasses instanceof String)
          this.cnvs[i].className += " "+cssClasses;
@@ -1822,7 +1828,7 @@ var iio = {};
          }
          for (var i=0; i<group1.objs.length; i++)
             for (var j=0; j<group2.objs.length; j++)
-               if (typeof(group1.objs[i]) != 'undefined' 
+               if (typeof(group1.objs[i]) != 'undefined'
                   && group1.objs[i] != group2.objs[j]
                   && iio.intersects(group1.objs[i], group2.objs[j])){
                   if (cPairs instanceof Array){
@@ -1919,25 +1925,25 @@ var iio = {};
       c=c||0;
       var i = this.indexOfTag(tag, c);
       var a = iio.isNumber(i);
-      if (typeof(this.cnvs[c].groups)=='undefined'||!a) 
+      if (typeof(this.cnvs[c].groups)=='undefined'||!a)
          i = this.addGroup(tag, zIndex, c);
       this.cnvs[c].groups[i].addObj(obj, c);
       return obj;
    }
    ioAppManager.prototype.getGroup = function(tag,c,from,to) {
-   		c=c||0;
-   		var i = this.indexOfTag(tag,c),
-	   	   	a = iio.isNumber(i);
-	   	   
-	    if(typeof(this.cnvs[c].groups)=='undefined'||!a)
-		   return false;
-		var objs	=	this.cnvs[c].groups[i].objs;
-		
-		if(typeof(from) !== 'undefined' && from >= 0) {
-			to=to||(from+1);
-			return objs.slice(from,to);
-		}
-		return objs;
+         c=c||0;
+         var i = this.indexOfTag(tag,c),
+               a = iio.isNumber(i);
+
+       if(typeof(this.cnvs[c].groups)=='undefined'||!a)
+         return false;
+      var objs =  this.cnvs[c].groups[i].objs;
+
+      if(typeof(from) !== 'undefined' && from >= 0) {
+         to=to||(from+1);
+         return objs.slice(from,to);
+      }
+      return objs;
    }
    ioAppManager.prototype.addObj = function(obj, zIndex, c){
       c=c||0;
@@ -2038,7 +2044,7 @@ var iio = {};
       return pos;
    }
    ioAppManager.prototype.getCanvasOffset = function(c){
-      c=c||0;  
+      c=c||0;
       var p=this.cnvs[c].getBoundingClientRect();
       return new ioVec(p.left,p.top);
    }
@@ -2052,8 +2058,8 @@ var iio = {};
       aabb.lowerBound.Set(v.x - 0.001, v.y - 0.001);
       aabb.upperBound.Set(v.x + 0.001, v.y + 0.001);
       function getBodyCB(fixture){
-         if(fixture.GetBody().GetType() != Box2D.Dynamics.b2Body.b2_staticBody) 
-         if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), v)) 
+         if(fixture.GetBody().GetType() != Box2D.Dynamics.b2Body.b2_staticBody)
+         if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), v))
             return fixture.GetBody();
          return false;
       }
