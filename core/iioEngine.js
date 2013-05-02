@@ -67,15 +67,14 @@ var iio = {};
          iio.apps.splice(i,1);
 
    }
-   iio.requestTimeout = function(fps,lastTime,callback){
+   iio.requestTimeout = function(fps,lastTime,callback,callbackParams){
        //Callback method by Erik Möller, Paul Irish, Tino Zijdel
        //https://gist.github.com/1579671=
        var currTime = new Date().getTime();
        var timeToCall = Math.max(0, (1000/fps) - (currTime - lastTime));
-       var id = setTimeout(function() { callback(currTime + timeToCall); }, 
+       callbackParams[0].fsID = setTimeout(function() { callback(currTime + timeToCall, callbackParams); }, 
          timeToCall);
        lastTime = currTime + timeToCall;
-       return id;
    }
    /*window.addEventListener('keydown',function(event){
       if (typeof iio.apps!='undefined')
@@ -409,6 +408,7 @@ var iio = {};
       return new ioObj(this.pos);
    }
    ioObj.prototype.setPos = function(v,y){
+      this.redraw=true;
       this.pos = new ioVec(v,y);
       return this;
    }
@@ -891,6 +891,7 @@ var iio = {};
       this.styles.lineWidth=lW||this.styles.lineWidth;
       return this
    };
+   function setAlpha(a){this.styles.alpha=a;return this;}
    function setShadowColor(s){this.styles.shadow.shadowColor=s;return this};
    function setShadowBlur(s){this.styles.shadow.shadowBlur=s;return this};
    function setShadowOffset(v,y){this.styles.shadow.shadowOffset = new iio.ioVec(v,y||v);return this};
@@ -913,6 +914,7 @@ var iio = {};
    iio.ioObj.prototype.setShadowBlur=setShadowBlur;
    iio.ioObj.prototype.setShadowOffset=setShadowOffset;
    iio.ioObj.prototype.setShadow=setShadow;
+   iio.ioObj.prototype.setAlpha=setAlpha;
    iio.ioText.prototype.setFillStyle=setFillStyle;
    iio.ioShape.prototype.setFillStyle=setFillStyle;
    iio.ioCircle.prototype.drawReferenceLine=drawReferenceLine;
@@ -1225,8 +1227,10 @@ var iio = {};
       b2CircleShape.prototype.setPolyDraw = setPolyDraw;
    }
 
-   iio.ioCircle.prototype.clearSelf = function(ctx){
+   iio.ioCircle.prototype.clearSelf = function(ctx, transformCTX){
+      if (transformCTX) iio.Graphics.prepTransformedContext(ctx,this);
       ctx.clearRect( -this.radius,-this.radius,this.radius*2,this.radius*2);
+      if (transformCTX) ctx.restore();
    }
    iio.ioPoly.prototype.draw = function(ctx){
       ctx=iio.Graphics.prepTransformedContext(ctx,this);
@@ -1566,27 +1570,32 @@ var iio = {};
          obj.lastTime=0;
       if (typeof ctx != 'undefined')
          obj.ctx=ctx;
-      iio.requestTimeout(fps,obj.lastTime, function(dt){
-      	if(!this[0].pause) { // PAUSE
-	         obj.lastTime=dt;
-	         io.setFramerate(fps,callback,obj);
-	         if (typeof obj.update!='undefined')
-	            obj.update(dt);
+      iio.requestTimeout(fps,obj.lastTime, function(dt,args){
+      	if(!args[1].pause) {
+	         args[0].lastTime=dt;
+	         args[1].setFramerate(fps,callback,args[0]);
+	         if (typeof args[0].update!='undefined')
+	            args[0].update(dt);
 	         if (typeof callback!='undefined')
 	            callback(dt);
-	         if (obj.redraw){
-	            obj.draw();
-	            obj.redraw=false;
+	         if (args[0].redraw){
+	            args[0].draw();
+	            args[0].redraw=false;
 	         }
-	     } else {
-	         io.setFramerate(fps,callback,obj);
-         }
-      }.bind([io=this,obj]));
+	     } else args[1].setFramerate(fps,callback,args[0]);
+      }, [obj,this]);
       return this;
    }
    ioAppManager.prototype.pauseFramerate = function(pause) {
 	   this.pause = pause||!this.pause;
 	   return this;
+   }
+   ioAppManager.prototype.cancelFramerate = function(c){
+      if (c instanceof iio.ioObj) clearTimeout(c.fsID);
+      else {
+         c=c||0;
+         clearTimeout(this.cnvs[c].fsID);
+      }
    }
    ioAppManager.prototype.setAnimFPS = function(fps,obj,c){
       c=c||0;
@@ -1603,18 +1612,18 @@ var iio = {};
          this.b2lastTime=0;
       if (typeof this.b2World!='undefined')
          this.b2World.Step(1/this.fps, 10, 10);
-      iio.requestTimeout(fps,this.b2lastTime, function(dt){
-         b2.b2lastTime=dt;
-         b2.setB2Framerate(fps,callback);
-         if (typeof b2.b2World!='undefined')
-            b2.b2World.Step(1/fps, 10, 10);
+      iio.requestTimeout(fps,this.b2lastTime, function(dt,args){
+         args[0].b2lastTime=dt;
+         args[0].setB2Framerate(fps,callback);
+         if (typeof args[0].b2World!='undefined')
+            args[0].b2World.Step(1/fps, 10, 10);
          callback(dt);
-         if (typeof b2.b2DebugDraw!='undefined'&&b2.b2DebugDraw)
-            b2.b2World.DrawDebugData();
-         else b2.draw(b2.b2Cnv);
+         if (typeof args[0].b2DebugDraw!='undefined'&&args[0].b2DebugDraw)
+            args[0].b2World.DrawDebugData();
+         else args[0].draw(args[0].b2Cnv);
          if (typeof this.b2World!='undefined')
-            b2.b2World.ClearForces();
-      }.bind([b2=this]));
+            args[0].b2World.ClearForces();
+      }, [this]);
    }
    ioAppManager.prototype.addB2World = function(world,c){
       this.b2World=world;

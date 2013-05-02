@@ -2,12 +2,19 @@
   <body>
     <script type="text/javascript" src="../core/iioEngine.js"></script>
     <script type="text/javascript">
- 
+    
     SimpleDragAndDropApp = function(io){
+
+      //print instructions
+      io.addObj(new iio.ioText('Click & Hold to Drag', io.canvas.center)
+              .setFont('30px Consolas')
+              .setTextAlign('center')
+              .setFillStyle('black'));
 
       //create a blue circle at canvas center with radius 40
       var mCircle = io.addObj(new iio.ioCircle(io.canvas.center,40)
-                                    .setFillStyle('blue'));
+                                    .setFillStyle('00BAFF')
+                                    .setAlpha(.2));
 
       var dV; //remember where the mouse is relative to 
               //circle center
@@ -32,28 +39,21 @@
 
       //handle mouse move
       io.canvas.addEventListener('mousemove', function(event){
-          if (mCircle.active) 
-              mCircle.clearDraw().setPos(io.getEventPosition(event).add(dV));
-              //NOTE: the call to clearDraw is temporarily necessary
-              //      it will be taken out in the next engine update
-      });    
+          if (mCircle.active) {
 
+              mCircle.setPos(io.getEventPosition(event).add(dV));
+
+              //NOTE: if you only have a few objects,
+              //its much more efficient to just handle 
+              //clearing and rerendering yourself 
+              //instead of clearing the whole canvas each time
+              // - Replace the code above with this
+              //mCircle.clearSelf(io.context, true);
+              //mCircle.setPos(io.getEventPosition(event).add(dV));
+              //mCircle.draw(io.context);
+          }
+      });
       io.setFramerate(60);
-
-      //NOTE
-      //
-      //io.setFramerate(60, mCircle);
-      //
-      //it would be better to set a framerate update on the object
-      //itself to reduce the amount of re-rendering work
-      // - you can add framerates to as many objects as you want
-      // - you can also set framerates to object groups
-      //
-      //Right now though, the engine doesn't connect re-rendering  
-      //with direct positional changes (only via kinematics)
-      //this is a bug that will be fixed in the next engine update
-      //a cancelFramerate function will also be added to allow
-      //an even more efficient design
 
     }; iio.start(SimpleDragAndDropApp);
 

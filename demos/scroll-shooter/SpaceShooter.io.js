@@ -210,7 +210,6 @@ function SpaceShooter(io){
         });
     })();
     
-
     var meteorDensity = Math.round(io.canvas.width/150);
     var smallToBig = .70;
     io.setFramerate(60, function(){
