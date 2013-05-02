@@ -782,7 +782,7 @@ var iio = {};
       ctx.lineWidth = styles.lineWidth;
       ctx.shadowColor = styles.shadowColor;
       ctx.shadowBlur = styles.shadowBlur;
-      ctx.globalAlpha = styles.alpha || 1;
+      ctx.globalAlpha = (styles.alpha === 0)? 0: (styles.alpha || 1);
       if (typeof styles.shadowOffset !='undefined'){
          ctx.shadowOffsetX = styles.shadowOffset.x;
          ctx.shadowOffsetY = styles.shadowOffset.y;
