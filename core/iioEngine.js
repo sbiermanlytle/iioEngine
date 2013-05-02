@@ -148,7 +148,7 @@ var iio = {};
       if(max < min) {
          var tmp = min;
          min = max;
-         max = min;
+         max = tmp;
       }
       return (value >= min && value <= max);
    }
@@ -161,14 +161,14 @@ var iio = {};
       var y1 = v1.y;
 
       var x;
-      if(a1 === Infinity || a2 === Infinity) {
+      if(!isFinite(a1) || !isFinite(a2)) {
          if(a1 === a2) {
             return v1.x === v3.x &&
                   (iio.isBetween(v1.y, v3.y, v4.y) || iio.isBetween(v2.y, v3.y, v4.y) ||
                    iio.isBetween(v3.y, v1.y, v2.y) || iio.isBetween(v4.y, v1.y, v2.y));
          }
 
-         if(a1 === Infinity) {
+         if(!isFinite(a1)) {
             x = v1.x;
             a = a2;
             x1 = v3.x;
@@ -850,20 +850,28 @@ var iio = {};
    ioPoly.prototype.top = function() { return this.pos.y + this.originToTop; };
    ioPoly.prototype.bottom = function() { return this.pos.y + this.originToTop + this.height; };
    ioPoly.prototype.contains = function(v,y){
-      y=v.y||y;
-      v=v.x||v;
-      v-=this.pos.x;
-      y-=this.pos.y;
-      if (Math.abs(this.pos.x-v) > this.width/2
-         || Math.abs(this.pos.y-y) > this.height/2)
-         return false;
-      var i = j = c = 0;
-      for (i = 0, j = this.vertices.length-1; i < this.vertices.length; j = i++) {
-         if ( ((this.vertices[i].y>y) != (this.vertices[j].y>y)) &&
-            (v < (this.vertices[j].x-this.vertices[i].x) * (y-this.vertices[i].y) / (this.vertices[j].y-this.vertices[i].y) + this.vertices[i].x) )
-               c = !c;
+      if(!(v instanceof iio.ioVec)) {
+         v = new iio.ioVec(v, y);
       }
-      return c;
+      v.x -= this.pos.x;
+      v.y -= this.pos.y;
+      
+      if(v.x > this.originToLeft) {
+         return false;
+      }
+      
+      var leftV = new iio.ioVec(this.originToLeft, v.y);
+      
+      var verticesCrossed = 0;
+      for(var i = 0; i < this.vertices.length; i++) {
+         var next = (i + 1) % this.vertices.length;
+         if(iio.lineIntersects(this.vertices[i], this.vertices[next],
+                               v, leftV)) {
+            verticesCrossed++;
+         }
+      }
+      
+      return (verticesCrossed % 2);
    }
 })();
 
@@ -882,7 +890,7 @@ var iio = {};
       ctx.lineWidth = styles.lineWidth;
       ctx.shadowColor = styles.shadowColor;
       ctx.shadowBlur = styles.shadowBlur;
-      ctx.globalAlpha = styles.alpha || 1;
+      ctx.globalAlpha = (styles.alpha === 0)? 0: (styles.alpha || 1);
       if (typeof styles.shadowOffset !='undefined'){
          ctx.shadowOffsetX = styles.shadowOffset.x;
          ctx.shadowOffsetY = styles.shadowOffset.y;
