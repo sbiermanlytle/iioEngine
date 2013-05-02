@@ -205,7 +205,7 @@ var iio = {};
          var o2 = objs[1 - i];
          var vertices = o2.vertices;
          for(var j = 0; j < vertices.length; j++) {
-            if(o1.contains(iio.ioVec.add(vertices[j], o2.pos))) {
+            if(o1.contains(iio.ioVec.add(vertices[j], o2.pos)) !== false) {
                return true;
             }
          }
