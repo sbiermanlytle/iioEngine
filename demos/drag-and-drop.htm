@@ -2,7 +2,7 @@
   <body>
     <script type="text/javascript" src="../core/iioEngine.js"></script>
     <script type="text/javascript">
-    
+
     SimpleDragAndDropApp = function(io){
 
       //print instructions
@@ -12,9 +12,10 @@
               .setFillStyle('black'));
 
       //create a blue circle at canvas center with radius 40
-      var mCircle = io.addObj(new iio.ioCircle(io.canvas.center,40)
+      var mCircle = io.addObj(new iio.ioCircle(io.canvas.center.x
+                                              ,io.canvas.center.y+80,40)
                                     .setFillStyle('00BAFF')
-                                    .setAlpha(.2));
+                                    .setAlpha(.7));
 
       var dV; //remember where the mouse is relative to 
               //circle center
