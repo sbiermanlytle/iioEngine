@@ -814,8 +814,8 @@ var iio = {};
          ctx.drawImage(obj.img,left,top,width,height);
          ctx.restore();
       }
-      if (typeof obj.anims != 'undefined' && !iio.Graphics.drawImage(ctx,obj.anims[obj.animKey][obj.animIndex])){
-         ctx.drawImage(obj.anims[obj.animKey][obj.animIndex],left,top,width,height);
+      if (typeof obj.anims != 'undefined' && !iio.Graphics.drawImage(ctx,obj.anims[obj.animKey][obj.animFrame])){
+         ctx.drawImage(obj.anims[obj.animKey][obj.animFrame],left,top,width,height);
          ctx.restore();
       }
       if (typeof obj.styles != 'undefined'){
@@ -1079,7 +1079,7 @@ var iio = {};
             this.anims[nI][j]=new Image();
             this.anims[nI][j].src=src[j];
          }
-         if (j==this.animIndex) this.anims[nI][j].onload = onLoadCallback;
+         if (j==this.animFrame) this.anims[nI][j].onload = onLoadCallback;
       } return this;
    }
    function createWithImage(src, onLoadCallback){
@@ -1116,7 +1116,7 @@ var iio = {};
          this.height = src.frames[i].h;
          this.animKey=0;
          this.anims[0].tag=onLoadCallback;
-         this.animIndex=i||0;
+         this.animFrame=i||0;
          return this;
       }
       if (typeof src[0].src !='undefined'){
@@ -1124,7 +1124,7 @@ var iio = {};
          this.height = src[i].height;
       } else {
          this.animKey=0;
-         this.animIndex=i;
+         this.animFrame=i;
          this.anims[0][i].onload = function(){
             this.width=this.anims[0][i].width||0;
             this.height=this.anims[0][i].height||0;
@@ -1134,16 +1134,16 @@ var iio = {};
       } return this;
    }
    function nextAnimFrame(){
-      this.animIndex++;
+      this.animFrame++;
       if ((this.anims[this.animKey] instanceof iio.ioSprite &&
-         this.animIndex >= this.anims[this.animKey].frames.length)
-         || this.animIndex >= this.anims[this.animKey].length)
-         this.animIndex=0;
+         this.animFrame >= this.anims[this.animKey].frames.length)
+         || this.animFrame >= this.anims[this.animKey].length)
+         this.animFrame=0;
       this.clearDraw();
       return this;
    }
-   function setAnimIndex(i){
-      this.animIndex=i;
+   function setAnimFrame(i){
+      this.animFrame=i;
       return this;
    }
    function playAnim(tag,fps,io,c){
@@ -1159,7 +1159,7 @@ var iio = {};
       clearTimeout(this.fsID);
       this.fsID=undefined;
       this.setAnimKey(key);
-      this.animIndex=0;
+      this.animFrame=0;
       if (typeof ctx != 'undefined'){
          this.clearDraw(ctx);
          this.draw(ctx);
@@ -1186,7 +1186,7 @@ var iio = {};
    iio.ioCircle.prototype.createWithImage = createWithImage;
    iio.ioRect.prototype.createWithAnim = createWithAnim;
    iio.ioShape.prototype.nextAnimFrame=nextAnimFrame;
-   iio.ioShape.prototype.setAnimIndex=setAnimIndex;
+   iio.ioShape.prototype.setAnimFrame=setAnimFrame;
    iio.ioShape.prototype.setAnimKey=setAnimKey;
    iio.ioShape.prototype.playAnim=playAnim;
    iio.ioShape.prototype.stopAnim=stopAnim;
@@ -1201,7 +1201,7 @@ var iio = {};
       //b2Shape.prototype.createWithImage = createWithImage;
       //b2Shape.prototype.createWithAnim = createWithAnim;
       b2Shape.prototype.nextAnimFrame=nextAnimFrame;
-      b2Shape.prototype.setAnimIndex=setAnimIndex;
+      b2Shape.prototype.setAnimFrame=setAnimFrame;
       b2Shape.prototype.setAnimKey=setAnimKey;
       b2Shape.prototype.playAnim=playAnim;
       b2Shape.prototype.stopAnim=stopAnim;
@@ -1295,9 +1295,9 @@ var iio = {};
       }
       if (typeof this.anims != 'undefined'){
          if (this.anims[this.animKey] instanceof iio.ioSprite)
-               iio.Graphics.drawSprite(ctx,this.width,this.height,this.anims[this.animKey],this.animIndex,this.flipImg);
-         else if(!iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animIndex])){
-            ctx.drawImage(this.anims[this.animKey][this.animIndex], -this.width/2, -this.height/2, this.width, this.height);
+               iio.Graphics.drawSprite(ctx,this.width,this.height,this.anims[this.animKey],this.animFrame,this.flipImg);
+         else if(!iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animFrame])){
+            ctx.drawImage(this.anims[this.animKey][this.animFrame], -this.width/2, -this.height/2, this.width, this.height);
             ctx.restore();
          }
       }
@@ -1349,8 +1349,8 @@ var iio = {};
          ctx.drawImage(this.img, -this.radius,-this.radius,this.radius*2,this.radius*2);
          ctx.restore();
       }
-      if (typeof this.anims != 'undefined' && !iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animIndex])){
-         ctx.drawImage(this.anims[this.animKey][this.animIndex], -this.radius,-this.radius,this.radius*2,this.radius*2);
+      if (typeof this.anims != 'undefined' && !iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animFrame])){
+         ctx.drawImage(this.anims[this.animKey][this.animFrame], -this.radius,-this.radius,this.radius*2,this.radius*2);
          ctx.restore();
       }
       if (typeof this.styles != 'undefined'){
