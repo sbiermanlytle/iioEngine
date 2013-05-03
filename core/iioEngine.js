@@ -152,6 +152,19 @@ var iio = {};
       }
       return (value >= min && value <= max);
    }
+   iio.lineContains = function(l1, l2, p) {
+      if(iio.isBetween(p.x, l1.x, l2.x) && iio.isBetween(p.y, l1.y, l2.y)) {
+         var a = (l2.y - l1.y) / (l2.x - l1.x);
+         if(!isFinite(a)) {
+            return true;
+         }
+         var y = a * (x - l1.x) + l1.y;
+         if(y == p.y) {
+            return true;
+         }
+      }
+      return false;
+   }
    iio.lineIntersects = function(v1, v2, v3, v4) {
       var a1 = (v2.y - v1.y) / (v2.x - v1.x);
       var a2 = (v4.y - v3.y) / (v4.x - v3.x);
@@ -159,16 +172,19 @@ var iio = {};
       var a = a1;
       var x1 = v1.x;
       var y1 = v1.y;
-
+      
+      var i1 = !isFinite(a1);
+      var i2 = !isFinite(a2);
+      
       var x;
-      if(!isFinite(a1) || !isFinite(a2)) {
-         if(a1 === a2) {
+      if(i1 || i2) {
+         if(i1 && i2) {
             return v1.x === v3.x &&
                   (iio.isBetween(v1.y, v3.y, v4.y) || iio.isBetween(v2.y, v3.y, v4.y) ||
                    iio.isBetween(v3.y, v1.y, v2.y) || iio.isBetween(v4.y, v1.y, v2.y));
          }
 
-         if(!isFinite(a1)) {
+         if(i1) {
             x = v1.x;
             a = a2;
             x1 = v3.x;
@@ -178,7 +194,7 @@ var iio = {};
          }
       } else {
          x = (a1*v1.x - a2*v3.x - v1.y + v3.y) / (a1 - a2);
-         if(x === Infinity) {
+         if(!isFinite(x)) {
             return (iio.isBetween(v1.x, v3.x, v4.x) && iio.isBetween(v1.y, v3.y, v4.y) ||
                     iio.isBetween(v2.x, v3.x, v4.x) && iio.isBetween(v2.y, v3.y, v4.y) ||
                     iio.isBetween(v3.x, v1.x, v2.x) && iio.isBetween(v3.y, v1.y, v2.y) ||
