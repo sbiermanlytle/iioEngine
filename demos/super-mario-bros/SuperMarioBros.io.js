@@ -1,6 +1,8 @@
 /*
- * Author: Sebastian Bierman-Lytle
+ * iio Engine
  * Quick SpriteMap Demo
+ * NOTE: this app will only work with the Github distribution of iio
+ *       a versioned package will be released on the website soon
  */
 function SuperMarioBros(io){
 
@@ -15,8 +17,7 @@ function SuperMarioBros(io){
 	var mario;
 
 	//create an ioSpriteMap object, define 16x32 sprite cells, pass onload function
-	//you can redefine sprite cell dimensions any time with setSpriteRes()
-	//think of the ioSprite map as an API to iio's Animation framework
+	// - you can redefine sprite cell dimensions any time with setSpriteRes()
 	var marioSprites = new iio.ioSpriteMap('img/mariobros_cmp.png',16,32,function(){
 
 		mario = new iio.ioRect(100, io.canvas.height-40)
@@ -54,7 +55,12 @@ function SuperMarioBros(io){
             ||iio.keyCodeIs('left arrow', event)
             ||iio.keyCodeIs('d',event)
             ||iio.keyCodeIs('a',event)){
+
+	    	//'standing' is what will replace the current Anim
+	    	//NOTE: you dont need to give it the context if
+	    	//      you have a framerate set on the canvas
 	        mario.stopAnim('standing',io.context);
+	        
 	    	animating=false;
 		}
 	});
