@@ -2,6 +2,7 @@
  * iio Engine
  * Quick SpriteMap Demo
  * NOTE: this app will only work with the Github distribution of iio
+ * 		 and the one in the SDK package available iio's the homepage
  *       a versioned package will be released on the website soon
  */
 function SuperMarioBros(io){

@@ -1065,11 +1065,13 @@ var iio = {};
    }
    function addAnim(src, onLoadCallback){
       if (typeof this.anims == 'undefined') this.anims=[];
+      if (typeof this.animKey == 'undefined') this.animKey=0;
+      if (typeof this.animFrame == 'undefined') this.animFrame=0;
       var nI = this.anims.length;
       if (src instanceof iio.ioSprite){
          this.anims[nI]=src;
          this.anims[nI].tag=onLoadCallback;
-         return;
+         return this;
       }
       this.anims[nI]=[];
       for (var j=0;j<src.length;j++){
