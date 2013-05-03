@@ -2,7 +2,7 @@
 * Software: iio Engine
 * Version: latest
 * Author: Sebastian Bierman-Lytle
-* Last Update: 5/1/2013
+* Last Update: 5/2/2013
 * Website: iioEngine.com
 *
 * This software is provided 'as-is', without any express or implied
@@ -54,7 +54,7 @@ var iio = {};
       child.prototype.constructor = tmp;
    };
    iio.start = function(app,id,w,h){
-      if (typeof app =='undefined') throw new Error("ioStart: No application script provided | Docs: ioController -> ioStart");
+      if (typeof app =='undefined') throw new Error("iio.start: No application script provided");
       if (typeof iio.apps == 'undefined') iio.apps = [];
       iio.apps[iio.apps.length]=new iio.ioAppManager(app, id, w, h);
       return iio.apps[iio.apps.length-1];
@@ -880,6 +880,86 @@ var iio = {};
          return true;
       } return true;
    }
+   iio.Graphics.drawSprite = function(ctx,w,h,s,i,flip,clip){
+      if (typeof s!='undefined'){
+         ctx.save();
+         if(clip) ctx.clip();
+         if (flip) ctx.scale(-1, 1);
+         ctx.drawImage(s.src,s.frames[i].x,s.frames[i].y,s.frames[i].w,s.frames[i].h
+                   ,-w/2, -h/2, w, h);
+         ctx.restore();
+         return true;
+      } return true;
+   }
+})();
+
+//ioSpriteMap
+(function (){
+   //Definition
+   function ioSpriteMap(){
+      this.ioSpriteMap.apply(this, arguments);
+   }; iio.ioSpriteMap=ioSpriteMap;
+
+   //Constructor
+   ioSpriteMap.prototype.ioSpriteMap = function(src,sprW,sprH,onLoadCallback,callbackParams) {
+      onLoadCallback=onLoadCallback||sprW||iio.emptyFn;
+      if (sprW!=onLoadCallback) this.sW=sprW||0;
+      else this.sW=0;
+      this.sH=sprH||0;
+      if (typeof src.src != 'undefined'){
+         this.srcImg=src;
+         this.setSpriteRes(sprW,sprH);
+      } else {
+         this.srcImg=new Image();
+         this.srcImg.src=src;
+         this.srcImg.onload = function(){
+            this.setSpriteRes(sprW,sprH);
+            onLoadCallback(callbackParams);
+         }.bind(this);
+      } return this;
+   }
+
+   //Functions
+   ioSpriteMap.prototype.getSprite = function(R, end){
+      var s = new iio.ioSprite(this.srcImg);
+      if (typeof end != 'undefined'){  
+         for (var i=R;i<=end;i++)
+            s.addFrame(i%this.C*this.sW,parseInt(i/this.C,10)*this.sH,this.sW,this.sH);
+      } else {
+         for (var c=0;c<=this.C;c++)
+            s.addFrame(c*this.sW,R*this.sH,this.sW,this.sH);
+      } return s;
+   }
+   ioSpriteMap.prototype.setSpriteRes = function(w,h){
+      this.sW=w; this.sH=h;
+      this.C=this.srcImg.width/this.sW;
+      this.R=this.srcImg.height/this.sH;
+   }
+})();
+
+//ioSprite
+(function (){
+   //Definition
+   function ioSprite(){
+      this.ioSprite.apply(this, arguments);
+   }; iio.ioSprite=ioSprite;
+
+   //Constructor
+   ioSprite.prototype.ioSprite = function(src) {
+         this.src=src;
+         this.frames=[];
+         return this;
+   }
+
+   //Functions
+   ioSprite.prototype.addFrame = function(x,y,w,h){
+      var i=this.frames.length;
+      this.frames[i]={};
+      this.frames[i].x=x;
+      this.frames[i].y=y;
+      this.frames[i].w=w;
+      this.frames[i].h=h;
+   }
 })();
 
 //Graphics Attachments
@@ -906,7 +986,7 @@ var iio = {};
       } else {
          this.styles.shadow.shadowOffset=new iio.ioVec(v,y);
          this.styles.shadow.shadowBlur=blur;
-      } return this
+      } return this;
    };
    iio.ioObj.prototype.setLineWidth=setLineWidth;
    iio.ioObj.prototype.setStrokeStyle=setStrokeStyle;
@@ -962,6 +1042,13 @@ var iio = {};
    function setImgOffset(v,y){this.img.pos=new iio.ioVec(v,y||v);return this};
    function setImgScale(s){this.img.scale=s;return this};
    function setImgRotation(r){this.img.rotation=r;return this};
+   function flipImage(yes){
+      if(typeof yes !='undefined')
+         this.flipImg=yes;
+      else if (typeof this.flipImg =='undefined')
+         this.flipImg=true;
+      else this.flipImg=!flipImg;
+   }
    function setImgSize(v,y){
       if (v == 'native') this.img.nativeSize=true;
       else this.img.size=new iio.ioVec(v,y||v);
@@ -976,19 +1063,23 @@ var iio = {};
          this.img.onload = onLoadCallback;
       } return this;
    }
-   function addAnim(srcs, onLoadCallback,i){
-      this.animIndex=i||0;
+   function addAnim(src, onLoadCallback){
       if (typeof this.anims == 'undefined') this.anims=[];
-      this.animKey = this.anims.length
-      this.anims[this.animKey]=[];
-      for (var j=0;j<srcs.length;j++){
-         if (typeof srcs[j].src !='undefined')
-            this.anims[this.animKey][j]=srcs[j];
+      var nI = this.anims.length;
+      if (src instanceof iio.ioSprite){
+         this.anims[nI]=src;
+         this.anims[nI].tag=onLoadCallback;
+         return;
+      }
+      this.anims[nI]=[];
+      for (var j=0;j<src.length;j++){
+         if (typeof src[j].src !='undefined')
+            this.anims[nI][j]=src[j];
          else {
-            this.anims[this.animKey][j]=new Image();
-            this.anims[this.animKey][j].src=srcs[j];
+            this.anims[nI][j]=new Image();
+            this.anims[nI][j].src=src[j];
          }
-         if (j==this.animIndex) this.anims[this.animKey][j].onload = onLoadCallback;
+         if (j==this.animIndex) this.anims[nI][j].onload = onLoadCallback;
       } return this;
    }
    function createWithImage(src, onLoadCallback){
@@ -1015,16 +1106,23 @@ var iio = {};
          }.bind(this);
       } return this;
    }
-   function createWithAnim(srcs,onLoadCallback,i){
+   function createWithAnim(src,onLoadCallback,i){
       if (typeof i=='undefined' && iio.isNumber(onLoadCallback))
          i=onLoadCallback;
       i=i||0;
-      if (typeof srcs[0].src !='undefined'){
-         this.addAnim(srcs);
-         this.width = srcs[0].width;
-         this.height = srcs[0].height;
+      this.addAnim(src);
+      if (src instanceof iio.ioSprite){
+         this.width = src.frames[i].w;
+         this.height = src.frames[i].h;
+         this.animKey=0;
+         this.anims[0].tag=onLoadCallback;
+         this.animIndex=i||0;
+         return this;
+      }
+      if (typeof src[0].src !='undefined'){
+         this.width = src[i].width;
+         this.height = src[i].height;
       } else {
-         this.addAnim(srcs);
          this.animKey=0;
          this.animIndex=i;
          this.anims[0][i].onload = function(){
@@ -1037,37 +1135,76 @@ var iio = {};
    }
    function nextAnimFrame(){
       this.animIndex++;
-      if (this.animIndex >= this.anims[this.animKey].length)
+      if ((this.anims[this.animKey].frames != 'undefined' &&
+         this.animIndex >= this.anims[this.animKey].frames.length)
+         || this.animIndex >= this.anims[this.animKey].length)
          this.animIndex=0;
       this.clearDraw();
       return this;
    }
-   function setAnimFrame(i){
+   function setAnimIndex(i){
       this.animIndex=i;
+      return this;
+   }
+   function playAnim(tag,fps,io,c){
+      if (!iio.isNumber(tag))
+         this.setAnimKey(tag);
+      else{ c=io;io=fps;fps=tag; }
+      if (typeof this.fsID != 'undefined')
+         this.stopAnim();
+      io.setFramerate(fps,function(){this.nextAnimFrame()}.bind(this),this,io.ctxs[c||0]);
+      return this;
+   }
+   function stopAnim(key,ctx){
+      clearTimeout(this.fsID);
+      this.fsID=undefined;
+      this.setAnimKey(key);
+      this.animIndex=0;
+      if (typeof ctx != 'undefined'){
+         this.clearDraw(ctx);
+         this.draw(ctx);
+      }
+      return this;
+   }
+   function setAnimKey(key){
+      if (iio.isNumber(key))
+         this.animKey=key;
+      else for (var i=0;i<this.anims.length;i++)
+         if (this.anims[i].tag == key)
+            this.animKey=i;
+      return this;
    }
 
    iio.ioShape.prototype.setImgOffset = setImgOffset;
    iio.ioShape.prototype.setImgScale = setImgScale;
    iio.ioShape.prototype.setImgRotation = setImgRotation;
    iio.ioShape.prototype.setImgSize = setImgSize;
+   iio.ioShape.prototype.flipImage = flipImage;
    iio.ioShape.prototype.addImage = addImage;
    iio.ioShape.prototype.addAnim = addAnim;
    iio.ioRect.prototype.createWithImage = createWithImage;
    iio.ioCircle.prototype.createWithImage = createWithImage;
    iio.ioRect.prototype.createWithAnim = createWithAnim;
    iio.ioShape.prototype.nextAnimFrame=nextAnimFrame;
-   iio.ioShape.prototype.setAnimFrame=setAnimFrame;
+   iio.ioShape.prototype.setAnimIndex=setAnimIndex;
+   iio.ioShape.prototype.setAnimKey=setAnimKey;
+   iio.ioShape.prototype.playAnim=playAnim;
+   iio.ioShape.prototype.stopAnim=stopAnim;
    if (typeof Box2D != 'undefined'){
       b2Shape.prototype.setImgOffset = setImgOffset;
       b2Shape.prototype.setImgScale = setImgScale;
       b2Shape.prototype.setImgRotation = setImgRotation;
       b2Shape.prototype.setImgSize = setImgSize;
       b2Shape.prototype.addImage = addImage;
+      b2Shape.prototype.flipImage = flipImage;
       b2Shape.prototype.addAnim = addAnim;
       //b2Shape.prototype.createWithImage = createWithImage;
       //b2Shape.prototype.createWithAnim = createWithAnim;
       b2Shape.prototype.nextAnimFrame=nextAnimFrame;
-      b2Shape.prototype.setAnimFrame=setAnimFrame;
+      b2Shape.prototype.setAnimIndex=setAnimIndex;
+      b2Shape.prototype.setAnimKey=setAnimKey;
+      b2Shape.prototype.playAnim=playAnim;
+      b2Shape.prototype.stopAnim=stopAnim;
    }
 
    //Draw Functions
@@ -1156,9 +1293,13 @@ var iio = {};
          ctx.drawImage(this.img, -this.width/2, -this.height/2, this.width, this.height);
          ctx.restore();
       }
-      if (typeof this.anims != 'undefined' && !iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animIndex])){
-         ctx.drawImage(this.anims[this.animKey][this.animIndex], -this.width/2, -this.height/2, this.width, this.height);
-         ctx.restore();
+      if (typeof this.anims != 'undefined'){
+         if (this.anims[this.animKey] instanceof iio.ioSprite)
+               iio.Graphics.drawSprite(ctx,this.width,this.height,this.anims[this.animKey],this.animIndex,this.flipImg);
+         else if(!iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animIndex])){
+            ctx.drawImage(this.anims[this.animKey][this.animIndex], -this.width/2, -this.height/2, this.width, this.height);
+            ctx.restore();
+         }
       }
       if (typeof this.styles != 'undefined'){
          if (typeof this.styles.fillStyle !='undefined')
@@ -1531,19 +1672,17 @@ var iio = {};
    ioAppManager.prototype.ioAppManager = function(app, id, w, h){
       this.cnvs = [];
       this.ctxs = [];
-      if (typeof app=='undefined') throw new Error("ioApp.initialize: No app provided | Docs: ioApp -> Constructors");
-      if (typeof w=='undefined' && (typeof id == 'string' || id instanceof String)){
-         this.addCanvas(id);
-      }
+      if (typeof app=='undefined') throw new Error("iio.start: No app provided");
+      if (typeof w=='undefined' && (typeof id == 'string' || id instanceof String)) this.addCanvas(id);
       else {
          if (typeof id == 'string' || id instanceof String){
-            w = w || window.innerWidth;
-            h = h || window.innerHeight;
-            if (!document.getElementById(id))
-               throw new Error("ioApp.initialize: Invalid element id | Docs: ioApp -> Constructors");
+            w = w || 'auto';
+            h = h || 'auto';
+            if (id!='body'&&!document.getElementById(id))
+               throw new Error("iio.start: Invalid element id");
          } else {
-            h = w || window.innerHeight;
-            w = id || window.innerWidth;
+            h = w || 'auto';
+            w = id || 'auto';
          }
          this.addCanvas(0, w, h, id);
       }
@@ -1597,6 +1736,7 @@ var iio = {};
          clearTimeout(this.cnvs[c].fsID);
       }
    }
+   //DEPRECATED: will be removed in future version, replaced by 'ioShape.playAnim'
    ioAppManager.prototype.setAnimFPS = function(fps,obj,c){
       c=c||0;
       if (obj instanceof Array)
@@ -1665,6 +1805,10 @@ var iio = {};
          return i;
       }
 
+      //should fit to element, not window
+      if (w=='auto') w=window.innerWidth;
+      if (h=='auto') h=window.innerHeight;
+
       //Create the canvas
       this.cnvs[i]=document.createElement('canvas');
       this.cnvs[i].width = w || this.cnvs[0].width;
@@ -1672,8 +1816,10 @@ var iio = {};
       this.cnvs[i].style.zIndex = zIndex || -i;
       
       //Attach the canvas
-      if (typeof attachId == 'string' || attachId instanceof String)
-         document.getElementById(id).appendChild(this.cnvs[i])
+      if (typeof attachId == 'string' || attachId instanceof String){
+         if (attachId=='body') document.body.appendChild(this.cnvs[i])
+         else document.getElementById(id).appendChild(this.cnvs[i])
+      } 
       else if (this.cnvs.length>1) {
          this.cnvs[i].style.position="absolute";
          var offset = this.getCanvasOffset();
@@ -1694,14 +1840,26 @@ var iio = {};
       else if (typeof cssClasses == 'string' || cssClasses instanceof String)
          this.cnvs[i].className += " "+cssClasses;
 
+      //TODO define specific display options and put styles back when app is terminated
+      //also make everything relative to parent element instead of directly 'body'
       if (this.cnvs[i].width==window.innerWidth && this.cnvs[i].height==window.innerHeight){
          this.cnvs[i].style.display = "block"; //remove scrollbars
          this.cnvs[i].style.position = "absolute";
-         //TODO should set document styles back when game is terminated
-         this.cnvs[i].style.top = document.body.style.margin = document.body.style.padding = "0";
+         this.cnvs[i].style.top = 0;
          document.body.style.overflow = 'hidden';
-         this.fullScreen=true;
       }
+      if (this.cnvs[i].width==window.innerWidth){
+         document.body.style.marginLeft = document.body.style.marginRight
+          = document.body.style.paddingLeft = document.body.style.paddingRight = "0";
+         this.fullWidth=true;
+      }
+      if (this.cnvs[i].height==window.innerHeight){
+         document.body.style.marginTop = document.body.style.marginBottom
+          = document.body.style.paddingTop = document.body.style.paddingBottom = "0";
+         this.fullHeight=true;
+      }
+
+
       this.ctxs[i] = this.cnvs[i].getContext('2d');
       this.setCanvasProperties(i);
       this.setCanvasFunctions(i);
@@ -1783,10 +1941,8 @@ var iio = {};
    }
    ioAppManager.prototype.addWindowListeners = function(){
       iio.addEvent(window, 'resize', function(event){
-         if (this.fullScreen){
-            io.canvas.width = window.innerWidth;
-            io.canvas.height = window.innerHeight;
-         }
+         if (this.fullWidth) this.canvas.width = window.innerWidth;
+         if (this.fullHeight) this.canvas.height = window.innerHeight;
          for (var c=0; c<this.cnvs.length;c++){
             this.setCanvasProperties(c);
             if (c>0){
@@ -1850,7 +2006,7 @@ var iio = {};
    		var i = this.indexOfTag(tag,c),
 	   	   	a = iio.isNumber(i);
 	   	   
-	    if(typeof(this.cnvs[c].groups)=='undefined'||!a)
+	   if(typeof(this.cnvs[c].groups)=='undefined'||!a)
 		   return false;
 		var objs	=	this.cnvs[c].groups[i].objs;
 		
