@@ -1135,7 +1135,7 @@ var iio = {};
    }
    function nextAnimFrame(){
       this.animIndex++;
-      if ((this.anims[this.animKey].frames != 'undefined' &&
+      if ((this.anims[this.animKey] instanceof iio.ioSprite &&
          this.animIndex >= this.anims[this.animKey].frames.length)
          || this.animIndex >= this.anims[this.animKey].length)
          this.animIndex=0;
