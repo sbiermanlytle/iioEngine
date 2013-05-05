@@ -12,16 +12,16 @@
         };
         iio.inherit(Ball, iio.ioCircle);
         Ball.prototype._super = iio.ioCircle.prototype;
-        Ball.prototype.Ball = function(r, startPos, color, bottom) {
+        Ball.prototype.Ball = function(r, startPos, color, floor) {
             this._super.ioCircle.call(this, startPos, r);
         	this.setFillStyle(color)
         		.enableKinematics()
         		.setAcc(0, 0.1)
-        		.setBound('bottom', bottom, function(ball) {
+        		.setBound('bottom', floor, function(ball) {
         			ball.vel.y *= -(0.8 + (ball.radius / 300));
         
-        			if(ball.pos.y > ball.bottom - ball.radius) {
-        				ball.pos.y = ball.bottom - ball.radius;
+        			if(ball.pos.y > floor-ball.radius) {
+        				ball.pos.y = floor-ball.radius;
         			}
         			if(ball.vel.y > 0) {
         				ball.vel.y = 0;
@@ -43,7 +43,6 @@
         
         	this.startPos = startPos;
         	this.color = color;
-        	this.bottom = bottom;
         	this.isRemoving = false;
         };
         Ball.prototype.clone = function() {
