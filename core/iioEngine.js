@@ -780,40 +780,21 @@ var iio = {};
              ,new iio.ioVec(this.right(),this.bottom())];
    }
    ioRect.prototype.contains = function(v,y){
-      y=v.y||y;
-      v=v.x||v;
-      v-=this.pos.x;
-      y-=this.pos.y;
-      var h1 = Math.sqrt(v*v + y*y);
+      y=(v.y||y)-this.pos.y;
+      v=(v.x||v)-this.pos.x;
       var currA = Math.atan2(y,v);
       // Angle of point rotated around origin of rectangle in opposition
-      var newA = currA;
       if (typeof this.rotation != 'undefined')
-         newA -= this.rotation;
+         currA -= this.rotation;
       // New position of mouse point when rotated
-      var x2 = Math.cos(newA) * h1;
-      var y2 = Math.sin(newA) * h1;
+      var h1 = Math.sqrt(v*v + y*y);
+      v = Math.cos(currA) * h1;
+      y = Math.sin(currA) * h1;
       // Check relative to center of rectangle
-      if (x2 > -0.5 * this.width && x2 < 0.5 * this.width && y2 > -0.5 * this.height && y2 < 0.5 * this.height){
+      if (v > -0.5 * this.width && v < 0.5 * this.width && y > -0.5 * this.height && y < 0.5 * this.height){
          return true;
       }
       return false;
-   }
-   ioRect.prototype.transformPoint = function(v,y){
-      y=v.y||y;
-      v=v.x||v;
-      v-=this.pos.x;
-      y-=this.pos.y;
-      var h1 = Math.sqrt(v*v + y*y);
-      var currA = Math.atan2(y,v);
-      // Angle of point rotated around origin of rectangle in opposition
-      var newA = currA;
-      if (typeof this.rotation != 'undefined')
-         newA -= this.rotation;
-      // New position of mouse point when rotated
-      var x2 = Math.cos(newA) * h1;
-      var y2 = Math.sin(newA) * h1;
-      return new iio.ioVec(x2,y2);
    }
 })();
 
@@ -906,13 +887,16 @@ var iio = {};
    ioPoly.prototype.top = function() { return this.pos.y + this.originToTop; };
    ioPoly.prototype.bottom = function() { return this.pos.y + this.originToTop + this.height; };
    ioPoly.prototype.contains = function(v,y){
-      y=v.y||y;
-      v=v.x||v;
-      v-=this.pos.x;
-      y-=this.pos.y;
-      if (Math.abs(this.pos.x-v) > this.width/2
-         || Math.abs(this.pos.y-y) > this.height/2)
-         return false;
+      y=(v.y||y)-this.pos.y;
+      v=(v.x||v)-this.pos.x;
+      var currA = Math.atan2(y,v);
+      // Angle of point rotated around origin of rectangle in opposition
+      if (typeof this.rotation != 'undefined')
+         currA -= this.rotation;
+      // New position of mouse point when rotated
+      var h1 = Math.sqrt(v*v + y*y);
+      v = Math.cos(currA) * h1;
+      y = Math.sin(currA) * h1;
       var i = j = c = 0;
       for (i = 0, j = this.vertices.length-1; i < this.vertices.length; j = i++) {
          if ( ((this.vertices[i].y>y) != (this.vertices[j].y>y)) &&

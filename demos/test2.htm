@@ -1,0 +1,37 @@
+<!doctype html>
+  <body>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript">
+
+   PolyDemo = function(io){
+ 
+  //load ioPoly (make it directly accessable)
+  var ioPoly = iio.ioPoly;
+ 
+  //create a blue triangle at 50,50
+  //vertices are relative to specified origin
+  var a = io.addObj(new iio.ioRect(io.canvas.center,50)
+    .rotate(Math.PI/4)
+    .setFillStyle('#00baff'));
+ 
+  //create a red polygon at 150x150
+  var b = io.addObj(new ioPoly(io.canvas.width/2+150,io.canvas.height/2+150, [-70,10
+                                 ,-50,30
+                                 , 10,10
+                                 ,-20,-80])
+    .rotate(Math.PI/2)
+    .setFillStyle('red'));
+
+  io.canvas.addEventListener('mousedown', function(event){
+    var v = io.getEventPosition(event);
+    if (a.contains(v))
+      alert('blue triangle!!!');
+    if (b.contains(v))
+      alert('red Polygon!!!!');
+});
+ 
+}; iio.start(PolyDemo);
+
+    </script>
+  </body>
+</html>

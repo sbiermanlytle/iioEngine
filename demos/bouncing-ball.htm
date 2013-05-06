@@ -10,6 +10,11 @@
         var Ball = function() {
             this.Ball.apply(this, arguments);
         };
+
+        ioAppManager.prototype.pauseFramerate = function(){
+            
+        }
+
         iio.inherit(Ball, iio.ioCircle);
         Ball.prototype._super = iio.ioCircle.prototype;
         Ball.prototype.Ball = function(r, startPos, color, floor) {
