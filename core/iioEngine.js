@@ -934,7 +934,7 @@ var iio = {};
       ctx.save();
       if (typeof styles!='undefined')
          iio.Graphics.applyContextStyles(ctx,styles);
-      if (typeof styles != 'undefined' && typeof styles.shadow !='undefined')
+      if (typeof styles!='undefined' && typeof styles.shadow !='undefined')
          iio.Graphics.applyContextStyles(ctx,styles.shadow);
       return ctx;
    }
@@ -1276,7 +1276,28 @@ var iio = {};
             this.animKey=i;
       return this;
    }
+   function fade(rate,opacity){
+      if (typeof this.update=='undefined')
+         this.enableUpdates();
+      this.fxFade={};
+      this.fxFade.rate=rate;
+      this.fxFade.alpha=opacity;
+      return this;
+   }
+   function fadeIn(rate,opacity){
+      //fillStyle=fillStyle||this.styles.fillStyle;
+      opacity=opacity||1;
+      return this.fade(rate,opacity);
+   }
+   function fadeOut(rate,opacity){
+      //fillStyle=fillStyle||this.styles.fillStyle;
+      opacity=opacity||0;
+      return this.fade(-rate,opacity);
+   }
 
+   iio.ioObj.prototype.fadeIn = fadeIn;
+   iio.ioObj.prototype.fadeOut = fadeOut;
+   iio.ioObj.prototype.fade = fade;
    iio.ioShape.prototype.setImgOffset = setImgOffset;
    iio.ioShape.prototype.setImgScale = setImgScale;
    iio.ioShape.prototype.setImgRotation = setImgRotation;
@@ -1492,7 +1513,6 @@ var iio = {};
       function prepGraphics(){this.styles={};return this;}
       b2Joint.prototype.prepGraphics=prepGraphics;
       b2Shape.prototype.prepGraphics=prepGraphics;
-
       b2Joint.prototype.setLineWidth=setLineWidth;
       b2Shape.prototype.setLineWidth=setLineWidth;
       b2Joint.prototype.setStrokeStyle=setStrokeStyle;
@@ -1576,71 +1596,102 @@ var iio = {};
    }
 })();
 
+//iio Update Engine
+(function(){
+   function update(dt){
+      if (typeof this.fxFade!='undefined'){
+         if (typeof this.styles=='undefined')
+            alert('error: styles undefined');
+         if ((this.fxFade.rate > 0 && this.fxFade.alpha > this.styles.alpha)
+            ||(this.fxFade.rate < 0 && this.fxFade.alpha < this.styles.alpha)){
+            this.styles.alpha+=this.fxFade.rate;
+            this.clearDraw();
+            if (this.styles.alpha<0) this.styles.alpha=0;
+            if (this.styles.alpha>1) this.styles.alpha=1;
+         } else this.fxFade=undefined;
+      }
+   }
+   iio.ioObj.prototype.enableUpdates=function(fn, fnParams){
+      this._update=this.update;
+      if (typeof this._update!='undefined')
+         this.update=function(dt){
+            return this._update(dt)||fn(this,dt,fnParams);
+         }
+      else if (typeof fn!='undefined'){
+         this.update=function(dt){
+            return update(dt)||fn(this,dt,fnParams);
+         }
+      } else this.update=update;
+      return this;
+   }
+})();
+
 //iio Kinematics Engine
 (function(){
    var ioVec = iio.ioVec
       ,ioObj = iio.ioObj;
 
-   function update(dt){
-      if ((typeof this.acc != 'undefined' && this.acc.length() > 0) || (typeof this.vel != 'undefined' && this.vel.length() > 0) || (typeof this.torque != 'undefined' && this.torque > 0))
-         this.clearDraw();
-      if (typeof this.acc != 'undefined') {
-         if (typeof this.vel == 'undefined') this.setVel();
-         this.vel.add(this.acc);
+   function updateProperties(obj,dt){
+      if ((typeof obj.acc != 'undefined' && obj.acc.length() > 0) || (typeof obj.vel != 'undefined' && obj.vel.length() > 0) || (typeof obj.torque != 'undefined' && obj.torque > 0))
+         obj.clearDraw();
+      if (typeof obj.acc != 'undefined') {
+         if (typeof obj.vel == 'undefined') obj.setVel();
+         obj.vel.add(obj.acc);
       }
-      if (typeof this.vel != 'undefined') this.translate(new ioVec(this.vel.x, this.vel.y));
-      if (typeof this.torque != 'undefined'){
-         this.rotation+=this.torque;
-         if (this.rotation>2*Math.PI)
-            this.rotation-=2*Math.PI;
-         else if (this.rotation<-2*Math.PI)
-            this.rotation+=2*Math.PI;
+      if (typeof obj.vel != 'undefined') obj.translate(new ioVec(obj.vel.x, obj.vel.y));
+      if (typeof obj.torque != 'undefined'){
+         obj.rotation+=obj.torque;
+         if (obj.rotation>2*Math.PI)
+            obj.rotation-=2*Math.PI;
+         else if (obj.rotation<-2*Math.PI)
+            obj.rotation+=2*Math.PI;
       }
-      if (this.shrinkRate > 0){
-         if (typeof this.radius != 'undefined') {
-            this.setRadius(this.radius*(1-this.shrinkRate));
-            if (Math.abs(this.radius < .1))
+      if (obj.shrinkRate > 0){
+         if (typeof obj.radius != 'undefined') {
+            obj.setRadius(obj.radius*(1-obj.shrinkRate));
+            if (Math.abs(obj.radius < .1))
                return false;
          } else {
-            this.setSize(this.width*(1-this.shrinkRate), this.height*(1-this.shrinkRate));
-            if (Math.abs(this.width < .1) && Math.abs(this.height < .1))
+            obj.setSize(obj.width*(1-obj.shrinkRate), obj.height*(1-obj.shrinkRate));
+            if (Math.abs(obj.width < .1) && Math.abs(obj.height < .1))
                return false;
          } 
-         
       }
-      if (this.bounds != null){
-
-         var top = this.top()||(this.pos.y-this.radius)||0;
-         if (typeof this.bounds.top!='undefined' && top < this.bounds.top.val){
-            if (typeof this.bounds.top.callback!='undefined')
-               return this.bounds.top.callback(this)||false;
+      if (obj.bounds != null){
+         var top = obj.top()||(obj.pos.y-obj.radius)||0;
+         if (typeof obj.bounds.top!='undefined' && top < obj.bounds.top.val){
+            if (typeof obj.bounds.top.callback!='undefined')
+               return obj.bounds.top.callback(obj)||false;
             return false;
          }
 
-         var right = this.right()||(this.pos.x+this.radius)||0;
-         if (typeof this.bounds.right!='undefined' && right > this.bounds.right.val){
-            if (typeof this.bounds.right.callback!='undefined')
-               return this.bounds.right.callback(this)||false;
+         var right = obj.right()||(obj.pos.x+obj.radius)||0;
+         if (typeof obj.bounds.right!='undefined' && right > obj.bounds.right.val){
+            if (typeof obj.bounds.right.callback!='undefined')
+               return obj.bounds.right.callback(obj)||false;
             return false;
          }
 
-         var bottom = this.bottom()||(this.pos.y+this.radius)||0;
-         if (typeof this.bounds.bottom!='undefined' && bottom > this.bounds.bottom.val){
-            if (typeof this.bounds.bottom.callback!='undefined')
-               return this.bounds.bottom.callback(this)||false;
+         var bottom = obj.bottom()||(obj.pos.y+obj.radius)||0;
+         if (typeof obj.bounds.bottom!='undefined' && bottom > obj.bounds.bottom.val){
+            if (typeof obj.bounds.bottom.callback!='undefined')
+               return obj.bounds.bottom.callback(obj)||false;
             return false;
          }
 
-         var left = this.left()||(this.pos.x-this.radius)||0;
-         if (typeof this.bounds.left!='undefined' && left < this.bounds.left.val){
-            if (typeof this.bounds.left.callback!='undefined')
-               return this.bounds.left.callback(this)||false;
+         var left = obj.left()||(obj.pos.x-obj.radius)||0;
+         if (typeof obj.bounds.left!='undefined' && left < obj.bounds.left.val){
+            if (typeof obj.bounds.left.callback!='undefined')
+               return obj.bounds.left.callback(obj)||false;
             return false;
          }
       }
       return true;
    }
-   function setVel(v,y){this.vel = new ioVec(v,y);return this}
+   function setVel(v,y){
+      this.vel = new ioVec(v,y);
+      return this
+   }
    function setAcc(v,y){this.acc = new ioVec(v,y);return this}
    function setTorque(t){
       this.torque = t;
@@ -1698,7 +1749,8 @@ var iio = {};
       return this;
    }
    function enableKinematics(){
-      this.update=update;
+      //this.update=updateProperties;
+      this.enableUpdates(updateProperties);
       this.setVel=setVel;
       this.setAcc=setAcc;
       this.setTorque=setTorque;
@@ -1829,14 +1881,13 @@ var iio = {};
     */
    ioAppManager.prototype.setFramerate = function( fps, callback, obj, ctx ){
       if (typeof callback!='undefined' && typeof callback.draw !='undefined'){
-         if (typeof ctx=='undefined')
+         if (typeof ctx!='undefined')
             var realCallback = ctx;
          ctx=obj||this.ctxs[0];
          obj=callback;
-         callback = realCallback||function(){};
+         callback = realCallback||iio.emptyFn;
          obj.ctx=ctx;
-      }
-      else obj=obj||0;
+      } else obj=obj||0;
       if (iio.isNumber(obj))
          obj=this.cnvs[obj];
       if (typeof obj.lastTime == 'undefined')
@@ -1846,17 +1897,17 @@ var iio = {};
       iio.requestTimeout(fps,obj.lastTime, function(dt,args){
       	if(!args[1].pause) {
 	         args[0].lastTime=dt;
-	         args[1].setFramerate(fps,callback,args[0]);
+	         args[1].setFramerate(fps,args[2],args[0]);
 	         if (typeof args[0].update!='undefined')
 	            args[0].update(dt);
-	         if (typeof callback!='undefined')
-	            callback(dt);
+	         if (typeof args[2]!='undefined')
+	            args[2](dt);
 	         if (args[0].redraw){
 	            args[0].draw();
 	            args[0].redraw=false;
 	         }
-	     } else args[1].setFramerate(fps,callback,args[0]);
-      }, [obj,this]);
+	     } else args[1].setFramerate(fps,args[2],args[0]);
+      }, [obj,this,callback]);
       return this;
    }
    ioAppManager.prototype.pauseFramerate = function(pause) {
