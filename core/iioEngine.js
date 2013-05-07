@@ -111,6 +111,22 @@ var iio = {};
       }  
       else return false;  
    }
+   iio.rotatePoint = function(x,y,r){
+      if (typeof x.x!='undefined'){ r=y; y=x.y; x=x.x; }
+      if (typeof r=='undefined'||r==0) return new iio.ioVec(x,y);
+      var newX = x * Math.cos(r) - y * Math.sin(r);
+      var newY = y * Math.cos(r) + x * Math.sin(r);
+      return new iio.ioVec(newX,newY);
+   }
+   iio.transformPoint = function(x,y,r){
+      if (typeof x.x!='undefined'){ r=y; y=x.y; x=x.x; }
+      if (typeof r=='undefined'||r==0) return new iio.ioVec(x,y);
+      var currA = Math.atan2(y,x);
+      if (typeof r != 'undefined')
+         currA -= r;
+      var h1 = Math.sqrt(x*x + y*y);
+      return new iio.ioVec(Math.cos(currA) * h1, Math.sin(currA) * h1);
+   }
    iio.getRandomNum = function(min, max) {
       min=min||0;
       max=max||1;
@@ -759,6 +775,7 @@ var iio = {};
    ioRect.prototype.clone = function(){
       return new ioRect(this.pos,this.width,this.height);
    }
+   //TODO: fix for rotated rectangle
    ioRect.prototype.left = function(){ return this.pos.x-this.width/2; }
    ioRect.prototype.right = function(){ return this.pos.x+this.width/2; }
    ioRect.prototype.top = function(){ return this.pos.y-this.height/2; }
@@ -773,11 +790,40 @@ var iio = {};
       } 
       return this;
    }
+   function rotatePoint(x,y,r,p){
+      if (typeof x.x!='undefined'){ r=y; y=x.y; x=x.x; }
+      if (typeof r=='undefined'||r==0) return new iio.ioVec(x+p.x,y+p.y);
+      //default matrix
+      this.m = [1,0,0,1,0,0];
+      //translate matrix
+     this.m[4] += this.m[0] * p.x + this.m[2] * p.y;
+     this.m[5] += this.m[1] * p.x + this.m[3] * p.y;
+      //rotate matrix
+      var c = Math.cos(r);
+      var s = Math.sin(r);
+      var m11 = this.m[0] * c + this.m[2] * s;
+      var m12 = this.m[1] * c + this.m[3] * s;
+      var m21 = this.m[0] * -s + this.m[2] * c;
+      var m22 = this.m[1] * -s + this.m[3] * c;
+      this.m[0] = m11;
+      this.m[1] = m12;
+      this.m[2] = m21;
+      this.m[3] = m22;
+      var px = x * this.m[0] + y * this.m[2] + this.m[4];
+      var py = x * this.m[1] + y * this.m[3] + this.m[5];
+      return new iio.ioVec(px,py);
+   }
    ioRect.prototype.getVertices = function(){
       return [new iio.ioVec(this.left(),this.top())
              ,new iio.ioVec(this.right(),this.top())
              ,new iio.ioVec(this.left(),this.bottom())
              ,new iio.ioVec(this.right(),this.bottom())];
+   }
+   ioRect.prototype.getTrueVertices = function(){
+      return [rotatePoint(-this.width/2,-this.height/2,this.rotation,this.pos)
+             ,rotatePoint(this.width/2,-this.height/2,this.rotation,this.pos)
+             ,rotatePoint(this.width/2,-this.height/2,this.rotation,this.pos)
+             ,rotatePoint(-this.width/2,this.height/2,this.rotation,this.pos)];
    }
    ioRect.prototype.contains = function(v,y){
       y=(v.y||y)-this.pos.y;
@@ -882,28 +928,36 @@ var iio = {};
    ioPoly.prototype.clone = function(){
       return new ioPoly(this.pos,this.vertices);
    }
+   //TODO: fix for rotation
    ioPoly.prototype.left = function() { return this.pos.x + this.originToLeft; };
    ioPoly.prototype.right = function() { return this.pos.x + this.originToLeft + this.width; };
    ioPoly.prototype.top = function() { return this.pos.y + this.originToTop; };
    ioPoly.prototype.bottom = function() { return this.pos.y + this.originToTop + this.height; };
    ioPoly.prototype.contains = function(v,y){
-      y=(v.y||y)-this.pos.y;
-      v=(v.x||v)-this.pos.x;
-      var currA = Math.atan2(y,v);
-      // Angle of point rotated around origin of rectangle in opposition
-      if (typeof this.rotation != 'undefined')
-         currA -= this.rotation;
-      // New position of mouse point when rotated
-      var h1 = Math.sqrt(v*v + y*y);
-      v = Math.cos(currA) * h1;
-      y = Math.sin(currA) * h1;
+      y=(v.y||y)//-this.pos.y;
+      v=(v.x||v)//-this.pos.x;
+      //v = iio.transformPoint(v,y,this.rotation);
+      //y = v.y;
+      //v = v.x;
       var i = j = c = 0;
-      for (i = 0, j = this.vertices.length-1; i < this.vertices.length; j = i++) {
-         if ( ((this.vertices[i].y>y) != (this.vertices[j].y>y)) &&
-            (v < (this.vertices[j].x-this.vertices[i].x) * (y-this.vertices[i].y) / (this.vertices[j].y-this.vertices[i].y) + this.vertices[i].x) )
+      var vertices = this.getTrueVertices();
+      for (i = 0, j = vertices.length-1; i < vertices.length; j = i++) {
+         if ( ((vertices[i].y>y) != (vertices[j].y>y)) &&
+            (v < (vertices[j].x-vertices[i].x) * (y-vertices[i].y) / (vertices[j].y-vertices[i].y) + vertices[i].x) )
                c = !c;
+      } return c;
+   }
+   ioPoly.prototype.getTrueVertices=function(){
+      var vList=[]; var x,y;
+      for(var i=0;i<this.vertices.length;i++){
+         x=this.vertices[i].x;
+         y=this.vertices[i].y;
+         var v=iio.rotatePoint(x,y,this.rotation);
+         v.x+=this.pos.x;
+         v.y+=this.pos.y;
+         vList[i]=v;
       }
-      return c;
+      return vList;
    }
 })();
 
