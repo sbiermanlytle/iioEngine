@@ -1,28 +1,34 @@
 /*
-* Author: Sebastian Bierman-Lytle
-* Released: 3/16/2013
-* Website: iioEngine.com
-*
-* This software is provided 'as-is', without any express or implied
-* warranty.  In no event will the authors be held liable for any damages
-* arising from the use of this software.
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
+The iio Engine is licensed under the BSD 2-clause Open Source license
 
-* 1. The origin of this software must not be misrepresented; you must not
-* claim that you wrote the original software. If you use this software
-* in a product, an acknowledgment in the product documentation would be
-* appreciated but is not required.
+Copyright (c) 2013, Sebastian Bierman-Lytle
+All rights reserved.
 
-* 2. Altered source versions must be plainly marked as such, and must not be
-* misrepresented as being the original software.
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted provided that the following conditions are met:
 
-* 3. This notice may not be removed or altered from any source distribution.
+Redistributions of source code must retain the above copyright notice, this list 
+of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or other 
+materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGE.
 */
+
 function SpaceShooter(io){
 
-    var ioRect = iio.ioRect;
+    var ioSimpleRect = iio.ioSimpleRect;
 
     io.activateDebugger();
     var imgPath = 'img/';
@@ -56,7 +62,7 @@ function SpaceShooter(io){
                 }
                 for (var j=0; j<bgDensity; j++)
                     if (iio.getRandomNum() < .4){
-                        io.addToGroup(tag, new ioRect(iio.getRandomInt(10, io.canvas.width-10)
+                        io.addToGroup(tag, new ioSimpleRect(iio.getRandomInt(10, io.canvas.width-10)
                                             ,iio.getRandomInt(0, io.canvas.height)),zIndex)
                            .createWithImage(bgImgs[this[0]])
                            .enableKinematics()
@@ -73,16 +79,16 @@ function SpaceShooter(io){
                     imgPath+'player.png',
                     imgPath+'playerRight.png'];
   
-        player = io.addToGroup('player', new ioRect(io.canvas.center.x, io.canvas.height-100).createWithAnim(srcs,1));
+        player = io.addToGroup('player', new ioSimpleRect(io.canvas.center.x, io.canvas.height-100).createWithAnim(srcs,1));
 
         var playerSpeed=8;
 
-            var LEFT = 0;
-            var RIGHT = 1;
-            var UP = 2;
-            var DOWN = 3;
-            var SPACE = 4;
-            var input = [];
+        var LEFT = 0;
+        var RIGHT = 1;
+        var UP = 2;
+        var DOWN = 3;
+        var SPACE = 4;
+        var input = [];
 
         updateInput = function(event, boolValue){
             if (iio.keyCodeIs('left arrow', event) || iio.keyCodeIs('a', event))
@@ -141,7 +147,7 @@ function SpaceShooter(io){
         var laserImg = new Image();
         laserImg.src = imgPath+'laserRed.png'
         fireLasor = function(x,y){
-            io.addToGroup('lasers', new ioRect(x,y),-1)
+            io.addToGroup('lasers', new ioSimpleRect(x,y),-1)
                 .createWithImage(laserImg)
                 .enableKinematics()
                 .setBound('top',-40)
@@ -150,6 +156,10 @@ function SpaceShooter(io){
 
         window.addEventListener('keydown', function(event){
             updateInput(event, true);
+
+            //check for pause
+            if (iio.keyCodeIs('pause', event) || iio.keyCodeIs('p', event))
+                io.pauseFramerate();
         });
 
         window.addEventListener('keyup', function(event){
@@ -168,7 +178,7 @@ function SpaceShooter(io){
             var img = bigMeteorImg;
             if (small) img = smallMeteorImg
             var meteor = io.addToGroup('meteors'
-                ,new ioRect(x,y))
+                ,new ioSimpleRect(x,y))
                     .enableKinematics()
                     .setBound('bottom', io.canvas.height+120)
                     .createWithImage(img)
@@ -186,7 +196,7 @@ function SpaceShooter(io){
         laserFlashImg.src = imgPath+'laserRedShot.png';
         io.setCollisionCallback('lasers', 'meteors', function(laser, meteor){
             io.addToGroup('laser flashes'
-                ,new ioRect((laser.pos.x+meteor.pos.x)/2
+                ,new ioSimpleRect((laser.pos.x+meteor.pos.x)/2
                            ,(laser.pos.y+meteor.pos.y)/2),10)
                     .createWithImage(laserFlashImg)
                     .enableKinematics()
@@ -206,7 +216,6 @@ function SpaceShooter(io){
         });
     })();
     
-
     var meteorDensity = Math.round(io.canvas.width/150);
     var smallToBig = .70;
     io.setFramerate(60, function(){

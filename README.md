@@ -11,34 +11,41 @@ Formal documentation for new functions is added when a function is finalized wit
 
 If you do not require iio's cutting edge features, download the latest versioned release on the website. This file is included in the SDK package on the homepage.
 
-Homepage: http://iioengine.com/
+Homepage: http://iioengine.com
 
-Documentation: http://iioengine.com/docs/iio-basics.php
+Documentation: http://iioengine.com/docs/iio-basics
 
-Demos: http://iioengine.com/demos.php
+Demos: http://iioengine.com/demos
 
-Tutorials: http://iioengine.com/tutorials.php
+Tutorials: http://iioengine.com/tutorials
 
-Forums: http://iioengine.com/forums/
+Forums: http://iioengine.com/forums
 
 Twitter: @iioEngine
 
 
-License:
+The iio Engine is licensed under the BSD 2-clause Open Source license
 
-This software is provided 'as-is', without any express or implied warranty.
-In no event will the authors be held liable for any damages arising from the 
-use of this software. Permission is granted to anyone to use this software 
-for any purpose, including commercial applications, and to alter it and 
-redistribute it freely, subject to the following restrictions:
+Copyright (c) 2013, Sebastian Bierman-Lytle
+All rights reserved.
 
-1. The origin of this software must not be misrepresented; you must not claim 
-that you wrote the original software. If you use this software in a product, 
-an acknowledgment in the product documentation would be appreciated but is 
-not required.
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted provided that the following conditions are met:
 
-2. Altered source versions must be plainly marked as such, and must not be 
-misrepresented as being the original software.
+Redistributions of source code must retain the above copyright notice, this list 
+of conditions and the following disclaimer.
 
-3. This notice and the authorship header that accompanies this notice in 
-the code files must not be removed or altered from any source distribution.
+Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or other 
+materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGE.
