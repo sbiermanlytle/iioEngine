@@ -14,7 +14,6 @@ function SuperMarioBros(io){
     var RIGHT = 1;
     var UP = 2;
     var DOWN = 3;
-    var SPACE = 4;
     var input = [];
 
     window.addEventListener('keydown', function(event){
@@ -37,14 +36,10 @@ function SuperMarioBros(io){
             input[DOWN] = boolValue;
             event.preventDefault();
         }
-        if (iio.keyCodeIs('space', event)){
-            input[SPACE] = boolValue;
-            event.preventDefault();
-        }
     }
 
 	//Print instructions
-	io.addObj(new iio.ioText('Use a/s/w or the arrow keys to move and jump', iio.ioVec.add(io.canvas.center,0,6))
+	io.addObj(new iio.ioText('Use aswd or the arrow keys to move, jump, and duck', iio.ioVec.add(io.canvas.center,0,6))
               .setFont('30px Consolas')
               .setTextAlign('center')
               .setFillStyle('black'));
@@ -54,39 +49,48 @@ function SuperMarioBros(io){
 
 	function update(){
 
-		if (input[LEFT] && input[RIGHT] && mario.vel.y==0){
-			mario.vel.x=0;
-	        mario.stopAnim('standing');
-	        animating=false;
-		} 
-		else if (input[LEFT] && mario.vel.y==0){
-			if (!animating) {
-				mario.flipImage(true);
-	        	mario.playAnim('walk',15,io);
-				animating=true;
+		//handle grounded mario
+		if (mario.vel.y==0){
+			if (input[LEFT] && input[RIGHT]){
+				mario.vel.x=0;
+		        mario.stopAnim('standing');
+		        animating=false;
+			} 
+			else if (input[DOWN]){
+				mario.setAnim('duck');
+		        mario.vel.x=0;
+		        animating=false;
+			} 
+			else if (input[LEFT]){
+				if (!animating) {
+					mario.flipImage(true);
+		        	mario.playAnim('walk',15,io);
+					animating=true;
+				}
+				mario.vel.x=-marioSpeed;
+			} 
+			else if (input[RIGHT]){
+				if (!animating) {
+					mario.flipImage(false);
+		        	mario.playAnim('walk',15,io);
+		        	animating=true;dw
+				}
+				mario.vel.x=marioSpeed;
+			} 
+			else if (mario.vel.y==0){
+				mario.vel.x=0;
+		        mario.setAnim('standing');
+		        animating=false;
 			}
-			mario.vel.x=-marioSpeed;
-		} 
-		else if (input[RIGHT] && mario.vel.y==0){
-			if (!animating) {
-				mario.flipImage(false);
-	        	mario.playAnim('walk',15,io);
-	        	animating=true;dw
+			if(input[UP]&&mario.pos.y==io.canvas.height-groundY){
+		        mario.setAnim('jump');
+		        mario.vel.add(0,-5);
+		        mario.setAcc(0, 0.3);
+		        animating=true;
 			}
-			mario.vel.x=marioSpeed;
-		} 
-		else if (mario.vel.y==0){
-			mario.vel.x=0;
-	        mario.setSprite('standing');
-	        animating=false;
 		}
-		if(input[UP]&&mario.pos.y==io.canvas.height-groundY){
-	        mario.setSprite('jump');
-	        mario.vel.add(0,-5);
-	        mario.setAcc(0, 0.3);
-	        animating=true;
-		}
-		if(mario.vel.y>0&&mario.pos.y>=io.canvas.height-groundY){
+		//handle jumping mario
+		else if(mario.vel.y>0&&mario.pos.y>=io.canvas.height-groundY){
 			mario.vel.y=0;
 			mario.acc.y=0;
 			mario.pos.y=io.canvas.height-groundY;
@@ -107,6 +111,7 @@ function SuperMarioBros(io){
 	 	mario.setVel();
 		mario.addAnim(marioSprites.getSprite(0,2),'walk');
 		mario.addAnim(marioSprites.getSprite(4,4),'jump');
+		mario.addAnim(marioSprites.getSprite(5,5),'duck');
 		io.addObj(mario);
 		io.setFramerate(60,update);
 	});

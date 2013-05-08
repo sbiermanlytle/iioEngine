@@ -1425,9 +1425,11 @@ var iio = {};
       }
       return this;
    }
-   function setSprite(key,frame,ctx){
-      clearTimeout(this.fsID);
-      this.fsID=undefined;
+   function setAnim(key,frame,ctx){
+      if (typeof this.fsID!='undefined'){
+         clearTimeout(this.fsID);
+         this.fsID=undefined;
+      }
       if (typeof frame!='undefined')
          if (!iio.isNumber(frame))
             ctx=ctx||frame;
@@ -1484,7 +1486,7 @@ var iio = {};
    iio.ioShape.prototype.setAnimKey=setAnimKey;
    iio.ioShape.prototype.playAnim=playAnim;
    iio.ioShape.prototype.stopAnim=stopAnim;
-   iio.ioShape.prototype.setSprite=setSprite;
+   iio.ioShape.prototype.setAnim=setAnim;
 
    //Draw Functions
    iio.ioShape.prototype.clearDraw = function(ctx){
