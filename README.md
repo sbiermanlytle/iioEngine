@@ -11,15 +11,15 @@ Formal documentation for new functions is added when a function is finalized wit
 
 If you do not require iio's cutting edge features, download the latest versioned release on the website. This file is included in the SDK package on the homepage.
 
-Homepage: http://iioengine.com/
+Homepage: http://iioengine.com
 
-Documentation: http://iioengine.com/docs/iio-basics.php
+Documentation: http://iioengine.com/docs/iio-basics
 
-Demos: http://iioengine.com/demos.php
+Demos: http://iioengine.com/demos
 
-Tutorials: http://iioengine.com/tutorials.php
+Tutorials: http://iioengine.com/tutorials
 
-Forums: http://iioengine.com/forums/
+Forums: http://iioengine.com/forums
 
 Twitter: @iioEngine
 
