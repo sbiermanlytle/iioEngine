@@ -278,37 +278,34 @@ var iio = {};
    }
    iio.intersects = function(obj1,obj2){
       if (obj1 instanceof iio.ioSimpleRect){
-         if (obj2 instanceof iio.ioSimpleRect)
+         if(obj2 instanceof iio.ioSimpleRect)
             return iio.rectXrect(obj1,obj2);
-            //return iio.polyXpoly(obj1,obj2,obj1.getVertices(),obj2.getVertices());
-       //  if (obj2 instanceof iio.ioCircle)
-        //    return iio.rectXcircle(obj1,obj2);
-       //  if (obj2 instanceof iio.ioPoly)
-        //    return iio.polyXpoly(obj1,obj2,obj1.getVertices(),obj2.vertices);
-      }
-      if (obj1 instanceof iio.ioCircle){
-         if (obj2 instanceof iio.ioRect)
-            return iio.rectXcircle(obj2,obj1);
-         if (obj2 instanceof iio.ioCircle)
-            return iio.circleXcircle(obj1,obj2);
-         if (obj2 instanceof iio.ioPoly)
-            return iio.circleXpoly(obj1,obj2);
+         if(obj2 instanceof iio.ioCircle)
+            return iio.polyXcircle(obj1,obj2);
+         if(obj2 instanceof iio.ioPoly)
+            return iio.polyXpoly(obj1,obj2);
       }
       if (obj1 instanceof iio.ioPoly){
-         //if (obj2 instanceof iio.ioRect)
-            //return iio.polyXpoly(obj2,obj1,obj2.getVertices(),obj1.vertices);
          if (obj2 instanceof iio.ioCircle)
-            return iio.circleXpoly(obj2,obj1);
+            return iio.polyXcircle(obj1,obj2);
          if (obj2 instanceof iio.ioPoly)
             return iio.polyXpoly(obj1,obj2,obj1.getTrueVertices(),obj2.getTrueVertices());
       }
+      if (obj1 instanceof iio.ioCircle){
+         if (obj2 instanceof iio.ioCircle)
+            return iio.circleXcircle(obj1,obj2);
+         if (obj2 instanceof iio.ioPoly)
+            return iio.polyXcircle(obj2,obj1);
+      }      
    }
    iio.rectXrect = function(r1,r2){
       if (r1.left() < r2.right() && r1.right() > r2.left() && r1.top() < r2.bottom() && r1.bottom() > r2.top())
          return true;
       return false;
    }
-   iio.polyXpoly = function(p1,p2,v1,v2){
+   iio.polyXpoly = function(p1,p2){
+      var v1=p1.getTrueVertices();
+      var v2=p2.getTrueVertices();
       for (i=0;i<v1.length;i++)
          if (p2.contains(v1[i]))
             return true;
@@ -333,8 +330,18 @@ var iio = {};
          return true;
       return false;
    }
-   iio.polyXcircle = function(circle, poly){
-
+   iio.polyXcircle = function(poly,circle){
+      var v=poly.getTrueVertices();
+      var i;
+      for (i=0;i<v.length;i++)
+         if (circle.contains(v[i]))
+            return true;
+      var j;for (i=0;i<v.length;i++){
+         j=i+1; if (j==v.length) j=0;
+         if (circle.lineIntersects(v[i],v[j]))
+            return true;
+      }
+      return false;
    }
    iio.keyCodeIs = function(key, event){
       switch(event.keyCode){
@@ -879,20 +886,17 @@ var iio = {};
       v=v.x||v;
       v-=this.pos.x;
       y-=this.pos.y;
-      var h1 = Math.sqrt(v*v + y*y);
-      var currA = Math.atan2(y,v);
-      // Angle of point rotated around origin of rectangle in opposition
-      var newA = currA;
-      if (typeof this.rotation != 'undefined')
-         newA -= this.rotation;
-      // New position of mouse point when rotated
-      var x2 = Math.cos(newA) * h1;
-      var y2 = Math.sin(newA) * h1;
       // Check relative to center of rectangle
-      if (x2 > -0.5 * this.width && x2 < 0.5 * this.width && y2 > -0.5 * this.height && y2 < 0.5 * this.height){
+      if (v > -0.5 * this.width && v < 0.5 * this.width && y > -0.5 * this.height && y < 0.5 * this.height){
          return true;
       }
       return false;
+   }
+   ioSimpleRect.prototype.getTrueVertices = function(){
+      return iio.getioVecsFromPointList([this.pos.x-this.width/2,this.pos.y-this.height/2
+                                        ,this.pos.x+this.width/2,this.pos.y-this.height/2
+                                        ,this.pos.x+this.width/2,this.pos.y+this.height/2
+                                        ,this.pos.x-this.width/2,this.pos.y+this.height/2])
    }
 })();
 
@@ -924,6 +928,20 @@ var iio = {};
    ioCircle.prototype.contains = function(v){
       if (v.distance(this.pos) < this.radius)
          return true;
+      return false;
+   }
+   ioCircle.prototype.lineIntersects = function(v1,v2){
+      var a = (v2.x - v1.x) * (v2.x - v1.x) + (v2.y - v1.y) * (v2.y - v1.y);
+      var b = 2 * ((v2.x - v1.x) * (v1.x - this.pos.x) + (v2.y - v1.y) * (v1.y - this.pos.y));
+      var cc = this.pos.x * this.pos.x + this.pos.y * this.pos.y + v1.x * v1.x + v1.y * v1.y - 2 * (this.pos.x * v1.x + this.pos.y * v1.y) - this.radius * this.radius;
+      var deter = b * b - 4 * a * cc;
+      if(deter > 0) {
+        var e = Math.sqrt(deter);
+        var u1 = (-b + e) / (2 * a);
+        var u2 = (-b - e) / (2 * a);
+        if(!((u1 < 0 || u1 > 1) && (u2 < 0 || u2 > 1)))
+          return true;
+      }
       return false;
    }
 })();
