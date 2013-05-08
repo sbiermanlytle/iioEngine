@@ -183,15 +183,6 @@ var iio = {};
       var newY = y * Math.cos(r) + x * Math.sin(r);
       return new iio.ioVec(newX,newY);
    }
-   iio.transformPoint = function(x,y,r){
-      if (typeof x.x!='undefined'){ r=y; y=x.y; x=x.x; }
-      if (typeof r=='undefined'||r==0) return new iio.ioVec(x,y);
-      var currA = Math.atan2(y,x);
-      if (typeof r != 'undefined')
-         currA -= r;
-      var h1 = Math.sqrt(x*x + y*y);
-      return new iio.ioVec(Math.cos(currA) * h1, Math.sin(currA) * h1);
-   }
    iio.getRandomNum = function(min, max) {
       min=min||0;
       max=max||1;
@@ -984,11 +975,8 @@ var iio = {};
    ioPoly.prototype.top = function(){ return iio.getSpecVertex(this.getTrueVertices(),function(v1,v2){if(v1.y>v2.y)return true;return false}).y }
    ioPoly.prototype.bottom = function(){ return iio.getSpecVertex(this.getTrueVertices(),function(v1,v2){if(v1.y<v2.y)return true;return false}).y }
    ioPoly.prototype.contains = function(v,y){
-      y=(v.y||y)//-this.pos.y;
-      v=(v.x||v)//-this.pos.x;
-      //v = iio.transformPoint(v,y,this.rotation);
-      //y = v.y;
-      //v = v.x;
+      y=(v.y||y);
+      v=(v.x||v);
       var i = j = c = 0;
       var vertices = this.getTrueVertices();
       for (i = 0, j = vertices.length-1; i < vertices.length; j = i++) {
@@ -1437,6 +1425,20 @@ var iio = {};
       }
       return this;
    }
+   function setSprite(key,frame,ctx){
+      clearTimeout(this.fsID);
+      this.fsID=undefined;
+      if (typeof frame!='undefined')
+         if (!iio.isNumber(frame))
+            ctx=ctx||frame;
+      this.animFrame=frame||0;
+      this.setAnimKey(key);
+      if (typeof ctx != 'undefined'){
+         this.clearDraw(ctx);
+         this.draw(ctx);
+      }
+      return this;
+   }
    function setAnimKey(key){
       if (iio.isNumber(key))
          this.animKey=key;
@@ -1482,6 +1484,7 @@ var iio = {};
    iio.ioShape.prototype.setAnimKey=setAnimKey;
    iio.ioShape.prototype.playAnim=playAnim;
    iio.ioShape.prototype.stopAnim=stopAnim;
+   iio.ioShape.prototype.setSprite=setSprite;
 
    //Draw Functions
    iio.ioShape.prototype.clearDraw = function(ctx){
