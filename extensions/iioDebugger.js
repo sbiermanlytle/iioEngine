@@ -31,15 +31,15 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 (function(){
 
-    //Definition
-    function ioAppDebugger(){
-   	   this.ioAppDebugger.apply(this, arguments);
-   	}; iio.ioAppDebugger=ioAppDebugger;
+	 //Definition
+	 function ioAppDebugger(){
+			this.ioAppDebugger.apply(this, arguments);
+		}; iio.ioAppDebugger=ioAppDebugger;
 
-    //Constructor
-   	ioAppDebugger.prototype.ioAppDebugger = function(io){
-   		this.io=io;
-   		//create the debugger section element
+	 //Constructor
+		ioAppDebugger.prototype.ioAppDebugger = function(io){
+			this.io=io;
+			//create the debugger section element
 		this.section = document.createElement('section');
 		this.section.setAttribute("class","ioAppDebugger");
 		this.section.style.position='absolute';
@@ -66,6 +66,17 @@ POSSIBILITY OF SUCH DAMAGE.
 		title.style.borderBottom="1px solid #f8f8f8";
 		this.section.appendChild(title);
 		
+		this.drawOutlineToggle = document.createElement('div');
+		this.drawOutlineToggle.innerHTML =
+			'<div><input id="ioDebuggerPoly" type="checkbox"><label for="ioDebuggerPoly">Draw polygon outlines</label></div>';
+		this.section.appendChild(this.drawOutlineToggle);
+		this.polygons = [];
+		this.shouldDrawOutline = false;
+		var self = this;
+		document.getElementById('ioDebuggerPoly').addEventListener('change', function() {
+			self.shouldDrawOutline = !self.shouldDrawOutline;
+		});
+		
 		this.stats = new Stats();
 		this.stats.setMode(0);
 		this.section.appendChild(this.stats.domElement);
@@ -91,39 +102,55 @@ POSSIBILITY OF SUCH DAMAGE.
 		this.cnvs = [];
 		this.updateData();
 
-		   iio.addEvent(window, 'resize', function(event){
-		     if (this[0].io.fullScreen){
-		        io.canvas.width = window.innerWidth;
-		        io.canvas.height = window.innerHeight;
-		     }
-		     for (var c=0; c<this[0].io.cnvs.length;c++){
-		        if (c>0){
-		           this[0].io.cnvs[c].style.left = this[0].io.cnvs[0].offsetLeft+"px";
-		           this[0].io.cnvs[c].style.top = this[0].io.cnvs[0].offsetTop+"px";
-		        }
-		        this[0].io.setCanvasProperties(c);
-		     }
+			iio.addEvent(window, 'resize', function(event){
+			  if (this[0].io.fullScreen){
+				  io.canvas.width = window.innerWidth;
+				  io.canvas.height = window.innerHeight;
+			  }
+			  for (var c=0; c<this[0].io.cnvs.length;c++){
+				  if (c>0){
+					  this[0].io.cnvs[c].style.left = this[0].io.cnvs[0].offsetLeft+"px";
+					  this[0].io.cnvs[c].style.top = this[0].io.cnvs[0].offsetTop+"px";
+				  }
+				  this[0].io.setCanvasProperties(c);
+			  }
 			this[0].section.style.left = io.canvas.pos.x+'px';
 			var ScrollTop = document.body.scrollTop;
 			if (ScrollTop == 0)
 			{
-			    if (window.pageYOffset)
-			        ScrollTop = window.pageYOffset;
-			    else
-			        ScrollTop = (document.body.parentElement) ? document.body.parentElement.scrollTop : 0;
+				 if (window.pageYOffset)
+					  ScrollTop = window.pageYOffset;
+				 else
+					  ScrollTop = (document.body.parentElement) ? document.body.parentElement.scrollTop : 0;
 			}
 			this[0].section.style.top = io.canvas.pos.y+ScrollTop+'px';
-		     if (typeof this[0].io.app.onResize != 'undefined')
-		        this[0].io.app.onResize(event);
+			  if (typeof this[0].io.app.onResize != 'undefined')
+				  this[0].io.app.onResize(event);
 		  }.bind([this]), false);
- 	}
- 	ioAppDebugger.prototype.update = function(){
+	}
+	ioAppDebugger.prototype.update = function(){
+		var oldOutlines = this.io.getGroup('_hidden_outlines');
+		for(var i = 0; i < oldOutlines.length; i++) {
+			this.io.rmvObj(oldOutlines[i]);
+		}
+		
 		this.totalObjs.innerHTML = this.updateData();
+		
+		if(this.shouldDrawOutline) {
+			for(var i = 0; i < this.polygons.length; i++) {
+				this.polygons[i].drawOutline(this.io);
+			}
+		}
 	}
 	ioAppDebugger.prototype.updateCanvasData = function(c){
 		if (typeof this.io.cnvs[c].groups == 'undefined') return 0;
 		var totalCanvasObjects = 0;
+		this.polygons = [];
 		for (var g=0;g<this.io.cnvs[c].groups.length;g++){
+			if(String(this.io.cnvs[c].groups[g].tag).substr(0, 7) === '_hidden') {
+				continue;
+			}
+			
 			if (this.cnvs[c].groups.length <= g){
 				tr = document.createElement('tr');
 				this.cnvs[c].tags[g] = document.createElement('td');
@@ -141,6 +168,15 @@ POSSIBILITY OF SUCH DAMAGE.
 			this.cnvs[c].groups[g].innerHTML=numObjsInGroup;
 			this.cnvs[c].tags[g].innerHTML = this.io.cnvs[c].groups[g].tag+':';
 			totalCanvasObjects+=numObjsInGroup
+			
+			if(this.shouldDrawOutline) {
+				for(var i = 0; i < numObjsInGroup; i++) {
+					var obj = this.io.cnvs[c].groups[g].objs[i];
+					if(obj instanceof iio.ioPoly) {
+						this.polygons.push(obj);
+					}
+				}
+			}
 		} return totalCanvasObjects;
 	}
 	ioAppDebugger.prototype.updateData = function(){
@@ -170,17 +206,27 @@ POSSIBILITY OF SUCH DAMAGE.
 		return totalObjs;
 	}
 
- 	iio.ioAppManager.prototype._setFramerate=iio.ioAppManager.prototype.setFramerate;
- 	iio.ioAppManager.prototype.setFramerate=function(fps, callback, obj, ctx){
- 			if (typeof this.debugger!='undefined'){
+	iio.ioAppManager.prototype._setFramerate=iio.ioAppManager.prototype.setFramerate;
+	iio.ioAppManager.prototype.setFramerate=function(fps, callback, obj, ctx){
+			if (typeof this.debugger!='undefined'){
 				this.debugger.stats.begin();
-		   		this._setFramerate(fps,callback,obj,ctx);
-		   		this.debugger.stats.end();
-		   		this.debugger.update();
-	   		} else this._setFramerate(fps,callback,obj,ctx);
-	   }
+					this._setFramerate(fps,callback,obj,ctx);
+					this.debugger.stats.end();
+					this.debugger.update();
+				} else this._setFramerate(fps,callback,obj,ctx);
+		}
 })();
 
+// ioPoly
+(function () {
+	iio.ioPoly.prototype.drawOutline = function(io) {
+		for(var i = 0; i < this.vertices.length; i++) {
+			io.addToGroup('_hidden_outlines', new iio.ioLine(iio.ioVec.add(this.vertices[i], this.pos),
+			                                        iio.ioVec.add(this.vertices[(i + 1) % this.vertices.length], this.pos)),
+			              Infinity);
+		}
+	}
+})();
 
 /** STATS
  * @author mrdoob / http://mrdoob.com/
