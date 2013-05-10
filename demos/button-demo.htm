@@ -5,11 +5,11 @@
 
     ButtonDemo = function(io){
 
-      var btn = io.addObj(new iio.ioRect(io.canvas.center, 160, 40)
+      var btn = io.addObj(new iio.Rect(io.canvas.center, 160, 40)
         .setFillStyle('#00baff'));
 
       //print instructions
-      btn.text = io.addObj(new iio.ioText('Button!',btn.pos)
+      btn.text = io.addObj(new iio.Text('Button!',btn.pos)
                     .setFont('26px Consolas')
                     .translate(0,8)
                     .setTextAlign('center')

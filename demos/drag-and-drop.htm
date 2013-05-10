@@ -9,13 +9,13 @@
     SimpleDragAndDropApp = function(io){
 
       //print instructions
-      io.addObj(new iio.ioText('Click & Hold to Drag', io.canvas.center)
+      io.addObj(new iio.Text('Click & Hold to Drag', io.canvas.center)
               .setFont('30px Consolas')
               .setTextAlign('center')
               .setFillStyle('black'));
 
       //create a blue circle at canvas center with radius 40
-      var mCircle = io.addObj(new iio.ioCircle(io.canvas.center.x
+      var mCircle = io.addObj(new iio.Circle(io.canvas.center.x
                                               ,io.canvas.center.y+80,40)
                                     .setFillStyle('00BAFF')
                                     .setAlpha(.7));
@@ -27,7 +27,7 @@
       io.canvas.addEventListener('mousedown', function(event){
           if (mCircle.contains(io.getEventPosition(event))){
               mCircle.active = true;
-              dV=iio.ioVec.sub(mCircle.pos, io.getEventPosition(event));
+              dV=iio.Vec.sub(mCircle.pos, io.getEventPosition(event));
           }
       });
 

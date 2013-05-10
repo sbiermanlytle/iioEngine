@@ -1,4 +1,7 @@
 /*
+Space Shooter App
+Tutorial: http://iioEngine.com/tutorials/scroll-shooter
+
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
 Copyright (c) 2013, Sebastian Bierman-Lytle
@@ -25,10 +28,7 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 function SpaceShooter(io){
-
-    var ioSimpleRect = iio.ioSimpleRect;
 
     io.activateDebugger();
     var imgPath = 'img/';
@@ -62,7 +62,7 @@ function SpaceShooter(io){
                 }
                 for (var j=0; j<bgDensity; j++)
                     if (iio.getRandomNum() < .4){
-                        io.addToGroup(tag, new ioSimpleRect(iio.getRandomInt(10, io.canvas.width-10)
+                        io.addToGroup(tag, new iio.SimpleRect(iio.getRandomInt(10, io.canvas.width-10)
                                             ,iio.getRandomInt(0, io.canvas.height)),zIndex)
                            .createWithImage(bgImgs[this[0]])
                            .enableKinematics()
@@ -79,7 +79,7 @@ function SpaceShooter(io){
                     imgPath+'player.png',
                     imgPath+'playerRight.png'];
   
-        player = io.addToGroup('player', new ioSimpleRect(io.canvas.center.x, io.canvas.height-100).createWithAnim(srcs,1));
+        player = io.addToGroup('player', new iio.SimpleRect(io.canvas.center.x, io.canvas.height-100).createWithAnim(srcs,1));
 
         var playerSpeed=8;
 
@@ -147,7 +147,7 @@ function SpaceShooter(io){
         var laserImg = new Image();
         laserImg.src = imgPath+'laserRed.png'
         fireLasor = function(x,y){
-            io.addToGroup('lasers', new ioSimpleRect(x,y),-1)
+            io.addToGroup('lasers', new iio.SimpleRect(x,y),-1)
                 .createWithImage(laserImg)
                 .enableKinematics()
                 .setBound('top',-40)
@@ -178,7 +178,7 @@ function SpaceShooter(io){
             var img = bigMeteorImg;
             if (small) img = smallMeteorImg
             var meteor = io.addToGroup('meteors'
-                ,new ioSimpleRect(x,y))
+                ,new iio.SimpleRect(x,y))
                     .enableKinematics()
                     .setBound('bottom', io.canvas.height+120)
                     .createWithImage(img)
@@ -196,7 +196,7 @@ function SpaceShooter(io){
         laserFlashImg.src = imgPath+'laserRedShot.png';
         io.setCollisionCallback('lasers', 'meteors', function(laser, meteor){
             io.addToGroup('laser flashes'
-                ,new ioSimpleRect((laser.pos.x+meteor.pos.x)/2
+                ,new iio.SimpleRect((laser.pos.x+meteor.pos.x)/2
                            ,(laser.pos.y+meteor.pos.y)/2),10)
                     .createWithImage(laserFlashImg)
                     .enableKinematics()

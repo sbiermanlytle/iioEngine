@@ -11,10 +11,10 @@
             this.Ball.apply(this, arguments);
         };
 
-        iio.inherit(Ball, iio.ioCircle);
-        Ball.prototype._super = iio.ioCircle.prototype;
+        iio.inherit(Ball, iio.Circle);
+        Ball.prototype._super = iio.Circle.prototype;
         Ball.prototype.Ball = function(r, startPos, color, floor) {
-            this._super.ioCircle.call(this, startPos, r);
+            this._super.Circle.call(this, startPos, r);
         	this.setFillStyle(color)
         		.enableKinematics()
         		.setAcc(0, 0.1)
@@ -38,7 +38,6 @@
         					}
         				}
         			}
-        
         			return true;
         		});
         
@@ -60,7 +59,7 @@
         	}
         
         	window.addEventListener('mouseup', function(event) {
-        		var point = new iio.ioVec(event.x, event.y);
+        		var point = new iio.Vec(event.x, event.y);
         		if(event.button != 2) {
         			var ball = new Ball(iio.getRandomInt(10, 30), point, randomColor(), io.canvas.height);
         			io.addToGroup('balls', ball);
@@ -74,7 +73,7 @@
         		}
         	});
         	
-        	io.addObj(new iio.ioText('Click anywhere', io.canvas.center)
+        	io.addObj(new iio.Text('Click anywhere', io.canvas.center)
         		.setFont('30px Consolas')
         		.setFillStyle('black')
         		.setTextAlign('center'));

@@ -43,29 +43,29 @@ POSSIBILITY OF SUCH DAMAGE.
     }; iio.start(BGOpaqueDemo, 'c17');
 
     LineDemo = function(io){
-        io.addObj((new iio.ioLine(40,120,160,160))
+        io.addObj((new iio.Line(40,120,160,160))
           .setLineWidth(1)
           .setStrokeStyle('red'));
-        io.addObj((new iio.ioLine(40,100,160,140))
+        io.addObj((new iio.Line(40,100,160,140))
           .setLineWidth(2)
           .setStrokeStyle('red'));
         var gradient=io.context.createLinearGradient(0,0,140,0);
         gradient.addColorStop("0","magenta");
         gradient.addColorStop("0.5","blue");
         gradient.addColorStop("1.0","red");
-        io.addObj((new iio.ioLine(40,80,160,120))
+        io.addObj((new iio.Line(40,80,160,120))
           .setLineWidth(4)
           .setStrokeStyle(gradient));
-        io.addObj((new iio.ioLine(40,60,160,100))
+        io.addObj((new iio.Line(40,60,160,100))
           .setLineWidth(2)
           .setStrokeStyle('blue'));
-        io.addObj((new iio.ioLine(40,40,160,80))
+        io.addObj((new iio.Line(40,40,160,80))
           .setLineWidth(1)
           .setStrokeStyle('#a3da58'));
     }; iio.start(LineDemo, 'c9');
 
     MultiLineDemo = function(io){
-        io.addObj((new iio.ioMultiLine([80,160
+        io.addObj((new iio.MultiLine([80,160
                                       ,40,100
                                       ,80,40
                                       ,120,40
@@ -77,7 +77,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     LineShadowDemo = function(io){
         io.setBGColor('white');
-        io.addObj((new iio.ioMultiLine([120,40
+        io.addObj((new iio.MultiLine([120,40
                                       ,160,100
                                       ,120,160
                                       ,80,40
@@ -89,17 +89,17 @@ POSSIBILITY OF SUCH DAMAGE.
     }; iio.start(LineShadowDemo, 'c77');
 
     XDemo = function(io){
-        io.addObj((new iio.ioX(io.canvas.center,100,100))
+        io.addObj((new iio.XShape(io.canvas.center,100,100))
           .setLineWidth(2)
           .setStrokeStyle('#a3da58'));
     }; iio.start(XDemo, 'c8');
 
     TextDemo = function(io){
-        io.addObj((new iio.ioText('Text',iio.ioVec.add(70,50,0,15)))
+        io.addObj((new iio.Text('Text',iio.Vec.add(70,50,0,15)))
           .setFont('50px Consolas')
           .setTextAlign('center')
           .setFillStyle('#00baff'));
-        io.addObj((new iio.ioText('Text',iio.ioVec.add(70,100,0,15)))
+        io.addObj((new iio.Text('Text',iio.Vec.add(70,100,0,15)))
           .setFont('50px Arial')
           .setTextAlign('center')
           .setStrokeStyle('#a3da58'));
@@ -107,11 +107,11 @@ POSSIBILITY OF SUCH DAMAGE.
         gradient.addColorStop("0","#00baff");
         gradient.addColorStop(".5","#a3da58");
         gradient.addColorStop("1.0","red");
-        io.addObj((new iio.ioText('Text',iio.ioVec.add(70,150,0,15)))
+        io.addObj((new iio.Text('Text',iio.Vec.add(70,150,0,15)))
           .setFont('50px Georgia')
           .setTextAlign('center')
           .setFillStyle('red'));
-        io.addObj((new iio.ioText('Text',iio.ioVec.add(150,80,-10,20)))
+        io.addObj((new iio.Text('Text',iio.Vec.add(150,80,-10,20)))
           .setFont('60px Courier New')
           .setTextAlign('center')
           .rotate(Math.PI/2)
@@ -120,7 +120,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     TextShadowDemo = function(io){
         io.setBGColor('white');
-        io.addObj((new iio.ioText('Shadows',iio.ioVec.add(io.canvas.center,0,15)))
+        io.addObj((new iio.Text('Shadows',iio.Vec.add(io.canvas.center,0,15)))
           .setFont('50px Consolas')
           .setTextAlign('center')
           .setShadow('rgb(150,150,150)',10,10,4)
@@ -128,44 +128,41 @@ POSSIBILITY OF SUCH DAMAGE.
     }; iio.start(TextShadowDemo, 'c12');
 
     RectanglesDemo = function(io){
-        var ioRect = iio.ioRect;
-        io.addObj((new ioRect(io.canvas.center,60))
+        io.addObj((new iio.Rect(io.canvas.center,60))
           .rotate(Math.PI/4)
           .setFillStyle('red'));
-        io.addObj((new ioRect(0,0,60,100))
+        io.addObj((new iio.Rect(0,0,60,100))
           .setPos(io.canvas.center.x+40,io.canvas.center.y)
           .setFillStyle('rgba(0,0,255,.7)'));
-        io.addObj((new ioRect(0,0,60,100))
+        io.addObj((new iio.Rect(0,0,60,100))
           .setPos(io.canvas.center.x-40,io.canvas.center.y)
           .setLineWidth(2)
           .setStrokeStyle('#a3da58'));
     }; iio.start(RectanglesDemo, 'c14');
 
     CirclesDemo = function(io){
-        var ioCircle = iio.ioCircle;
-        io.addObj((new ioCircle(io.canvas.center,40))
+        io.addObj((new iio.Circle(io.canvas.center,40))
           .setFillStyle('red'));
-        io.addObj((new ioCircle(0,0,40))
+        io.addObj((new iio.Circle(0,0,40))
           .setPos(io.canvas.center.x+30,io.canvas.center.y+30)
           .setFillStyle('rgba(0,0,255,.7)'));
-        io.addObj((new ioCircle(0,0,40))
+        io.addObj((new iio.Circle(0,0,40))
           .setPos(io.canvas.center.x-30,io.canvas.center.y-30)
           .setLineWidth(2)
           .setStrokeStyle('#a3da58'));
     }; iio.start(CirclesDemo, 'c15');
 
     PolyDemo = function(io){
-        var ioPoly = iio.ioPoly;
-        io.addObj((new ioPoly(50,50, [-30,30
+        io.addObj((new iio.Poly(50,50, [-30,30
                                         ,50,50
                                         ,0,-30]))
           .setFillStyle('#00baff'));
-        io.addObj((new ioPoly(150,150, [-70,10
+        io.addObj((new iio.Poly(150,150, [-70,10
                                         ,-50,30
                                         ,10,10
                                         ,-20,-80]))
           .setFillStyle('red'));
-        io.addObj((new ioPoly([70,150
+        io.addObj((new iio.Poly([70,150
                             ,40,100
                             ,70,50
                             ,130,50
@@ -178,24 +175,24 @@ POSSIBILITY OF SUCH DAMAGE.
     ImageDemo = function(io){
         addOnLoad = function(){io.addObj(this[0])};
         
-        var shroom = new iio.ioRect(60, io.canvas.height-40);
+        var shroom = new iio.Rect(60, io.canvas.height-40);
         shroom.createWithImage('img/shroom.png', addOnLoad.bind([shroom]));
 
-        var smily = new iio.ioRect(io.canvas.center.x+50, io.canvas.height-50, 55, 120);
+        var smily = new iio.Rect(io.canvas.center.x+50, io.canvas.height-50, 55, 120);
         smily.addImage('img/hill_short.png', addOnLoad.bind([smily]));
 
-        var polyImage = new iio.ioPoly(150,50,[25,25
+        var polyImage = new iio.Poly(150,50,[25,25
                                               ,0,-25
                                              ,-25,25]);
         polyImage.addImage('img/block.png', addOnLoad.bind([polyImage]));
 
-        var block = new iio.ioRect(60, 80,60);
+        var block = new iio.Rect(60, 80,60);
         block.createWithImage('img/bonus.png', addOnLoad.bind([block]));
     }; iio.start(ImageDemo, 'c3');
 
     CircleImageDemo = function(io){
         io.setBGColor('white');
-        var circleImg = (new iio.ioCircle(io.canvas.center,80))
+        var circleImg = (new iio.Circle(io.canvas.center,80))
           .setStrokeStyle('black')
           .setLineWidth(2)
           .setShadow('rgb(150,150,150)',10,10,4)
@@ -206,15 +203,15 @@ POSSIBILITY OF SUCH DAMAGE.
     }; iio.start(CircleImageDemo, 'c4');
 
     GridDemo = function(io){
-        io.addObj((new iio.ioGrid(0,0,10,10,20,22))
+        io.addObj((new iio.Grid(0,0,10,10,20,22))
           .setStrokeStyle('white'));
-        io.addObj((new iio.ioGrid(0,0,3,4,50))
+        io.addObj((new iio.Grid(0,0,3,4,50))
           .setStrokeStyle('red')
           .setLineWidth(4));
-        io.addObj((new iio.ioGrid(100,0,2,4,50))
+        io.addObj((new iio.Grid(100,0,2,4,50))
           .setStrokeStyle('#00baff')
           .setLineWidth(4));
-        io.addObj((new iio.ioLine(io.canvas.center.x,0,io.canvas.center.x,io.canvas.height))
+        io.addObj((new iio.Line(io.canvas.center.x,0,io.canvas.center.x,io.canvas.height))
           .setStrokeStyle('#a3da58')
           .setLineWidth(4));
     }; iio.start(GridDemo, 'c19');
@@ -237,7 +234,7 @@ POSSIBILITY OF SUCH DAMAGE.
                    ,'img/character/walk/walk-10.png'
                    ,'img/character/walk/walk-11.png'];
 
-        var spaceGuy = new iio.ioRect(60, io.canvas.height-60);
+        var spaceGuy = new iio.Rect(60, io.canvas.height-60);
         spaceGuy.createWithAnim(spaceGuySrcs, addOnLoad.bind([spaceGuy,0,0]));
         io.setFramerate(15, function(){
             spaceGuy.nextAnimFrame();
@@ -248,7 +245,7 @@ POSSIBILITY OF SUCH DAMAGE.
         var flySrcs = ['img/enemies/fly_normal.png'
                    ,'img/enemies/fly_fly.png'];
 
-        var fly = new iio.ioRect(io.canvas.width-60, 60);
+        var fly = new iio.Rect(io.canvas.width-60, 60);
         fly.createWithAnim(flySrcs, addOnLoad.bind([fly,-1,1]));
 
         io.setFramerate(4, function(){
@@ -258,12 +255,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
     KinematicsDemo = function(io){
 
-        io.addObj((new iio.ioRect(60,60,80))
+        io.addObj((new iio.Rect(60,60,80))
           .enableKinematics()
           .setTorque(.2)
           .addImage('img/enemyUFO.png'));
 
-        var crate = io.addObj((new iio.ioRect(60,150,70))
+        var crate = io.addObj((new iio.Rect(60,150,70))
           .enableKinematics()
           .setVel(1,0)
           .addImage('img/crate.png'));

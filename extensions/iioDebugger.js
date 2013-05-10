@@ -1,7 +1,7 @@
 /*
 iio Debugger :: iio Engine Extension
-Version 1.0
-Released 3/16/2013
+Version 1.1
+Released 5/9/2013
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -32,16 +32,16 @@ POSSIBILITY OF SUCH DAMAGE.
 (function(){
 
     //Definition
-    function ioAppDebugger(){
-   	   this.ioAppDebugger.apply(this, arguments);
-   	}; iio.ioAppDebugger=ioAppDebugger;
+    function AppDebugger(){
+   	   this.AppDebugger.apply(this, arguments);
+   	}; iio.AppDebugger=AppDebugger;
 
     //Constructor
-   	ioAppDebugger.prototype.ioAppDebugger = function(io){
+   	AppDebugger.prototype.AppDebugger = function(io){
    		this.io=io;
    		//create the debugger section element
 		this.section = document.createElement('section');
-		this.section.setAttribute("class","ioAppDebugger");
+		this.section.setAttribute("class","AppDebugger");
 		this.section.style.position='absolute';
 		this.section.style.left = io.canvas.pos.x+'px';
 		this.section.style.top = io.canvas.pos.y+'px';
@@ -117,10 +117,10 @@ POSSIBILITY OF SUCH DAMAGE.
 		        this[0].io.app.onResize(event);
 		  }.bind([this]), false);
  	}
- 	ioAppDebugger.prototype.update = function(){
+ 	AppDebugger.prototype.update = function(){
 		this.totalObjs.innerHTML = this.updateData();
 	}
-	ioAppDebugger.prototype.updateCanvasData = function(c){
+	AppDebugger.prototype.updateCanvasData = function(c){
 		if (typeof this.io.cnvs[c].groups == 'undefined') return 0;
 		var totalCanvasObjects = 0;
 		for (var g=0;g<this.io.cnvs[c].groups.length;g++){
@@ -143,7 +143,7 @@ POSSIBILITY OF SUCH DAMAGE.
 			totalCanvasObjects+=numObjsInGroup
 		} return totalCanvasObjects;
 	}
-	ioAppDebugger.prototype.updateData = function(){
+	AppDebugger.prototype.updateData = function(){
 		if (typeof this.io.cnvs == 'undefined') return 'no canvas elements';
 		var totalObjs = 0;
 		for (var c=0;c<this.io.cnvs.length;c++){
@@ -170,8 +170,8 @@ POSSIBILITY OF SUCH DAMAGE.
 		return totalObjs;
 	}
 
- 	iio.ioAppManager.prototype._setFramerate=iio.ioAppManager.prototype.setFramerate;
- 	iio.ioAppManager.prototype.setFramerate=function(fps, callback, obj, ctx){
+ 	iio.AppManager.prototype._setFramerate=iio.AppManager.prototype.setFramerate;
+ 	iio.AppManager.prototype.setFramerate=function(fps, callback, obj, ctx){
  			if (typeof this.debugger!='undefined'){
 				this.debugger.stats.begin();
 		   		this._setFramerate(fps,callback,obj,ctx);

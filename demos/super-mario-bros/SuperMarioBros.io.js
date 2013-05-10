@@ -25,7 +25,6 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 function SuperMarioBros(io){
 
 	io.setBGImage('img/world1-1.png');
@@ -60,7 +59,7 @@ function SuperMarioBros(io){
     }
 
 	//Print instructions
-	io.addObj(new iio.ioText('Use aswd or the arrow keys to move, jump, and duck', iio.ioVec.add(io.canvas.center,0,6))
+	io.addObj(new iio.Text('Use aswd or the arrow keys to move, jump, and duck', iio.Vec.add(io.canvas.center,0,6))
               .setFont('30px Consolas')
               .setTextAlign('center')
               .setFillStyle('black'));
@@ -94,7 +93,7 @@ function SuperMarioBros(io){
 				if (!animating) {
 					mario.flipImage(false);
 		        	mario.playAnim('walk',15,io);
-		        	animating=true;dw
+		        	animating=true;
 				}
 				mario.vel.x=marioSpeed;
 			} 
@@ -122,10 +121,10 @@ function SuperMarioBros(io){
 	var mario;
 	//create an ioSpriteMap object, define 16x32 sprite cells, pass onload function
 	// - you can redefine sprite cell dimensions any time with setSpriteRes()
-	var marioSprites = new iio.ioSpriteMap('img/mariobros_cmp.png',16,32,function(){
+	var marioSprites = new iio.SpriteMap('img/mariobros_cmp.png',16,32,function(){
 
 		//code calls when image has loaded
-		mario = new iio.ioRect(100, io.canvas.height-groundY)
+		mario = new iio.Rect(100, io.canvas.height-groundY)
 			 .createWithAnim(marioSprites.getSprite(6,6),'standing')
 			 .enableKinematics();
 
