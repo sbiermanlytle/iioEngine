@@ -536,6 +536,7 @@ var iio = {};
    }
    Obj.prototype.translate = function(v,y){
       this.pos.add(v,y);
+      this.redraw=true;
       return this;
    }
    Obj.prototype.rotate = function(r){
