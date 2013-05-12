@@ -631,9 +631,15 @@ var iio = {};
          this._super.Obj.call(this,v);
          c=y;r=c;res=r;yRes=res;
       } else this._super.Obj.call(this,v,y);
-      this.R=r;
-      this.C=c;
-      this.res = new iio.Vec(res,yRes||res);
+      if (c.tagName=="CANVAS"){
+         this.C=parseInt(c.width/r,10)+1;
+         this.R=parseInt(c.height/r,10)+1;
+         this.res = new iio.Vec(r,res||r)
+      } else {
+         this.R=r;
+         this.C=c;
+         this.res = new iio.Vec(res,yRes||res);
+      }
       this.resetCells();
    }
 
