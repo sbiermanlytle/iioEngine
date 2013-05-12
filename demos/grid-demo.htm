@@ -1,0 +1,71 @@
+<!doctype html>
+  <html>
+    <body>
+        <script type="text/javascript" src="../core/iioEngine.js"></script>
+        <script type="text/javascript">
+
+          //NOTE: app currently only works with git distrib of iio
+          GridApp = function(io){
+
+            io.setBGColor('black');
+
+            var gridRes = 120;
+		 
+            var grid = io.addObj(new iio.Grid(0,0,io.canvas,gridRes));
+            grid.setStrokeStyle('white');
+            grid.draw(io.context);
+
+            var walls = [];
+            function createWall(r,c){
+              grid.cells[r][c].wall=true;
+              return io.addObj(new iio.SimpleRect(grid.getCellCenter(r,c),gridRes)
+                               .setFillStyle('red'));
+            }
+            walls[0] = createWall(2,1);
+            walls[1] = createWall(2,2);
+
+
+            var uC = 4;
+            var uR = 4;
+            var user = io.addObj(new iio.SimpleRect(grid.getCellCenter(uC,uR)
+                                                           ,gridRes)
+                                                           .setFillStyle('#00baff'));
+
+          window.addEventListener('keydown', function(event){
+
+              if ((iio.keyCodeIs('up arrow', event) 
+                ||iio.keyCodeIs('w', event))
+                && uR-1 >= 0
+                && !grid.cells[uC][uR-1].wall){
+                  user.pos.y-=gridRes;
+                  uR--;
+              }
+              else if ((iio.keyCodeIs('right arrow', event)
+                ||iio.keyCodeIs('d', event))
+                && uC+1 < grid.C
+                && !grid.cells[uC+1][uR].wall){
+                  user.pos.x+=gridRes;
+                  uC++;
+              }
+              else if ((iio.keyCodeIs('down arrow', event) 
+                || iio.keyCodeIs('s', event))
+                && uR+1 < grid.R
+                && !grid.cells[uC][uR+1].wall){
+                  user.pos.y+=gridRes;
+                  uR++;
+              }
+              else if ((iio.keyCodeIs('left arrow', event) 
+                || iio.keyCodeIs('a', event))
+                && uC-1 >= 0
+                && !grid.cells[uC-1][uR].wall){
+                  user.pos.x-=gridRes;
+                  uC--;
+              }
+              io.canvas.draw(io.context);
+          });
+
+          }; iio.start(GridApp);
+
+        </script>
+    </body>
+</html>
