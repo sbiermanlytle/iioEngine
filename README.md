@@ -1,15 +1,13 @@
 iioengine
 =========
 
-The iio Engine is a JavaScript framework that streamlines the development of HTML5 applications. The core platform is open source, and free to use and extend for any purpose.
+The iio Engine is a JavaScript framework that streamlines the development of Canvas based HTML5 applications. The core platform is open source, and free to use and extend for any purpose.
 
 This repo contains the most recent version of the iio Engine framework merged with some useful community contributions.
 
 Branches with new functionality will be merged only if they can run all of the demo applications included in this repo without error. Versioned updates may alter or extend the usage of previously merged functions, but conflicts will be determinately avoided.
 
-Formal documentation for new functions is added when a function is finalized within the iio Engine core. See the contributor's github notes or the iio Forums for tips on usage.
-
-If you do not require iio's cutting edge features, download the latest versioned release on the website. This file is included in the SDK package on the homepage.
+Formal documentation for new functions will be added once a stable, versioned core script has been finalized and released. In the meantime, see the contributor's github notes, the included demos, or the iio Forums for tips on cutting-edge feature usage.
 
 Homepage: http://iioengine.com
 
