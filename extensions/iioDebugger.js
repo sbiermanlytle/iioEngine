@@ -1,7 +1,7 @@
 /*
 iio Debugger :: iio Engine Extension
-Version 1.1
-Released 5/9/2013
+Version 1.2
+Released 6/1/2013
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -71,7 +71,7 @@ POSSIBILITY OF SUCH DAMAGE.
 		this.section.appendChild(this.stats.domElement);
 		
 		this.table = document.createElement('this.table');
-		this.table.setAttribute("class","ioDBthis.table");
+		this.table.setAttribute("class","ioDBTable");
 		this.table.style.width=100+'%';
 		
 		//Objects
@@ -119,6 +119,29 @@ POSSIBILITY OF SUCH DAMAGE.
  	}
  	AppDebugger.prototype.update = function(){
 		this.totalObjs.innerHTML = this.updateData();
+		this.updateMsgs();
+	}
+	AppDebugger.prototype.updateMsgs = function(){
+		if (typeof this.msgs!='undefined'){
+			if (typeof this.msgBox=='undefined'){
+				this.msgBox = document.createElement('div');
+				this.msgBox.setAttribute('class','ioDBMsgBox');
+				this.msgBox.style.marginTop='5px';
+				this.msgBox.style.maxHeight='200px';
+				this.msgBox.style.overflowY='scroll';
+				this.msgBox.style.textAlign='left';
+				this.msgBox.style.borderTop='1px solid white';
+				this.section.appendChild(this.msgBox);
+			}
+			for (var i=0;i<this.msgs.length;i++){
+				var p = document.createElement('p');
+				p.innerHTML=this.msgs[i];
+				p.style.margin=0;
+				this.msgBox.appendChild(p);
+				this.msgBox.scrollTop = this.msgBox.scrollHeight;
+			}
+			this.msgs=undefined;
+		}
 	}
 	AppDebugger.prototype.updateCanvasData = function(c){
 		if (typeof this.io.cnvs[c].groups == 'undefined') return 0;
@@ -170,6 +193,10 @@ POSSIBILITY OF SUCH DAMAGE.
 		return totalObjs;
 	}
 
+	iio.AppManager.prototype.debugMsg=function(msg){
+		if (typeof this.debugger.msgs=='undefined') this.debugger.msgs=[];
+		this.debugger.msgs[this.debugger.msgs.length]=msg;
+	}
  	iio.AppManager.prototype._setFramerate=iio.AppManager.prototype.setFramerate;
  	iio.AppManager.prototype.setFramerate=function(fps, callback, obj, ctx){
  			if (typeof this.debugger!='undefined'){
