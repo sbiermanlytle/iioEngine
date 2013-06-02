@@ -1,7 +1,7 @@
 /*
 The iio Engine
-Version 1.2.2
-Released 5/9/2013
+Version 1.2.2+
+Last Update 6/1/2013
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -415,7 +415,7 @@ var iio = {};
          return Math.sqrt(v.x*v.x+v.y*v.y);
       else return Math.sqrt(v*v+y*y);
    }
-   Vec.prototype.add = function (v,y){
+   Vec.prototype.add = function(v,y){
       if (typeof v.x != 'undefined'){
          this.x+=v.x;
          this.y+=v.y;
@@ -537,11 +537,71 @@ var iio = {};
    Obj.prototype.translate = function(v,y){
       this.pos.add(v,y);
       this.redraw=true;
+      if (typeof this.objs!='undefined')
+         for (var i=0;i<this.objs.length;i++)
+            this.objs[i].translate(v,y);
       return this;
    }
    Obj.prototype.rotate = function(r){
       this.rotation = r;
       return this;
+   }
+   Obj.prototype.addObj = function(obj,under,ctx,v,y) {
+      if (typeof this.objs == 'undefined')
+         this.objs=[];
+      obj.posOffset=new iio.Vec(v,y);
+      obj.pos=this.pos.clone();
+      if (typeof obj.posOffset!='undefined')
+         obj.pos.add(obj.posOffset);
+      this.objs[this.objs.length]=obj;
+      this._draw=this.draw;
+      if (under) 
+         this.draw=function(ctx){
+            for (var i=0;i<this.objs.length;i++)
+               this.objs[i].draw(ctx);
+            this._draw(ctx);
+         }
+      else this.draw=function(ctx){
+            this._draw(ctx);
+            for (var i=0;i<this.objs.length;i++)
+               this.objs[i].draw(ctx);
+         } 
+      if (typeof ctx!='undefined') obj.draw(ctx);
+      return this.enableUpdates();
+   }
+   Obj.prototype.enableUpdates = function(fn, fnParams){
+      this._update=this.update;
+      if (typeof this._update!='undefined')
+         this.update=function(dt){
+            return this._update(dt)||fn(this,dt,fnParams);
+         }
+      else {
+         this.update=function(dt){
+            if (typeof this.objs!='undefined')
+               for (var i=0;i<this.objs.length;i++){
+                  if (typeof this.objs[i].update!='undefined')
+                  this.objs[i].update(dt);
+                  this.objs[i].pos.x=this.pos.x;
+                  this.objs[i].pos.y=this.pos.y;
+                  if (typeof this.objs[i].posOffset!='undefined')
+                     this.objs[i].pos.add(this.objs[i].posOffset);
+               }
+            if (typeof this.fxFade!='undefined'){
+               if (typeof this.styles=='undefined')
+                  alert('error: styles undefined');
+               if ((this.fxFade.rate > 0 && this.fxFade.alpha > this.styles.alpha)
+                  ||(this.fxFade.rate < 0 && this.fxFade.alpha < this.styles.alpha)){
+                  this.styles.alpha+=this.fxFade.rate;
+                  this.clearDraw();
+                  if (this.styles.alpha<0) this.styles.alpha=0;
+                  if (this.styles.alpha>1) this.styles.alpha=1;
+               } else this.fxFade=undefined;
+            }
+            if (typeof fn!='undefined')
+               return fn(this,dt,fnParams);
+            return true;
+         }
+      } return this;
    }
 })();
 
@@ -1113,14 +1173,25 @@ var iio = {};
    }
 
    //Functions
-   SpriteMap.prototype.getSprite = function(R, end){
+   SpriteMap.prototype.getSprite = function(p1,p2,p3,p4,anim){
       var s = new iio.Sprite(this.srcImg);
-      if (typeof end != 'undefined'){  
-         for (var i=R;i<=end;i++)
-            s.addFrame(i%this.C*this.sW,parseInt(i/this.C,10)*this.sH,this.sW,this.sH);
+      if (typeof p3 != 'undefined'){
+         if (anim){
+            var C = this.srcImg.width/p1;
+            if (typeof p4 != 'undefined')
+               for (var i=p3;i<=p4;i++)
+                  s.addFrame(i%C*p1,parseInt(i/C,10)*p2,p1,p2);
+            else 
+               for (var c=0;c<=this.C;c++)
+                  s.addFrame(c*p1,p3*p2,p1,p2);
+         } else s.addFrame(p1,p2,p3,p4);
       } else {
-         for (var c=0;c<=this.C;c++)
-            s.addFrame(c*this.sW,R*this.sH,this.sW,this.sH);
+            if (typeof p2 != 'undefined')
+               for (var i=p1;i<=p2;i++)
+                  s.addFrame(i%this.C*this.sW,parseInt(i/this.C,10)*this.sH,this.sW,this.sH);
+            else 
+               for (var c=0;c<=this.C;c++)
+                  s.addFrame(c*this.sW,p1*this.sH,this.sW,this.sH);
       } return s;
    }
    SpriteMap.prototype.setSpriteRes = function(w,h){
@@ -1669,36 +1740,6 @@ var iio = {};
          }
       }
       Box2D.Dynamics.Joints.b2Joint.prototype.draw=drawJoint;
-   }
-})();
-
-//iio Update Engine
-(function(){
-   function update(dt){
-      if (typeof this.fxFade!='undefined'){
-         if (typeof this.styles=='undefined')
-            alert('error: styles undefined');
-         if ((this.fxFade.rate > 0 && this.fxFade.alpha > this.styles.alpha)
-            ||(this.fxFade.rate < 0 && this.fxFade.alpha < this.styles.alpha)){
-            this.styles.alpha+=this.fxFade.rate;
-            this.clearDraw();
-            if (this.styles.alpha<0) this.styles.alpha=0;
-            if (this.styles.alpha>1) this.styles.alpha=1;
-         } else this.fxFade=undefined;
-      }
-   }
-   iio.Obj.prototype.enableUpdates=function(fn, fnParams){
-      this._update=this.update;
-      if (typeof this._update!='undefined')
-         this.update=function(dt){
-            return this._update(dt)||fn(this,dt,fnParams);
-         }
-      else if (typeof fn!='undefined'){
-         this.update=function(dt){
-            return update(dt)||fn(this,dt,fnParams);
-         }
-      } else this.update=update;
-      return this;
    }
 })();
 
