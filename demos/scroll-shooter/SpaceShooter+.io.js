@@ -12,6 +12,9 @@ Plus version includes:
 + player name tags
 + debug messages
 
+Requires iio Engine 1.2.2+
+(only available on Github)
+
 CONTROLS:
 player 1
 -move: awsd
@@ -26,11 +29,11 @@ http://iioEngine.com/tutorials/scroll-shooter
 function SpaceShooter(io){
 
     io.activateDebugger();
-    io.setBGColor('black');
     var imgPath = 'img/';
 
     //Background Scene
     (function(){
+        //function to move objects back to top of the screen
         moveToTop = function(obj){
             obj.setPos(iio.getRandomInt(10, io.canvas.width-10)
                           ,iio.getRandomInt(-340, -100));
@@ -41,13 +44,14 @@ function SpaceShooter(io){
         var bgImgs = [];
         io.setBGColor('#5e3f6b');
 
+        //load background images
         for (var i=0; i<3; i++)
             bgImgs[i] = new Image();
-
         bgImgs[0].src = imgPath+'Background/starSmall.png';
         bgImgs[1].src = imgPath+'Background/starBig.png';
         bgImgs[2].src = imgPath+'Background/nebula.png';
 
+        //create background objects
         for (var i=0; i<bgImgs.length; i++)
             bgImgs[i].onload = function(){
                 var tag,zIndex,vel;
@@ -69,8 +73,8 @@ function SpaceShooter(io){
             }.bind([i])
     })();
     
-    var playersLoaded=false;
     //Player Ships
+    var playersLoaded=false;
     (function(){
 
         var players = [];
@@ -94,9 +98,12 @@ function SpaceShooter(io){
                     .setTextAlign('center')
                     .setFillStyle('white')
                     ,false,io.context,0,60);
+                    //boolean controls draw order
         }
 
         var playerSprites = new iio.SpriteMap('img/playerShips.png',function(){
+            //image onload function
+
             players[1] = createPlayer('Player 1',io.canvas.width/3, io.canvas.height-100);
             players[2] = createPlayer('Player 2',io.canvas.width/3*2, io.canvas.height-100);
 
@@ -149,21 +156,27 @@ function SpaceShooter(io){
 
         updatePlayers = function(){
             for (var i=1;i<players.length;i++){
+
                 //update position
+
+                //input Left
                 if (inputs[i][LEFT] && !inputs[i][RIGHT]
                     && players[i].pos.x - players[i].width/2> 0)
                         players[i].translate(-playerSpeed,0); 
+                //input right
                 if (inputs[i][RIGHT] && !inputs[i][LEFT]
                     && players[i].pos.x + players[i].width/2 < io.canvas.width)
                         players[i].translate(playerSpeed,0); 
+                //input up
                 if (inputs[i][UP] && !inputs[i][DOWN]
                     && players[i].pos.y - players[i].height/2 > 0)
                         players[i].translate(0,-playerSpeed+1); 
+                //input down
                 if (inputs[i][DOWN] && !inputs[i][UP]
                     && players[i].pos.y + players[i].height/2 < io.canvas.height - 30)
                         players[i].translate(0,playerSpeed-1);
 
-                //update ship image
+                //update ship sprite
                 if (inputs[i][LEFT] && !inputs[i][RIGHT])
                     players[i].setAnim('left');
                 else if (inputs[i][RIGHT] && !inputs[i][LEFT])
@@ -182,8 +195,10 @@ function SpaceShooter(io){
             }
         }
 
+        //load laser image
         var laserImg = new Image();
         laserImg.src = imgPath+'laserRed.png';
+        
         fireLasor = function(x,y,playerNum){
             io.addToGroup('lasers', new iio.SimpleRect(x,y),-1)
                 .createWithImage(laserImg)
@@ -209,10 +224,13 @@ function SpaceShooter(io){
     //Meteors
     (function(){
         var meteorHealth = 4;
+
+        //load meteor images
         var bigMeteorImg = new Image();
         var smallMeteorImg = new Image();
         bigMeteorImg.src = imgPath+'meteorBig.png';
         smallMeteorImg.src = imgPath+'meteorSmall.png';
+
         createMeteor = function(small,x,y){    
             var img = bigMeteorImg;
             if (small) img = smallMeteorImg
@@ -232,9 +250,14 @@ function SpaceShooter(io){
     (function(){
         io.addGroup('lasers');
         io.addGroup('meteors');
+
+        //load laser image
         var laserFlashImg = new Image();
         laserFlashImg.src = imgPath+'laserRedShot.png';
+
         io.setCollisionCallback('lasers', 'meteors', function(laser, meteor){
+
+            //create laser flash
             io.addToGroup('laser flashes'
                 ,new iio.SimpleRect((laser.pos.x+meteor.pos.x)/2
                            ,(laser.pos.y+meteor.pos.y)/2),10)
@@ -242,7 +265,11 @@ function SpaceShooter(io){
                     .enableKinematics()
                     .setVel(meteor.vel.x, meteor.vel.y)
                     .shrink(.1);
+            
+            //remove laser object
             io.rmvFromGroup(laser, 'lasers');
+
+            //hit a big meteor
             if (typeof(meteor.health) != 'undefined'){
                 io.debugMsg('player '+laser.source+': hit big meteor');
                 meteor.health--;
@@ -254,17 +281,25 @@ function SpaceShooter(io){
                                           ,meteor.pos.y+iio.getRandomInt(-20,20));
                     io.rmvFromGroup(meteor, 'meteors');
                 }
-            } else {
+            } 
+            //hit a small meteor
+            else {
                 io.debugMsg('player '+laser.source+': hit small meteor');
                 io.rmvFromGroup(meteor, 'meteors');
             }
         });
     })();
     
+    //control meteor density and size ratios
     var meteorDensity = Math.round(io.canvas.width/150);
     var smallToBig = .70;
+
+    //set a 60fps framerate and define update function
     io.setFramerate(60, function(){
+
         if (playersLoaded) updatePlayers();
+
+        //create meteors at random intervals
         if (iio.getRandomNum() < .02)
             for (var i=0; i<meteorDensity; i++){
                 var x = iio.getRandomInt(30,io.canvas.width-30);
