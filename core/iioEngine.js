@@ -1173,10 +1173,15 @@ var iio = {};
    }
 
    //Functions
-   SpriteMap.prototype.getSprite = function(p1,p2,p3,p4,anim){
+   //-getSprite(row)
+   //-getSprite(startIndex, endIndex)
+   //-getSprite(spriteWidth, spriteHeight, row)
+   //-getSprite(spriteWidth, spriteHeight, startIndex, endIndex, true)
+   //-getSprite(xPos, yPos, width, height)
+   SpriteMap.prototype.getSprite = function(p1,p2,p3,p4,p5){
       var s = new iio.Sprite(this.srcImg);
       if (typeof p3 != 'undefined'){
-         if (anim){
+         if (p5){
             var C = this.srcImg.width/p1;
             if (typeof p4 != 'undefined')
                for (var i=p3;i<=p4;i++)
