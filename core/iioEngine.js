@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 6/3/2013
+Last Update 6/4/2013
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -2083,12 +2083,18 @@ var iio = {};
       this.b2Cnv=c||0;
       return world;
    }
+   AppManager.prototype.activateDebugger = function(){
+      if (typeof iio.AppDebugger == 'undefined') 
+            console.warn("AppManager.activateDebugger: the iio Debugger file is missing");
+      else this.debugger = new iio.AppDebugger(this);
+   }
    /* CANVAS CONTROL FUNCTIONS
     */
    AppManager.prototype.update = function(dt){ 
       for (var c=0;c<this.cnvs.length;c++) 
          this.cnvs[c].update(dt);
    }
+
    AppManager.prototype.draw = function(i){
       if (typeof i =='undefined')
          for (var c=0;c<this.cnvs.length;c++)

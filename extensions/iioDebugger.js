@@ -1,7 +1,7 @@
 /*
 iio Debugger :: iio Engine Extension
 Version 1.3
-Released 6/3/2013
+Last Update 6/4/2013
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -30,7 +30,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 (function(){
-	var OUTLINE_COLOR = '00baff';
+	var OUTLINE_COLOR = 'white';
 
     //Definition
     function AppDebugger(){
@@ -219,7 +219,9 @@ POSSIBILITY OF SUCH DAMAGE.
 	}
  	iio.AppManager.prototype._setFramerate=iio.AppManager.prototype.setFramerate;
  	iio.AppManager.prototype.setFramerate=function(fps, callback, obj, ctx){
-			if (typeof this.debugger!='undefined'){
+			if (typeof this.debugger!='undefined'
+				&&document.getElementById("ioDBOpts")!=null
+				&&this.debugger.section!=null){
 				if (typeof this.debugger.stats=='undefined'){
 					this.debugger.stats = new Stats();
 				this.debugger.stats.setMode(0);
@@ -231,12 +233,13 @@ POSSIBILITY OF SUCH DAMAGE.
    		} else this._setFramerate(fps,callback,obj,ctx);
    }
    iio.AppManager.prototype._AppManager=iio.AppManager.prototype.AppManager;
-   iio.AppManager.prototype.AppManager=function(a,b,c,d){
+   //automatically attach iioDebugger
+   /*iio.AppManager.prototype.AppManager=function(a,b,c,d){
    		this._AppManager(a,b,c,d);
    		if (typeof iio.AppDebugger == 'undefined') 
             console.warn("AppManager.activateDebugger: the iio Debugger file is missing");
       	else this.debugger = new iio.AppDebugger(this);
-	}
+	}*/
 })();
 
 
