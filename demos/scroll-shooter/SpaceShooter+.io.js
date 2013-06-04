@@ -28,7 +28,6 @@ http://iioEngine.com/tutorials/scroll-shooter
 */
 function SpaceShooter(io){
 
-    io.activateDebugger();
     var imgPath = 'img/';
 
     //Background Scene
