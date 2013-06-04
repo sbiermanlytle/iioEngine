@@ -214,8 +214,10 @@ POSSIBILITY OF SUCH DAMAGE.
 		return totalObjs;
 	}
 	iio.AppManager.prototype.debugMsg=function(msg){
-		if (typeof this.debugger.msgs=='undefined') this.debugger.msgs=[];
-		this.debugger.msgs[this.debugger.msgs.length]=msg;
+		if (typeof this.debugger!='undefined'){
+			if (typeof this.debugger.msgs=='undefined') this.debugger.msgs=[];
+			this.debugger.msgs[this.debugger.msgs.length]=msg;
+		}
 	}
  	iio.AppManager.prototype._setFramerate=iio.AppManager.prototype.setFramerate;
  	iio.AppManager.prototype.setFramerate=function(fps, callback, obj, ctx){
@@ -234,12 +236,9 @@ POSSIBILITY OF SUCH DAMAGE.
    }
    iio.AppManager.prototype._AppManager=iio.AppManager.prototype.AppManager;
    //automatically attach iioDebugger
-   /*iio.AppManager.prototype.AppManager=function(a,b,c,d){
-   		this._AppManager(a,b,c,d);
-   		if (typeof iio.AppDebugger == 'undefined') 
-            console.warn("AppManager.activateDebugger: the iio Debugger file is missing");
-      	else this.debugger = new iio.AppDebugger(this);
-	}*/
+   iio.AppManager.prototype.activateDebugger=function(a,b,c,d){
+   		this.debugger = new iio.AppDebugger(this);
+	}
 })();
 
 
