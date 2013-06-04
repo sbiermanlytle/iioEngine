@@ -2083,11 +2083,6 @@ var iio = {};
       this.b2Cnv=c||0;
       return world;
    }
-   AppManager.prototype.activateDebugger = function(){
-      if (typeof iio.AppDebugger == 'undefined') 
-            console.warn("AppManager.activateDebugger: the iio Debugger file is missing");
-      else this.debugger = new iio.AppDebugger(this);
-   }
    /* CANVAS CONTROL FUNCTIONS
     */
    AppManager.prototype.update = function(dt){ 
