@@ -691,15 +691,7 @@ var iio = {};
          this._super.Obj.call(this,v);
          c=y;r=c;res=r;yRes=res;
       } else this._super.Obj.call(this,v,y);
-      if (c.tagName=="CANVAS"){
-         this.C=parseInt(c.width/r,10)+1;
-         this.R=parseInt(c.height/r,10)+1;
-         this.res = new iio.Vec(r,res||r)
-      } else {
-         this.R=r;
-         this.C=c;
-         this.res = new iio.Vec(res,yRes||res);
-      }
+      this.set(v,y,c,r,res,yRes);
       this.resetCells();
    }
 
@@ -729,6 +721,17 @@ var iio = {};
       if (cell.x >= 0 && cell.x < this.C && cell.y >=0 && cell.y < this.R)
          return cell;
       return false;
+   }
+   Grid.prototype.set = function(v,y,c,r,res,yRes){
+      if (c.tagName=="CANVAS"){
+         this.C=parseInt(c.width/r,10)+1;
+         this.R=parseInt(c.height/r,10)+1;
+         this.res = new iio.Vec(r,res||r)
+      } else {
+         this.R=r;
+         this.C=c;
+         this.res = new iio.Vec(res,yRes||res);
+      }
    }
 })();
 
@@ -2080,18 +2083,12 @@ var iio = {};
       this.b2Cnv=c||0;
       return world;
    }
-   AppManager.prototype.activateDebugger = function(){
-      if (typeof iio.AppDebugger == 'undefined') 
-            console.warn("AppManager.activateDebugger: the iio Debugger file is missing");
-      else this.debugger = new iio.AppDebugger(this);
-   }
    /* CANVAS CONTROL FUNCTIONS
     */
    AppManager.prototype.update = function(dt){ 
       for (var c=0;c<this.cnvs.length;c++) 
          this.cnvs[c].update(dt);
    }
-
    AppManager.prototype.draw = function(i){
       if (typeof i =='undefined')
          for (var c=0;c<this.cnvs.length;c++)
