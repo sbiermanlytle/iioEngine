@@ -2,6 +2,7 @@
   <html>
     <body>
         <script type="text/javascript" src="../core/iioEngine.js"></script>
+        <script type="text/javascript" src="../extensions/iioDebugger.js"></script>
         <script type="text/javascript">
 
           GridApp = function(io){
@@ -10,17 +11,22 @@
 
             //Create Grid
             var gridRes = 120;
-		
-            //New Constructor added in Github distrib
-            //var grid = io.addObj(new iio.Grid(0,0,io.canvas,gridRes));
 
-            var grid = io.addObj(new iio.Grid(0,0
+            //New Constructor added in Github distrib
+            var grid = io.addObj(new iio.Grid(0,0,io.canvas,gridRes));
+
+            /*var grid = io.addObj(new iio.Grid(0,0
                                      ,parseInt(io.canvas.width/gridRes,10)+1
                                      ,parseInt(io.canvas.height/gridRes,10)+1
-                                     ,gridRes));
+                                     ,gridRes));*/
 
             grid.setStrokeStyle('white');
             grid.draw(io.context);
+
+            this.onResize=function(){
+              grid.set(0,0,io.canvas,gridRes);
+              io.draw();
+            }
 
             //Create Red Squares
             function createRed(r,c){
@@ -45,6 +51,8 @@
 
             //Handle input
             window.addEventListener('keydown', function(event){
+
+              io.debugMsg('movement');
 
               if ((iio.keyCodeIs('up arrow', event) 
                 ||iio.keyCodeIs('w', event))
