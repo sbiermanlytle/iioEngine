@@ -1,7 +1,7 @@
 /*
 iio Debugger :: iio Engine Extension
-Version 1.2
-Released 6/1/2013
+Version 1.3
+Released 6/3/2013
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -30,6 +30,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 (function(){
+	var OUTLINE_COLOR = '00baff';
 
     //Definition
     function AppDebugger(){
@@ -48,7 +49,6 @@ POSSIBILITY OF SUCH DAMAGE.
 		this.section.style.zIndex=100;
 		this.section.style.backgroundColor='rgba(0,0,0,0.2)';
 		this.section.style.padding=5+'px';
-		this.section.style.textAlign='center';
 		this.section.style.fontFamily="Calibri";
 		this.section.style.color="#f8f8f8";
 		this.section.style.maxWidth=202+'px';
@@ -56,23 +56,21 @@ POSSIBILITY OF SUCH DAMAGE.
 		this.section.style.overflowY='auto';
 		this.section.style.overflowX='hidden';
 		document.body.appendChild(this.section);
+
+		this.drawOutlineToggle = document.createElement('div');
+		this.drawOutlineToggle.setAttribute('id','ioDBOpts');
+		this.drawOutlineToggle.innerHTML =
+			'<input id="ioDBshowOutline" type="checkbox"><label for="ioDBshowOutline">Outline Objects</label>';
+		this.section.appendChild(this.drawOutlineToggle);
+		this.drawOutline = false;
+		var self = this;
+		document.getElementById('ioDBshowOutline').addEventListener('change', function() {
+			self.drawOutline=!self.drawOutline;
+			self.toggleOutlines();
+		});
 		
-		var title = document.createElement('h1');
-		title.setAttribute("class","ioDBTitle");
-		title.innerHTML = "Debug Console";
-		title.style.marginTop=10+'px';
-		title.style.fontSize=26+'px';
-		title.style.marginBottom=10+'px';
-		title.style.borderBottom="1px solid #f8f8f8";
-		this.section.appendChild(title);
-		
-		this.stats = new Stats();
-		this.stats.setMode(0);
-		this.section.appendChild(this.stats.domElement);
-		
-		this.table = document.createElement('this.table');
+		this.table = document.createElement('table');
 		this.table.setAttribute("class","ioDBTable");
-		this.table.style.width=100+'%';
 		
 		//Objects
 		tr = document.createElement('tr');
@@ -89,10 +87,11 @@ POSSIBILITY OF SUCH DAMAGE.
 		this.table.appendChild(tr);
 		this.section.appendChild(this.table);
 		this.cnvs = [];
-		this.updateData();
+		this.lastTime=0;
+		this.update(0,this);
 
-		   iio.addEvent(window, 'resize', function(event){
-		     if (this[0].io.fullScreen){
+	    iio.addEvent(window, 'resize', function(event){
+		    if (this[0].io.fullScreen){
 		        io.canvas.width = window.innerWidth;
 		        io.canvas.height = window.innerHeight;
 		     }
@@ -105,8 +104,7 @@ POSSIBILITY OF SUCH DAMAGE.
 		     }
 			this[0].section.style.left = io.canvas.pos.x+'px';
 			var ScrollTop = document.body.scrollTop;
-			if (ScrollTop == 0)
-			{
+			if (ScrollTop == 0){
 			    if (window.pageYOffset)
 			        ScrollTop = window.pageYOffset;
 			    else
@@ -117,9 +115,32 @@ POSSIBILITY OF SUCH DAMAGE.
 		        this[0].io.app.onResize(event);
 		  }.bind([this]), false);
  	}
- 	AppDebugger.prototype.update = function(){
-		this.totalObjs.innerHTML = this.updateData();
-		this.updateMsgs();
+ 	AppDebugger.prototype.toggleOutlines = function(){
+ 		for (var i=0;i<this.io.cnvs.length;i++)
+			for (var j=0;j<this.io.cnvs[i].groups.length;j++)
+				for (var k=0;k<this.io.cnvs[i].groups[j].objs.length;k++)
+						if (this.drawOutline){
+							if (typeof this.io.cnvs[i].groups[j].objs[k].styles != 'undefined'
+								&& typeof this.io.cnvs[i].groups[j].objs[k].styles.strokeStyle != 'undefined')
+								this.io.cnvs[i].groups[j].objs[k].alreadyStroked=true;
+							else this.io.cnvs[i].groups[j].objs[k].setStrokeStyle(OUTLINE_COLOR);
+						} else if (this.io.cnvs[i].groups[j].objs[k].alreadyStroked) break;
+						else this.io.cnvs[i].groups[j].objs[k].styles.strokeStyle=undefined;
+ 	}
+ 	AppDebugger.prototype.addOutlines = function(){
+ 		for (var i=0;i<this.io.cnvs.length;i++)
+			for (var j=0;j<this.io.cnvs[i].groups.length;j++)
+				for (var k=0;k<this.io.cnvs[i].groups[j].objs.length;k++)
+					this.io.cnvs[i].groups[j].objs[k].setStrokeStyle(OUTLINE_COLOR);
+ 	}
+ 	AppDebugger.prototype.update = function(dt,db){
+ 		iio.requestTimeout(5,db.lastTime,function(dt,args){
+	         args[0].lastTime=dt;
+	         args[0].update(5,args[0]);
+	         args[0].totalObjs.innerHTML = args[0].updateData();
+			 args[0].updateMsgs();
+			 if (args[0].drawOutline) args[0].addOutlines();
+	      }, [this]);
 	}
 	AppDebugger.prototype.updateMsgs = function(){
 		if (typeof this.msgs!='undefined'){
@@ -172,7 +193,7 @@ POSSIBILITY OF SUCH DAMAGE.
 		for (var c=0;c<this.io.cnvs.length;c++){
 			if (this.cnvs.length <= c){
 				this.cnvs[c] = document.createElement('this.table');
-				this.cnvs[c].setAttribute("class","ioDBthis.table");
+				this.cnvs[c].setAttribute("class","ioDBtable");
 				this.cnvs[c].style.width=100+'%';
 				this.section.appendChild(this.cnvs[c]);
 
@@ -192,20 +213,30 @@ POSSIBILITY OF SUCH DAMAGE.
 		}
 		return totalObjs;
 	}
-
 	iio.AppManager.prototype.debugMsg=function(msg){
 		if (typeof this.debugger.msgs=='undefined') this.debugger.msgs=[];
 		this.debugger.msgs[this.debugger.msgs.length]=msg;
 	}
  	iio.AppManager.prototype._setFramerate=iio.AppManager.prototype.setFramerate;
  	iio.AppManager.prototype.setFramerate=function(fps, callback, obj, ctx){
- 			if (typeof this.debugger!='undefined'){
-				this.debugger.stats.begin();
-		   		this._setFramerate(fps,callback,obj,ctx);
-		   		this.debugger.stats.end();
-		   		this.debugger.update();
-	   		} else this._setFramerate(fps,callback,obj,ctx);
-	   }
+			if (typeof this.debugger!='undefined'){
+				if (typeof this.debugger.stats=='undefined'){
+					this.debugger.stats = new Stats();
+				this.debugger.stats.setMode(0);
+				this.debugger.section.insertBefore(this.debugger.stats.domElement,document.getElementById("ioDBOpts"));
+				}
+			this.debugger.stats.begin();
+	   		this._setFramerate(fps,callback,obj,ctx);
+	   		this.debugger.stats.end();
+   		} else this._setFramerate(fps,callback,obj,ctx);
+   }
+   iio.AppManager.prototype._AppManager=iio.AppManager.prototype.AppManager;
+   iio.AppManager.prototype.AppManager=function(a,b,c,d){
+   		this._AppManager(a,b,c,d);
+   		if (typeof iio.AppDebugger == 'undefined') 
+            console.warn("AppManager.activateDebugger: the iio Debugger file is missing");
+      	else this.debugger = new iio.AppDebugger(this);
+	}
 })();
 
 
