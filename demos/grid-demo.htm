@@ -7,6 +7,8 @@
 
           GridApp = function(io){
 
+            io.activateDebugger();
+
             io.setBGColor('black');
 
             //Create Grid
@@ -48,37 +50,38 @@
             blue.setFillStyle('#00baff');
             io.addObj(blue);
             
-
             //Handle input
             window.addEventListener('keydown', function(event){
-
-              io.debugMsg('movement');
-
               if ((iio.keyCodeIs('up arrow', event) 
                 ||iio.keyCodeIs('w', event))
                 && blue.c-1 >= 0
                 && !grid.cells[blue.r][blue.c-1].wall){
+                  io.debugMsg('input: UP');
                   blue.pos.y-=gridRes;
                   blue.c--;
               } else if ((iio.keyCodeIs('right arrow', event)
                 ||iio.keyCodeIs('d', event))
                 && blue.r+1 < grid.C
                 && !grid.cells[blue.r+1][blue.c].wall){
+                  io.debugMsg('Move: RIGHT');
                   blue.pos.x+=gridRes;
                   blue.r++;
               } else if ((iio.keyCodeIs('down arrow', event) 
                 ||iio.keyCodeIs('s', event))
                 && blue.c+1 < grid.R
                 && !grid.cells[blue.r][blue.c+1].wall){
+                  io.debugMsg('Move: DOWN');
                   blue.pos.y+=gridRes;
                   blue.c++;
               } else if ((iio.keyCodeIs('left arrow', event) 
                 ||iio.keyCodeIs('a', event))
                 && blue.r-1 >= 0
                 && !grid.cells[blue.r-1][blue.c].wall){
+                  io.debugMsg('Move: LEFT');
                   blue.pos.x-=gridRes;
                   blue.r--;
-              } io.canvas.draw(io.context);
+              } else io.debugMsg('input: BLOCKED');
+              io.canvas.draw(io.context);
             });
 
           }; iio.start(GridApp);
