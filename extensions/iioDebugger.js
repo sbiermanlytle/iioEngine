@@ -123,9 +123,17 @@ POSSIBILITY OF SUCH DAMAGE.
 							if (typeof this.io.cnvs[i].groups[j].objs[k].styles != 'undefined'
 								&& typeof this.io.cnvs[i].groups[j].objs[k].styles.strokeStyle != 'undefined')
 								this.io.cnvs[i].groups[j].objs[k].alreadyStroked=true;
-							else this.io.cnvs[i].groups[j].objs[k].setStrokeStyle(OUTLINE_COLOR);
+							else {
+								this.io.cnvs[i].groups[j].objs[k].setStrokeStyle(OUTLINE_COLOR);
+								this.io.cnvs[i].groups[j].objs[k].clearSelf(this.io.ctxs[i]);
+								this.io.cnvs[i].groups[j].objs[k].draw(this.io.ctxs[i]);
+							}
 						} else if (this.io.cnvs[i].groups[j].objs[k].alreadyStroked) break;
-						else this.io.cnvs[i].groups[j].objs[k].styles.strokeStyle=undefined;
+						else {
+							this.io.cnvs[i].groups[j].objs[k].clearSelf(this.io.ctxs[i]);
+							this.io.cnvs[i].groups[j].objs[k].styles.strokeStyle=undefined;
+							this.io.cnvs[i].groups[j].objs[k].draw(this.io.ctxs[i]);
+						}
  	}
  	AppDebugger.prototype.addOutlines = function(){
  		for (var i=0;i<this.io.cnvs.length;i++)
