@@ -2125,7 +2125,7 @@ var iio = {};
       //Attach the canvas
       if (typeof attachId == 'string' || attachId instanceof String){
          if (attachId=='body') document.body.appendChild(this.cnvs[i])
-         else document.getElementById(id).appendChild(this.cnvs[i])
+         else document.getElementById(attachId).appendChild(this.cnvs[i])
       } 
       else if (this.cnvs.length>1) {
          this.cnvs[i].style.position="absolute";
