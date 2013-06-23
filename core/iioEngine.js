@@ -2100,7 +2100,16 @@ var iio = {};
                this.cnvs[c].draw(this.b2Scale);
       else this.cnvs[i].draw(this.b2Scale);
       return this;
-   }
+   };
+
+   AppManager.prototype.createCanvas = function(i, w, h, zIndex) {
+	   this.cnvs[i] = document.createElement('canvas');
+	   this.cnvs[i].width = w || this.cnvs[0].width;
+	   this.cnvs[i].height = h || this.cnvs[0].height;
+	   this.cnvs[i].style.zIndex = zIndex || -i;
+	   return this.cnvs[i];
+   };
+
    AppManager.prototype.addCanvas = function( zIndex, w, h, attachId, cssClasses ){
       var i=this.cnvs.length;
       if (typeof zIndex == 'string' || zIndex instanceof String){
@@ -2116,22 +2125,14 @@ var iio = {};
          return i;
       }
 
-      //should fit to element, not window
-      if (w=='auto') w=window.innerWidth;
-      if (h=='auto') h=window.innerHeight;
-
-      //Create the canvas
-      this.cnvs[i]=document.createElement('canvas');
-      this.cnvs[i].width = w || this.cnvs[0].width;
-      this.cnvs[i].height = h || this.cnvs[0].height;
-      this.cnvs[i].style.zIndex = zIndex || -i;
-      
-      //Attach the canvas
+      // Attach the canvas
       if (typeof attachId == 'string' || attachId instanceof String){
-         if (attachId=='body') document.body.appendChild(this.cnvs[i])
-         else document.getElementById(attachId).appendChild(this.cnvs[i])
-      } 
-      else if (this.cnvs.length>1) {
+	     var parent = ('body' == attachId) ? document.body : document.getElementById(attachId);
+	     if (!parent)
+		     throw new Error("AppManager.addCanvas: Invalid canvas parent id '"+attachId+"'");
+	     parent.appendChild(this.createCanvas(i, parent.scrollWidth, parent.scrollHeight, zIndex));
+      } else if (this.cnvs.length>1) {
+	     this.createCanvas(i, window.innerWidth, window.innerHeight, zIndex);
          this.cnvs[i].style.position="absolute";
          var offset = this.getCanvasOffset();
          this.cnvs[i].style.left = offset.x+"px";
@@ -2139,8 +2140,11 @@ var iio = {};
          this.cnvs[i].style.margin = 0;
          this.cnvs[i].style.padding = 0;
          this.cnvs[0].parentNode.appendChild(this.cnvs[i]);
-      } else document.body.appendChild(this.cnvs[i]);
-      this.cnvs[i].className += "ioCanvas";
+      } else {
+	      document.body.appendChild(this.createCanvas(i, window.innerWidth, window.innerHeight, zIndex));
+      }
+
+	  this.cnvs[i].className += "ioCanvas";
       
       if (attachId instanceof Array)
          for (var j=0;j<attachId.length;j++) 
