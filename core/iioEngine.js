@@ -1041,8 +1041,12 @@ var iio = {};
          ctx.shadowOffsetX = styles.shadowOffset.x;
          ctx.shadowOffsetY = styles.shadowOffset.y;
       }
-      ctx.fillStyle = styles.fillStyle;
-      ctx.strokeStyle = styles.strokeStyle;
+      if (typeof styles.fillStyle != 'undefined') {
+	      ctx.fillStyle = styles.fillStyle;
+      }
+      if (typeof styles.strokeStyle != 'undefined') {
+	      ctx.strokeStyle = styles.strokeStyle;
+      }
    }
    iio.Graphics.prepStyledContext = function(ctx,styles){
       ctx.save();
