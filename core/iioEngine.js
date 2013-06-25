@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 6/4/2013
+Last Update 6/24/2013
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -48,6 +48,29 @@ POSSIBILITY OF SUCH DAMAGE.
       window.cancelAnimationFrame = function(id) {
       clearTimeout(id);
    };   
+   //Method by Rod MacDougall
+   //stackoverflow.com/questions/4576724/dotted-stroke-in-canvas
+   var CP=window.CanvasRenderingContext2D && CanvasRenderingContext2D.prototype;
+   if(CP.lineTo) CP.dashedLine = CP.dashedLine||function(x,y,x2,y2,da){
+      if(!da)da=[10,5];
+      this.save();
+      var dx=(x2-x), dy=(y2-y);
+      var len=Math.sqrt(dx*dx+dy*dy);
+      var rot=Math.atan2(dy,dx);
+      this.translate(x,y);
+      this.moveTo(0,0);
+      this.rotate(rot);
+      var dc=da.length;
+      var di=0, draw=true;
+      x=0;
+      while(len>x){
+         x+=da[di++ % dc];
+         if(x>len)x=len;
+         draw ? this.lineTo(x,0): this.moveTo(x,0);
+         draw=!draw;
+      }
+      this.restore();
+   }
 })();
 
 //iio Engine :: Definition of iio package
@@ -86,6 +109,12 @@ var iio = {};
    }
    /* iio Functions
     */
+    iio.loadImage=function(src,onload){
+      var img=new Image();
+      img.src=src;
+      img.onload=onload;
+      return img;
+    }
     iio.isNumber=function(o){
       return ! isNaN (o-0) && o !== null && o !== "" && o !== false;
     }
@@ -649,6 +678,12 @@ var iio = {};
          this.enPos.y = y2;
       } 
    }
+   Line.prototype.setDash = function(da){
+      if (typeof da == 'undefined') this.dashed = undefined;
+      else this.dashed=true;
+      this.dashProperties=da;
+      return this;
+   }
    Line.prototype.setEndPos = function(v, y){
       if (v instanceof iio.Vec) this.endPos = v;
       else this.endPos = new iio.Vec(v||0,y||0);
@@ -1033,16 +1068,17 @@ var iio = {};
    }
    iio.Graphics.applyContextStyles = function(ctx,styles){
       if (typeof styles == 'undefined') return;
-      ctx.lineWidth = styles.lineWidth;
-      ctx.shadowColor = styles.shadowColor;
-      ctx.shadowBlur = styles.shadowBlur;
+      if (typeof styles.lineWidth!='undefined') ctx.lineWidth = styles.lineWidth;
+      if (typeof styles.shadowColor!='undefined') ctx.shadowColor = styles.shadowColor;
+      if (typeof styles.shadowBlur!='undefined') ctx.shadowBlur = styles.shadowBlur;
       ctx.globalAlpha = (styles.alpha === 0)? 0: (styles.alpha || 1);
+      if (typeof styles.lineCap!='undefined') ctx.lineCap = styles.lineCap;
       if (typeof styles.shadowOffset !='undefined'){
          ctx.shadowOffsetX = styles.shadowOffset.x;
          ctx.shadowOffsetY = styles.shadowOffset.y;
       }
-      ctx.fillStyle = styles.fillStyle;
-      ctx.strokeStyle = styles.strokeStyle;
+      if (typeof styles.fillStyle!='undefined') ctx.fillStyle = styles.fillStyle;
+      if (typeof styles.strokeStyle!='undefined') ctx.strokeStyle = styles.strokeStyle;
    }
    iio.Graphics.prepStyledContext = function(ctx,styles){
       ctx.save();
@@ -1081,18 +1117,26 @@ var iio = {};
       ctx.restore();
    }
    iio.Graphics.drawLine = function(ctx,v1,v2,x2,y2){
+      if (typeof v2.x != 'undefined'){
+         x2=v2.x;
+         y2=v2.y;
+      }
+      v2=v1.y||v2;
+      v1=v1.x||v1;
       ctx.beginPath();
-      if (typeof v1.x !='undefined'){
-         ctx.moveTo(v1.x,v1.y);
-         if (typeof v2.x !='undefined')
-            ctx.lineTo(v2.x, v2.y);
-         else ctx.lineTo(v2, x2);
-      } else {
-         ctx.moveTo(v1,v2);
-         if (typeof x2.x !='undefined')
-            ctx.lineTo(x2.x, x2.y);
-         else ctx.lineTo(x2, y2);
-      } 
+      ctx.moveTo(v1,v2);
+      ctx.lineTo(x2,y2);
+      ctx.stroke();
+   }
+   iio.Graphics.drawDottedLine = function(ctx,da,v1,v2,x2,y2){
+      if (typeof v2.x != 'undefined'){
+         x2=v2.x;
+         y2=v2.y;
+      }
+      v2=v1.y||v2;
+      v1=v1.x||v1;
+      ctx.beginPath();
+      ctx.dashedLine(v1,v2,x2,y2,da);
       ctx.stroke();
    }
    iio.Graphics.drawShadow = function(ctx,obj){
@@ -1257,6 +1301,7 @@ var iio = {};
          this.styles.shadow.shadowBlur=blur;
       } return this;
    };
+   function setLineCap(style){ this.styles.lineCap=style; return this };
    iio.Obj.prototype.setLineWidth=setLineWidth;
    iio.Obj.prototype.setStrokeStyle=setStrokeStyle;
    iio.Obj.prototype.setShadowColor=setShadowColor;
@@ -1267,6 +1312,7 @@ var iio = {};
    iio.Text.prototype.setFillStyle=setFillStyle;
    iio.Shape.prototype.setFillStyle=setFillStyle;
    iio.Circle.prototype.drawReferenceLine=drawReferenceLine;
+   iio.Line.prototype.setLineCap=setLineCap;
 
    //Image Functions
    function setImgOffset(v,y){this.img.pos=new iio.Vec(v,y||v);return this};
@@ -1472,7 +1518,8 @@ var iio = {};
    iio.Line.prototype.draw = function(ctx){
       ctx=ctx||this.ctx;
       iio.Graphics.prepStyledContext(ctx,this.styles);
-      iio.Graphics.drawLine(ctx,this.pos,this.endPos);
+      if (this.dashed) iio.Graphics.drawDottedLine(ctx,this.dashProperties,this.pos,this.endPos);
+      else iio.Graphics.drawLine(ctx,this.pos,this.endPos);
       ctx.restore();
       return this;
    };
@@ -2125,7 +2172,7 @@ var iio = {};
       //Attach the canvas
       if (typeof attachId == 'string' || attachId instanceof String){
          if (attachId=='body') document.body.appendChild(this.cnvs[i])
-         else document.getElementById(id).appendChild(this.cnvs[i])
+         else document.getElementById(attachId).appendChild(this.cnvs[i])
       } 
       else if (this.cnvs.length>1) {
          this.cnvs[i].style.position="absolute";
