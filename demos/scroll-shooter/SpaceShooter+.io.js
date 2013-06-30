@@ -7,6 +7,7 @@ All rights reserved.
 Space Shooter App +
 
 Plus version includes:
++ sound fx
 + multi-player
 + player ship spritesheet
 + player name tags
@@ -190,6 +191,7 @@ function SpaceShooter(io){
                     fireLasor(players[i].left()+10, players[i].pos.y,i);
                     fireLasor(players[i].right()-8, players[i].pos.y,i);
                     laserTimers[i] = laserCooldown;
+                    iio.playSound('audio/lasers.mp3');
                 } 
                 if (inputs[i][SPACE]) laserTimers[i]--;
                 else laserTimers[i]-=3;
@@ -281,12 +283,15 @@ function SpaceShooter(io){
                         createMeteor(true, meteor.pos.x+iio.getRandomInt(-20,20)
                                           ,meteor.pos.y+iio.getRandomInt(-20,20));
                     io.rmvFromGroup(meteor, 'meteors');
-                }
+                    iio.playSound('audio/explosion-big.mp3');
+                } 
+                else iio.playSound('audio/explosion-small.mp3');
             } 
             //hit a small meteor
             else {
                 io.debugMsg('player '+laser.source+': hit small meteor');
                 io.rmvFromGroup(meteor, 'meteors');
+                iio.playSound('audio/explosion-small.mp3');
             }
         });
     })();
