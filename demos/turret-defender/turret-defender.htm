@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<body>
+<script type="text/javascript" src="../../extensions/SM2/soundmanager2-jsmin.js"></script>
+<script type="text/javascript" src="../../core/iioEngine.js"></script>
+<script type="text/javascript" src="../../extensions/iioDebugger.js"></script>
+<script type="text/javascript" src="js/TurretDefender.io.js"></script>
+<script type="text/javascript">
+soundManager.setup({
+  // required: path to directory containing SM2 SWF files
+  url: '../../extensions/SM2/swf/',
+  preferFlash:false,
+  onready: function() {
+  	iio.start(TurretDefender);
+  }
+});
+</script>
+</body>
+</html>
