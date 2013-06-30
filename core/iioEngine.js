@@ -398,6 +398,22 @@ var iio = {};
          default: return false;
       }
    }
+   if (typeof soundManager != 'undefined'){
+      iio.playSound = function(url){
+           var SFX;
+           SFX=soundManager.createSound({url:url});
+           SFX.play({onfinish:function(){this.destruct()}});
+       }
+       iio.loadSound=function(url){
+           var s=soundManager.createSound({
+               url:url,
+              /*onload:function(){
+                  soundManager._writeDebug(this.id+' loaded');
+                  this.play();
+                }*/
+            });
+       }
+   }
 })(iio);
 
 //Vec
