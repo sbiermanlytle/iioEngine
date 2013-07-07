@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 6/30/2013
+Last Update 7/7/2013
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -776,7 +776,7 @@ var iio = {};
    Grid.prototype.set = function(v,y,c,r,res,yRes){
       if (c.tagName=="CANVAS"){
          this.C=parseInt(c.width/r,10)+1;
-         this.R=parseInt(c.height/r,10)+1;
+         this.R=parseInt(c.height/(res||r),10)+1;
          this.res = new iio.Vec(r,res||r)
       } else {
          this.R=r;
@@ -1428,11 +1428,18 @@ var iio = {};
       } return this;
    }
    function nextAnimFrame(){
+      function resetFrame(io){
+         if (typeof io.onAnimComplete != 'undefined'){
+            if (io.onAnimComplete())
+               io.animFrame=0;
+         } else io.animFrame=0;
+      }
       this.animFrame++;
-      if ((this.anims[this.animKey] instanceof iio.Sprite &&
-         this.animFrame >= this.anims[this.animKey].frames.length)
-         || this.animFrame >= this.anims[this.animKey].length)
-         this.animFrame=0;
+      if (this.anims[this.animKey] instanceof iio.Sprite){
+         if(this.animFrame >= this.anims[this.animKey].frames.length)
+            resetFrame(this);
+      } else if ( this.animFrame >= this.anims[this.animKey].length)
+            resetFrame(this);
       this.clearDraw();
       return this;
    }
@@ -1440,12 +1447,17 @@ var iio = {};
       this.animFrame=i;
       return this;
    }
-   function playAnim(tag,fps,io,c){
+   function playAnim(tag,fps,io,c,f){
       if (!iio.isNumber(tag))
          this.setAnimKey(tag);
-      else{ c=io;io=fps;fps=tag; }
+      else{ f=c;c=io;io=fps;fps=tag; }
+      if (!iio.isNumber(c)){
+         this.onAnimComplete = c;
+         c=f||0;
+      } else this.onAnimComplete = f;
       if (typeof this.fsID != 'undefined')
          this.stopAnim();
+
       io.setFramerate(fps,function(){this.nextAnimFrame()}.bind(this),this,io.ctxs[c||0]);
       return this;
    }
@@ -1988,6 +2000,9 @@ var iio = {};
             }
       return  false;
    }
+   Group.prototype.rmvAll = function(){
+      return false;
+   }
    Group.prototype.addCollisionCallback = function(tag, callback){
       if (typeof(this.collisionTags)=='undefined') this.collisionTags = [];
          this.collisionTags[this.collisionTags.length] = new iio.CollisionTag(tag, callback);
@@ -2111,6 +2126,10 @@ var iio = {};
          clearTimeout(this.cnvs[c].fsID);
       }
    }
+   AppManager.prototype.setCursorStyle = function(style, c){
+      this.cnvs[c||0].style.cursor = style||'default';
+      return this;
+   }
    //DEPRECATED: will be removed in future version, replaced by 'Shape.playAnim'
    AppManager.prototype.setAnimFPS = function(fps,obj,c){
       c=c||0;
@@ -2152,7 +2171,6 @@ var iio = {};
       for (var c=0;c<this.cnvs.length;c++) 
          this.cnvs[c].update(dt);
    }
-
    AppManager.prototype.draw = function(i){
       if (typeof i =='undefined')
          for (var c=0;c<this.cnvs.length;c++)
@@ -2351,6 +2369,21 @@ var iio = {};
          return this.b2DebugDraw;
       }
    }
+
+   /* SOUND CONTROL
+    */
+    AppManager.prototype.playSound = function(pathToSound){
+      if (typeof this.muted == 'undefined' || !this.muted) 
+         iio.playSound(pathToSound);
+      return this;
+    }
+    AppManager.prototype.mute = function(yes){
+      if (typeof this.muted == 'undefined') 
+         this.muted = true;
+      if (typeof yes != 'undefined')
+         this.muted = yes;
+      return this;
+    }
 
    /* GROUP CONTROL FUNCTIONS
     */
