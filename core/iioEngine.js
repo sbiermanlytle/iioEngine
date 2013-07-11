@@ -1580,15 +1580,15 @@ var iio = {};
       return this;
    }
    iio.Text.prototype.clearSelf = function(ctx){
-      ctx=ctx||this.ctx;
-      iio.Graphics.prepStyledContext(ctx,this.styles);
-      iio.Graphics.transformContext(ctx,this.pos,this.rotation);
+       ctx=ctx||this.ctx;
+      // iio.Graphics.prepStyledContext(ctx,this.styles);
+      // iio.Graphics.transformContext(ctx,this.pos,this.rotation);
       ctx.font = this.font;
       var fs = parseInt(this.font,10);
       var m = ctx.measureText(this.text);
-      if (this.textAlign=='center') ctx.clearRect(-m.width/2,-fs,m.width,fs);
-      else if (this.textAlign=='right'||this.textAlign=='end') ctx.clearRect(0,-fs,-m.width,fs);
-      else ctx.clearRect(0,-fs,m.width,fs);
+      if (this.textAlign=='center') return clearShape(ctx,this,m.width,fs,-m.width/2,-fs);
+      else if (this.textAlign=='right'||this.textAlign=='end') return clearShape(ctx,this,m.width,fs,-m.width,-fs);
+      else return clearShape(ctx,this,m.width,fs,0,-fs);
    }
    iio.Text.prototype.draw = function(ctx){
       ctx=ctx||this.ctx;
