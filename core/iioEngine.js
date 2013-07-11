@@ -1543,6 +1543,7 @@ var iio = {};
          this.clearSelf(ctx);
       return this;
    }
+   iio.Text.prototype.clearDraw = iio.Shape.prototype.clearDraw;
    iio.Line.prototype.draw = function(ctx){
       ctx=ctx||this.ctx;
       iio.Graphics.prepStyledContext(ctx,this.styles);
