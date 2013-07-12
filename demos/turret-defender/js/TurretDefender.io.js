@@ -10,7 +10,9 @@ Requires iio Engine 1.2.2+
 function TurretDefender(io){
 
     //io.activateDebugger();
-    io.setBGColor('black');
+    io.setBGColor('black')
+      .setCursorStyle('crosshair')
+     // .mute();
 
     //Player Turret
     var turret;
@@ -34,7 +36,7 @@ function TurretDefender(io){
             if (turret.laserTimeout <= 0){
                 fireLaser();
                 turret.laserTimeout = turret.laserCooldown;
-                iio.playSound('audio/laserShot.mp3');
+                io.playSound('audio/laserShot.mp3');
             } 
             else turret.laserTimeout-=3;
             event.preventDefault();
@@ -100,7 +102,7 @@ function TurretDefender(io){
         
         //remove laser object
         io.rmvFromGroup(laser, 'lasers');
-        iio.playSound('audio/explosion.mp3');
+        io.playSound('audio/explosion.mp3');
         io.rmvFromGroup(enemy, 'enemies');
         updateScore();
         attackDelay = 0;
@@ -119,7 +121,8 @@ function TurretDefender(io){
     //60fps update loop
     io.setFramerate(60, function(){
 
-        turret.laserTimeout--;
+        if (typeof turret != 'undefined') 
+            turret.laserTimeout--;
         attackDelay--;
 
         if (attackDelay <= 0){
