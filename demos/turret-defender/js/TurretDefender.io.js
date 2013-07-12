@@ -101,9 +101,9 @@ function TurretDefender(io){
         }
         
         //remove laser object
-        io.rmvFromGroup(laser, 'lasers');
+        io.rmvFromGroup('lasers',laser);
         io.playSound('audio/explosion.mp3');
-        io.rmvFromGroup(enemy, 'enemies');
+        io.rmvFromGroup('enemies',enemy);
         updateScore();
         attackDelay = 0;
     });

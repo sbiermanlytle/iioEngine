@@ -1,7 +1,11 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/11/2013
+Last Update 7/12/2013
+
+PARAMETER CHANGE NOTICE:
+-the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
+   if you only specify a tag, all the objects from that group will be removed
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -2013,7 +2017,8 @@ var iio = {};
       return  false;
    }
    Group.prototype.rmvAll = function(){
-      return false;
+      this.objs=[];
+      return true;
    }
    Group.prototype.addCollisionCallback = function(tag, callback){
       if (typeof(this.collisionTags)=='undefined') this.collisionTags = [];
@@ -2478,6 +2483,14 @@ var iio = {};
                return true;
       return false;
    }
+   AppManager.prototype.rmvGroup = function(tag,c){
+      c=c||0;
+      if (typeof(this.cnvs[c].groups)!='undefined')
+         if (typeof(this.cnvs[c].groups)!='undefined')
+            for (var i=0; i<this.cnvs[c].groups.length; i++)
+               if (this.cnvs[c].groups[i].tag==tag)
+                  return this.cnvs[c].groups.splice(i,1);
+   }
    AppManager.prototype.rmvAll = function(c){
       if (typeof c =='undefined'){
          for (c=0;c<this.cnvs.length;c++)
@@ -2487,9 +2500,19 @@ var iio = {};
          this.cnvs[c].groups=[];
       return this;
    }
-   AppManager.prototype.rmvFromGroup = function(obj, tag, c){
+   AppManager.prototype.rmvFromGroup = function(tag, obj, c){
       if (typeof c=='undefined'){
-         for (c=0;c<this.cnvs.length;c++)
+         if (iio.isNumber(obj)){
+            if (typeof(this.cnvs[obj].groups)!='undefined')
+               for (var i=0; i<this.cnvs[obj].groups.length; i++)
+                  if (this.cnvs[obj].groups[i].tag==tag)
+                     return this.cnvs[obj].groups[i].rmvAll();
+         } else if (typeof obj=='undefined'){
+            if (typeof(this.cnvs[0].groups)!='undefined')
+               for (var i=0; i<this.cnvs[0].groups.length; i++)
+                  if (this.cnvs[0].groups[i].tag==tag)
+                     return this.cnvs[0].groups[i].rmvAll();
+         } else for (c=0;c<this.cnvs.length;c++)
             if (typeof(this.cnvs[c].groups)!='undefined')
                for (var i=0; i<this.cnvs[c].groups.length; i++)
                   if (this.cnvs[c].groups[i].tag==tag)

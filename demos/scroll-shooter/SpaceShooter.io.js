@@ -202,7 +202,7 @@ function SpaceShooter(io){
                     .enableKinematics()
                     .setVel(meteor.vel.x, meteor.vel.y)
                     .shrink(.1);
-            io.rmvFromGroup(laser, 'lasers');
+            io.rmvFromGroup('lasers',laser);
             if (typeof(meteor.health) != 'undefined'){
                 meteor.health--;
                 if (meteor.health < 0){
@@ -210,9 +210,9 @@ function SpaceShooter(io){
                     for (var i=0; i<numFragments; i++)
                         createMeteor(true, meteor.pos.x+iio.getRandomInt(-20,20)
                                           ,meteor.pos.y+iio.getRandomInt(-20,20));
-                    io.rmvFromGroup(meteor, 'meteors');
+                    io.rmvFromGroup('meteors',meteor);
                 }
-            } else io.rmvFromGroup(meteor, 'meteors');
+            } else io.rmvFromGroup('meteors',meteor);
         });
     })();
     

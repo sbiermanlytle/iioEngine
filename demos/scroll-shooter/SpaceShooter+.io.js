@@ -133,6 +133,7 @@ function SpaceShooter(io){
             }
             if (iio.keyCodeIs('space', event)){
                 inputs[1][SPACE] = boolValue;
+                //io.rmvGroup('nebula');
                 event.preventDefault();
             }
 
@@ -270,7 +271,7 @@ function SpaceShooter(io){
                     .shrink(.1);
             
             //remove laser object
-            io.rmvFromGroup(laser, 'lasers');
+            io.rmvFromGroup('lasers',laser);
 
             //hit a big meteor
             if (typeof(meteor.health) != 'undefined'){
@@ -282,7 +283,7 @@ function SpaceShooter(io){
                     for (var i=0; i<numFragments; i++)
                         createMeteor(true, meteor.pos.x+iio.getRandomInt(-20,20)
                                           ,meteor.pos.y+iio.getRandomInt(-20,20));
-                    io.rmvFromGroup(meteor, 'meteors');
+                    io.rmvFromGroup('meteors',meteor);
                     iio.playSound('audio/explosion-big.mp3');
                 } 
                 else iio.playSound('audio/explosion-small.mp3');
@@ -290,7 +291,7 @@ function SpaceShooter(io){
             //hit a small meteor
             else {
                 io.debugMsg('player '+laser.source+': hit small meteor');
-                io.rmvFromGroup(meteor, 'meteors');
+                io.rmvFromGroup('meteors', meteor);
                 iio.playSound('audio/explosion-small.mp3');
             }
         });
