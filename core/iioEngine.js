@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/12/2013
+Last Update 7/13/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -2157,16 +2157,17 @@ var iio = {};
          },obj,this.ctxs[c]);
       else
       this.setFramerate(fps,function(){obj.nextAnimFrame()},obj,this.ctxs[c]);
+      return this;
    }
    AppManager.prototype.setB2Framerate = function( fps, callback ){
       if (typeof this.b2lastTime == 'undefined')
          this.b2lastTime=0;
-      if (typeof this.b2World!='undefined')
+      if (typeof this.b2World!='undefined' && !this.b2Pause)
          this.b2World.Step(1/this.fps, 10, 10);
       iio.requestTimeout(fps,this.b2lastTime, function(dt,args){
          args[0].b2lastTime=dt;
          args[0].setB2Framerate(fps,callback);
-         if (typeof args[0].b2World!='undefined')
+         if (typeof args[0].b2World!='undefined' && !args[0].b2Pause)
             args[0].b2World.Step(1/fps, 10, 10);
          callback(dt);
          if (typeof args[0].b2DebugDraw!='undefined'&&args[0].b2DebugDraw)
@@ -2175,6 +2176,14 @@ var iio = {};
          if (typeof this.b2World!='undefined')
             args[0].b2World.ClearForces();
       }, [this]);
+      return this;
+   }
+   AppManager.prototype.pauseB2World = function(pause){
+      if (typeof pause=='undefined'){
+         if (typeof this.b2Pause=='undefined')
+            this.b2Pause = true;
+         else this.b2Pause = !this.b2Pause;
+      } else this.b2Pause = pause;
    }
    AppManager.prototype.addB2World = function(world,c){
       this.b2World=world;
