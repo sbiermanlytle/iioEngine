@@ -29,7 +29,8 @@ http://iioEngine.com/tutorials/scroll-shooter
 */
 function SpaceShooter(io){
 
-    io.activateDebugger();
+    io.activateDebugger()
+      .setOutlineStyle('red');
 
     var imgPath = 'img/';
 

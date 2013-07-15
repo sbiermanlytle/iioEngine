@@ -1,7 +1,11 @@
 /*
 iio Debugger :: iio Engine Extension
-Version 1.3
-Last Update 6/4/2013
+Version 1.3.1
+Released: 7/15/2013
+
+//DEPRECATION NOTICE:
+-the variable OUTLINE_COLOR has been replaced with the instance variable outlineStyle
+-use the new method AppDebugger.setOutlineStyle to alter the value
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -30,8 +34,6 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 (function(){
-	var OUTLINE_COLOR = 'white';
-
     //Definition
     function AppDebugger(){
    	   this.AppDebugger.apply(this, arguments);
@@ -40,6 +42,8 @@ POSSIBILITY OF SUCH DAMAGE.
     //Constructor
    	AppDebugger.prototype.AppDebugger = function(io){
    		this.io=io;
+   		//set outline color
+   		this.outlineStyle='white';
    		//create the debugger section element
 		this.section = document.createElement('section');
 		this.section.setAttribute("class","AppDebugger");
@@ -115,6 +119,10 @@ POSSIBILITY OF SUCH DAMAGE.
 		        this[0].io.app.onResize(event);
 		  }.bind([this]), false);
  	}
+ 	AppDebugger.prototype.setOutlineStyle = function(style){
+ 		this.outlineStyle=style;
+ 		return this;
+ 	}
  	AppDebugger.prototype.toggleOutlines = function(){
  		for (var i=0;i<this.io.cnvs.length;i++)
 			for (var j=0;j<this.io.cnvs[i].groups.length;j++)
@@ -124,7 +132,7 @@ POSSIBILITY OF SUCH DAMAGE.
 								&& typeof this.io.cnvs[i].groups[j].objs[k].styles.strokeStyle != 'undefined')
 								this.io.cnvs[i].groups[j].objs[k].alreadyStroked=true;
 							else {
-								this.io.cnvs[i].groups[j].objs[k].setStrokeStyle(OUTLINE_COLOR);
+								this.io.cnvs[i].groups[j].objs[k].setStrokeStyle(this.io.debugger.outlineStyle);
 								this.io.cnvs[i].groups[j].objs[k].clearSelf(this.io.ctxs[i]);
 								this.io.cnvs[i].groups[j].objs[k].draw(this.io.ctxs[i]);
 							}
@@ -139,7 +147,7 @@ POSSIBILITY OF SUCH DAMAGE.
  		for (var i=0;i<this.io.cnvs.length;i++)
 			for (var j=0;j<this.io.cnvs[i].groups.length;j++)
 				for (var k=0;k<this.io.cnvs[i].groups[j].objs.length;k++)
-					this.io.cnvs[i].groups[j].objs[k].setStrokeStyle(OUTLINE_COLOR);
+					this.io.cnvs[i].groups[j].objs[k].setStrokeStyle(this.io.debugger.outlineStyle);
  	}
  	AppDebugger.prototype.update = function(dt,db){
  		iio.requestTimeout(5,db.lastTime,function(dt,args){
@@ -246,6 +254,7 @@ POSSIBILITY OF SUCH DAMAGE.
    //automatically attach iioDebugger
    iio.AppManager.prototype.activateDebugger=function(a,b,c,d){
    		this.debugger = new iio.AppDebugger(this);
+   		return this.debugger;
 	}
 })();
 
