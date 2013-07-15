@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/13/2013
+Last Update 7/14/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -2012,6 +2012,8 @@ var iio = {};
       for (var i=0; i<this.objs.length; i++)
          if (obj == this.objs[i]){
             this.objs.splice(i,1);
+            if (typeof obj.m_I !='undefined')
+                return obj.GetWorld().DestroyBody(obj);
             return true;
             }
       return  false;
