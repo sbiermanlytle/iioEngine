@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/14/2013
+Last Update 7/16/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -33,7 +33,6 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 //JavaScript Extensions
 (function () {
    if ( !Array.prototype.forEach ) {
@@ -2274,13 +2273,19 @@ var iio = {};
           = document.body.style.paddingTop = document.body.style.paddingBottom = "0";
          this.fullHeight=true;
       }
-
-
       this.ctxs[i] = this.cnvs[i].getContext('2d');
       this.setCanvasProperties(i);
       this.setCanvasFunctions(i);
       this.addFocusListeners(i);
       return i;
+   }
+   AppManager.prototype.disableContextMenu=function(c){
+         c=c||0;
+         this.cnvs[c].oncontextmenu=function(){return false};  
+   }
+   AppManager.prototype.setOnContextMenu=function(fn, c){
+      c=c||0;
+      this.cnvs[c].oncontextmenu=fn;
    }
    AppManager.prototype.setCanvasFunctions = function(c){
       this.ctxs[c].webkitImageSmoothingEnabled=true;
