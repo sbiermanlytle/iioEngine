@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/16/2013
+Last Update 7/17/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -2494,9 +2494,13 @@ var iio = {};
    AppManager.prototype.rmvObj = function(obj,c){
       c=c||0;
       if (typeof(this.cnvs[c].groups)!='undefined')
-         for (var i=0; i<this.cnvs[c].groups.length; i++)
+         for (var i=0; i<this.cnvs[c].groups.length; i++){
+            this.cancelFramerate(obj);
+            if (typeof this.cnvs[c].fps=='undefined')
+               obj.clearSelf(this.ctxs[c]);
             if (this.cnvs[c].groups[i].rmvObj(obj))
                return true;
+         }
       return false;
    }
    AppManager.prototype.rmvGroup = function(tag,c){
