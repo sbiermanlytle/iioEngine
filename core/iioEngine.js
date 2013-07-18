@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/17/2013
+Last Update 7/18/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -1343,6 +1343,7 @@ var iio = {};
       else if (typeof this.flipImg =='undefined')
          this.flipImg=true;
       else this.flipImg=!this.flipImg;
+      this.clearDraw(this.ctx);
    }
    function setImgSize(v,y){
       if (v == 'native') this.img.nativeSize=true;
@@ -1631,6 +1632,7 @@ var iio = {};
    }
    function drawRect(ctx,pos,r){
       ctx=iio.Graphics.prepTransformedContext(ctx,this,pos,r);
+      if (this.flipImg) ctx.scale(-1, 1);
       iio.Graphics.drawRectShadow(ctx,this);
       if (!iio.Graphics.drawImage(ctx,this.img)){
          ctx.drawImage(this.img, -this.width/2, -this.height/2, this.width, this.height);
@@ -1640,7 +1642,7 @@ var iio = {};
          if (this.anims[this.animKey] instanceof iio.Sprite)
                iio.Graphics.drawSprite(ctx,this.width,this.height,this.anims[this.animKey],this.animFrame,this.flipImg);
          else if(!iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animFrame])){
-            ctx.drawImage(this.anims[this.animKey][this.animFrame], -this.width/2, -this.height/2, this.width, this.height);
+            ctx.drawImage(this.anims[this.animKey][this.animFrame],-this.width/2,-this.height/2,this.width,this.height);
             ctx.restore();
          }
       }
@@ -1659,6 +1661,7 @@ var iio = {};
    }
    function drawCircle(ctx,pos,r){
       ctx=iio.Graphics.prepTransformedContext(ctx,this,pos,r);
+      if (this.flipImg) ctx.scale(-1, 1);
       ctx.beginPath();
       ctx.arc(0,0,this.radius,0,2*Math.PI,false);
       iio.Graphics.drawShadow(ctx,this);
@@ -2503,6 +2506,23 @@ var iio = {};
          }
       return false;
    }
+   /*AppManager.prototype.delayRmv = function(time, obj, group, c){
+      if (typeof c=='undefined'){
+         if (iio.isNumber(group)) {
+            c=group;
+            setTimeout(function(obj){
+                  .rmvObj(obj);
+               }else{
+                  io.rmvFromGroup(group,obj);
+               }
+            }, time);
+            this.rmvObj()
+         }
+         else c=0;
+         if (typeof group=='undefined')
+
+      }
+   }*/
    AppManager.prototype.rmvGroup = function(tag,c){
       c=c||0;
       if (typeof(this.cnvs[c].groups)!='undefined')
