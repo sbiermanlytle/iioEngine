@@ -1641,7 +1641,7 @@ var iio = {};
       }
       if (typeof this.anims != 'undefined'){
          if (this.anims[this.animKey] instanceof iio.Sprite)
-               iio.Graphics.drawSprite(ctx,this.width,this.height,this.anims[this.animKey],this.animFrame,this.flipImg);
+               iio.Graphics.drawSprite(ctx,this.width,this.height,this.anims[this.animKey],this.animFrame);
          else if(!iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animFrame])){
             ctx.drawImage(this.anims[this.animKey][this.animFrame],-this.width/2,-this.height/2,this.width,this.height);
             ctx.restore();
