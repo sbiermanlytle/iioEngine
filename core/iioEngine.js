@@ -1344,6 +1344,7 @@ var iio = {};
       else if (typeof this.flipImg =='undefined')
          this.flipImg=true;
       else this.flipImg=!this.flipImg;
+      if (typeof this.fsID == 'undefined')
       this.clearDraw(this.ctx);
    }
    function setImgSize(v,y){
