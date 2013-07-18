@@ -1117,6 +1117,7 @@ var iio = {};
       iio.Graphics.transformContext(ctx,pos,r);
       if (typeof obj.rAxis != 'undefined')
          iio.Graphics.transformContext(ctx,obj.rAxis);
+      if (obj.flipImg) ctx.scale(-1, 1);
       return ctx;
    }
    iio.Graphics.finishPathShape = function(ctx,obj,left,top,width,height){
@@ -1632,7 +1633,6 @@ var iio = {};
    }
    function drawRect(ctx,pos,r){
       ctx=iio.Graphics.prepTransformedContext(ctx,this,pos,r);
-      if (this.flipImg) ctx.scale(-1, 1);
       iio.Graphics.drawRectShadow(ctx,this);
       if (!iio.Graphics.drawImage(ctx,this.img)){
          ctx.drawImage(this.img, -this.width/2, -this.height/2, this.width, this.height);
@@ -1661,7 +1661,6 @@ var iio = {};
    }
    function drawCircle(ctx,pos,r){
       ctx=iio.Graphics.prepTransformedContext(ctx,this,pos,r);
-      if (this.flipImg) ctx.scale(-1, 1);
       ctx.beginPath();
       ctx.arc(0,0,this.radius,0,2*Math.PI,false);
       iio.Graphics.drawShadow(ctx,this);
