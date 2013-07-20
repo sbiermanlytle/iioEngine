@@ -2572,6 +2572,13 @@ var iio = {};
    AppManager.prototype.setBGImage = function(src, c){
       c=c||0;
       this.cnvs[c].style.backgroundRepeat="no-repeat";
+      this.cnvs[c].style.background='url(images/bg.jpg) no-repeat center center fixed'; 
+      this.cnvs[c].style.WebkitBackgroundSize='cover';
+      this.cnvs[c].style.MozBackgroundSize='cover';
+      this.cnvs[c].style.OBackgroundSize='cover';
+      this.cnvs[c].style.backgroundSize='cover';
+      this.cnvs[c].style.Filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='."+src+"', sizingMethod='scale')";
+      this.cnvs[c].style.MsFilter="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+src+"', sizingMethod='scale')";
       return this.setBGPattern(src, c);
    }
 
