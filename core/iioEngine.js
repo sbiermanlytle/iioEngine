@@ -2501,7 +2501,16 @@ var iio = {};
          tag2 = tag1;
       }
       this.cnvs[c||0].groups[this.indexOfTag(tag1)].addCollisionCallback(tag2, callback);
-   },
+   }
+   AppManager.prototype.rmv = function(obj, group, c){
+         if (iio.isNumber(group)) return this.rmvObj(obj,group);
+         else if (typeof group == 'undefined') return this.rmvObj(obj);
+         else return this.rmvFromGroup(group,obj,c);
+   }
+   AppManager.prototype.delayRmv = function(time, obj, group, c){
+      obj.io=this;
+      setTimeout(function(){obj.io.rmv(obj,group,c)},time);
+   }
    AppManager.prototype.rmvObj = function(obj,c){
       c=c||0;
       if (typeof(this.cnvs[c].groups)!='undefined')
