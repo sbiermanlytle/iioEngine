@@ -2504,8 +2504,11 @@ var iio = {};
    }
    AppManager.prototype.rmv = function(obj, group, c){
          if (iio.isNumber(group)) return this.rmvObj(obj,group);
-         else if (typeof group == 'undefined') return this.rmvObj(obj);
-         else return this.rmvFromGroup(group,obj,c);
+         else if (typeof group == 'undefined') {
+            if (typeof obj == 'string' || obj instanceof String)
+               return this.rmvGroup(obj);
+            return this.rmvObj(obj);
+         } else return this.rmvFromGroup(group,obj,c);
    }
    AppManager.prototype.delayRmv = function(time, obj, group, c){
       obj.io=this;
@@ -2544,28 +2547,27 @@ var iio = {};
    }
    AppManager.prototype.rmvFromGroup = function(tag, obj, c){
       if (typeof c=='undefined'){
-         if (iio.isNumber(obj)){
-            if (typeof(this.cnvs[obj].groups)!='undefined')
-               for (var i=0; i<this.cnvs[obj].groups.length; i++)
-                  if (this.cnvs[obj].groups[i].tag==tag)
-                     return this.cnvs[obj].groups[i].rmvAll();
-         } else if (typeof obj=='undefined'){
-            if (typeof(this.cnvs[0].groups)!='undefined')
-               for (var i=0; i<this.cnvs[0].groups.length; i++)
-                  if (this.cnvs[0].groups[i].tag==tag)
-                     return this.cnvs[0].groups[i].rmvAll();
+         if (iio.isNumber(obj)||typeof obj=='undefined'){
+            c=obj||0;
+            return this.clearGroup(tag,c);
          } else for (c=0;c<this.cnvs.length;c++)
             if (typeof(this.cnvs[c].groups)!='undefined')
                for (var i=0; i<this.cnvs[c].groups.length; i++)
                   if (this.cnvs[c].groups[i].tag==tag)
                      return this.cnvs[c].groups[i].rmvObj(obj);
       } else if (typeof(this.cnvs[c].groups)!='undefined')
-               for (var i=0; i<this.cnvs[c].groups.length; i++)
-                  if (this.cnvs[c].groups[i].tag==tag)
-                     return this.cnvs[c].groups[i].rmvObj(obj);
+            for (var i=0; i<this.cnvs[c].groups.length; i++)
+               if (this.cnvs[c].groups[i].tag==tag)
+                  return this.cnvs[c].groups[i].rmvObj(obj);
       return false;
    }
-
+   AppManager.prototype.clearGroup = function(tag,c){
+      c=c||0;
+      if (typeof(this.cnvs[c].groups)!='undefined')
+         for (var i=0; i<this.cnvs[c].groups.length; i++)
+            if (this.cnvs[c].groups[i].tag==tag)
+               return this.cnvs[c].groups[i].rmvAll();
+   }
    /* BG Control
     */
    AppManager.prototype.setBGColor = function(color, c){
