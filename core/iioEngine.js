@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/18/2013
+Last Update 7/20/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -1126,8 +1126,8 @@ var iio = {};
          ctx.drawImage(obj.img,left,top,width,height);
          ctx.restore();
       }
-      if (typeof obj.anims != 'undefined' && !iio.Graphics.drawImage(ctx,obj.anims[obj.animKey][obj.animFrame])){
-         ctx.drawImage(obj.anims[obj.animKey][obj.animFrame],left,top,width,height);
+      if (typeof obj.anims != 'undefined' && !iio.Graphics.drawImage(ctx,obj.anims[obj.animKey].srcs[obj.animFrame])){
+         ctx.drawImage(obj.anims[obj.animKey].srcs[obj.animFrame],left,top,width,height);
          ctx.restore();
       }
       if (typeof obj.styles != 'undefined'){
@@ -1361,25 +1361,30 @@ var iio = {};
          this.img.onload = onLoadCallback;
       } return this;
    }
-   function addAnim(src, onLoadCallback){
+   function addAnim(src, tag, onLoadCallback){
       if (typeof this.anims == 'undefined') this.anims=[];
       if (typeof this.animKey == 'undefined') this.animKey=0;
       if (typeof this.animFrame == 'undefined') this.animFrame=0;
       var nI = this.anims.length;
       if (src instanceof iio.Sprite){
          this.anims[nI]=src;
-         this.anims[nI].tag=onLoadCallback;
+         this.anims[nI].tag=tag;
          return this;
       }
-      this.anims[nI]=[];
+      this.anims[nI]=new Object();
+      this.anims[nI].srcs=[];
+      if(typeof tag == 'function')
+         onLoadCallback=tag;
+      else this.anims[nI].tag=tag;
       for (var j=0;j<src.length;j++){
          if (typeof src[j].src !='undefined')
-            this.anims[nI][j]=src[j];
+            this.anims[nI].srcs[j]=src[j];
          else {
-            this.anims[nI][j]=new Image();
-            this.anims[nI][j].src=src[j];
+            this.anims[nI].srcs[j]=new Image();
+            this.anims[nI].srcs[j].src=src[j];
          }
-         if (j==this.animFrame) this.anims[nI][j].onload = onLoadCallback;
+         if (j==this.animFrame&&typeof onLoadCallback!='undefined')
+            this.anims[nI].srcs[j].onload = onLoadCallback;
       } return this;
    }
    function createWithImage(src, onLoadCallback){
@@ -1406,16 +1411,20 @@ var iio = {};
          }.bind(this);
       } return this;
    }
-   function createWithAnim(src,onLoadCallback,i){
+   function createWithAnim(src,tag,onLoadCallback,i){
       if (typeof i=='undefined' && iio.isNumber(onLoadCallback))
          i=onLoadCallback;
       i=i||0;
-      this.addAnim(src);
+      if (typeof tag=='function'){
+         onLoadCallback=tag;
+         this.addAnim(src);
+      }
+      else this.addAnim(src,tag);
       if (src instanceof iio.Sprite){
          this.width = src.frames[i].w;
          this.height = src.frames[i].h;
          this.animKey=0;
-         this.anims[0].tag=onLoadCallback;
+         //this.anims[0].tag=tag;
          this.animFrame=i||0;
          return this;
       }
@@ -1425,9 +1434,9 @@ var iio = {};
       } else {
          this.animKey=0;
          this.animFrame=i;
-         this.anims[0][i].onload = function(){
-            this.width=this.anims[0][i].width||0;
-            this.height=this.anims[0][i].height||0;
+         this.anims[0].srcs[i].onload = function(){
+            this.width=this.anims[0].srcs[i].width||0;
+            this.height=this.anims[0].srcs[i].height||0;
             if (typeof onLoadCallback != 'undefined' && !iio.isNumber(onLoadCallback))
                onLoadCallback();
          }.bind(this);
@@ -1444,7 +1453,7 @@ var iio = {};
       if (this.anims[this.animKey] instanceof iio.Sprite){
          if(this.animFrame >= this.anims[this.animKey].frames.length)
             resetFrame(this);
-      } else if ( this.animFrame >= this.anims[this.animKey].length)
+      } else if ( this.animFrame >= this.anims[this.animKey].srcs.length)
             resetFrame(this);
       this.clearDraw();
       return this;
@@ -1642,8 +1651,8 @@ var iio = {};
       if (typeof this.anims != 'undefined'){
          if (this.anims[this.animKey] instanceof iio.Sprite)
                iio.Graphics.drawSprite(ctx,this.width,this.height,this.anims[this.animKey],this.animFrame);
-         else if(!iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animFrame])){
-            ctx.drawImage(this.anims[this.animKey][this.animFrame],-this.width/2,-this.height/2,this.width,this.height);
+         else if(!iio.Graphics.drawImage(ctx,this.anims[this.animKey].srcs[this.animFrame])){
+            ctx.drawImage(this.anims[this.animKey].srcs[this.animFrame],-this.width/2,-this.height/2,this.width,this.height);
             ctx.restore();
          }
       }
@@ -1672,8 +1681,8 @@ var iio = {};
          ctx.drawImage(this.img, -this.radius,-this.radius,this.radius*2,this.radius*2);
          ctx.restore();
       }
-      if (typeof this.anims != 'undefined' && !iio.Graphics.drawImage(ctx,this.anims[this.animKey][this.animFrame])){
-         ctx.drawImage(this.anims[this.animKey][this.animFrame], -this.radius,-this.radius,this.radius*2,this.radius*2);
+      if (typeof this.anims != 'undefined' && !iio.Graphics.drawImage(ctx,this.anims[this.animKey].srcs[this.animFrame])){
+         ctx.drawImage(this.anims[this.animKey].srcs[this.animFrame], -this.radius,-this.radius,this.radius*2,this.radius*2);
          ctx.restore();
       }
       if (typeof this.styles != 'undefined'){
@@ -2141,8 +2150,7 @@ var iio = {};
       if (c instanceof iio.Obj) {
          clearTimeout(c.fsID);
          return c;
-      }
-      else {
+      } else {
          c=c||0;
          clearTimeout(this.cnvs[c].fsID);
       }
@@ -2498,31 +2506,16 @@ var iio = {};
       c=c||0;
       if (typeof(this.cnvs[c].groups)!='undefined')
          for (var i=0; i<this.cnvs[c].groups.length; i++){
-            this.cancelFramerate(obj);
-            if (typeof this.cnvs[c].fps=='undefined')
-               obj.clearSelf(this.ctxs[c]);
+            if (typeof obj.K=='undefined'){
+               this.cancelFramerate(obj);
+               if (typeof this.cnvs[c].fps=='undefined')
+                  obj.clearSelf(this.ctxs[c]);
+            }
             if (this.cnvs[c].groups[i].rmvObj(obj))
                return true;
          }
       return false;
    }
-   /*AppManager.prototype.delayRmv = function(time, obj, group, c){
-      if (typeof c=='undefined'){
-         if (iio.isNumber(group)) {
-            c=group;
-            setTimeout(function(obj){
-                  .rmvObj(obj);
-               }else{
-                  io.rmvFromGroup(group,obj);
-               }
-            }, time);
-            this.rmvObj()
-         }
-         else c=0;
-         if (typeof group=='undefined')
-
-      }
-   }*/
    AppManager.prototype.rmvGroup = function(tag,c){
       c=c||0;
       if (typeof(this.cnvs[c].groups)!='undefined')
