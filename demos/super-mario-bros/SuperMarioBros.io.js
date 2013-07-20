@@ -5,6 +5,25 @@ All rights reserved.
 */
 function SuperMarioBros(io){
 
+	var mario;
+	//create an SpriteMap object, define 16x32 sprite cells, pass onload function
+	// - you can redefine sprite cell dimensions any time with setSpriteRes()
+	var marioSprites = new iio.SpriteMap('img/mariobros_cmp.png',16,32,function(){
+
+		//code calls when image has loaded
+		mario = new iio.Rect(100, io.canvas.height-groundY)
+			 .createWithAnim(marioSprites.getSprite(6,6),'standing')
+			 .enableKinematics()
+			 .setVel();
+
+		mario.addAnim(marioSprites.getSprite(0,2),'walk');
+		mario.addAnim(marioSprites.getSprite(4,4),'jump');
+		mario.addAnim(marioSprites.getSprite(5,5),'duck');
+
+		io.addObj(mario);
+		io.setFramerate(60,update);
+	});
+
 	io.setBGImage('img/world1-1.png');
 	var groundY=40;
 
@@ -37,7 +56,7 @@ function SuperMarioBros(io){
     }
 
 	//Print instructions
-	io.addObj(new iio.Text('Use aswd or the arrow keys to move, jump, and duck', iio.Vec.add(io.canvas.center,0,6))
+	io.addObj(new iio.Text('Use aswd or the arrow keys to move, jump, and duck',iio.Vec.add(io.canvas.center,0,6))
               .setFont('30px Consolas')
               .setTextAlign('center')
               .setFillStyle('black'));
@@ -82,7 +101,7 @@ function SuperMarioBros(io){
 			}
 			if(input[UP]&&mario.pos.y==io.canvas.height-groundY){
 		        mario.setAnim('jump');
-		        mario.vel.add(0,-5);
+		        mario.vel.add(0,-7);
 		        mario.setAcc(0, 0.3);
 		        animating=true;
 			}
@@ -95,22 +114,4 @@ function SuperMarioBros(io){
 			animating=false;
 		}
 	}
-
-	var mario;
-	//create an ioSpriteMap object, define 16x32 sprite cells, pass onload function
-	// - you can redefine sprite cell dimensions any time with setSpriteRes()
-	var marioSprites = new iio.SpriteMap('img/mariobros_cmp.png',16,32,function(){
-
-		//code calls when image has loaded
-		mario = new iio.Rect(100, io.canvas.height-groundY)
-			 .createWithAnim(marioSprites.getSprite(6,6),'standing')
-			 .enableKinematics();
-
-	 	mario.setVel();
-		mario.addAnim(marioSprites.getSprite(0,2),'walk');
-		mario.addAnim(marioSprites.getSprite(4,4),'jump');
-		mario.addAnim(marioSprites.getSprite(5,5),'duck');
-		io.addObj(mario);
-		io.setFramerate(60,update);
-	});
 }
