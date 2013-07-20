@@ -27,39 +27,39 @@ function SuperMarioBros(io){
 	io.setBGImage('img/world1-1.png');
 	var groundY=40;
 
-    var LEFT = 0;
-    var RIGHT = 1;
-    var UP = 2;
-    var DOWN = 3;
-    var input = [];
+	var LEFT = 0;
+	var RIGHT = 1;
+	var UP = 2;
+	var DOWN = 3;
+	var input = [];
 
-    window.addEventListener('keydown', function(event){
-            updateInput(event, true);
+	window.addEventListener('keydown', function(event){
+	        updateInput(event, true);
 	});
 	window.addEventListener('keyup', function(event){
-            updateInput(event, false);
+	        updateInput(event, false);
 	});
 
-    updateInput = function(event, boolValue){
-        if (iio.keyCodeIs('left arrow', event) || iio.keyCodeIs('a', event))
-            input[LEFT] = boolValue;
-        if (iio.keyCodeIs('right arrow', event) || iio.keyCodeIs('d', event))
-            input[RIGHT] = boolValue;
-        if (iio.keyCodeIs('up arrow', event) || iio.keyCodeIs('w', event)){
-            input[UP] = boolValue;
-            event.preventDefault();
-        }
-        if (iio.keyCodeIs('down arrow', event) || iio.keyCodeIs('s', event)){
-            input[DOWN] = boolValue;
-            event.preventDefault();
-        }
-    }
+	updateInput = function(event, boolValue){
+		if (iio.keyCodeIs('left arrow', event) || iio.keyCodeIs('a', event))
+			input[LEFT] = boolValue;
+		if (iio.keyCodeIs('right arrow', event) || iio.keyCodeIs('d', event))
+			input[RIGHT] = boolValue;
+	    if (iio.keyCodeIs('up arrow', event) || iio.keyCodeIs('w', event)){
+			input[UP] = boolValue;
+			event.preventDefault();
+		}
+		if (iio.keyCodeIs('down arrow', event) || iio.keyCodeIs('s', event)){
+			input[DOWN] = boolValue;
+			event.preventDefault();
+		}
+	}
 
 	//Print instructions
 	io.addObj(new iio.Text('Use aswd or the arrow keys to move, jump, and duck',iio.Vec.add(io.canvas.center,0,6))
-              .setFont('30px Consolas')
-              .setTextAlign('center')
-              .setFillStyle('black'));
+		.setFont('30px Consolas')
+		.setTextAlign('center')
+		.setFillStyle('black'));
 
 	var animating=false; //prevent continuous triggering of animation
 	var marioSpeed=1;
@@ -70,18 +70,18 @@ function SuperMarioBros(io){
 		if (mario.vel.y==0){
 			if (input[LEFT] && input[RIGHT]){
 				mario.vel.x=0;
-		        mario.stopAnim('standing');
-		        animating=false;
+				mario.stopAnim('standing');
+				animating=false;
 			} 
 			else if (input[DOWN]){
 				mario.setAnim('duck');
-		        mario.vel.x=0;
-		        animating=false;
+				mario.vel.x=0;
+				animating=false;
 			} 
 			else if (input[LEFT]){
 				if (!animating) {
 					mario.flipImage(true);
-		        	mario.playAnim('walk',15,io);
+					mario.playAnim('walk',15,io);
 					animating=true;
 				}
 				mario.vel.x=-marioSpeed;
@@ -89,21 +89,21 @@ function SuperMarioBros(io){
 			else if (input[RIGHT]){
 				if (!animating) {
 					mario.flipImage(false);
-		        	mario.playAnim('walk',15,io);
-		        	animating=true;
+					mario.playAnim('walk',15,io);
+					animating=true;
 				}
 				mario.vel.x=marioSpeed;
 			} 
 			else if (mario.vel.y==0){
 				mario.vel.x=0;
-		        mario.setAnim('standing');
-		        animating=false;
+				mario.setAnim('standing');
+				animating=false;
 			}
 			if(input[UP]&&mario.pos.y==io.canvas.height-groundY){
-		        mario.setAnim('jump');
-		        mario.vel.add(0,-7);
-		        mario.setAcc(0, 0.3);
-		        animating=true;
+				mario.setAnim('jump');
+				mario.vel.add(0,-7);
+				mario.setAcc(0, 0.3);
+				animating=true;
 			}
 		}
 		//handle jumping mario
@@ -114,4 +114,4 @@ function SuperMarioBros(io){
 			animating=false;
 		}
 	}
-}
+	}
