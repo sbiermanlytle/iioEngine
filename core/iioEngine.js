@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/20/2013
+Last Update 7/25/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -120,6 +120,9 @@ var iio = {};
     }
     iio.isNumber=function(o){
       return ! isNaN (o-0) && o !== null && o !== "" && o !== false;
+    }
+    iio.isString=function(s){
+      return typeof s == 'string' || s instanceof String;
     }
     iio.isBetween=function(val,min,max){
       if(max < min) {
@@ -2079,10 +2082,10 @@ var iio = {};
       this.cnvs = [];
       this.ctxs = [];
       if (typeof app=='undefined') throw new Error("iio.start: No app provided");
-      if (typeof w=='undefined' && (typeof id == 'string' || id instanceof String)) 
+      if (typeof w=='undefined' && iio.isString(id)) 
          this.addCanvas(id);
       else {
-         if (typeof id == 'string' || id instanceof String){
+         if (iio.isString(id)){
             if (id=='auto'){
                h = w || 'auto';
                w = id;
@@ -2218,7 +2221,7 @@ var iio = {};
    }
    AppManager.prototype.addCanvas = function( zIndex, w, h, attachId, cssClasses ){
       var i=this.cnvs.length;
-      if (typeof zIndex == 'string' || zIndex instanceof String){
+      if (iio.isString(zIndex)){
          if (!document.getElementById(zIndex))
             throw new Error("AppManager.addCanvas: Invalid canvas id '"+zIndex+"'");
          this.cnvs[i]=document.getElementById(zIndex);
@@ -2242,7 +2245,7 @@ var iio = {};
       this.cnvs[i].style.zIndex = zIndex || -i;
       
       //Attach the canvas
-      if (typeof attachId == 'string' || attachId instanceof String){
+      if (iio.isString(attachId)){
          if (attachId=='body') document.body.appendChild(this.cnvs[i])
          else document.getElementById(attachId).appendChild(this.cnvs[i])
       } 
@@ -2263,7 +2266,7 @@ var iio = {};
       if (cssClasses instanceof Array)
          for (var j=0;j<cssClasses.length;j++) 
             this.cnvs[i].className += " "+cssClasses[j];
-      else if (typeof cssClasses == 'string' || cssClasses instanceof String)
+      else if (iio.isString(cssClasses))
          this.cnvs[i].className += " "+cssClasses;
 
       //TODO define specific display options and put styles back when app is terminated
@@ -2505,7 +2508,7 @@ var iio = {};
    AppManager.prototype.rmv = function(obj, group, c){
          if (iio.isNumber(group)) return this.rmvObj(obj,group);
          else if (typeof group == 'undefined') {
-            if (typeof obj == 'string' || obj instanceof String)
+            if (iio.isString(obj))
                return this.rmvGroup(obj);
             return this.rmvObj(obj);
          } else return this.rmvFromGroup(group,obj,c);
