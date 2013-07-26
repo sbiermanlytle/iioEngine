@@ -129,8 +129,12 @@ POSSIBILITY OF SUCH DAMAGE.
  			else if (v=='outer-top') this.section.style.top=parseInt(this.section.style.left,10)-parseInt(this.section.style.maxHeight,10)+"px";
  			return 'invalid position';
  		} else {
- 			if (typeof y!='undefined'){
- 				
+ 			if (typeof v.x!='undefined'){
+ 				this.section.style.left=parseInt(this.section.style.left,10)+v.x+'px';
+ 				this.section.style.top=parseInt(this.section.style.top,10)+v.y+'px';
+ 			} else {
+ 				this.section.style.left=parseInt(this.section.style.left,10)+v+'px';
+ 				this.section.style.top=parseInt(this.section.style.top,10)+(y||v)+'px';
  			}
  		}
  	}
