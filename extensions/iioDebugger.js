@@ -119,6 +119,21 @@ POSSIBILITY OF SUCH DAMAGE.
 		        this[0].io.app.onResize(event);
 		  }.bind([this]), false);
  	}
+ 	AppDebugger.prototype.setPos = function(v,y){
+ 		if (iio.isString(v)){
+ 			if (v=='right') this.section.style.left=parseInt(this.section.style.left,10)+parseInt(this.io.canvas.width,10)-parseInt(this.section.style.maxWidth,10)-10+"px";
+ 			else if (v=='bottom') this.section.style.top=parseInt(this.section.style.top,10)+parseInt(this.io.canvas.height,10)-parseInt(this.section.style.maxHeight,10)+"px";
+ 			else if (v=='outer-right') this.section.style.left=parseInt(this.section.style.left,10)+parseInt(this.io.canvas.width,10)+"px";
+ 			else if (v=='outer-left') this.section.style.left=parseInt(this.section.style.left,10)-parseInt(this.section.style.maxWidth,10)-10+"px";
+ 			else if (v=='outer-bottom') this.section.style.top=parseInt(this.section.style.top,10)+parseInt(this.io.canvas.height,10)+"px";
+ 			else if (v=='outer-top') this.section.style.top=parseInt(this.section.style.left,10)-parseInt(this.section.style.maxHeight,10)+"px";
+ 			return 'invalid position';
+ 		} else {
+ 			if (typeof y!='undefined'){
+ 				
+ 			}
+ 		}
+ 	}
  	AppDebugger.prototype.setOutlineStyle = function(style){
  		this.outlineStyle=style;
  		return this;
