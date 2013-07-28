@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/25/2013
+Last Update 7/28/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -1189,8 +1189,11 @@ var iio = {};
    iio.Graphics.drawImage = function(ctx,img,clip){
       if (typeof img!='undefined'){
          ctx.save();
-         if (typeof img.pos!='undefined')
-            iio.Graphics.transformContext(ctx,img.pos,img.rotation);
+         if (typeof img.pos!='undefined'||typeof img.rotation!='undefined'){
+            var p = img.pos||new iio.Vec();
+            var r = img.rotation||0;
+            iio.Graphics.transformContext(ctx,p,r);
+         }
          if(clip) ctx.clip();
          if (typeof img.size != 'undefined')
             ctx.drawImage(img,-img.size.x/2,-img.size.y/2,img.size.x,img.size.y);
