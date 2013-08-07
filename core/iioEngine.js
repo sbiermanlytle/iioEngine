@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 7/28/2013
+Last Update 8/7/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -103,7 +103,7 @@ var iio = {};
    }
    iio.requestTimeout = function(fps,lastTime,callback,callbackParams){
        //Callback method by Erik Möller, Paul Irish, Tino Zijdel
-       //https://gist.github.com/1579671=
+       //https://gist.github.com/1579671
        var currTime = new Date().getTime();
        var timeToCall = Math.max(0, (1000/fps) - (currTime - lastTime));
        callbackParams[0].fsID = setTimeout(function() { callback(currTime + timeToCall, callbackParams); }, 
@@ -410,13 +410,14 @@ var iio = {};
            SFX=soundManager.createSound({url:url});
            SFX.play({onfinish:function(){this.destruct()}});
        }
-       iio.loadSound=function(url){
+       iio.loadSound=function(url,fn){
+           var callback = fn;
            var s=soundManager.createSound({
                url:url,
-              /*onload:function(){
+              onload:function(){
                   soundManager._writeDebug(this.id+' loaded');
-                  this.play();
-                }*/
+                  callback();
+                }
             });
        }
    }
@@ -624,7 +625,8 @@ var iio = {};
       this._update=this.update;
       if (typeof this._update!='undefined')
          this.update=function(dt){
-            return this._update(dt)||fn(this,dt,fnParams);
+            if(!this._update(dt)||!fn(this,dt,fnParams))
+               return false;
          }
       else {
          this.update=function(dt){
