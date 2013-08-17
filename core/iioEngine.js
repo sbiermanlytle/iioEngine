@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 8/9/2013
+Last Update 8/17/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -215,7 +215,7 @@ var iio = {};
             return iio.circleXcircle(obj1,obj2);
          if (obj2 instanceof iio.Poly)
             return iio.polyXcircle(obj2,obj1);
-      }      
+      }   
    }
    iio.lineXline = function(v1, v2, v3, v4) {
       var a1 = (v2.y - v1.y) / (v2.x - v1.x);
@@ -1605,28 +1605,44 @@ var iio = {};
       ctx.restore();
       return this;
    }
+   iio.Text.prototype.top = function(){
+      return this.pos.y;
+   }
+   iio.Text.prototype.bottom = function(){
+      return this.pos.y+parseInt(this.font,10);
+   }
+   iio.Text.prototype.right = function(){
+      if (this.textAlign=='center') return this.pos.x+this.ctx.measureText(this.text).width/2;
+      else if (this.textAlign=='right'||this.textAlign=='end') return this.pos.x;
+      else return this.pos.x+this.ctx.measureText(this.text).width;
+   }
+   iio.Text.prototype.left = function(){
+      if (this.textAlign=='center') return this.pos.x-this.ctx.measureText(this.text).width/2;
+      else if (this.textAlign=='right'||this.textAlign=='end') return this.pos.x-this.ctx.measureText(this.text).width;
+      else return this.pos.x;
+   }
    iio.Text.prototype.clearSelf = function(ctx){
-       ctx=ctx||this.ctx;
+      this.ctx=ctx||this.ctx;
       // iio.Graphics.prepStyledContext(ctx,this.styles);
       // iio.Graphics.transformContext(ctx,this.pos,this.rotation);
-      ctx.font = this.font;
+      this.ctx.font = this.font;
       var fs = parseInt(this.font,10);
-      var m = ctx.measureText(this.text);
-      if (this.textAlign=='center') return clearShape(ctx,this,m.width,fs,-m.width/2,-fs);
-      else if (this.textAlign=='right'||this.textAlign=='end') return clearShape(ctx,this,m.width,fs,-m.width,-fs);
-      else return clearShape(ctx,this,m.width,fs,0,-fs);
+      var m = this.ctx.measureText(this.text);
+      if (this.textAlign=='center') return clearShape(this.ctx,this,m.width,fs,-m.width/2,-fs/2);
+      else if (this.textAlign=='right'||this.textAlign=='end') return clearShape(this.ctx,this,m.width,fs,-m.width,-fs/2);
+      else return clearShape(this.ctx,this,m.width,fs,0,-fs/2);
    }
    iio.Text.prototype.draw = function(ctx){
-      ctx=ctx||this.ctx;
-      iio.Graphics.prepStyledContext(ctx,this.styles);
-      iio.Graphics.transformContext(ctx,this.pos,this.rotation);
-      ctx.font = this.font;
-      ctx.textAlign = this.textAlign;
+      this.ctx=ctx||this.ctx;
+      iio.Graphics.prepStyledContext(this.ctx,this.styles);
+      iio.Graphics.transformContext(this.ctx,this.pos,this.rotation);
+      this.ctx.font = this.font;
+      this.ctx.textAlign = this.textAlign;
       if(typeof(this.wrap) == 'undefined' || this.wrap <= 0) {
 	      if (typeof this.styles.fillStyle!='undefined')
-	         ctx.fillText(this.text,0,0);
+	         this.ctx.fillText(this.text,0,0);
 	      if (typeof this.styles.strokeStyle!='undefined')
-	         ctx.strokeText(this.text,0,0);
+	         this.ctx.strokeText(this.text,0,0);
 	   } else {
 	  	  var lineHeight	=	this.lineheight || 28;
 		  var words 		= 	this.text.split(' ');
@@ -1635,10 +1651,10 @@ var iio = {};
 	      	  n 			=	0;
 	      for(; n < words.length; n++) {
 	          var testLine = line + words[n] + ' ';
-	          var metrics = ctx.measureText(testLine);
+	          var metrics = this.ctx.measureText(testLine);
 	          var testWidth = metrics.width;
 	          if(testWidth > this.wrap) {
-	            ctx.fillText(line, 0, y);
+	            this.ctx.fillText(line, 0, y);
 	            line = words[n] + ' ';
 	            y += lineHeight;
 	          }
@@ -1646,9 +1662,9 @@ var iio = {};
 	            line = testLine;
 	          }
 	        }
-	        ctx.fillText(line, 0, y);
+	        this.ctx.fillText(line, 0, y);
 	   }
-      ctx.restore();
+      this.ctx.restore();
       return this;
    }
    function drawRect(ctx,pos,r){
@@ -2321,9 +2337,11 @@ var iio = {};
          if (typeof(this.groups) != 'undefined')
          for (var i=this.groups.length-1; i>=0; i--){
             this.groups[i].update(dt);
-            if (typeof(this.groups[i].collisionTags) != 'undefined')
-            for (var j=0; j<this.groups[i].collisionTags.length; j++)
+            var j=0;
+            while (typeof(this.groups[i].collisionTags) != 'undefined'&&j<this.groups[i].collisionTags.length){
                this.checkCollisions(this.groups[i], this.groups[this.indexOfTag(this.groups[i].collisionTags[j].tag)], this.groups[i].collisionTags[j].callback);
+               j++;
+            }
             if (this.groups[i].redraw)
                this.redraw=true;
          }
