@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 8/17/2013
+Last Update 10/2/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -35,12 +35,32 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 //JavaScript Extensions
 (function () {
+   if (!Object.prototype.clone) {
+      Object.prototype.clone = function() {
+      var newObj = (this instanceof Array) ? [] : {};
+      for (i in this) {
+        if (i == 'clone') continue;
+        if (this[i] && typeof this[i] == "object") {
+          newObj[i] = this[i].clone();
+        } else newObj[i] = this[i]
+      } return newObj;
+   };
+   }
    if ( !Array.prototype.forEach ) {
-     Array.prototype.forEach = function(fn, scope) {
+      Array.prototype.forEach = function(fn){
+         var keepGoing=true;
+         for (var c=0;c<this.length;c++)
+            for(var r=0;r<this[c].length;r++){
+               keepGoing=fn(this[c][r],c,r);
+               if (typeof keepGoing!='undefined'&&!keepGoing)
+                  return [r,c];
+            }
+      }
+     /*Array.prototype.forEach = function(fn, scope) {
        for(var i = 0, len = this.length; i < len; ++i) {
          fn.call(scope, this[i], i, this);
        }
-     }
+     }*/
    }
    if ( !Array.prototype.insert ) {
       Array.prototype.insert = function (index, item) {
@@ -81,6 +101,7 @@ var iio = {};
 (function (iio) {
    //iio.isiPad = navigator.userAgent.match(/iPad/i) != null;
    function emptyFn() {};
+   iio.maxInt = 9007199254740992;
    iio.inherit = function(child, parent) {
       var tmp = child;
       emptyFn.prototype = parent.prototype;
@@ -142,6 +163,9 @@ var iio = {};
       }  
       else return false;  
    }
+   iio.delayCall = function(delay,fn,fnParams){
+      setTimeout(function(){fn(fnParams)},delay);
+   }
    iio.rotatePoint = function(x,y,r){
       if (typeof x.x!='undefined'){ r=y; y=x.y; x=x.x; }
       if (typeof r=='undefined'||r==0) return new iio.Vec(x,y);
@@ -156,6 +180,12 @@ var iio = {};
    }
    iio.getRandomInt = function(min, max) {
       return Math.floor(Math.random() * (max - min)) + min;
+   }
+   iio.getRandomColor = function() {
+      var r = Math.floor(Math.random() * (255 - 0) + 0);
+      var g = Math.floor(Math.random() * (255 - 0) + 0);
+      var b = Math.floor(Math.random() * (255 - 0) + 0);
+      return "rgb("+r+","+g+","+b+")";
    }
    iio.getVecsFromPointList = function(points){
       var vecs = [];
@@ -793,6 +823,16 @@ var iio = {};
          this.C=c;
          this.res = new iio.Vec(res,yRes||res);
       }
+      this.setPos(v,y);
+   }
+   Grid.prototype.forEachCell = function(fn){
+      var keepGoing=true;
+      for (var c=0;c<this.C;c++)
+         for(var r=0;r<this.R;r++){
+            keepGoing=fn(this.cells[c][r],c,r);
+            if (typeof keepGoing!='undefined'&&!keepGoing)
+               return [r,c];
+         }
    }
 })();
 
@@ -921,7 +961,7 @@ var iio = {};
    Circle.prototype._super = iio.Shape.prototype;
    Circle.prototype.Circle = function(v,y,r){
       this._super.Shape.call(this,v,y);
-      if (typeof v.x!='undefined')
+      if (typeof v=='undefined'||typeof v.x!='undefined')
          this.radius=y||0;
       else this.radius=r||0;
    }
@@ -1182,13 +1222,35 @@ var iio = {};
       if (typeof obj.styles=='undefined'||typeof obj.styles.shadow=='undefined')return;
       ctx.save();
       iio.Graphics.applyContextStyles(ctx,obj.styles.shadow);
-      if (typeof obj.styles.fillStyle != 'undefined'
-       || typeof obj.img != 'undefined'
-       || typeof obj.anims != 'undefined')
-         ctx.fillRect(-obj.width/2,-obj.height/2,obj.width,obj.height);
-      else if (typeof obj.styles.strokeStyle!='undefined')
-         ctx.strokeRect(-obj.width/2,-obj.height/2,obj.width,obj.height);
+      if (typeof obj.styles.rounding!='undefined'&&typeof obj.styles.rounding!=0)
+         iio.Graphics.drawRoundedRectPath(ctx,obj);
+      else {
+         if (typeof obj.styles.fillStyle != 'undefined'
+          || typeof obj.img != 'undefined'
+          || typeof obj.anims != 'undefined')
+            ctx.fillRect(-obj.width/2,-obj.height/2,obj.width,obj.height);
+         else if (typeof obj.styles.strokeStyle!='undefined')
+            ctx.strokeRect(-obj.width/2,-obj.height/2,obj.width,obj.height);
+      }
       ctx.restore();
+   }
+   iio.Graphics.drawRoundedRectPath = function(ctx,obj){
+      ctx.beginPath();
+      ctx.moveTo(-obj.width/2 + obj.styles.rounding, -obj.height/2);
+      ctx.lineTo(-obj.width/2 + obj.width - obj.styles.rounding, -obj.height/2);
+      ctx.quadraticCurveTo(-obj.width/2 + obj.width, -obj.height/2, -obj.width/2 + obj.width, -obj.height/2 + obj.styles.rounding);
+      ctx.lineTo(-obj.width/2 + obj.width, -obj.height/2 + obj.height - obj.styles.rounding);
+      ctx.quadraticCurveTo(-obj.width/2 + obj.width, -obj.height/2 + obj.height, -obj.width/2 + obj.width - obj.styles.rounding, -obj.height/2 + obj.height);
+      ctx.lineTo(-obj.width/2 + obj.styles.rounding, -obj.height/2 + obj.height);
+      ctx.quadraticCurveTo(-obj.width/2, -obj.height/2 + obj.height, -obj.width/2, -obj.height/2 + obj.height - obj.styles.rounding);
+      ctx.lineTo(-obj.width/2, -obj.height/2 + obj.styles.rounding);
+      ctx.quadraticCurveTo(-obj.width/2, -obj.height/2, -obj.width/2 + obj.styles.rounding, -obj.height/2);
+      ctx.closePath();
+      ctx.strokeStyle=obj.styles.strokeStyle;
+      ctx.stroke();
+      ctx.fillStyle=obj.styles.fillStyle;
+      ctx.fill();
+      ctx.clip();
    }
    iio.Graphics.drawImage = function(ctx,img,clip){
       if (typeof img!='undefined'){
@@ -1319,6 +1381,7 @@ var iio = {};
    function setShadowBlur(s){this.styles.shadow.shadowBlur=s;return this};
    function setShadowOffset(v,y){this.styles.shadow.shadowOffset = new iio.Vec(v,y||v);return this};
    function setFillStyle(s){this.styles.fillStyle=s;return this};
+   function setRoundingRadius(r){this.styles.rounding=r;return this};
    function drawReferenceLine(bool){this.styles.refLine=bool||true;return this};
    function setShadow(color,v,y,blur){
       this.styles.shadow={};
@@ -1341,6 +1404,7 @@ var iio = {};
    iio.Obj.prototype.setAlpha=setAlpha;
    iio.Text.prototype.setFillStyle=setFillStyle;
    iio.Shape.prototype.setFillStyle=setFillStyle;
+   iio.Shape.prototype.setRoundingRadius=setRoundingRadius;
    iio.Circle.prototype.drawReferenceLine=drawReferenceLine;
    iio.Line.prototype.setLineCap=setLineCap;
 
@@ -1670,6 +1734,8 @@ var iio = {};
    function drawRect(ctx,pos,r){
       ctx=iio.Graphics.prepTransformedContext(ctx,this,pos,r);
       iio.Graphics.drawRectShadow(ctx,this);
+      if (typeof this.styles != 'undefined'&&typeof this.styles.rounding!='undefined'&& this.styles.rounding!=0)
+         iio.Graphics.drawRoundedRectPath(ctx,this);
       if (!iio.Graphics.drawImage(ctx,this.img)){
          ctx.drawImage(this.img, -this.width/2, -this.height/2, this.width, this.height);
          ctx.restore();
@@ -1682,7 +1748,7 @@ var iio = {};
             ctx.restore();
          }
       }
-      if (typeof this.styles != 'undefined'){
+      if (typeof this.styles!='undefined'){
          if (typeof this.styles.fillStyle !='undefined')
             ctx.fillRect(-this.width/2,-this.height/2,this.width,this.height);
          if (typeof this.styles.strokeStyle !='undefined')
@@ -1998,6 +2064,9 @@ var iio = {};
       this.shrinkRate = s;
       return this;
    }
+   function stopKinematics(){
+      this.vel=this.acc=this.torque=this.bounds=undefined;
+   }
    function enableKinematics(){
       //this.update=updateProperties;
       this.enableUpdates(updateProperties);
@@ -2007,6 +2076,7 @@ var iio = {};
       this.setBounds=setBounds;
       this.setBound=setBound;
       this.shrink=shrink;
+      this.stopKinematics=stopKinematics;
       return this;
    }
    iio.Shape.prototype.enableKinematics = enableKinematics;
@@ -2320,6 +2390,10 @@ var iio = {};
          c=c||0;
          this.cnvs[c].oncontextmenu=function(){return false};  
    }
+   AppManager.prototype.disableStaticCollisionChecks=function(c){
+      this.cnvs[c||0].disableStaticCollisions=true;
+      return this;
+   }
    AppManager.prototype.setOnContextMenu=function(fn, c){
       c=c||0;
       this.cnvs[c].oncontextmenu=fn;
@@ -2363,6 +2437,14 @@ var iio = {};
             for (var j=0; j<group2.objs.length; j++)
                if (typeof(group1.objs[i]) != 'undefined' 
                   && group1.objs[i] != group2.objs[j]
+                  && !(typeof this.disableStaticCollisions!='undefined'
+                     && this.disableStaticCollisions
+                        && (typeof group1.objs[i].vel == 'undefined' 
+                           && typeof group2.objs[j].vel == 'undefined')
+                        && !((typeof group1.objs[i].vel != 'undefined' 
+                           && group1.objs[i].vel.length() != 0)
+                           && (typeof group2.objs[j].vel != 'undefined'
+                           && group2.objs[j].vel.length() != 0)))
                   && iio.intersects(group1.objs[i], group2.objs[j])){
                   if (cPairs instanceof Array){
                      alreadyDealtWith = false;
