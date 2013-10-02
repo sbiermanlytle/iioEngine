@@ -1404,9 +1404,9 @@ var iio = {};
    iio.Obj.prototype.setAlpha=setAlpha;
    iio.Text.prototype.setFillStyle=setFillStyle;
    iio.Shape.prototype.setFillStyle=setFillStyle;
-   iio.Shape.prototype.setRoundingRadius=setRoundingRadius;
    iio.Circle.prototype.drawReferenceLine=drawReferenceLine;
    iio.Line.prototype.setLineCap=setLineCap;
+   iio.SimpleRect.prototype.setRoundingRadius=iio.Rect.prototype.setRoundingRadius=setRoundingRadius;
 
    //Image Functions
    function setImgOffset(v,y){this.img.pos=new iio.Vec(v,y||v);return this};
