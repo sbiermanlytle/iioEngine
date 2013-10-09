@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<header>
+<script type="text/javascript" src="../core/iioEngine.js"></script>
+<script type="text/javascript" src="../extensions/iioDebugger.js"></script>
+</header>
+<body>
+<script type="text/javascript">
+  RoundedRectDemo = function(io){
+    //set background color
+    io.setBGColor('white');
+ 
+    var logo = new iio.SimpleRect(io.canvas.center,200,200)
+      .setShadow('rgb(150,150,150)',10,10,4)
+      .setStrokeStyle('black',2)
+      .setRoundingRadius(40) //new function added in 1.2.2+
+      .addImage('https://lh6.ggpht.com/qdg0tKed17c0Drn3SrqgHVYYO181KZ2yjjRguUetmQpetKhpNeFlbMLVw9L85tjVtw=w300', function(){
+         io.addObj(logo);
+    });
+  }; iio.start(RoundedRectDemo)
+</script> 
+</body>
+</html>
