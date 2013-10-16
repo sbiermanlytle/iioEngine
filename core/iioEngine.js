@@ -1,11 +1,12 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 10/9/2013
+Last Update 10/16/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
    if you only specify a tag, all the objects from that group will be removed
+-the io.setBGImage function now has the parameters (src, scaleToFullScreen, canvasIndex)
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
@@ -1535,7 +1536,6 @@ var iio = {};
       } else this.onAnimComplete = f;
       if (typeof this.fsID != 'undefined')
          this.stopAnim();
-
       io.setFramerate(fps,function(){this.nextAnimFrame()}.bind(this),this,io.ctxs[c||0]);
       return this;
    }
@@ -2679,16 +2679,19 @@ var iio = {};
       this.cnvs[c].style.backgroundImage="url('"+src+"')";
       return this;
    }
-   AppManager.prototype.setBGImage = function(src, c){
-      c=c||0;
-      this.cnvs[c].style.backgroundRepeat="no-repeat";
-      this.cnvs[c].style.background='url(images/bg.jpg) no-repeat center center fixed'; 
-      this.cnvs[c].style.WebkitBackgroundSize='cover';
-      this.cnvs[c].style.MozBackgroundSize='cover';
-      this.cnvs[c].style.OBackgroundSize='cover';
-      this.cnvs[c].style.backgroundSize='cover';
-      this.cnvs[c].style.Filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='."+src+"', sizingMethod='scale')";
-      this.cnvs[c].style.MsFilter="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+src+"', sizingMethod='scale')";
+   AppManager.prototype.setBGImage = function(src,scaled,c){
+      if (iio.isNumber(scaled)) c=scaled;
+      else c=c||0;
+      if (scaled){
+         this.cnvs[c].style.backgroundRepeat="no-repeat";
+         this.cnvs[c].style.background='url(images/bg.jpg) no-repeat center center fixed'; 
+         this.cnvs[c].style.WebkitBackgroundSize='cover';
+         this.cnvs[c].style.MozBackgroundSize='cover';
+         this.cnvs[c].style.OBackgroundSize='cover';
+         this.cnvs[c].style.backgroundSize='cover';
+         this.cnvs[c].style.Filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='."+src+"', sizingMethod='scale')";
+         this.cnvs[c].style.MsFilter="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+src+"', sizingMethod='scale')";
+      } else this.cnvs[c].style.backgroundRepeat="no-repeat";
       return this.setBGPattern(src, c);
    }
 
