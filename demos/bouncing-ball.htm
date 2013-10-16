@@ -3,9 +3,6 @@
     <script type="text/javascript" src="../core/iioEngine.js"></script>
     <script type="text/javascript">
 
-//NOTICE: this app currently only works with the Github distribution of iio
-    //  a new versioned package will be put up on the website shortly
-
         //author: Tyilo https://github.com/sbiermanlytle/iioengine/pull/5
         var Ball = function() {
             this.Ball.apply(this, arguments);
@@ -59,7 +56,7 @@
         	}
         
         	window.addEventListener('mouseup', function(event) {
-        		var point = new iio.Vec(event.x, event.y);
+                var point = io.getEventPosition(event);
         		if(event.button != 2) {
         			var ball = new Ball(iio.getRandomInt(10, 30), point, randomColor(), io.canvas.height);
         			io.addToGroup('balls', ball);
