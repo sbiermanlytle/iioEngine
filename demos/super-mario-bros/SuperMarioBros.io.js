@@ -81,7 +81,7 @@ function SuperMarioBros(io){
 			else if (input[LEFT]){
 				if (!animating) {
 					mario.flipImage(true);
-					mario.playAnim('walk',15,io);
+					mario.playAnim('walk',15,io,true);
 					animating=true;
 				}
 				mario.vel.x=-marioSpeed;
@@ -89,7 +89,7 @@ function SuperMarioBros(io){
 			else if (input[RIGHT]){
 				if (!animating) {
 					mario.flipImage(false);
-					mario.playAnim('walk',15,io);
+					mario.playAnim('walk',15,io,true);
 					animating=true;
 				}
 				mario.vel.x=marioSpeed;
