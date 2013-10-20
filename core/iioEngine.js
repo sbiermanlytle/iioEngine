@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 10/16/2013
+Last Update 10/19/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -1506,7 +1506,7 @@ var iio = {};
          }.bind(this);
       } return this;
    }
-   function nextAnimFrame(){
+   function nextAnimFrame(reRender){
       function resetFrame(io){
          if (typeof io.onAnimComplete != 'undefined'){
             if (io.onAnimComplete())
@@ -1519,24 +1519,27 @@ var iio = {};
             resetFrame(this);
       } else if ( this.animFrame >= this.anims[this.animKey].srcs.length)
             resetFrame(this);
-      this.clearDraw();
+      if (reRender) this.clearDraw();
+      else this.redraw=true;
       return this;
    }
    function setAnimFrame(i){
       this.animFrame=i;
       return this;
    }
-   function playAnim(tag,fps,io,c,f){
-      if (!iio.isNumber(tag))
+   function playAnim(tag,fps,io,draw,c,f){
+      if (!iio.isNumber(tag)){
          this.setAnimKey(tag);
-      else{ f=c;c=io;io=fps;fps=tag; }
+         if (iio.isNumber(draw)) c=draw;
+      }else{ f=c;c=draw;draw=io;io=fps;fps=tag; }
       if (!iio.isNumber(c)){
-         this.onAnimComplete = c;
+         this.onAnimComplete=c;
          c=f||0;
       } else this.onAnimComplete = f;
       if (typeof this.fsID != 'undefined')
          this.stopAnim();
-      io.setFramerate(fps,function(){this.nextAnimFrame()}.bind(this),this,io.ctxs[c||0]);
+      if (draw) io.setFramerate(fps,function(){this.nextAnimFrame()}.bind(this),this,io.ctxs[c||0]);
+      io.setNoDrawFramerate(fps,function(){this.nextAnimFrame()}.bind(this),this,io.ctxs[c||0]);
       return this;
    }
    function stopAnim(key,ctx){
@@ -2219,6 +2222,33 @@ var iio = {};
 	            args[0].redraw=false;
 	         }
 	     } else args[1].setFramerate(fps,args[2],args[0]);
+      }, [obj,this,callback]);
+      return this;
+   }
+   AppManager.prototype.setNoDrawFramerate = function( fps, callback, obj, ctx ){
+      if (typeof callback!='undefined' && typeof callback.draw !='undefined'){
+         if (typeof ctx!='undefined')
+            var realCallback = ctx;
+         ctx=obj||this.ctxs[0];
+         obj=callback;
+         callback = realCallback||iio.emptyFn;
+         obj.ctx=ctx;
+      } else obj=obj||0;
+      if (iio.isNumber(obj))
+         obj=this.cnvs[obj];
+      if (typeof obj.lastTime == 'undefined')
+         obj.lastTime=0;
+      if (typeof ctx != 'undefined')
+         obj.ctx=ctx;
+      iio.requestTimeout(fps,obj.lastTime, function(dt,args){
+         if(!args[1].pause) {
+            args[0].lastTime=dt;
+            args[1].setNoDrawFramerate(fps,args[2],args[0]);
+            if (typeof args[0].update!='undefined')
+               args[0].update(dt);
+            if (typeof args[2]!='undefined')
+               args[2](dt);
+        } else args[1].setNoDrawFramerate(fps,args[2],args[0]);
       }, [obj,this,callback]);
       return this;
    }
