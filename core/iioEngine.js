@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 10/19/2013
+Last Update 10/29/2013
 
 PARAMETER CHANGE NOTICE:
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
@@ -320,109 +320,121 @@ var iio = {};
       }
       return false;
    }
-   iio.keyCodeIs = function(key, event){
-      switch(event.keyCode){
-         case 8: if (key == 'backspace') return true; break;
-         case 9: if (key == 'tab') return true; break;
-         case 13: if (key == 'enter') return true; break;
-         case 16: if (key == 'shift') return true; break;
-         case 17: if (key == 'ctrl') return true; break;
-         case 18: if (key == 'alt') return true; break;
-         case 19: if (key == 'pause') return true; break;
-         case 20: if (key == 'caps lock') return true; break;
-         case 27: if (key == 'escape') return true; break;
-         case 32: if (key == 'space') return true; break;
-         case 33: if (key == 'page up') return true; break;
-         case 34: if (key == 'page down') return true; break;
-         case 35: if (key == 'end') return true; break;
-         case 36: if (key == 'home') return true; break;
-         case 37: if (key == 'left arrow') return true; break;
-         case 38: if (key == 'up arrow') return true; break;
-         case 39: if (key == 'right arrow') return true; break;
-         case 40: if (key == 'down arrow') return true; break;
-         case 45: if (key == 'insert') return true; break;
-         case 46: if (key == 'delete') return true; break;
-         case 48: if (key == '0') return true; break;
-         case 49: if (key == '1') return true; break;
-         case 50: if (key == '2') return true; break;
-         case 51: if (key == '3') return true; break;
-         case 52: if (key == '4') return true; break;
-         case 53: if (key == '5') return true; break;
-         case 54: if (key == '6') return true; break;
-         case 55: if (key == '7') return true; break;
-         case 56: if (key == '8') return true; break;
-         case 57: if (key == '9') return true; break;
-         case 65: if (key == 'a') return true; break;
-         case 66: if (key == 'b') return true; break;
-         case 67: if (key == 'c') return true; break;
-         case 68: if (key == 'd') return true; break;
-         case 69: if (key == 'e') return true; break;
-         case 70: if (key == 'f') return true; break;
-         case 71: if (key == 'g') return true; break;
-         case 72: if (key == 'h') return true; break;
-         case 73: if (key == 'i') return true; break;
-         case 74: if (key == 'j') return true; break;
-         case 75: if (key == 'k') return true; break;
-         case 76: if (key == 'l') return true; break;
-         case 77: if (key == 'm') return true; break;
-         case 78: if (key == 'n') return true; break;
-         case 79: if (key == 'o') return true; break;
-         case 80: if (key == 'p') return true; break;
-         case 81: if (key == 'q') return true; break;
-         case 82: if (key == 'r') return true; break;
-         case 83: if (key == 's') return true; break;
-         case 84: if (key == 't') return true; break;
-         case 85: if (key == 'u') return true; break;
-         case 86: if (key == 'v') return true; break;
-         case 87: if (key == 'w') return true; break;
-         case 88: if (key == 'x') return true; break;
-         case 89: if (key == 'y') return true; break;
-         case 90: if (key == 'z') return true; break;
-         case 91: if (key == 'left window') return true; break;
-         case 92: if (key == 'right window') return true; break;
-         case 93: if (key == 'select key') return true; break;
-         case 96: if (key == 'n0') return true; break;
-         case 97: if (key == 'n1') return true; break;
-         case 98: if (key == 'n2') return true; break;
-         case 99: if (key == 'n3') return true; break;
-         case 100: if (key == 'n4') return true; break;
-         case 101: if (key == 'n5') return true; break;
-         case 102: if (key == 'n6') return true; break;
-         case 103: if (key == 'n7') return true; break;
-         case 104: if (key == 'n8') return true; break;
-         case 105: if (key == 'n9') return true; break;
-         case 106: if (key == 'multiply') return true; break;
-         case 107: if (key == 'add') return true; break;
-         case 109: if (key == 'subtract') return true; break;
-         case 110: if (key == 'dec') return true; break;
-         case 111: if (key == 'divide') return true; break;
-         case 112: if (key == 'f1') return true; break;
-         case 113: if (key == 'f2') return true; break;
-         case 114: if (key == 'f3') return true; break;
-         case 115: if (key == 'f4') return true; break;
-         case 116: if (key == 'f5') return true; break;
-         case 117: if (key == 'f6') return true; break;
-         case 118: if (key == 'f7') return true; break;
-         case 119: if (key == 'f8') return true; break;
-         case 120: if (key == 'f9') return true; break;
-         case 121: if (key == 'f10') return true; break;
-         case 122: if (key == 'f11') return true; break;
-         case 123: if (key == 'f12') return true; break;
-         case 144: if (key == 'num lock') return true; break;
-         case 156: if (key == 'scroll lock') return true; break;
-         case 186: if (key == 'semi-colon') return true; break;
-         case 187: if (key == 'equal') return true; break;
-         case 188: if (key == 'comma') return true; break;
-         case 189: if (key == 'dash') return true; break;
-         case 190: if (key == 'period') return true; break;
-         case 191: if (key == 'forward slash') return true; break;
-         case 192: if (key == 'grave accent') return true; break;
-         case 219: if (key == 'open bracket') return true; break;
-         case 220: if (key == 'back slash') return true; break;
-         case 221: if (key == 'close bracket') return true; break;
-         case 222: if (key == 'single quote') return true; break;
-         default: return false;
+   iio.getKeyString=function(e){
+      var _k=[];
+      switch(e.keyCode){
+         case 8: _k[_k.length]='backspace'; break;
+         case 9: _k[_k.length]='tab'; break;
+         case 13: _k[_k.length]='enter'; break;
+         case 16: _k[_k.length]='shift'; break;
+         case 17: _k[_k.length]='ctrl'; break;
+         case 18: _k[_k.length]='alt'; break;
+         case 19: _k[_k.length]='pause'; break;
+         case 20: _k[_k.length]='caps lock'; break;
+         case 27: _k[_k.length]='escape'; break;
+         case 32: _k[_k.length]='space'; break;
+         case 33: _k[_k.length]='page up'; break;
+         case 34: _k[_k.length]='page down'; break;
+         case 35: _k[_k.length]='end'; break;
+         case 36: _k[_k.length]='home'; break;
+         case 37: _k[_k.length]='left arrow'; break;
+         case 38: _k[_k.length]='up arrow'; break;
+         case 39: _k[_k.length]='right arrow'; break;
+         case 40: _k[_k.length]='down arrow'; break;
+         case 45: _k[_k.length]='insert'; break;
+         case 46: _k[_k.length]='delete'; break;
+         case 48: _k[_k.length]='0'; break;
+         case 49: _k[_k.length]='1'; break;
+         case 50: _k[_k.length]='2'; break;
+         case 51: _k[_k.length]='3'; break;
+         case 52: _k[_k.length]='4'; break;
+         case 53: _k[_k.length]='5'; break;
+         case 54: _k[_k.length]='6'; break;
+         case 55: _k[_k.length]='7'; break;
+         case 56: _k[_k.length]='8'; break;
+         case 57: _k[_k.length]='9'; break;
+         case 65: _k[_k.length]='a'; break;
+         case 66: _k[_k.length]='b'; break;
+         case 67: _k[_k.length]='c'; break;
+         case 68: _k[_k.length]='d'; break;
+         case 69: _k[_k.length]='e'; break;
+         case 70: _k[_k.length]='f'; break;
+         case 71: _k[_k.length]='g'; break;
+         case 72: _k[_k.length]='h'; break;
+         case 73: _k[_k.length]='i'; break;
+         case 74: _k[_k.length]='j'; break;
+         case 75: _k[_k.length]='k'; break;
+         case 76: _k[_k.length]='l'; break;
+         case 77: _k[_k.length]='m'; break;
+         case 78: _k[_k.length]='n'; break;
+         case 79: _k[_k.length]='o'; break;
+         case 80: _k[_k.length]='p'; break;
+         case 81: _k[_k.length]='q'; break;
+         case 82: _k[_k.length]='r'; break;
+         case 83: _k[_k.length]='s'; break;
+         case 84: _k[_k.length]='t'; break;
+         case 85: _k[_k.length]='u'; break;
+         case 86: _k[_k.length]='v'; break;
+         case 87: _k[_k.length]='w'; break;
+         case 88: _k[_k.length]='x'; break;
+         case 89: _k[_k.length]='y'; break;
+         case 90: _k[_k.length]='z'; break;
+         case 91: _k[_k.length]='left window'; break;
+         case 92: _k[_k.length]='right window'; break;
+         case 93: _k[_k.length]='select key'; break;
+         case 96: _k[_k.length]='n0'; break;
+         case 97: _k[_k.length]='n1'; break;
+         case 98: _k[_k.length]='n2'; break;
+         case 99: _k[_k.length]='n3'; break;
+         case 100: _k[_k.length]='n4'; break;
+         case 101: _k[_k.length]='n5'; break;
+         case 102: _k[_k.length]='n6'; break;
+         case 103: _k[_k.length]='n7'; break;
+         case 104: _k[_k.length]='n8'; break;
+         case 105: _k[_k.length]='n9'; break;
+         case 106: _k[_k.length]='multiply'; break;
+         case 107: _k[_k.length]='add'; break;
+         case 109: _k[_k.length]='subtract'; break;
+         case 110: _k[_k.length]='dec'; break;
+         case 111: _k[_k.length]='divide'; break;
+         case 112: _k[_k.length]='f1'; break;
+         case 113: _k[_k.length]='f2'; break;
+         case 114: _k[_k.length]='f3'; break;
+         case 115: _k[_k.length]='f4'; break;
+         case 116: _k[_k.length]='f5'; break;
+         case 117: _k[_k.length]='f6'; break;
+         case 118: _k[_k.length]='f7'; break;
+         case 119: _k[_k.length]='f8'; break;
+         case 120: _k[_k.length]='f9'; break;
+         case 121: _k[_k.length]='f10'; break;
+         case 122: _k[_k.length]='f11'; break;
+         case 123: _k[_k.length]='f12'; break;
+         case 144: _k[_k.length]='num lock'; break;
+         case 156: _k[_k.length]='scroll lock'; break;
+         case 186: _k[_k.length]='semi-colon'; break;
+         case 187: _k[_k.length]='equal'; break;
+         case 188: _k[_k.length]='comma'; break;
+         case 189: _k[_k.length]='dash'; break;
+         case 190: _k[_k.length]='period'; break;
+         case 191: _k[_k.length]='forward slash'; break;
+         case 192: _k[_k.length]='grave accent'; break;
+         case 219: _k[_k.length]='open bracket'; break;
+         case 220: _k[_k.length]='back slash'; break;
+         case 221: _k[_k.length]='close bracket'; break;
+         case 222: _k[_k.length]='single quote'; break;
+         default:_k[_k.length]='undefined';
+      } return _k;
+   }
+   iio.keyCodeIs = function(key,event){
+      if (!(key instanceof Array)) key=[key];
+      var str=iio.getKeyString(event);
+      var j;
+      for (var _k=0;_k<key.length;_k++){
+         for (j=0;j<str.length;j++) 
+            if(str[j]==key[_k])
+               return true;
       }
+      return false;
    }
    if (typeof soundManager != 'undefined'){
       iio.playSound = function(url){
@@ -781,12 +793,101 @@ var iio = {};
                  .setLineHeight(this.lineheight);
       return t;
    }
+   Text.prototype.keyboardEdit=function(e,cI,shift){
+      var keys=iio.getKeyString(e);
+      var pre=this.text.substring(0,cI);
+      var suf=this.text.substring(cI);
+      for(var i=0;i<keys.length;i++){
+         if(keys[i].length>1){
+            if(keys[i]=='backspace') {
+               this.text=pre.substring(0,pre.length-1)+suf;
+               return cI-1;
+            }
+            if(keys[i]=='delete') {
+               this.text=pre+suf.substring(1);
+               return cI;
+            }
+            if(keys[i]=='semi-colon'){
+               if (shift) this.text=pre+':'+suf;
+               else this.text=pre+';'+suf;
+               cI++;
+            }
+            if(keys[i]=='equal') {
+               if (shift) this.text=pre+'+'+suf;
+               else this.text=pre+'='+suf;
+               cI++;
+            }
+            if(keys[i]=='comma') {
+               if (shift) this.text=pre+'<'+suf;
+               else this.text=pre+','+suf;
+               cI++;
+            }
+            if(keys[i]=='dash') {
+               if (shift) this.text=pre+'_'+suf;
+               else this.text=pre+'-'+suf;
+               cI++;
+            }
+            if(keys[i]=='period') {
+               if (shift) this.text=pre+'>'+suf;
+               else this.text=pre+'.'+suf;
+               cI++;
+            }
+            if(keys[i]=='forward slash') {
+               if (shift) this.text=pre+'?'+suf;
+               else this.text=pre+'/'+suf;
+               cI++;
+            }
+            if(keys[i]=='grave accent') {
+               if (shift) this.text=pre+'~'+suf;
+               else this.text=pre+'`'+suf;
+               cI++;
+            }
+            if(keys[i]=='open bracket') {
+               if (shift) this.text=pre+'{'+suf;
+               else this.text=pre+'['+suf;
+               cI++;
+            }
+            if(keys[i]=='back slash') {
+               if (shift) this.text=pre+'|'+suf;
+               else this.text=pre+"/"+suf;
+               cI++;
+            }
+            if(keys[i]=='close bracket') {
+               if (shift) this.text=pre+'}'+suf;
+               else this.text=pre+']'+suf;
+               cI++;
+            }
+            if(keys[i]=='single quote') {
+               if (shift) this.text=pre+'"'+suf;
+               else this.text=pre+"'"+suf;
+               cI++;
+            }
+            if(keys[i]=='space') {
+               this.text=pre+" "+suf;
+               cI++;
+            }
+         } else {
+            if(shift) this.text=pre+keys[i].charAt(0).toUpperCase()+suf;
+            else this.text=pre+keys[i]+suf;
+            cI++;
+         }
+      }
+      return cI;
+   }
+   Text.prototype.getX = function(ctx,i){
+      var tt=this.text.substring(0,i);
+      ctx.font=this.font;
+      var w=ctx.measureText(tt).width;
+      return this.left()+ctx.measureText(tt).width;
+   }
    Text.prototype.setText = function(t){this.text = t;return this;}
+   Text.prototype.addText = function(t){this.text=this.text+t;return this;}
    Text.prototype.setFont = function(f){this.font = f;return this;}
    Text.prototype.setWrap	=	function(w) { this.wrap = w;return this;}
    Text.prototype.setLineHeight	=	function(l) { this.lineheight = l;return this;}
    Text.prototype.setTextAlign = function(tA){this.textAlign = tA;return this;}
 })();
+
 
 //Shape
 (function (){
@@ -1672,14 +1773,20 @@ var iio = {};
       return this.pos.y+parseInt(this.font,10);
    }
    iio.Text.prototype.right = function(){
+      this.ctx.save();
+      this.ctx.font=this.font;
       if (this.textAlign=='center') return this.pos.x+this.ctx.measureText(this.text).width/2;
       else if (this.textAlign=='right'||this.textAlign=='end') return this.pos.x;
       else return this.pos.x+this.ctx.measureText(this.text).width;
+      this.ctx.restore();
    }
    iio.Text.prototype.left = function(){
+      this.ctx.save();
+      this.ctx.font=this.font;
       if (this.textAlign=='center') return this.pos.x-this.ctx.measureText(this.text).width/2;
       else if (this.textAlign=='right'||this.textAlign=='end') return this.pos.x-this.ctx.measureText(this.text).width;
       else return this.pos.x;
+      this.ctx.restore();
    }
    iio.Text.prototype.clearSelf = function(ctx){
       this.ctx=ctx||this.ctx;
