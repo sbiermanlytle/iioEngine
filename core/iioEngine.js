@@ -321,118 +321,115 @@ var iio = {};
       return false;
    }
    iio.getKeyString=function(e){
-      var _k=[];
       switch(e.keyCode){
-         case 8: _k[_k.length]='backspace'; break;
-         case 9: _k[_k.length]='tab'; break;
-         case 13: _k[_k.length]='enter'; break;
-         case 16: _k[_k.length]='shift'; break;
-         case 17: _k[_k.length]='ctrl'; break;
-         case 18: _k[_k.length]='alt'; break;
-         case 19: _k[_k.length]='pause'; break;
-         case 20: _k[_k.length]='caps lock'; break;
-         case 27: _k[_k.length]='escape'; break;
-         case 32: _k[_k.length]='space'; break;
-         case 33: _k[_k.length]='page up'; break;
-         case 34: _k[_k.length]='page down'; break;
-         case 35: _k[_k.length]='end'; break;
-         case 36: _k[_k.length]='home'; break;
-         case 37: _k[_k.length]='left arrow'; break;
-         case 38: _k[_k.length]='up arrow'; break;
-         case 39: _k[_k.length]='right arrow'; break;
-         case 40: _k[_k.length]='down arrow'; break;
-         case 45: _k[_k.length]='insert'; break;
-         case 46: _k[_k.length]='delete'; break;
-         case 48: _k[_k.length]='0'; break;
-         case 49: _k[_k.length]='1'; break;
-         case 50: _k[_k.length]='2'; break;
-         case 51: _k[_k.length]='3'; break;
-         case 52: _k[_k.length]='4'; break;
-         case 53: _k[_k.length]='5'; break;
-         case 54: _k[_k.length]='6'; break;
-         case 55: _k[_k.length]='7'; break;
-         case 56: _k[_k.length]='8'; break;
-         case 57: _k[_k.length]='9'; break;
-         case 65: _k[_k.length]='a'; break;
-         case 66: _k[_k.length]='b'; break;
-         case 67: _k[_k.length]='c'; break;
-         case 68: _k[_k.length]='d'; break;
-         case 69: _k[_k.length]='e'; break;
-         case 70: _k[_k.length]='f'; break;
-         case 71: _k[_k.length]='g'; break;
-         case 72: _k[_k.length]='h'; break;
-         case 73: _k[_k.length]='i'; break;
-         case 74: _k[_k.length]='j'; break;
-         case 75: _k[_k.length]='k'; break;
-         case 76: _k[_k.length]='l'; break;
-         case 77: _k[_k.length]='m'; break;
-         case 78: _k[_k.length]='n'; break;
-         case 79: _k[_k.length]='o'; break;
-         case 80: _k[_k.length]='p'; break;
-         case 81: _k[_k.length]='q'; break;
-         case 82: _k[_k.length]='r'; break;
-         case 83: _k[_k.length]='s'; break;
-         case 84: _k[_k.length]='t'; break;
-         case 85: _k[_k.length]='u'; break;
-         case 86: _k[_k.length]='v'; break;
-         case 87: _k[_k.length]='w'; break;
-         case 88: _k[_k.length]='x'; break;
-         case 89: _k[_k.length]='y'; break;
-         case 90: _k[_k.length]='z'; break;
-         case 91: _k[_k.length]='left window'; break;
-         case 92: _k[_k.length]='right window'; break;
-         case 93: _k[_k.length]='select key'; break;
-         case 96: _k[_k.length]='n0'; break;
-         case 97: _k[_k.length]='n1'; break;
-         case 98: _k[_k.length]='n2'; break;
-         case 99: _k[_k.length]='n3'; break;
-         case 100: _k[_k.length]='n4'; break;
-         case 101: _k[_k.length]='n5'; break;
-         case 102: _k[_k.length]='n6'; break;
-         case 103: _k[_k.length]='n7'; break;
-         case 104: _k[_k.length]='n8'; break;
-         case 105: _k[_k.length]='n9'; break;
-         case 106: _k[_k.length]='multiply'; break;
-         case 107: _k[_k.length]='add'; break;
-         case 109: _k[_k.length]='subtract'; break;
-         case 110: _k[_k.length]='dec'; break;
-         case 111: _k[_k.length]='divide'; break;
-         case 112: _k[_k.length]='f1'; break;
-         case 113: _k[_k.length]='f2'; break;
-         case 114: _k[_k.length]='f3'; break;
-         case 115: _k[_k.length]='f4'; break;
-         case 116: _k[_k.length]='f5'; break;
-         case 117: _k[_k.length]='f6'; break;
-         case 118: _k[_k.length]='f7'; break;
-         case 119: _k[_k.length]='f8'; break;
-         case 120: _k[_k.length]='f9'; break;
-         case 121: _k[_k.length]='f10'; break;
-         case 122: _k[_k.length]='f11'; break;
-         case 123: _k[_k.length]='f12'; break;
-         case 144: _k[_k.length]='num lock'; break;
-         case 156: _k[_k.length]='scroll lock'; break;
-         case 186: _k[_k.length]='semi-colon'; break;
-         case 187: _k[_k.length]='equal'; break;
-         case 188: _k[_k.length]='comma'; break;
-         case 189: _k[_k.length]='dash'; break;
-         case 190: _k[_k.length]='period'; break;
-         case 191: _k[_k.length]='forward slash'; break;
-         case 192: _k[_k.length]='grave accent'; break;
-         case 219: _k[_k.length]='open bracket'; break;
-         case 220: _k[_k.length]='back slash'; break;
-         case 221: _k[_k.length]='close bracket'; break;
-         case 222: _k[_k.length]='single quote'; break;
-         default:_k[_k.length]='undefined';
-      } return _k;
+         case 8: return'backspace';
+         case 9: return'tab';
+         case 13: return'enter';
+         case 16: return'shift';
+         case 17: return'ctrl';
+         case 18: return'alt';
+         case 19: return'pause';
+         case 20: return'caps lock';
+         case 27: return'escape';
+         case 32: return'space';
+         case 33: return'page up';
+         case 34: return'page down';
+         case 35: return'end';
+         case 36: return'home';
+         case 37: return'left arrow';
+         case 38: return'up arrow';
+         case 39: return'right arrow';
+         case 40: return'down arrow';
+         case 45: return'insert';
+         case 46: return'delete';
+         case 48: return'0';
+         case 49: return'1';
+         case 50: return'2';
+         case 51: return'3';
+         case 52: return'4';
+         case 53: return'5';
+         case 54: return'6';
+         case 55: return'7';
+         case 56: return'8';
+         case 57: return'9';
+         case 65: return'a';
+         case 66: return'b';
+         case 67: return'c';
+         case 68: return'd';
+         case 69: return'e';
+         case 70: return'f';
+         case 71: return'g';
+         case 72: return'h';
+         case 73: return'i';
+         case 74: return'j';
+         case 75: return'k';
+         case 76: return'l';
+         case 77: return'm';
+         case 78: return'n';
+         case 79: return'o';
+         case 80: return'p';
+         case 81: return'q';
+         case 82: return'r';
+         case 83: return's';
+         case 84: return't';
+         case 85: return'u';
+         case 86: return'v';
+         case 87: return'w';
+         case 88: return'x';
+         case 89: return'y';
+         case 90: return'z';
+         case 91: return'left window';
+         case 92: return'right window';
+         case 93: return'select key';
+         case 96: return'n0';
+         case 97: return'n1';
+         case 98: return'n2';
+         case 99: return'n3';
+         case 100: return'n4';
+         case 101: return'n5';
+         case 102: return'n6';
+         case 103: return'n7';
+         case 104: return'n8';
+         case 105: return'n9';
+         case 106: return'multiply';
+         case 107: return'add';
+         case 109: return'subtract';
+         case 110: return'dec';
+         case 111: return'divide';
+         case 112: return'f1';
+         case 113: return'f2';
+         case 114: return'f3';
+         case 115: return'f4';
+         case 116: return'f5';
+         case 117: return'f6';
+         case 118: return'f7';
+         case 119: return'f8';
+         case 120: return'f9';
+         case 121: return'f10';
+         case 122: return'f11';
+         case 123: return'f12';
+         case 144: return'num lock';
+         case 156: return'scroll lock';
+         case 186: return'semi-colon';
+         case 187: return'equal';
+         case 188: return'comma';
+         case 189: return'dash';
+         case 190: return'period';
+         case 191: return'forward slash';
+         case 192: return'grave accent';
+         case 219: return'open bracket';
+         case 220: return'back slash';
+         case 221: return'close bracket';
+         case 222: return'single quote';
+         default:return'undefined';
+      }
    }
    iio.keyCodeIs = function(key,event){
       if (!(key instanceof Array)) key=[key];
       var str=iio.getKeyString(event);
-      var j;
       for (var _k=0;_k<key.length;_k++){
-         for (j=0;j<str.length;j++) 
-            if(str[j]==key[_k])
-               return true;
+         if(str==key[_k])
+            return true;
       }
       return false;
    }
@@ -793,84 +790,90 @@ var iio = {};
                  .setLineHeight(this.lineheight);
       return t;
    }
-   Text.prototype.keyboardEdit=function(e,cI,shift){
-      var keys=iio.getKeyString(e);
+   Text.prototype.keyboardEdit=function(e,cI,shift,fn){
+      var key=iio.getKeyString(e);
+      var str;
       var pre=this.text.substring(0,cI);
       var suf=this.text.substring(cI);
-      for(var i=0;i<keys.length;i++){
-         if(keys[i].length>1){
-            if(keys[i]=='backspace') {
-               this.text=pre.substring(0,pre.length-1)+suf;
-               return cI-1;
-            }
-            if(keys[i]=='delete') {
-               this.text=pre+suf.substring(1);
-               return cI;
-            }
-            if(keys[i]=='semi-colon'){
-               if (shift) this.text=pre+':'+suf;
-               else this.text=pre+';'+suf;
-               cI++;
-            }
-            if(keys[i]=='equal') {
-               if (shift) this.text=pre+'+'+suf;
-               else this.text=pre+'='+suf;
-               cI++;
-            }
-            if(keys[i]=='comma') {
-               if (shift) this.text=pre+'<'+suf;
-               else this.text=pre+','+suf;
-               cI++;
-            }
-            if(keys[i]=='dash') {
-               if (shift) this.text=pre+'_'+suf;
-               else this.text=pre+'-'+suf;
-               cI++;
-            }
-            if(keys[i]=='period') {
-               if (shift) this.text=pre+'>'+suf;
-               else this.text=pre+'.'+suf;
-               cI++;
-            }
-            if(keys[i]=='forward slash') {
-               if (shift) this.text=pre+'?'+suf;
-               else this.text=pre+'/'+suf;
-               cI++;
-            }
-            if(keys[i]=='grave accent') {
-               if (shift) this.text=pre+'~'+suf;
-               else this.text=pre+'`'+suf;
-               cI++;
-            }
-            if(keys[i]=='open bracket') {
-               if (shift) this.text=pre+'{'+suf;
-               else this.text=pre+'['+suf;
-               cI++;
-            }
-            if(keys[i]=='back slash') {
-               if (shift) this.text=pre+'|'+suf;
-               else this.text=pre+"/"+suf;
-               cI++;
-            }
-            if(keys[i]=='close bracket') {
-               if (shift) this.text=pre+'}'+suf;
-               else this.text=pre+']'+suf;
-               cI++;
-            }
-            if(keys[i]=='single quote') {
-               if (shift) this.text=pre+'"'+suf;
-               else this.text=pre+"'"+suf;
-               cI++;
-            }
-            if(keys[i]=='space') {
-               this.text=pre+" "+suf;
-               cI++;
-            }
-         } else {
-            if(shift) this.text=pre+keys[i].charAt(0).toUpperCase()+suf;
-            else this.text=pre+keys[i]+suf;
+      if(typeof fn!='undefined'){
+         str=fn(key,shift,pre,suf);
+         if (str!=false){
+            this.text=pre+str+suf;
+            return cI+1;
+         }
+      }
+      if(key.length>1){
+         if(key=='backspace') {
+            this.text=pre.substring(0,pre.length-1)+suf;
+            return cI-1;
+         }
+         if(key=='delete') {
+            this.text=pre+suf.substring(1);
+            return cI;
+         }
+         if(key=='semi-colon'){
+            if (shift) this.text=pre+':'+suf;
+            else this.text=pre+';'+suf;
             cI++;
          }
+         if(key=='equal') {
+            if (shift) this.text=pre+'+'+suf;
+            else this.text=pre+'='+suf;
+            cI++;
+         }
+         if(key=='comma') {
+            if (shift) this.text=pre+'<'+suf;
+            else this.text=pre+','+suf;
+            cI++;
+         }
+         if(key=='dash') {
+            if (shift) this.text=pre+'_'+suf;
+            else this.text=pre+'-'+suf;
+            cI++;
+         }
+         if(key=='period') {
+            if (shift) this.text=pre+'>'+suf;
+            else this.text=pre+'.'+suf;
+            cI++;
+         }
+         if(key=='forward slash') {
+            if (shift) this.text=pre+'?'+suf;
+            else this.text=pre+'/'+suf;
+            cI++;
+         }
+         if(key=='grave accent') {
+            if (shift) this.text=pre+'~'+suf;
+            else this.text=pre+'`'+suf;
+            cI++;
+         }
+         if(key=='open bracket') {
+            if (shift) this.text=pre+'{'+suf;
+            else this.text=pre+'['+suf;
+            cI++;
+         }
+         if(key=='back slash') {
+            if (shift) this.text=pre+'|'+suf;
+            else this.text=pre+"/"+suf;
+            cI++;
+         }
+         if(key=='close bracket') {
+            if (shift) this.text=pre+'}'+suf;
+            else this.text=pre+']'+suf;
+            cI++;
+         }
+         if(key=='single quote') {
+            if (shift) this.text=pre+'"'+suf;
+            else this.text=pre+"'"+suf;
+            cI++;
+         }
+         if(key=='space') {
+            this.text=pre+" "+suf;
+            cI++;
+         }
+      } else {
+         if(shift) this.text=pre+key.charAt(0).toUpperCase()+suf;
+         else this.text=pre+key+suf;
+         cI++;
       }
       return cI;
    }
