@@ -1691,9 +1691,9 @@ var iio = {};
       if (typeof ctx != 'undefined'){
          this.clearDraw(ctx);
          this.draw(ctx);
-         if(fnParams!="undefined")fn(fnParams);
-         else fn();
       }
+      if(fnParams!="undefined")fn(fnParams);
+      else fn();
       return this;
    }
    function setAnimKey(key){
