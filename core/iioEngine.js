@@ -1,9 +1,13 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 10/29/2013
+Last Update 11/11/2013
 
 PARAMETER CHANGE NOTICE:
+- setAnim(key,fn,frame,ctx)
+   fn can be a function or a parameter
+   setAnim(key,frame,ctx) still works
+   setAnim(key,ctx) still works
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
    if you only specify a tag, all the objects from that group will be removed
 -the io.setBGImage function now has the parameters (src, scaleToFullScreen, canvasIndex)
@@ -1220,6 +1224,18 @@ var iio = {};
       ctx.lineTo(x2,y2);
       ctx.stroke();
    }
+   iio.Graphics.drawLine = function(ctx,v1,v2,x2,y2){
+      if (typeof v2.x != 'undefined'){
+         x2=v2.x;
+         y2=v2.y;
+      }
+      v2=v1.y||v2;
+      v1=v1.x||v1;
+      ctx.beginPath();
+      ctx.moveTo(v1,v2);
+      ctx.lineTo(x2,y2);
+      ctx.stroke();
+   }
    iio.Graphics.drawDottedLine = function(ctx,da,v1,v2,x2,y2){
       if (typeof v2.x != 'undefined'){
          x2=v2.x;
@@ -1657,12 +1673,17 @@ var iio = {};
       }
       return this;
    }
-   function setAnim(key,frame,ctx){
+   function setAnim(key,fn,frame,ctx){
       if (typeof this.fsID!='undefined'){
          clearTimeout(this.fsID);
          this.fsID=undefined;
-      }
-      if (typeof frame!='undefined')
+      }if (iio.isNumber(fn)){
+         frame=fn;ctx=frame;
+         fn=iio.emptyFn;
+      } else if(fn instanceof array){
+         fn=fn[0];
+         var fnParams=fn[1];
+      } if (typeof frame!='undefined')
          if (!iio.isNumber(frame))
             ctx=ctx||frame;
       this.animFrame=frame||0;
@@ -1670,6 +1691,8 @@ var iio = {};
       if (typeof ctx != 'undefined'){
          this.clearDraw(ctx);
          this.draw(ctx);
+         if(fnParams!="undefined")fn(fnParams);
+         else fn();
       }
       return this;
    }
