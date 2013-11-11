@@ -5,7 +5,7 @@ Last Update 11/11/2013
 
 PARAMETER CHANGE NOTICE:
 - setAnim(key,fn,frame,ctx)
-   fn can be a function or a parameter
+   fn can be a function or an array [fn,fnParams]
    setAnim(key,frame,ctx) still works
    setAnim(key,ctx) still works
 -the io.rmvFromGroup function now has the parameters (tag, obj, canvasIndex)
