@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 11/11/2013
+Last Update 11/20/2013
 
 PARAMETER CHANGE NOTICE:
 - setAnim(key,fn,frame,ctx)
@@ -1680,7 +1680,7 @@ var iio = {};
       }if (iio.isNumber(fn)){
          frame=fn;ctx=frame;
          fn=iio.emptyFn;
-      } else if(fn instanceof array){
+      } else if(fn instanceof Array){
          fn=fn[0];
          var fnParams=fn[1];
       } if (typeof frame!='undefined')
@@ -2748,9 +2748,9 @@ var iio = {};
          obj.draw(this.ctxs[c]);
       return obj;
    }
-   AppManager.prototype.indexFromzIndexInsertSort = function(zIndex, array){
+   AppManager.prototype.indexFromzIndexInsertSort = function(zIndex, arr){
       var i = 0;
-      while(i<array.length && array[i].zIndex < zIndex) i++;
+      while(i<arr.length && arr[i].zIndex < zIndex) i++;
       return i;
    }
    AppManager.prototype.indexOfTag = function(tag, c){
