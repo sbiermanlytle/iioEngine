@@ -1,7 +1,7 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 11/20/2013
+Last Update 11/23/2013
 
 PARAMETER CHANGE NOTICE:
 - setAnim(key,fn,frame,ctx)
@@ -1404,7 +1404,7 @@ var iio = {};
 
    //Constructor
    SpriteMap.prototype.SpriteMap = function(src,sprW,sprH,onLoadCallback,callbackParams) {
-      onLoadCallback=onLoadCallback||sprW||iio.emptyFn;
+      onLoadCallback=onLoadCallback||sprW||function(){};
       if (sprW!=onLoadCallback) this.sW=sprW||0;
       else this.sW=0;
       this.sH=sprH||0;
@@ -1662,6 +1662,11 @@ var iio = {};
       io.setNoDrawFramerate(fps,function(){this.nextAnimFrame()}.bind(this),this,io.ctxs[c||0]);
       return this;
    }
+   function play1Anim(tag,fps,io,draw,c,f){
+      return this.playAnim(tag,fps,io,draw,c,function(){
+         this.stopAnim();
+      }.bind(this));
+   }
    function stopAnim(key,ctx){
       clearTimeout(this.fsID);
       this.fsID=undefined;
@@ -1679,11 +1684,12 @@ var iio = {};
          this.fsID=undefined;
       }if (iio.isNumber(fn)){
          frame=fn;ctx=frame;
-         fn=iio.emptyFn;
+         fn=function(){};
       } else if(fn instanceof Array){
          fn=fn[0];
          var fnParams=fn[1];
-      } if (typeof frame!='undefined')
+      } else fn=function(){};
+      if (typeof frame!='undefined')
          if (!iio.isNumber(frame))
             ctx=ctx||frame;
       this.animFrame=frame||0;
@@ -1740,6 +1746,7 @@ var iio = {};
    iio.Shape.prototype.setAnimFrame=setAnimFrame;
    iio.Shape.prototype.setAnimKey=setAnimKey;
    iio.Shape.prototype.playAnim=playAnim;
+   iio.Shape.prototype.play1Anim=play1Anim;
    iio.Shape.prototype.stopAnim=stopAnim;
    iio.Shape.prototype.setAnim=setAnim;
 
@@ -1826,6 +1833,7 @@ var iio = {};
       else return clearShape(this.ctx,this,m.width,fs,0,-fs/2);
    }
    iio.Text.prototype.draw = function(ctx){
+      if(typeof ctx=='undefined')return this;
       this.ctx=ctx||this.ctx;
       iio.Graphics.prepStyledContext(this.ctx,this.styles);
       iio.Graphics.transformContext(this.ctx,this.pos,this.rotation);
@@ -1861,6 +1869,7 @@ var iio = {};
       return this;
    }
    function drawRect(ctx,pos,r){
+      if(typeof ctx=='undefined')return this;
       ctx=iio.Graphics.prepTransformedContext(ctx,this,pos,r);
       iio.Graphics.drawRectShadow(ctx,this);
       if (typeof this.styles != 'undefined'&&typeof this.styles.rounding!='undefined'&& this.styles.rounding!=0)
@@ -1891,6 +1900,7 @@ var iio = {};
       return this;
    }
    function drawCircle(ctx,pos,r){
+      if(typeof ctx=='undefined')return this;
       ctx=iio.Graphics.prepTransformedContext(ctx,this,pos,r);
       ctx.beginPath();
       ctx.arc(0,0,this.radius,0,2*Math.PI,false);
@@ -1917,6 +1927,7 @@ var iio = {};
    iio.Circle.prototype.draw=drawCircle;
    iio.Circle.prototype.setPolyDraw=setPolyDraw;
    iio.Poly.prototype.draw = function(ctx){
+      if(typeof ctx=='undefined')return this;
       ctx=iio.Graphics.prepTransformedContext(ctx,this);
       ctx.beginPath();
       ctx.moveTo(this.vertices[0].x,this.vertices[0].y);
@@ -2018,6 +2029,7 @@ var iio = {};
       b2Shape.prototype.setAnimFrame=setAnimFrame;
       b2Shape.prototype.setAnimKey=setAnimKey;
       b2Shape.prototype.playAnim=playAnim;
+      b2Shape.prototype.play1Anim=play1Anim;
       b2Shape.prototype.stopAnim=stopAnim;
       b2CircleShape.prototype.draw = drawCircle;
       b2CircleShape.prototype.setPolyDraw = setPolyDraw;
@@ -2337,7 +2349,7 @@ var iio = {};
             var realCallback = ctx;
          ctx=obj||this.ctxs[0];
          obj=callback;
-         callback = realCallback||iio.emptyFn;
+         callback = realCallback||function(){};
          obj.ctx=ctx;
       } else obj=obj||0;
       if (iio.isNumber(obj))
@@ -2368,7 +2380,7 @@ var iio = {};
             var realCallback = ctx;
          ctx=obj||this.ctxs[0];
          obj=callback;
-         callback = realCallback||iio.emptyFn;
+         callback = realCallback||function(){};
          obj.ctx=ctx;
       } else obj=obj||0;
       if (iio.isNumber(obj))
