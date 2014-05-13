@@ -1,0 +1,33 @@
+<!-- 
+	iio Engine v1.3.2 preview
+	*************************
+	the source code for 1.3.2 is not yet available for download
+
+	Live Demo: http://iioengine.com/1.3/demos/color_grid.htm
+ -->
+<!DOCTYPE html>
+<html>
+	<header>
+		<script type="text/javascript" src="iioEngine.1.3.2.js"></script>
+		<style>
+			html,body,canvas{margin:0;padding:0;}
+			html,body{
+				position:absolute;
+				height:100%;
+				width:100%;
+				overflow:hidden;
+			}
+			canvas{float:left}
+		</style>
+	</header>
+	<body>  
+		<script type="text/javascript">
+		var outline=6;
+		var size=window.innerWidth/10-outline;
+		document.body.style.width=window.innerWidth+size+'px';
+		for(var y=0;y<(window.innerHeight+size)/size;y++)
+			for(var x=0;x<(window.innerWidth+size)/size;x++)
+				iio.start('loop 15 randomColor outline randomColor '+outline,size,document.body);
+		</script>
+	</body>
+</html>

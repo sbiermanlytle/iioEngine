@@ -1,0 +1,263 @@
+<!-- 
+	iio Engine v1.3.2 preview
+	*************************
+	the source code for 1.3.2 is not yet available for download
+	this document previews the new syntax and gives examples of different
+		ways to use iio
+
+	Live Demo: http://iioengine.com/1.3/demos/test_app.htm
+ -->
+<!DOCTYPE html>
+<html style='background:black'>
+	<header>
+		<script type="text/javascript" src="iioEngine.1.3.2.js"></script>
+		<style>
+			html,body,div{
+				margin:20;padding:0;
+			}
+		</style>
+	</header>
+	<body>  
+	  <canvas id="c1" width="40" height="40"></canvas>
+	  <canvas id="c2" width="40" height="40"></canvas>
+	  <canvas id="c3" width="40" height="40"></canvas>
+	  <canvas id="c4" width="40" height="40"></canvas>
+	  <canvas id="c5" width="40" height="40"></canvas>
+	  <canvas id="c6" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="c7" width="36" height="36"></canvas>
+	  <canvas id="c8" width="36" height="36"></canvas>
+	  <canvas id="c9" width="36" height="36"></canvas>
+	  <canvas id="c10" width="36" height="36"></canvas>
+	  <canvas id="c11" width="36" height="36"></canvas>
+	  <canvas id="c12" width="36" height="36"></canvas>
+	  <canvas id="c13" width="36" height="36"></canvas>
+	  <canvas id="c14" width="36" height="36"></canvas>
+	  <br/>
+	  <canvas id="c15" width="40" height="40"></canvas>
+	  <canvas id="c16" width="40" height="40"></canvas>
+	  <canvas id="c17" width="40" height="40"></canvas>
+	  <canvas id="c18" width="40" height="40"></canvas>
+	  <canvas id="c19" width="40" height="40"></canvas>
+	  <canvas id="c191" width="40" height="40"></canvas>
+	  <canvas id="c192" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="c20" width="40" height="40"></canvas>
+	  <canvas id="c21" width="40" height="40"></canvas>
+	  <canvas id="c22" width="40" height="40"></canvas>
+	  <canvas id="c23" width="40" height="40"></canvas>
+	  <canvas id="c24" width="40" height="40"></canvas>
+	  <canvas id="c25" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="c26" width="40" height="40"></canvas>
+	  <canvas id="c27" width="31" height="31"></canvas>
+	  <canvas id="c28" width="40" height="40"></canvas>
+	  <canvas id="c29" width="31" height="31"></canvas>
+	  <canvas id="c30" width="40" height="40"></canvas>
+	  <canvas id="c31" width="31" height="31"></canvas>
+	  <canvas id="c32" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="c33" width="40" height="40"></canvas>
+	  <canvas id="c34" width="31" height="31"></canvas>
+	  <canvas id="c35" width="40" height="40"></canvas>
+	  <canvas id="c36" width="31" height="31"></canvas>
+	  <canvas id="c37" width="40" height="40"></canvas>
+	  <canvas id="c38" width="31" height="31"></canvas>
+	  <canvas id="c39" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="references" width="200" height="200"></canvas>
+		<script type="text/javascript">
+
+/*TEST:Properties*/
+
+//REFERENCE
+	//type
+	iio.start(function(app){
+		console.log('Type: '+app.type);
+		console.log('pos: '+app.pos.toString());
+		console.log('scale: '+app.scale);
+		console.log('width: '+app.width);
+		console.log('height: '+app.height);
+		console.log('center: '+app.center);
+		console.log('canvas: '+app.canvas);
+		console.log('context: '+app.ctx);
+	},'references');
+
+//DISPLAY
+	//TEST:color
+		//iio script
+		iio.start('red','c1');
+
+		//set w/ iio script
+		iio.start(function(app){
+			app.set('#00baff');
+		},'c2');
+
+		//set w/ javascript
+		iio.start(function(app){
+			app.set({color:'red'});
+		},'c3');
+
+		//app property manipulation
+		iio.start(function(app){
+			app.color='#00baff';
+			app.draw();
+		},'c4');
+
+		//canvas style manipulation
+		iio.start(function(app){
+			app.canvas.style.backgroundColor='red';
+		},'c5');
+
+		//canvas context draw
+		iio.start(function(app){
+			app.ctx.fillStyle='#00baff';
+			app.ctx.fillRect(0,0,app.width,app.height);
+		},'c6');
+
+	//TEST:outline & lineWidth
+		//iio script
+		iio.start('red outline 2 #00baff','c7');
+			//test inverses
+			iio.start('#00baff outline red 2','c8');
+			iio.start('outline #00baff 2 red','c9');
+			iio.start('outline 2 red #00baff','c10');
+
+		//set w/ iio script
+		iio.start(function(app){
+			app.set('outline red 2');
+		},'c11');
+
+		//set w/ javascript
+		iio.start(function(app){
+			app.set({
+				outline:'#00baff',
+				lineWidth:2
+			});
+		},'c12');
+
+		//app property manipulation
+		iio.start(function(app){
+			app.outline='red';
+			app.lineWidth=2;
+			app.draw();
+		},'c13');
+
+		//canvas property manipulation
+		iio.start(function(app){
+			app.canvas.style.border='2px solid #00baff';
+		},'c14');
+
+	//TEST:dash & lineCap
+	//UNIMPLEMENTED
+
+	//TEST:alpha
+		//iioScript
+		//using rgba to get opacity
+		iio.start('rgba(255,0,0,.8)','c15');
+		//using alpha
+		iio.start('red alpha .7','c16');
+
+		//set w/ iioScript
+		iio.start(function(app){
+			app.set('red alpha .6')
+		},'c17');
+
+		//set w/ javascript
+		iio.start(function(app){
+			app.set({
+				color:'red',
+				alpha:.5
+			})
+		},'c18');
+
+		//app property manipulation
+		iio.start(function(app){
+			app.color='red';
+			app.alpha=.4;
+			app.draw();
+		},'c19');
+
+		//canvas style manipulation w/ rgba
+		iio.start(function(app){
+			app.canvas.style.backgroundColor='rgba(255,0,0,.3)';
+		},'c191');
+
+		//canvas style manipulation w/ opacity
+		iio.start(function(app){
+			app.canvas.style.backgroundColor='red';
+			app.canvas.style.opacity=.2;
+		},'c192');
+
+	//TEST:round
+		//iioScript
+		iio.start('red round 10px','c20');
+		iio.start('round 50% #00baff','c21');
+
+		//set w/ iioScript
+		iio.start(function(app){
+			app.set('red round 10px 20px');
+		},'c22');
+
+		//set w/ javascript
+		iio.start(function(app){
+			app.set({
+				color:'#00baff',
+				round:'10px 15px 20px 5px'
+			});
+		},'c23');
+
+		//app property manipulation
+		iio.start(function(app){
+			app.color='red';
+			app.round='5px';
+			app.draw();
+		},'c24');
+
+		//canvas style manipulation
+		iio.start(function(app){
+			app.canvas.style.backgroundColor='#00baff';
+			app.canvas.style.borderRadius='50% 0';
+		},'c25');		
+
+	//TEST:fps & loop & redraw
+		
+		//iioScript
+			//loop at 2fps
+			iio.start('loop 2 randomColor','c26');
+			//loop multiple manipulations at 2fps
+			iio.start('loop 2 randomColor outline randomColor 4','c27');
+			//loop at 60fps
+			iio.start('loop randomColor','c28');
+
+		//javascript w/ app function
+			//loop at 2fps
+			iio.start(function(app){
+				app.loop(2,function(){
+					app.set('randomColor outline 4 randomColor');
+				});
+			},'c29');
+			//loop at 60fps
+			iio.start(function(app){
+				app.loop(function(){
+					app.set(iio.randomColor());
+				});
+			},'c30');
+
+		//javascript w/ iio function
+			//loop at 2fps
+			iio.start(function(app){
+				iio.loop(2,app,function(){
+					app.set('outline 4 randomColor randomColor');
+				});
+			},'c31');
+			//loop at 60fps
+			iio.start(function(app){
+				iio.loop(app,function(){
+					app.set(iio.randomColor());
+				});
+			},'c32');
+
+		</script>
+	</body>
+</html>
