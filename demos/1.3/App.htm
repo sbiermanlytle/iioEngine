@@ -2,20 +2,17 @@
 	iio Engine v1.3.2 preview
 	*************************
 	the source code for 1.3.2 is not yet available for download
-	this document previews the ability to import an iioScript app
-		into JavaScript
+	this document previews the ability to start a .iio application
 
 	Live Demo: http://iioengine.com/1.3/demos/App.htm
  -->
 <!DOCTYPE html>
 <html>
 <body>  
-<script type="text/javascript" src="iioEngine.1.3.2.js"></script>
+<script type="text/javascript" src="iioEngine-1.3.2.js"></script>
 <script type="text/javascript">
 
-	var r = iio.read('App.iio',function(s){
-		iio.start(s)
-	});
+		iio.start('App.iio');
 
 </script>
 </body>
