@@ -3,14 +3,14 @@
 	*************************
 	the source code for 1.3.2 is not yet available for download
 	this document previews the new syntax and gives examples of different
-		ways to use iioScript
+		ways to use iio
 
-	Live Demo: http://iioengine.com/1.3/demos/test_iioScript.htm
+	Live Demo: http://iioengine.com/1.3/demos/test_iio.htm
  -->
 <!DOCTYPE html>
 <html style='background:black'>
 	<header>
-		<script type="text/javascript" src="iioEngine.1.2.3.js"></script>
+		<script type="text/javascript" src="iioEngine-1.3.2.js"></script>
 		<style>
 			html,body,div{
 				margin:20;padding:0;
@@ -116,13 +116,13 @@
 		//add a line to another line added to app
 		iio.start('#00baff'
 				+' add 0:height/2 width:height/2 red 10'
-				+' add 0:0 width:height blue 2 alpha .7'
+				+' add 0:0 width:height white 2 alpha .7'
 		,'c26');
 
 		//add two lines to app
 		iio.start('#00baff'
 				+' add 0:height/2 width:height/2 red 10'
-				+' | add 0:0 width:height blue 2 alpha .7'
+				+' | add 0:0 width:height white 2 alpha .7'
 		,'c27');
 
 		//Operators

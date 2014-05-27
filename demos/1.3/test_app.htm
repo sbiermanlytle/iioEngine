@@ -10,7 +10,8 @@
 <!DOCTYPE html>
 <html style='background:black'>
 	<header>
-		<script type="text/javascript" src="iioEngine.1.3.2.js"></script>
+		<script type="text/javascript" src="iioEngine-1.3.2.js"></script>
+		<script type="text/javascript" src="iioDebugger-1.3.3.js"></script>
 		<style>
 			html,body,div{
 				margin:20;padding:0;
@@ -71,24 +72,29 @@
 /*TEST:Properties*/
 
 //REFERENCE
-	//type
 	iio.start(function(app){
-		console.log('Type: '+app.type);
-		console.log('pos: '+app.pos.toString());
-		console.log('scale: '+app.scale);
-		console.log('width: '+app.width);
-		console.log('height: '+app.height);
-		console.log('center: '+app.center);
-		console.log('canvas: '+app.canvas);
-		console.log('context: '+app.ctx);
-	},'references');
+
+		//debugger title
+		app.debug({right:0}).log("app properties for #c1 canvas"
+			,{borderBottom:'1px solid white'});
+
+		//display app properties
+		app.log('type: '+app.type);
+		app.log('pos: '+app.pos.x+':'+app.pos.y);
+		app.log('scale: '+app.scale);
+		app.log('width: '+app.width);
+		app.log('height: '+app.height);
+		app.log('center: '+app.center.x+':'+app.center.y);
+		app.log('canvas: '+app.canvas);
+		app.log('context: '+app.ctx);
+	},'c1');
 
 //DISPLAY
 	//TEST:color
-		//iio script
+		//iio app
 		iio.start('red','c1');
 
-		//set w/ iio script
+		//set w/ iio
 		iio.start(function(app){
 			app.set('#00baff');
 		},'c2');
@@ -98,7 +104,7 @@
 			app.set({color:'red'});
 		},'c3');
 
-		//app property manipulation
+		//property manipulation
 		iio.start(function(app){
 			app.color='#00baff';
 			app.draw();
@@ -116,14 +122,14 @@
 		},'c6');
 
 	//TEST:outline & lineWidth
-		//iio script
+		//iio app
 		iio.start('red outline 2 #00baff','c7');
 			//test inverses
 			iio.start('#00baff outline red 2','c8');
 			iio.start('outline #00baff 2 red','c9');
 			iio.start('outline 2 red #00baff','c10');
 
-		//set w/ iio script
+		//set w/ iio
 		iio.start(function(app){
 			app.set('outline red 2');
 		},'c11');
@@ -152,13 +158,13 @@
 	//UNIMPLEMENTED
 
 	//TEST:alpha
-		//iioScript
-		//using rgba to get opacity
+		//iio app
+			//using rgba to get opacity
 		iio.start('rgba(255,0,0,.8)','c15');
-		//using alpha
+			//using alpha
 		iio.start('red alpha .7','c16');
 
-		//set w/ iioScript
+		//set w/ iio
 		iio.start(function(app){
 			app.set('red alpha .6')
 		},'c17');
@@ -190,11 +196,11 @@
 		},'c192');
 
 	//TEST:round
-		//iioScript
+		//iio app
 		iio.start('red round 10px','c20');
 		iio.start('round 50% #00baff','c21');
 
-		//set w/ iioScript
+		//set w/ iio
 		iio.start(function(app){
 			app.set('red round 10px 20px');
 		},'c22');
@@ -218,11 +224,11 @@
 		iio.start(function(app){
 			app.canvas.style.backgroundColor='#00baff';
 			app.canvas.style.borderRadius='50% 0';
-		},'c25');		
+		},'c25');
 
 	//TEST:fps & loop & redraw
 		
-		//iioScript
+		//iio app
 			//loop at 2fps
 			iio.start('loop 2 randomColor','c26');
 			//loop multiple manipulations at 2fps
