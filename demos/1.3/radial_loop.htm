@@ -7,11 +7,11 @@
  -->
 <!DOCTYPE html>
 <html>
-	<script type="text/javascript" src="iioEngine.1.3.2js"></script>
+	<script type="text/javascript" src="iioEngine-1.3.2.js"></script>
 	<body>  
 		<script type="text/javascript">
 			var iioApp = "add center width: loop 20 gradient:0,0,.01,0,0,width/2";
-			for(var i=0;i<=1;i+=.1)
+			for(var i=0;i<=1;i+=.02)//change this decimal value to create more or less color bands
 				iioApp+=":"+i+',randomColor';
 			iio.start(iioApp);
 		</script>
