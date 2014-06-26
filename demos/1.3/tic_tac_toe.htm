@@ -19,10 +19,10 @@
 					': 10 grid 3 white');
 
 				var xTurn = true;
-				grid.onmousedown=function(event,cell,cellCenter){
+				grid.onmousedown=function(event,cell){
 					if(!cell.taken){
-						if(xTurn) grid.add(cellCenter,'height/3-height/10: x red 10');
-						else grid.add(cellCenter,'height/6-height/20: o outline #00baff 10');
+						if(xTurn) cell.add('height/1.3: x red 10');
+						else cell.add('height/2.6: o outline #00baff 10');
 						xTurn=!xTurn;
 					} cell.taken=true;
 				}
