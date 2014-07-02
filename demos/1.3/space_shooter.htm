@@ -124,6 +124,7 @@ function SpaceShooter(app){
 						vel:{x:iio.random(-1,2)
 							,y:iio.random(4,6)
 							,r:iio.random(-.2,.2)},
+						rot:iio.random(-7,7);
 						bounds:{bottom:[app.height+100,bringToTop]}
 					}));
 				app.rmv(m); app.log('BIG!');
