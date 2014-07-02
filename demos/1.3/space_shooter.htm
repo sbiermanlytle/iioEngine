@@ -24,30 +24,30 @@ function SpaceShooter(app){
 	var lasers = [];
 	var player;
 
-	createScrollObjects=function(img,num,arr,smin,smax,z,rmin,rmax,xmin,xmax,health){
+	createScrollObjects=function(img,num,arr,smin,smax,z,rmin,rmax,xmin,xmax,rotmin,rotmax,health){
 		for (var i=0;i<num;i++)
 			arr.push(app.add({x:iio.random(0,app.width)
 							 ,y:iio.random(-100,app.height)},{
 				vel:{x:iio.random(xmin,xmax)
 					,y:iio.random(smin,smax)
 					,r:iio.random(rmin,rmax)},
-				img:img, z:z,
+				img:img, z:z, rot:iio.random(rotmin,rotmax),
 				bounds:{bottom:[app.height+100,bringToTop]},
 				health:health
 			}));
 	}
 
 	var meteorBigImg = iio.load('img/meteorBig.png',function(){
-		createScrollObjects(meteorBigImg,10,meteors,4,6,25,-.04,.04,-3,3,5);
+		createScrollObjects(meteorBigImg,10,meteors,4,6,25,-.04,.04,-3,3,-7,7,5);
 	});
 	var meteorSmallImg = iio.load('img/meteorSmall.png',function(){
-		createScrollObjects(meteorSmallImg,20,meteors,4,6,30,-.04,.04,-3,3);
+		createScrollObjects(meteorSmallImg,20,meteors,4,6,30,-.04,.04,-3,3,-7,7);
 	});
 	var starSmallImg = iio.load('img/starSmall.png',function(){
-		createScrollObjects(starSmallImg,50,stars,1,2,0,0,0,0,0);
+		createScrollObjects(starSmallImg,50,stars,1,2,0,0,0,0,0,0,0);
 	});
 	var starBigImg = iio.load('img/starBig.png',function(){
-		createScrollObjects(starBigImg,25,stars,2,3,10,0,0,0,0);
+		createScrollObjects(starBigImg,25,stars,2,3,10,0,0,0,0,0,0);
 	});
 	var laserFlashImg = iio.load('img/laserRedShot.png');
 	var laserImg = iio.load('img/laserRed.png');
