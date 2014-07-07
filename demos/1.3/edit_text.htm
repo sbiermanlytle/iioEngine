@@ -8,25 +8,27 @@
  -->
 <!DOCTYPE html>
 <html>
-	<body>
-		<script type="text/javascript" src="iioEngine-1.3.js"></script>
-		<script type="text/javascript">
+<body>
+<script type="text/javascript" src="iioEngine-1.3.js"></script>
+<script type="text/javascript">
 
-			function TEST(app){
-				app.set('black');
+function EditTextDemo(app){
 
-				var text = app.add(app.center,
-					"'hello iio engine' #00baff font Consolas 60 center cursor");
-				
-				this.onKeyDown=function(e,k){
-					text.keyDown(k);
-				}
-				this.onKeyUp=function(e,k){
-					text.keyUp(k);
-				}
+	app.set('black');
 
+	var text = app.add(app.center,
+		"'hello iio engine' #00baff font Consolas 60 center cursor");
+	
+	this.onKeyDown=function(e,k){
+		text.keyDown(k);
+	}
 
-			}; iio.start(TEST);
-		</script>
-	</body>
+	this.onKeyUp=function(e,k){
+		text.keyUp(k);
+	}
+
+}; iio.start(EditTextDemo);
+
+</script>
+</body>
 </html>
