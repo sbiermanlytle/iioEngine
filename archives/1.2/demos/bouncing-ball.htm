@@ -1,0 +1,84 @@
+<!doctype html>
+  <body>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript">
+
+        //author: Tyilo https://github.com/sbiermanlytle/iioengine/pull/5
+        var Ball = function() {
+            this.Ball.apply(this, arguments);
+        };
+
+        iio.inherit(Ball, iio.Circle);
+        Ball.prototype._super = iio.Circle.prototype;
+        Ball.prototype.Ball = function(r, startPos, color, floor) {
+            this._super.Circle.call(this, startPos, r);
+        	this.setFillStyle(color)
+        		.enableKinematics()
+        		.setAcc(0, 0.1)
+        		.setBound('bottom', floor, function(ball) {
+        			ball.vel.y *= -(0.8 + (ball.radius / 300));
+        
+        			if(ball.pos.y > floor-ball.radius) {
+        				ball.pos.y = floor-ball.radius;
+        			}
+        			if(ball.vel.y > 0) {
+        				ball.vel.y = 0;
+        			} else if(-ball.vel.y < ball.acc.y) {
+        				ball.acc.y = -ball.vel.y;
+        				if(ball.acc.y < 0.00001) {
+        					if(!ball.isRemoving) {
+        						setTimeout(function() {
+        							io.rmvObj(ball);
+        						}, 3000);
+        
+        						ball.isRemoving = true;
+        					}
+        				}
+        			}
+        			return true;
+        		});
+        
+        	this.startPos = startPos;
+        	this.color = color;
+        	this.isRemoving = false;
+        };
+        Ball.prototype.clone = function() {
+        	return new Ball(this.radius, this.startPos, this.color);
+        };
+        
+        var BallApp = function(io) {
+        	function randomColor() {
+        		var color = '#';
+        		for(var i = 0; i < 6; i++) {
+        			color += iio.getRandomInt(1, 16).toString(16);
+        		}
+        		return color;
+        	}
+        
+        	window.addEventListener('mouseup', function(event) {
+                var point = io.getEventPosition(event);
+        		if(event.button != 2) {
+        			var ball = new Ball(iio.getRandomInt(10, 30), point, randomColor(), io.canvas.height);
+        			io.addToGroup('balls', ball);
+        		} else {
+        			var balls = io.getGroup('balls');
+        			for(var i = 0; i < balls.length; i++) {
+        				if(balls[i].contains(point)) {
+        					io.rmvObj(balls[i]);
+        				}
+        			}
+        		}
+        	});
+        	
+        	io.addObj(new iio.Text('Click anywhere', io.canvas.center)
+        		.setFont('30px Consolas')
+        		.setFillStyle('black')
+        		.setTextAlign('center'));
+        	
+        	io.setFramerate(60);
+        };
+
+        iio.start(BallApp);
+    </script>
+  </body>
+</html>

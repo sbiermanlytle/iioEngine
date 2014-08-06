@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>iio + Box2D</title>
+    <link rel="icon" type="favicon/png" href="http://iioengine.com/img/favicon.png">
+    <style media="screen" type="text/css">
+        html{
+            font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+            background-color: black;
+            color:white;
+        }
+        canvas { 
+            display: block;
+            margin:20px auto;
+            border: 1px solid white;
+        } 
+    </style>
+</head>
+<body>
+    <canvas id="b2d" width="412px" height="455px"/>
+<!-- Load FrameWorks -->
+<script type="text/javascript" src="../../extensions/Box2dWeb-2.1.a.3.min.js"></script>
+<script type="text/javascript" src="../../core/iioEngine.js"></script>
+<script type="text/javascript" src="../../extensions/iioDebugger.js"></script>
+<!-- Load applications -->
+<script type="text/javascript" src="DragNDrop.io.js"></script>
+<script type="text/javascript">iio.start(DragNDrop,'b2d')</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+  <body>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript" src="../extensions/iioDebugger.js"></script>
+    <script type="text/javascript">
+
+CollidingBoxes = function(io){
+ 
+  createBox = function(xPos, xVel, fillStyle, size){
+    return io.addToGroup('boxes'
+      ,new iio.Rect(xPos,io.canvas.height/2,size)
+      .setFillStyle(fillStyle)
+      .enableKinematics()
+      .setVel(xVel,xVel)
+      //.rotate(Math.PI/4)
+      .setTorque(.01)
+      .setBound('left', 0
+        ,function(obj){
+          obj.vel.x = 3;
+          return true;
+         })
+      .setBound('right', io.canvas.width
+        ,function(obj){
+          obj.vel.x = -3;
+          return true;
+        })
+      .setBound('top', 0
+        ,function(obj){
+          obj.vel.y = 3;
+          return true;
+         })
+      .setBound('bottom', io.canvas.height
+        ,function(obj){
+          obj.vel.y = -3;
+          return true;
+        }));
+  }
+ 
+  var b1 = createBox(300, 3, '#00baff',150);
+  var b2 = createBox(io.canvas.width-300, -3, 'red',150);
+ 
+  io.setCollisionCallback('boxes'
+    ,function(box1,box2){
+       var temp = box1.vel;
+       box1.vel = box2.vel;
+       box2.vel = temp;
+       box1.torque=box2.torque*=-1;
+     });
+ 
+  io.setFramerate(60, function(){
+    var a = b1.vel;
+    var b = b2.vel;
+  });
+ 
+}; iio.start(CollidingBoxes);
+
+    </script>
+  </body>
+</html>

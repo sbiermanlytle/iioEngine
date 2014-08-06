@@ -1,0 +1,91 @@
+<!doctype html>
+  <html>
+    <body>
+        <script type="text/javascript" src="../core/iioEngine.js"></script>
+        <script type="text/javascript" src="../extensions/iioDebugger.js"></script>
+        <script type="text/javascript">
+
+          GridApp = function(io){
+
+            io.activateDebugger();
+
+            io.setBGColor('black');
+
+            //Create Grid
+            var gridRes = 120;
+
+            //New Constructor added in Github distrib
+            var grid = io.addObj(new iio.Grid(0,0,io.canvas,gridRes));
+
+            /*var grid = io.addObj(new iio.Grid(0,0
+                                     ,parseInt(io.canvas.width/gridRes,10)+1
+                                     ,parseInt(io.canvas.height/gridRes,10)+1
+                                     ,gridRes));*/
+
+            grid.setStrokeStyle('white');
+            grid.draw(io.context);
+
+            this.onResize=function(){
+              grid.set(0,0,io.canvas,gridRes);
+              io.draw();
+            }
+
+            //Create Red Squares
+            function createRed(r,c){
+              grid.cells[r][c].wall=true;
+              return io.addObj(new iio.SimpleRect(grid.getCellCenter(r,c),gridRes)
+                               .setFillStyle('red'));
+            }
+            var reds = [];
+            reds[0] = createRed(2,1);
+            reds[1] = createRed(2,2);
+
+
+            //Create Blue Square
+            var blue = new iio.SimpleRect();
+            blue.r = 4;
+            blue.c = 4;
+            blue.setSize(gridRes,gridRes);
+            blue.setPos(grid.getCellCenter(blue.r,blue.c));
+            blue.setFillStyle('#00baff');
+            io.addObj(blue);
+            
+            //Handle input
+            window.addEventListener('keydown', function(event){
+              if ((iio.keyCodeIs('up arrow', event) 
+                ||iio.keyCodeIs('w', event))
+                && blue.c-1 >= 0
+                && !grid.cells[blue.r][blue.c-1].wall){
+                  io.debugMsg('input: UP');
+                  blue.pos.y-=gridRes;
+                  blue.c--;
+              } else if ((iio.keyCodeIs('right arrow', event)
+                ||iio.keyCodeIs('d', event))
+                && blue.r+1 < grid.C
+                && !grid.cells[blue.r+1][blue.c].wall){
+                  io.debugMsg('Move: RIGHT');
+                  blue.pos.x+=gridRes;
+                  blue.r++;
+              } else if ((iio.keyCodeIs('down arrow', event) 
+                ||iio.keyCodeIs('s', event))
+                && blue.c+1 < grid.R
+                && !grid.cells[blue.r][blue.c+1].wall){
+                  io.debugMsg('Move: DOWN');
+                  blue.pos.y+=gridRes;
+                  blue.c++;
+              } else if ((iio.keyCodeIs('left arrow', event) 
+                ||iio.keyCodeIs('a', event))
+                && blue.r-1 >= 0
+                && !grid.cells[blue.r-1][blue.c].wall){
+                  io.debugMsg('Move: LEFT');
+                  blue.pos.x-=gridRes;
+                  blue.r--;
+              } else io.debugMsg('input: BLOCKED');
+              io.canvas.draw(io.context);
+            });
+
+          }; iio.start(GridApp);
+
+        </script>
+    </body>
+</html>
