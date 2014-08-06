@@ -1,30 +1,22 @@
 iioengine
-=========
+========= 
 
-The iio Engine is a JavaScript framework that streamlines the development of Canvas based HTML5 applications. The core platform is open source, and free to use and extend for any purpose.
+The iio Engine is a JavaScript framework that streamlines the development of Canvas based HTML5 applications. The core platform is open source, and free to use and extend for any purpose. This repo contains all published copies and working editions of the iio Engine.
 
-This repo contains the last stable version of the iio Engine framework merged with some useful community contributions. A BRAND NEW VERSION WITH MANY NEW FEATURES IS ON THE WAY. Check out the demos/1.3 folder for some previews and stay tuned via twitter for updates (@iioEngine).
+All applications created with the iio Engine may be uploaded and hosted for free at iioApps.com.
 
-Branches with new functionality will be merged only if they can run all of the demo applications included in this repo without error. Versioned updates may alter or extend the usage of previously merged functions, but conflicts will be determinately avoided.
-
-Formal documentation for new functions will be added once a stable, versioned core script has been finalized and released. In the meantime, see the contributor's github notes, the included demos, or the iio Forums for tips on cutting-edge feature usage.
+iio Engine 1.3.3 Beta has just become available to download. The API and syntax are a bit different than in 1.2, and documentation is currently being written. For the time being, use the demo applications for examples on how to use the engine.
 
 Homepage: http://iioengine.com
 
-Documentation: http://iioengine.com/docs/iio-basics
-
-Demos: http://iioengine.com/demos
-
-Tutorials: http://iioengine.com/tutorials
-
-Forums: http://iioengine.com/forums
+Demos & Hosting: http://iioapps.com
 
 Twitter: @iioEngine
 
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
-Copyright (c) 2013, Sebastian Bierman-Lytle
+Copyright (c) 2014, Sebastian Bierman-Lytle
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, 
