@@ -1,15 +1,15 @@
 /*
-iio engine
-Version 1.3.3 Beta
-Last Update 8/8/2014
+   iio engine
+   Version 1.3.3 Beta
+   Last Update 8/8/2014
 
-1.3 is a work in progress, but already useful for many apps
-1.2 has more features, less bugs, and is available on github
+   1.3 is a work in progress, but already useful for many apps
+   1.2 has more features, less bugs, and is available on github
 
-API: iioengine.com/api
-Demos: iioapps.com
-
-An offline API is included in the github repository
+   API: iioengine.com/api
+   Demos: iioapps.com
+   Sandbox: iioengine.com/sandbox
+   Offline versions are included in the github repository
 
 ---------------------------------------------------------------------
 The iio Engine is licensed under the BSD 2-clause Open Source license
@@ -577,6 +577,7 @@ iio={};
    }
    iio.runiioConst=function(o,c){
       var i=c.indexOf(':');
+      if(c.indexOf('http')>-1) i=-1;
       var ii=c.indexOf('gradient');
       if(i>-1&&ii==-1){
       	 if(i>0) o.width=o.parent.eval(c.substring(0,i));
@@ -793,6 +794,7 @@ iio={};
          else if(s=='width') return this.width;
          else if(s=='height') return this.height;
          else if(s=='hidden') return this.hidden;
+         else if(s=='random') return iio.random();
          else if(s=='randomColor') return iio.randomColor();
          var op; op=s.indexOf('-');
          if(op>-1) return this.eval(s.substring(0,op))-this.eval(s.substring(op+1));
