@@ -1,13 +1,14 @@
 /*
 iio engine
 Version 1.3.3 Beta
-Last Update 8/7/2014
+Last Update 8/8/2014
 
 1.3 is a work in progress, but already useful for many apps
 1.2 has more features, less bugs, and is available on github
 
-Visit iioapps.com for open source demos
-An online API is available at iioengine.com/api
+API: iioengine.com/api
+Demos: iioapps.com
+
 An offline API is included in the github repository
 
 ---------------------------------------------------------------------
