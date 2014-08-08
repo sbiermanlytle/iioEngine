@@ -18,7 +18,7 @@ Debugger.prototype.Debugger=function(app){
 	this.app._update=function(dt){
 		if(this.__update){
 			this.__update(dt);
-			if(this.objs)
+			if(this.objs&&document.getElementById('objs'))
 				document.getElementById('objs').innerHTML=this.objs.length;
 		}
 	}
@@ -30,7 +30,7 @@ Debugger.prototype.Debugger=function(app){
 	this.div.style.maxHeight='300px';
 	this.div.style.overflowY='auto';
 	var p=document.createElement('p');
-	p.innerHTML='objs: <span id="objs">0</span>';
+	//p.innerHTML='objs: <span id="objs">0</span>';
 	p.style.padding=0;
 	p.style.margin=0;
 	this.div.appendChild(p);
