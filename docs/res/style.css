@@ -96,7 +96,7 @@ header li{
 	font-weight: bold;
 }
 .primary:hover,h3 a:hover{
-	background-color: rgb(140,140,140);
+	background-color: rgb(100,100,100);
 	color:white;
 }
 .secondary{
