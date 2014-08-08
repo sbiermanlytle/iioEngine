@@ -940,6 +940,12 @@ iio={};
          if(iio.apps[i].runScript&&iio.apps[i].runScript.onKeyUp)
             iio.apps[i].runScript.onKeyUp(e,k);
    });
+   iio.addEvent(window, 'scroll', function(event){
+      for(var i=0;i<iio.apps.length;i++){
+         var p=iio.apps[i].canvas.getBoundingClientRect();
+         iio.apps[i].pos={x:p.left,y:p.top};
+      }
+   });
    //APP
    function App(){
       this.App.apply(this,arguments);
