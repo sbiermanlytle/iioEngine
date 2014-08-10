@@ -526,38 +526,98 @@ createLi('Properties',[
 		o:true,
 		a:true,
 		i:true,
-		l:[
+		l:
+		[
 			'lineWidth :: <span class="normal">float</span>',
-			'<p>draw width of lines and/or the <a href="#outline">outline</a></p>'
+			'<p>draw width of lines and a shapes <a href="#outline">outline</a></p>',
+			'<pre class="prettyprint linenums lang-js">//create a line with a 10px width\n'
+			+'var line = app.add("0:0 width:height 10 red");\n\n'
+			+'//create a square with a 10px outline\n'
+			+'var square = app.add("center 50 outline 10 red");\n\n'
+			+'//get an objects lineWidth\n'
+			+'var line_lineWidth = line.lineWidth;\n'
+			+'var square_lineWidth = square.lineWidth;\n\n'
+			+'//set lineWidth\n'
+			+'line.set("20");\n'
+			+'square.set("outline 20");\n'
+			+'//or\n'
+			+'line.set({ lineWidth:20 });\n'
+			+'square.set({ lineWidth:20 });\n'
+			+'//or\n'
+			+'line.lineWidth = 20;\n'
+			+'square.lineWidth = 20;\n'
+			+'app.draw();</pre>\n'
 		]
 	},{ t:'lineCap',
 		o:true,
-		i:true,
 		l:[
-			'lineCap :: <a class="const" href="">Constant</a>'
+			'lineCap :: <span class="normal">String</span>'
 			,'<p class="info">the style of cap used at the endpoints of a line object</p>'
 			,'<p><span class="const">square</span> - straight cut off</p>'
 			,'<p><span class="const">round</span> - rounded cut off</p>'
+			,'<pre class="prettyprint linenums lang-js">//create a line with round cap\n'
+			+'var line = app.add("20:20 width-20:height-20 10 red round");\n\n'
+			+'//create a square with a 10px outline\n'
+			+'var square = app.add("center 50 outline 10 red");\n\n'
+			+'//get an objects lineWidth\n'
+			+'var line_lineWidth = line.lineWidth;\n'
+			+'var square_lineWidth = square.lineWidth;\n\n'
+			+'//set lineWidth\n'
+			+'line.set("20");\n'
+			+'square.set("outline 20");\n'
+			+'//or\n'
+			+'line.set({ lineWidth:20 });\n'
+			+'square.set({ lineWidth:20 });\n'
+			+'//or\n'
+			+'line.lineWidth = 20;\n'
+			+'square.lineWidth = 20;\n'
+			+'app.draw();</pre>\n'
 		]
 	},{ t:'dash',
 		o:true,
 		i:true,
 		l:[
-			'dash :: <a href="#list" class="normal">list</a>'
-			,'<p>a sequence specifying dashed properties</p>'
+			'dash :: <span class="normal">Array</span>'
+			,'<p>an array of any size that specifies dash widths and offsets</p>'
+			,'<p><span class="red">[ size ]</span> - dash and offset will equal the given size</p>'
+			,'<p><span class="red">[ dash, offset ]</span></p>'
+			,'<p><span class="red">[ s1, s2, s3, ... (odd) ]</span> - dash and offset will alternate between s values</p>'
+			,'<p><span class="red">[ s1, s2, s3, ... (even) ]</span> - dash will alternate between even values, offset will alternate between the odds</p>'
+			,'<pre class="prettyprint linenums lang-js">//create dashed lines\n'
+			+"var line = app.add('0:0 width:height 10 dash 10');\n"
+			+"app.add('0:20 width:height+20 10 dash 10 100');\n"
+			+"app.add('0:40 width:height+40 10 dash 10 100 10');\n"
+			+"app.add('0:60 width:height+60 10 dash 10 100 10 40');\n\n"
+			+'//create a square with a dashed outline\n'
+			+"var square = app.add('center 200 red outline black 4 dash 10');\n\n"
+			+'//get an objects dash properties\n'
+			+'var line_dash = line.dash;\n'
+			+'var square_dash = square.dash;\n\n'
+			+'//set dash\n'
+			+"line.set('dash 40 10');\n"
+			+"square.set('dash 40 10');\n"
+			+'//or\n'
+			+'line.set({ dash:[40,10] });\n'
+			+'square.set({ dash:[40,10] });\n'
+			+'//or\n'
+			+'line.dash = [40,10];\n'
+			+'square.dash = [40,10];\n'
+			+'app.draw();</pre>\n'
 		]
 	},{ t:'shadow',
 		o:true,					
 		a:true,
-		i:true,
 		l:[
 		{
-			t:'outline_color',
+			t:'offset',
 			l:['<span class="parent">outline.</span>color :: <a class="const" href="javascript:redirect('+"'"+'color'+"'"+')">Color</a>',
 			   '<p>color used to draw the outline</p>']
-		},
-		{
-			t:'dash',
+		},{
+			t:'color',
+			l:['<span class="parent">outline.</span>dash :: <a class="const" href="">List</a>',
+			   '<p>color used to draw the outline</p>']
+		},{
+			t:'blur',
 			l:['<span class="parent">outline.</span>dash :: <a class="const" href="">List</a>',
 			   '<p>color used to draw the outline</p>']
 		}]
@@ -572,7 +632,7 @@ createLi('Properties',[
 			'<p>parameters can be given in pixels or a percentage:</p>',
 			'<p><span class="normal">pixels:</span> 10px',
 			'<p><span class="normal">percentages:</span> 10%',
-			]
+		]
 	},{
 		t:'bezier',
 		o:true,
