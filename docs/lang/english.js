@@ -80,7 +80,7 @@ createLi('Properties',[
 		i:true,
 		l:[
 			'type :: <a class="const" href="">Constant</a>'
-			,'<p class="info">the type specifier</p>'
+			,'<p>the type specifier</p>'
 			,'<p><span class="const">App</span> - the application manager</p>'
 			,'<p><span class="const">Obj</span> - the parent of all app objects</p>'
 			,'<p><span class="const">Line</span> - a line object</p>'
@@ -435,9 +435,14 @@ createLi('Properties',[
 			+'//or\n'
 			+"obj.color = 'blue';\n"
 			+'app.draw();\n\n'
-			+"//set a gradient as the object's color\n"
+			+"//set a linear gradient as the object's color\n"
 			+"app.add('center 180:'\n"
-			+"  +'gradient:90,90,.01,90,90,90'\n"
+			+"  +' gradient:0,30,0,-60'\n"
+			+"    +':0,red'\n"
+			+"    +':.6,black');\n\n"
+			+"//set a radial gradient as the object's color\n"
+			+"app.add('center 180:'\n"
+			+"  +' gradient:90,90,.01,90,90,90'\n"
 			+"    +':0,rgba(255,255,0,.7)'\n"
 			+"    +':1,transparent');</pre>",
 			'<p class="bottomp" style="margin-bottom:0">To set a gradient as the application background color, the canvas style property must be set directly:</p>',
@@ -464,8 +469,58 @@ createLi('Properties',[
 		o:true,
 		i:true,
 		l:[
-			'outline :: <a href="#color" class="const">color</a>',
-			'<p>draw color of the outline</p>'
+			'outline :: <span class="normal">String</span>',
+			'<p><span class="app">app</span>: outline color of the app</p>',
+			'<p><span class="obj">obj</span>: color used to draw an outline around the object</p>'
+			,'<pre class="prettyprint linenums lang-js">//change the application outline color\n'
+			+"app.set('outline red 1');\n"
+			+"app.set('outline 1 #00baff'); //hexadecimal blue\n"
+			+"app.set('outline 1 rgb(0,255,0)'); //full green\n"
+			+"app.set('outline 1 rgba(255,0,0,.4)'); //transparent red\n"
+			+"app.set('outline 1 randomColor');\n"
+			+"app.set( 'outline' + (s.color || 'white') ); //use the settings color if it exists\n"
+			+"//for gradients, see the example below\n\n"
+			+'//get the app outline color\n'
+			+'var bg_outline = app.outline;\n\n'
+			+'//create an object with a red 1px outline\n'
+			+"var obj = app.add('center 50 outline 1 red');\n\n"
+			+"//get the object's outline color\n"
+			+"var obj_outline = obj.outline\n\n"
+			+"//change the object's outline color\n"
+			+"obj.set('outline blue');\n"
+			+'//or\n'
+			+"obj.set({ outline:'#00baff' });\n"
+			+'//or\n'
+			+"obj.outline = 'blue';\n"
+			+'app.draw();\n\n'
+			+"//set a linear gradient as the object's outline color\n"
+			+"app.add('center 180: outline 1 '\n"
+			+"  +' gradient:0,30,0,-60'\n"
+			+"    +':0,red'\n"
+			+"    +':.6,black');\n\n"
+			+"//set a radial gradient as the object's outline color\n"
+			+"app.add('center 180: outline 1 '\n"
+			+"  +' gradient:90,90,.01,90,90,90'\n"
+			+"    +':0,rgba(255,255,0,.7)'\n"
+			+"    +':1,transparent');</pre>",
+			'<p class="bottomp" style="margin-bottom:0">To set a gradient as the application outline color, the canvas style property must be set directly:</p>',
+			'<pre class="prettyprint linenums lang-js">//set the application outline color to a gradient\n'
+			+"//W3C Standard\n"
+			+"app.canvas.style.borderColor='linear-gradient(to bottom, red 0%, black 100%)';\n\n"
+			+"//for old browsers, add these:\n\n"
+			+"//FF3.6+\n"
+			+"app.canvas.style.borderColor='-moz-linear-gradient(to bottom, red 0%, black 100%)';\n\n"
+			+'//Chrome,Safari4+\n'
+			+"app.canvas.style.borderColor='-webkit-gradient(linear, left top, left bottom,'\n"
+			+"   +'color-stop(0%,red), color-stop(100%,black));';\n\n"
+			+'//Chrome10+,Safari5.1+\n'
+			+"app.canvas.style.borderColor='-webkit-linear-gradient(top, red 0%, black 100%)';\n\n"
+			+'//Opera 11.10+\n'
+			+"app.canvas.style.borderColor='-o-linear-gradient(top, red 0%, black 100%';\n\n"
+			+'//IE10+\n'
+			+"app.canvas.style.borderColor='-ms-linear-gradient(top, red 0%, black 100%)';\n\n"
+			+'//IE6-9\n'
+			+"app.canvas.style.filter='progid:DXImageTransform.Microsoft.gradient('\n"+'  '+"+'"+'startColorstr="red", endColorstr="black", GradientType=0 );'+"'"+';</pre>'
 		]
 	},{ t:'lineWidth',
 		o:true,
