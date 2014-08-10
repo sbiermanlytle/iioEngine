@@ -79,6 +79,7 @@ header li{
 	color: white;
 	line-height: .6;
 	padding: 0 25px;
+	padding-bottom: 2px;
 }
 #home a:hover,header li a:hover{
 	background-color: black;
