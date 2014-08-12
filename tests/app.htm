@@ -1,0 +1,391 @@
+<!-- 
+	iio Engine v1.3.2 preview
+	*************************
+	the source code for 1.3.2 is not yet available for download
+	this document previews the new syntax and gives examples of different
+		ways to use iio
+
+	Live Demo: http://iioengine.com/1.3/demos/test_app.htm
+ -->
+<!DOCTYPE html>
+<html style='background:black'>
+	<header>
+		<script type="text/javascript" src="../core/iioEngine.js"></script>
+		<script type="text/javascript" src="../extensions/iioDebugger.js"></script>
+		<style>
+			html,body,div{
+				margin:20;padding:0;
+			}
+		</style>
+	</header>
+	<body>  
+	  <canvas id="c1" width="40" height="40"></canvas>
+	  <canvas id="c2" width="40" height="40"></canvas>
+	  <canvas id="c3" width="40" height="40"></canvas>
+	  <canvas id="c4" width="40" height="40"></canvas>
+	  <canvas id="c5" width="40" height="40"></canvas>
+	  <canvas id="c6" width="40" height="40"></canvas>
+	  <canvas id="c51" width="40" height="40"></canvas>
+	  <canvas id="c61" width="40" height="40"></canvas>
+	  <canvas id="c62" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="c112" width="40" height="40"></canvas>
+	  <canvas id="c122" width="40" height="40"></canvas>
+	  <canvas id="c123" width="40" height="40"></canvas>
+	  <canvas id="c124" width="40" height="40"></canvas>
+	  <canvas id="c125" width="40" height="40"></canvas>
+	  <canvas id="c126" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="c7" width="36" height="36"></canvas>
+	  <canvas id="c8" width="36" height="36"></canvas>
+	  <canvas id="c9" width="36" height="36"></canvas>
+	  <canvas id="c10" width="36" height="36"></canvas>
+	  <canvas id="c11" width="36" height="36"></canvas>
+	  <canvas id="c12" width="36" height="36"></canvas>
+	  <canvas id="c13" width="36" height="36"></canvas>
+	  <canvas id="c14" width="36" height="36"></canvas>
+	  <br/>
+	  <canvas id="c71" width="36" height="36"></canvas>
+	  <canvas id="c81" width="36" height="36"></canvas>
+	  <canvas id="c91" width="20" height="20"></canvas>
+	  <canvas id="c101" width="20" height="20"></canvas>
+	  <canvas id="c111" width="20" height="20"></canvas>
+	  <canvas id="c121" width="20" height="20"></canvas>
+	  <canvas id="c131" width="10" height="10"></canvas>
+	  <canvas id="c141" width="36" height="36"></canvas>
+	  <br/>
+	  <canvas id="c15" width="40" height="40"></canvas>
+	  <canvas id="c16" width="40" height="40"></canvas>
+	  <canvas id="c17" width="40" height="40"></canvas>
+	  <canvas id="c18" width="40" height="40"></canvas>
+	  <canvas id="c19" width="40" height="40"></canvas>
+	  <canvas id="c191" width="40" height="40"></canvas>
+	  <canvas id="c192" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="c20" width="40" height="40"></canvas>
+	  <canvas id="c21" width="40" height="40"></canvas>
+	  <canvas id="c22" width="40" height="40"></canvas>
+	  <canvas id="c23" width="40" height="40"></canvas>
+	  <canvas id="c24" width="40" height="40"></canvas>
+	  <canvas id="c25" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="c26" width="40" height="40"></canvas>
+	  <canvas id="c27" width="31" height="31"></canvas>
+	  <canvas id="c28" width="40" height="40"></canvas>
+	  <canvas id="c29" width="31" height="31"></canvas>
+	  <canvas id="c30" width="40" height="40"></canvas>
+	  <canvas id="c31" width="31" height="31"></canvas>
+	  <canvas id="c32" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="c33" width="40" height="40"></canvas>
+	  <canvas id="c34" width="31" height="31"></canvas>
+	  <canvas id="c35" width="40" height="40"></canvas>
+	  <canvas id="c36" width="31" height="31"></canvas>
+	  <canvas id="c37" width="40" height="40"></canvas>
+	  <canvas id="c38" width="31" height="31"></canvas>
+	  <canvas id="c39" width="40" height="40"></canvas>
+	  <br/>
+	  <canvas id="references" width="200" height="200"></canvas>
+		<script type="text/javascript">
+
+/*TEST:Properties*/
+
+//REFERENCE
+	iio.start(function(app){
+
+		//debugger title
+		app.debug({right:0}).log("app properties for #c1 canvas"
+			,{borderBottom:'1px solid white'});
+
+		//display app properties
+		app.log('type: '+app.type);
+		app.log('pos: '+app.pos.x+':'+app.pos.y);
+		app.log('scale: '+app.scale);
+		app.log('width: '+app.width);
+		app.log('height: '+app.height);
+		app.log('center: '+app.center.x+':'+app.center.y);
+		app.log('canvas: '+app.canvas);
+		app.log('context: '+app.ctx);
+	},'c1');
+
+//DISPLAY
+	//TEST:color
+		//iio app
+		iio.start('red','c1');
+		iio.start('#00baff','c2');
+		iio.start('rgb(255,0,0)','c3');
+		iio.start('rgba(255,0,0,.6)','c4');
+
+		//set w/ iio
+		iio.start(function(app){
+			app.set('#00baff');
+		},'c5');
+
+		//set w/ javascript
+		iio.start(function(app){
+			app.set({color:'red'});
+		},'c6');
+
+		//property manipulation
+		iio.start(function(app){
+			app.color='#00baff';
+			app.draw();
+		},'c51');
+
+		//canvas style manipulation
+		iio.start(function(app){
+			app.canvas.style.backgroundColor='red';
+		},'c61');
+
+		//canvas context draw
+		iio.start(function(app){
+			app.ctx.fillStyle='#00baff';
+			app.ctx.fillRect(0,0,app.width,app.height);
+		},'c62');
+
+	//TEST: gradients
+	//only possible through direct CSS manipulation
+		iio.start(function(app){
+			//W3C Standard
+			app.canvas.style.background='linear-gradient(to bottom, red 0%, black 100%)';
+
+			//for old browsers, add these:
+
+			//FF3.6+
+			app.canvas.style.background='-moz-linear-gradient(to bottom, red 0%, black 100%)';
+
+			//Chrome,Safari4+
+			app.canvas.style.background='-webkit-gradient(linear, left top, left bottom, color-stop(0%,red), color-stop(100%,black));';
+
+			//Chrome10+,Safari5.1+
+			app.canvas.style.background='-webkit-linear-gradient(top, red 0%, black 100%)';
+
+			//Opera 11.10+
+			app.canvas.style.background='-o-linear-gradient(top, red 0%, black 100%';
+			
+			//IE10+
+			app.canvas.style.background='-ms-linear-gradient(top, red 0%, black 100%)';
+
+			//IE6-9			
+			app.canvas.style.filter='progid:DXImageTransform.Microsoft.gradient( startColorstr="red", endColorstr="black", GradientType=0 );'
+
+		},'c112');
+
+		iio.start(function(app){
+			app.canvas.style.background='linear-gradient(to top, #00baff 0%, black 100%)';
+		},'c122');
+
+		iio.start(function(app){
+			app.canvas.style.background='linear-gradient(to right bottom, red 0%,red 25%,#00baff 50%,red 100%)';
+		},'c123');
+
+		iio.start(function(app){
+			app.canvas.style.background='linear-gradient(to left bottom, black 0%,red 25%,black 50%,#00baff 75%,black 100%)';
+		},'c124');
+
+		iio.start(function(app){
+			app.canvas.style.background='linear-gradient(to bottom, black 0%, red 20%, red 45%, black 46%,black 54%, #00baff 55%, black 100%)';
+		},'c125');
+
+		iio.start(function(app){
+			app.canvas.style.background='linear-gradient(to right, black 0%, red 10%, orange 20%, yellow 30%, green 45%, aqua 60%, blue 72%, purple 86%, black 100%)';
+		},'c126');
+		
+
+	//TEST:outline & lineWidth
+		//iio app
+		iio.start('red outline 2 #00baff','c7');
+			//test inverses
+			iio.start('#00baff outline red 2','c8');
+			iio.start('outline #00baff 2 red','c9');
+			iio.start('outline 2 red #00baff','c10');
+
+		//set w/ iio
+		iio.start(function(app){
+			app.set('outline red 2');
+		},'c11');
+
+		//set w/ javascript
+		iio.start(function(app){
+			app.set({
+				outline:'#00baff',
+				lineWidth:2
+			});
+		},'c12');
+
+		//app property manipulation
+		iio.start(function(app){
+			app.outline='red';
+			app.lineWidth=2;
+			app.draw();
+		},'c13');
+
+		//canvas property manipulation
+		iio.start(function(app){
+			app.canvas.style.border='2px solid #00baff';
+		},'c14');
+
+	//TEST:dash
+		//only possible through direct CSS manipulation
+
+		iio.start(function(app){
+			app.canvas.style.border='2px red solid';
+		},'c71');
+
+		iio.start(function(app){
+			app.canvas.style.border='2px #00baff dashed';
+		},'c81');
+
+		iio.start(function(app){
+			app.canvas.style.border='10px red ridge';
+		},'c91');
+
+		iio.start(function(app){
+			app.canvas.style.border='10px #00baff groove';
+		},'c101');
+
+		iio.start(function(app){
+			app.canvas.style.border='10px red outset';
+		},'c111');
+
+		iio.start(function(app){
+			app.canvas.style.border='10px #00baff double';
+		},'c121');
+
+		iio.start(function(app){
+			app.canvas.style.borderWidth='15px';
+			app.canvas.style.borderStyle='solid';
+			app.canvas.style.borderImage='url(http://wallpaper.ultradownloads.com.br/61784_Papel-de-Parede-Obra-de-Vincent-van-Gogh_1600x900.jpg) 30 30';
+		},'c131')
+
+		iio.start(function(app){
+			app.canvas.style.borderLeftWidth='2px';
+			app.canvas.style.borderLeftColor='#00baff';
+			app.canvas.style.borderLeftStyle='solid';
+
+			app.canvas.style.borderTopWidth='1px';
+			app.canvas.style.borderTopColor='red';
+			app.canvas.style.borderTopStyle='dashed';
+
+			app.canvas.style.borderRightWidth='4px';
+			app.canvas.style.borderRightColor='#00baff';
+			app.canvas.style.borderRightStyle='dotted';
+
+			app.canvas.style.borderBottomWidth='4px';
+			app.canvas.style.borderBottomColor='red';
+			app.canvas.style.borderBottomStyle='groove';
+
+		},'c141');
+
+	//TEST:alpha
+		//iio app
+			//using rgba to get opacity
+		iio.start('rgba(255,0,0,.8)','c15');
+			//using alpha
+		iio.start('red alpha .7','c16');
+
+		//set w/ iio
+		iio.start(function(app){
+			app.set('red alpha .6')
+		},'c17');
+
+		//set w/ javascript
+		iio.start(function(app){
+			app.set({
+				color:'red',
+				alpha:.5
+			})
+		},'c18');
+
+		//app property manipulation
+		iio.start(function(app){
+			app.color='red';
+			app.alpha=.4;
+			app.draw();
+		},'c19');
+
+		//canvas style manipulation w/ rgba
+		iio.start(function(app){
+			app.canvas.style.backgroundColor='rgba(255,0,0,.3)';
+		},'c191');
+
+		//canvas style manipulation w/ opacity
+		iio.start(function(app){
+			app.canvas.style.backgroundColor='red';
+			app.canvas.style.opacity=.2;
+		},'c192');
+
+	//TEST:round
+		//iio app
+		iio.start('red round 10px','c20');
+		iio.start('round 50% #00baff','c21');
+
+		//set w/ iio
+		iio.start(function(app){
+			app.set('red round 10px 20px');
+		},'c22');
+
+		//set w/ javascript
+		iio.start(function(app){
+			app.set({
+				color:'#00baff',
+				round:'10px 15px 20px 5px'
+			});
+		},'c23');
+
+		//app property manipulation
+		iio.start(function(app){
+			app.color='red';
+			app.round='5px';
+			app.draw();
+		},'c24');
+
+		//canvas style manipulation
+		iio.start(function(app){
+			app.canvas.style.backgroundColor='#00baff';
+			app.canvas.style.borderRadius='50% 0';
+		},'c25');
+
+	//TEST:fps & loop & redraw
+		
+		//iio app
+			//loop at 2fps
+			iio.start('loop 2 randomColor','c26');
+			//loop multiple manipulations at 2fps
+			iio.start('loop 2 randomColor outline randomColor 4','c27');
+			//loop at 60fps
+			iio.start('loop randomColor','c28');
+
+		//javascript w/ app function
+			//loop at 2fps
+			iio.start(function(app){
+				app.loop(2,function(){
+					app.set('randomColor outline 4 randomColor');
+				});
+			},'c29');
+			//loop at 60fps
+			iio.start(function(app){
+				app.loop(function(){
+					app.set(iio.randomColor());
+				});
+			},'c30');
+
+		//javascript w/ iio function
+			//loop at 2fps
+			iio.start(function(app){
+				var _loop = {fps:2,o:app,fn:function(){
+					app.set('outline 4 randomColor randomColor');
+				}}
+				iio.loop(_loop);
+			},'c31');
+			//loop at 60fps
+			iio.start(function(app){
+				var _loop = {o:app,fn:function(){
+					app.set(iio.randomColor());
+				}}
+				iio.loop(_loop);
+			},'c32');
+
+		</script>
+	</body>
+</html>

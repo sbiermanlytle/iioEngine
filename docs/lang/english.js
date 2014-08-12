@@ -386,7 +386,26 @@ createLi('Properties',[
 		]
 	}]
 },{ t:'Display',
-	l:[{ t:'alpha',
+	l:[{ t:'fps',
+		a:true,
+		l:[
+			'fps :: <span class="normal">float</span>'
+			,'<p>The number of times per second that the app updates and redraws. The default value is 60.</p>'
+			,'<p>This property is automatically set whenever an object is given a velocity or acceleration</p>'
+			,'<pre class="prettyprint linenums lang-js">//make an object move with a rate of 60fps\n'
+			+'var obj = app.add("center 50 red vel 1");\n\n'
+			+'//change\n'
+			+'var app_alpha = app.alpha;\n'
+			+'var obj_alpha = obj.alpha;\n\n'
+			+'//set transparency\n'
+			+'obj.set("alpha .8");\n'
+			+'//or\n'
+			+'obj.set({ alpha:0.8 });\n'
+			+'//or\n'
+			+'obj.alpha = .8;\n'
+			+'app.draw();\n'
+		]
+	},{ t:'alpha',
 		o:true,
 		a:true,
 		i:true,
@@ -603,6 +622,9 @@ createLi('Properties',[
 			+'line.dash = [40,10];\n'
 			+'square.dash = [40,10];\n'
 			+'app.draw();</pre>\n'
+			,'<p class="bottomp">setting a dash for <span class="green">app</span> requires direct css manipulation. Refer to <a href="http://www.w3schools.com/css/css_border.asp">w3schools</a> for the API</p>'
+			,'<pre class="prettyprint linenums lang-js">//give the app a dashed outline\n'
+			+"app.canvas.style.border='2px #00baff dashed';</pre>'"
 		]
 	},{ t:'shadow',
 		o:true,					
@@ -623,39 +645,59 @@ createLi('Properties',[
 		}]
 	},{ t:'round',
 		a:true,
-		o:true,
 		i:true,
 		l:['round :: <span class="normal">String</span>',
 			"<p>a sequence specifying the rounding radius of this object's corners.</p>",
 			'<p>if one parameter is passed, it will effect all corners.</p>',
-			'<p>if two parameters are passed, and the object is a quadrilateral... ????</p>',
+			'<p>if two or more parameters are passed, it will alternate its effect</p>',
 			'<p>parameters can be given in pixels or a percentage:</p>',
 			'<p><span class="normal">pixels:</span> 10px',
 			'<p><span class="normal">percentages:</span> 10%',
+			,'<pre class="prettyprint linenums lang-js">//round the app\n'
+			+"app.set('red round 10px 20px');\n"
+			+"//or\n"
+			+"app.set({ round:'10px 15px 20px 5px' });\n"
+			+"//or\n"
+			+"app.round = '50%';\n"
+			+"app.draw();\n\n"
+			+"//or\n"
+			+"app.canvas.style.backgroundColor='#00baff';\n"
+			+"app.canvas.style.borderRadius='50% 0';\n\n"
+			+'//get the apps rounding\n'
+			+'var app_round = app.round;\n'
+			+'var square_dash = square.dash;\n\n'
+			+'//set dash\n'
+			+"line.set('dash 40 10');\n"
+			+"square.set('dash 40 10');\n"
+			+'//or\n'
+			+'line.set({ dash:[40,10] });\n'
+			+'square.set({ dash:[40,10] });\n'
+			+'//or\n'
+			+'line.dash = [40,10];\n'
+			+'square.dash = [40,10];\n'
+			+'app.draw();</pre>\n'
+			,'<p class="bottomp">setting a dash for <span class="green">app</span> requires direct css manipulation. Refer to <a href="http://www.w3schools.com/css/css_border.asp">w3schools</a> for the API</p>'
+			,'<pre class="prettyprint linenums lang-js">//give the app a dashed outline\n'
+			+"app.canvas.style.border='2px #00baff dashed';</pre>'"
 		]
 	},{
 		t:'bezier',
 		o:true,
 		i:true,
-		l:''
-	},{ t:'redraw',
-		o:true,
-		a:true,
-		i:true,
-		l:[
-			'redraw :: <span class="normal">boolean</span>'
-			,'<p>a cue that triggers a redraw</p>'
-		]
-	},{ t:'fps',
-		o:true,
-		a:true,
-		i:true,
-		l:[
-			'fps :: <span class="normal">float</span>'
-			,'<p class="info">if this value is set, a loop will run at the specified calls per second rate</p>',
-			'<p><span class="app">app</span>: the frame rate (how often the application updates and rerenders)</p>',
-			'<p><span class="obj">obj</span>: the rate of update/animation</p>'
-		]
+		l:['bezier :: <span class="normal">Array</span> <span class="red">BETA ALERT: only works for lines right now</span>',
+			"<p>a list of coordinates defining this objects bezier handles. One handle may be given for each vertex.</p>",
+			'<p><span class="normal">[ x1,y1 , x2,y2 , ... ]</span></p>'
+			,'<pre class="prettyprint linenums lang-js">//create a bezier curve\n'
+			+"var bezierCurve = app.add('width-10:10 10:height-10 red 6 bezier 10 10 10 10');\n\n"
+			+"//get an objects bezier handle positions\n"
+			+"var bezierVs = bezierCurve.bezier\n\n"
+			+'//set the objects bezier handle positions\n'
+			+"bezierCurve.set('bezier 0 0 width height');\n"
+			+'//or\n'
+			+"bezierCurve.set({ bezier:[0,0,app.width,app.height] });\n"
+			+'//or\n'
+			+'bezierCurve.bezier = [0, 0, app.width, app.height];\n'
+			+'app.draw();</pre>\n']
 	},{ t:'hidden',
 		o:true,
 		i:true,
