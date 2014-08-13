@@ -384,26 +384,39 @@ createLi('Properties',[
 			+'var bottom = obj.bottom;</pre>',
 			'<p class="bottomp">set the objects <a href="#pos">pos</a>, not its bottom value when updating'
 		]
+	},{ t:'simple',
+		o:true,
+		i:true,
+		l:['simple :: <span class="normal">boolean</span>',
+			'<p>A flag that simplifies the objects data and update calculations at the cost of some precision.</p>',
+			'<p>The following properties are dropped from <span class="green">simple</span> objects: <span class="red">left</span>, <span class="red">right</span>, <span class="red">top</span>, <span class="red">bottom</span>, <span class="red">center</span></p>',
+			'<p><span class="green">simple</span> objects use the simplest rectangular collision algorithm, and use only their position coordinate to resolve bounds.',
+			'<p>Most objects can be simple objects, so <span class="green">use this property whenever possible</span>.</p>',
+			'<pre class="prettyprint linenums lang-js">//create a simple object\n'
+			+"var obj = app.add('center 100 red simple');</pre>"
+		]
 	}]
 },{ t:'Display',
 	l:[{ t:'fps',
 		a:true,
+		i:true,
 		l:[
 			'fps :: <span class="normal">float</span>'
 			,'<p>The number of times per second that the app updates and redraws. The default value is 60.</p>'
-			,'<p>This property is automatically set whenever an object is given a velocity or acceleration</p>'
+			,'<p>This property is automatically set whenever an object is given a velocity or acceleration.</p>'
+			,'<p>The rate can be changed by using the <a href="#loop">loop</a> function.</p>'
 			,'<pre class="prettyprint linenums lang-js">//make an object move with a rate of 60fps\n'
-			+'var obj = app.add("center 50 red vel 1");\n\n'
-			+'//change\n'
-			+'var app_alpha = app.alpha;\n'
-			+'var obj_alpha = obj.alpha;\n\n'
-			+'//set transparency\n'
-			+'obj.set("alpha .8");\n'
-			+'//or\n'
-			+'obj.set({ alpha:0.8 });\n'
-			+'//or\n'
-			+'obj.alpha = .8;\n'
-			+'app.draw();\n'
+			+'var obj = app.add("center 50 red vel 25");\n\n'
+			+'//change the rate to 1fps\n'
+			+'app.loop(1);\n\n\n'
+			+'//set a 60fps update loop\n'
+			+'app.loop(function(){\n\n'
+			+"  obj.set('randomColor');\n\n"
+			+'});\n\n'
+			+'//set a 4fps update loop\n'
+			+'app.loop(4, function(){\n\n'
+			+"  obj.set('randomColor');\n\n"
+			+'});</pre>'
 		]
 	},{ t:'alpha',
 		o:true,
@@ -697,13 +710,23 @@ createLi('Properties',[
 			+"bezierCurve.set({ bezier:[0,0,app.width,app.height] });\n"
 			+'//or\n'
 			+'bezierCurve.bezier = [0, 0, app.width, app.height];\n'
-			+'app.draw();</pre>\n']
+			+'app.draw();</pre>\n'
+		]
 	},{ t:'hidden',
 		o:true,
 		i:true,
 		l:
 		['hidden :: <span class="normal">boolean</span>'
-			,'<p>a cue that prevents rendering</p>'
+			,'<p>a flag that hides this object from updates, collisions, and renders.</p>'
+			,'<pre class="prettyprint linenums lang-js">//create a hidden object\n'
+			+"var obj = app.add('center red 50 hidden');\n\n"
+			+"//show the object\n"
+			+"obj.set('hidden false');\n"
+			+'//or\n'
+			+"obj.set({ hidden:false });\n"
+			+'//or\n'
+			+"obj.hidden = false;\n"
+			+"app.draw();</pre>\n"
 		]
 	},{ t:'rqAnimFrame',
 		o:true,
@@ -712,7 +735,9 @@ createLi('Properties',[
 		['rqAnimFrame :: <span class="normal">boolean</span>'
 			,'<p>if <span class="green">true</span>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame">window.requestAnimationFrame</a> will be used for any 60fps loops</p>'
 			,'<p>if <span class="red">false</span>, <a target="_blank" href="http://www.w3schools.com/jsref/met_win_settimeout.asp">setTimeout</a> will be used for all loops</p>'
-			,'<pre class="prettyprint linenums lang-js">//get rqAnimFrame\n'
+			,'<pre class="prettyprint linenums lang-js">//create a hidden object\n'
+			+"var obj = app.add('center red 50 hidden');\n\n"
+			+'//get rqAnimFrame\n'
 			+'var app_use_requestAnimationFrame = app.rqAnimFrame;\n'
 			+'var obj_use_requestAnimationFrame = obj.rqAnimFrame;\n\n'
 			+'//force app or obj to use setTimeout\n'
