@@ -1,7 +1,7 @@
 /*
    iio engine
    Version 1.3.3 Beta
-   Last Update 8/8/2014
+   Last Update 8/12/2014
 
    1.3 is a work in progress, but already useful for many apps
    1.2 has more features, less bugs, and is available on github
@@ -426,7 +426,7 @@ iio={};
       return true;
    }
    iio.takesOther=function(s){
-      if(s=='outline'||s=='color'||s=='shadow'||s=='app'||s=='grid'||s=='x'||s=='font')
+      if(s=='outline'||s=='color'||s=='shadow'||s=='app'||s=='hidden'||s=='grid'||s=='x'||s=='font')
          return true;
       return false;
    }
@@ -463,11 +463,13 @@ iio={};
             ps=o.slice().splice(2,o.length);
             s.loop(o[1],function(){
                iio.run(ps.slice(),s);
+               s.draw();
             });
          } else { 
             ps=o.slice().splice(1,o.length);
             s.loop(function(){
                iio.run(ps.slice(),s);
+               s.draw();
             });
          }
       } else if(o[0]=='add'){
@@ -503,10 +505,9 @@ iio={};
       } else if(s[0]=='z'){
          o.z=parseFloat(s[1]);
       } else if(s[0]=='hidden'){
-         if(s[1]){
-            if(s[1]=='true') o.hidden=true;
-            else o.hidden=false;
-         } else o.hidden=true;
+         if(s[1]&&s[1]=='false') 
+            o.hidden=false;
+         else o.hidden=true;
       }
       else if(s[0]=='round'){
          if(o.type==iio.APP){
@@ -659,8 +660,7 @@ iio={};
             } else if(o[0].substring(0,1)=='!'){
                o[0]=o[0].substring(1);
                if(o[0]=='hidden'){
-                  if(!s.hidden) s.hidden=true;
-                  else s.hidden=false;
+                  s.hidden=!s.hidden;
                   o=o.splice(1,o.length);
                }
             } else {
