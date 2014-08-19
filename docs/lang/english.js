@@ -760,6 +760,8 @@ createLi('Properties',[
 			+'var parent = app.objs[0];\n\n'
 			+'//get the child object\n'
 			+'var child = parent.objs[0];\n\n'
+			+'//remove the child object\n'
+			+'parent.rmv(child);\n\n'
 			+'//remove all objects\n'
 			+'app.rmv();</pre>'
 		]
@@ -767,14 +769,37 @@ createLi('Properties',[
 		t:'img',
 		o:true,
 		a:true,
-		l:''
+		i:true,
+		l:['img :: <a href="http://www.w3schools.com/jsref/dom_obj_image.asp" target="_blank" class="normal">Image</a>'
+			,'<p>an Image that is drawn with the object. If an image is given to an object upon creation, the image will be drawn when loaded and the object will be sized appropriately.</p>'
+			,'<pre class="prettyprint linenums lang-js">//add an image from a url\n'
+			+"var obj = app.add('center http://iioengine.com/img/ufo.png');\n\n"
+			+'//add an image from a local file\n'
+			+"app.add('center ufo.png');\n\n"
+			+'//get the image\n'
+			+'var img = obj.img;\n\n'
+			+'//change the image\n'
+			+"obj.img.src = 'http://iioengine.com/img/arrow.png';\n\n"
+			+'//remove the image\n'
+			+'//note that the image must be loaded for removing to take effect\n'
+			+'obj.set({ img:null });\n'
+			+'//or\n'
+			+'obj.img = null;\n'
+			+'app.draw();</pre>'
+			,'<p class="bottomp">an image can also loaded before being attached to an object</p>',
+			'<pre class="prettyprint linenums lang-js">//create an object once an image has loaded\n'
+			+"var obj;\n"
+			+"var img = app.load('http://iioengine.com/img/ufo.png', function(){\n"
+			+"    obj = app.add( app.center, {img:img} );\n"
+			+"}</pre>"
+		]
 	},{
-		t:'mov',
+		t:'anims',
 		o:true,
 		a:true,
 		l:''
 	},{
-		t:'anims',
+		t:'mov',
 		o:true,
 		a:true,
 		l:''
