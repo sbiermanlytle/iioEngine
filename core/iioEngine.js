@@ -1,7 +1,7 @@
 /*
    iio engine
    Version 1.3.3 Beta
-   Last Update 8/12/2014
+   Last Update 8/19/2014
 
    1.3 is a work in progress, but already useful for many apps
    1.2 has more features, less bugs, and is available on github
@@ -436,20 +436,24 @@ iio={};
             return iio.scriptProps[i][1];
       return -1;
    }
+   iio.indexOfiioDelineator=function(s){
+      var i=s.indexOf(':');
+      if(s.indexOf('http://')==i-4) i=-1;
+      return i;
+   }
    iio.parsePos=function(o,s){
       var i=0;
       var ps=[];
-      var _i=o[i].indexOf(':');
+      var _i=iio.indexOfiioDelineator(o[i]);
       while((o[i].indexOf('gradient')==-1&&(_i>-1&&_i<o[i].length-1))||o[i]=='center'){
          if(o[i]=='center') {
             if(s.type==iio.APP) ps.push(s.eval('center'));
             else ps.push({x:0,y:0});
-         }
-         else {
+         } else {
             ps.push(s.eval(o[i].substring(0,_i)));
             ps.push(s.eval(o[i].substring(_i+1)));
          }
-         i++; _i=o[i].indexOf(':');
+         i++; _i=iio.indexOfiioDelineator(o[i]);
       }
       if(ps.length==0) ps[0]=({x:0,y:0});
       o.splice(0,i); i=1;
@@ -577,8 +581,7 @@ iio={};
       else if(s[0]=='open') o.open=true;
    }
    iio.runiioConst=function(o,c){
-      var i=c.indexOf(':');
-      if(c.indexOf('http')>-1) i=-1;
+      var i=iio.indexOfiioDelineator(c);
       var ii=c.indexOf('gradient');
       if(i>-1&&ii==-1){
       	 if(i>0) o.width=o.parent.eval(c.substring(0,i));
@@ -838,6 +841,7 @@ iio={};
          for(var i=0;i<this.bezier.length;i++)
             if(this.bezier[i]=='n')this.bezier[i]=undefined;
       if(this.img&&iio.isString(this.img)){
+         nd=false;
          var src=this.img;
          this.img=new Image();
          this.img.src=src;
