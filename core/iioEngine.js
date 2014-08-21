@@ -1,7 +1,7 @@
 /*
    iio engine
    Version 1.3.3 Beta
-   Last Update 8/19/2014
+   Last Update 8/20/2014
 
    1.3 is a work in progress, but already useful for many apps
    1.2 has more features, less bugs, and is available on github
@@ -284,7 +284,7 @@ iio={};
                else if(iio.isFunction(caller.fn))
                   nufps=caller.fn(caller.o,caller,correctedFPS);
                else nufps=caller.fn._update(caller,correctedFPS);
-               caller.o.draw();
+               caller.o.app.draw();
             }
             if(typeof nufps=='undefined')
                caller.id=window.setTimeout(loop,correctedFPS);
@@ -301,11 +301,12 @@ iio={};
          caller=fps;
          function animloop(){
             if(typeof caller.fn=='undefined') caller.o.draw();
-            else if(iio.isFunction(caller.fn)) caller.fn();
+            else if(iio.isFunction(caller.fn)) caller.fn(caller.o);
             else {
                caller.fn._update();
                caller.fn.draw();
             }
+            caller.o.app.draw();
             caller.id=window.requestAnimationFrame(animloop);
          }
          caller.id=window.requestAnimationFrame(animloop);
@@ -716,7 +717,7 @@ iio={};
             }
          } else {
             loop = {fps:fps,fn:fn,o:this,af:this.rqAnimFrame};
-            loop.id = iio.loop(fps,loop,fn)
+            loop.id = iio.loop(fps,loop);
          }
          this.loops.push(loop);
          /*if(typeof this.app.fps=='undefined'||this.app.fps<fps){
@@ -872,6 +873,7 @@ iio={};
       return this;
    }
    add=function(o,ii,s,nd){
+      if(typeof nd=='undefined') nd=s;
       if(o instanceof Array&&!iio.isNumber(o[0])&&typeof(o[0].x)=='undefined')
          for(var i=0;i<o.length;i++)
             this.add(o[i],ii,s,nd);
@@ -1086,7 +1088,6 @@ iio={};
       else if(a instanceof Array) s.frames=a;
       else {
          s.frames=[];
-         y=y||0; w=x;
          for(var i=0;i<a;i++) 
             s.frames[i]={x:w*i,y:y,w:w,h:h};
       }
