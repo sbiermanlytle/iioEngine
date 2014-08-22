@@ -1,7 +1,8 @@
 /*
 The iio Engine
 Version 1.2.2+
-Last Update 11/23/2013
+Published 11/23/2013
+Last Update 8/22/2014
 
 PARAMETER CHANGE NOTICE:
 - setAnim(key,fn,frame,ctx)
@@ -133,9 +134,11 @@ var iio = {};
       img.onload=onload;
       return img;
     }
-    iio.isNumber=function(o){
-      return ! isNaN (o-0) && o !== null && o !== "" && o !== false;
+    iio.isNumber=function(o) {
+      if (typeof o === 'number') return true;
+      return (o-0)==o && o.length>0;
     }
+    iio.isFunction = function (fn) { return typeof fn === 'function' }
     iio.isString=function(s){
       return typeof s == 'string' || s instanceof String;
     }
@@ -1808,21 +1811,29 @@ var iio = {};
       return this.pos.y+parseInt(this.font,10);
    }
    iio.Text.prototype.right = function(){
-      this.ctx.save();
-      this.ctx.font=this.font;
-      if (this.textAlign=='center') return this.pos.x+this.ctx.measureText(this.text).width/2;
-      else if (this.textAlign=='right'||this.textAlign=='end') return this.pos.x;
-      else return this.pos.x+this.ctx.measureText(this.text).width;
-      this.ctx.restore();
-   }
-   iio.Text.prototype.left = function(){
-      this.ctx.save();
-      this.ctx.font=this.font;
-      if (this.textAlign=='center') return this.pos.x-this.ctx.measureText(this.text).width/2;
-      else if (this.textAlign=='right'||this.textAlign=='end') return this.pos.x-this.ctx.measureText(this.text).width;
-      else return this.pos.x;
-      this.ctx.restore();
-   }
+        var result;
+        this.ctx.save();
+        this.ctx.font = this.font;
+        if (this.textAlign == 'center') 
+            result = this.pos.x + this.ctx.measureText(this.text).width / 2;
+        else if (this.textAlign == 'right' || this.textAlign == 'end') 
+            result = this.pos.x;
+        else result = this.pos.x + this.ctx.measureText(this.text).width;
+        this.ctx.restore();
+        return result;
+    }
+    iio.Text.prototype.left = function(){
+        var result;
+        this.ctx.save();
+        this.ctx.font = this.font;
+        if (this.textAlign == 'center') 
+            result = this.pos.x - this.ctx.measureText(this.text).width / 2;
+        else if (this.textAlign == 'right' || this.textAlign == 'end') 
+            result = this.pos.x - this.ctx.measureText(this.text).width;
+        else result = this.pos.x;
+        this.ctx.restore();
+        return result;
+    }
    iio.Text.prototype.clearSelf = function(ctx){
       this.ctx=ctx||this.ctx;
       // iio.Graphics.prepStyledContext(ctx,this.styles);

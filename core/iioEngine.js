@@ -1,7 +1,7 @@
 /*
    iio engine
    Version 1.3.3 Beta
-   Last Update 8/20/2014
+   Last Update 8/22/2014
 
    1.3 is a work in progress, but already useful for many apps
    1.2 has more features, less bugs, and is available on github
@@ -65,7 +65,10 @@ iio={};
       child.prototype = new emptyFn();
       child.prototype.constructor = tmp;
    }
-   iio.isNumber=function(o){return !isNaN(o-0)&&o!==null&&o!==""&&o!==false&&o!==true}
+   iio.isNumber=function(o) {
+      if (typeof o === 'number') return true;
+      return (o-0)==o && o.length>0;
+   }
    iio.isString=function(s){return typeof s=='string'||s instanceof String}
    iio.isBetween=function(val,min,max){
       if(max < min) {
@@ -81,9 +84,7 @@ iio={};
             return true;
       return false;
    }
-   iio.isFunction=function(fn) {
-      var getType = {}; return fn && getType.toString.call(fn)==='[object Function]';
-   }
+   iio.isFunction = function (fn) { return typeof fn === 'function' }
    iio.randomColor = function() {return "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")"}
    iio.random = function(min, max) {
       min=min||0;max=(max===0||typeof(max)!='undefined')?max:1;
