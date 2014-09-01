@@ -2,7 +2,7 @@
 The iio Engine
 Version 1.2.2+
 Published 11/23/2013
-Last Update 8/22/2014
+Last Updated 9/1/2014
 
 PARAMETER CHANGE NOTICE:
 - setAnim(key,fn,frame,ctx)
@@ -1953,6 +1953,9 @@ var iio = {};
    iio.Rect.prototype.clearSelf=iio.SimpleRect.prototype.clearSelf=function(ctx){
       return clearShape(ctx,this,this.width,this.height);
    }
+   iio.Line.prototype.clearSelf=function(ctx){
+      return clearShape(ctx,this,this.endPos.x,this.endPos.y);
+   }
    iio.Circle.prototype.clearSelf = function(ctx){
       return clearShape(ctx,this,this.radius*2,this.radius*2);
    }
@@ -2811,7 +2814,7 @@ var iio = {};
          for (var i=0; i<this.cnvs[c].groups.length; i++){
             if (typeof obj.K=='undefined'){
                this.cancelFramerate(obj);
-               if (typeof this.cnvs[c].fps=='undefined')
+               if (typeof this.cnvs[c].fps=='undefined'&&obj.clearSelf)
                   obj.clearSelf(this.ctxs[c]);
             }
             if (this.cnvs[c].groups[i].rmvObj(obj))
