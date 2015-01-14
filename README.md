@@ -5,7 +5,9 @@ iio Engine is a JavaScript framework that streamlines the development HTML5 Canv
 
 All applications created with the iio Engine may be uploaded and hosted for free at iioApps.com.
 
-iio Engine 1.3.3 Beta has just become available to download. The API and syntax are a lot different from 1.2. The new version is currently being tested and documented.
+iio Engine 1.3.4 is the working copy of a push to finalize the upgrade. It will be modified frequently as it is tested and extended. The minified version will not be available until the new version is published.
+
+The API and syntax are a lot different from 1.2. You may wish to use that version (available at iioEngine.com) if you would like a better documented and more stable platform to work with.
 
 ---
 
