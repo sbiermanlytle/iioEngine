@@ -5,10 +5,9 @@
    1.3 is a work in progress, but already useful for many apps
    1.2 has more features, less bugs, and is available on github
 
-   API: iioengine.com/api
+   API: docs/
    Demos: iioapps.com
    Sandbox: iioengine.com/sandbox
-   Offline versions are included in the github repository
 
 ---------------------------------------------------------------------
 The iio Engine is licensed under the BSD 2-clause Open Source license
@@ -246,7 +245,6 @@ iio={};
       if(typeof c=='undefined')
          for(i=0;i<o.objs.length;i++)
             iio.cancelLoops(o.objs[i]);
-
    }
    iio.loop=function(fps,caller,fn){
       if(iio.isNumber(fps)||typeof window.requestAnimationFrame=='undefined'||!fps.af){
@@ -318,45 +316,57 @@ iio={};
    iio.apps=[];
 
    //INITIALIZATION FUNCTIONS
-
-   /* iio.start(app, canvas_id)
-      iio.start(app)
-      iio.start(app, { 
-         canvas_id: 'id',
-         element_id: 'elid',
-         x: x,
-         y: x,
-         w: x,
-         h: x,
-         r: x,
-         color: x,
-         outline_color: x,
-         outline_size: x,
-         
-         border: {}
-
-         
-      })
-   */
-
    iio.start=function(app,id,d){
       var c;
+
+      //create with element id
       if(id){
          c=document.getElementById(id);
          if(!c){
+
+            //create with existing canvas
             if(id.tagName=='CANVAS')c=id;
+
+            //create in existing element
             else if(iio.isNumber(id)||id.x){
-               c=document.createElement('canvas');
-               c.width=id.x||id;
-               c.height=id.y||id;
+               c = iio.create_canvas(id.x||id,id.y||id);
                if(d) d.appendChild(c);
                else document.body.appendChild(c);
             }
          }
+      //create fullscreen
       } else {
-         document.body.style.margin=0;
-         document.body.style.padding=0;
-         c=document.createElement('canvas');
+         iio.prep_fullscreen();
+         c = iio.create_canvas();
+         document.body.appendChild(c);
+      }
+
+      //initialize application with settings
+      if(app instanceof Array)
+         return new iio.App(c,app[0],app[1]);
+
+      //run iio file 
+      else if(iio.isString(app)&&app.substring(app.length-4)=='.iio')
+         return iio.read(app,function(s){iio.start(s)});
+
+      //initialize application without settings
+      return new iio.App(c,app);
+   }
+   iio.prep_fullscreen = function(){
+      document.body.style.margin=0;
+      document.body.style.padding=0;
+   }
+   iio.create_canvas = function( w, h ){
+      var c = document.createElement('canvas');
+
+      //create with size
+      if(w) {
+         c.width=w;
+         c.height=h;
+      }
+
+      //create fullscreen
+      else {
          c.margin=0;
          c.padding=0;
          c.style.position='absolute';
@@ -368,94 +378,85 @@ iio={};
             c.width=window.innerWidth;
             c.height=window.innerHeight;
          }
-         document.body.appendChild(c);
       }
-      if(app instanceof Array)
-         return new iio.App(c,app[0],app[1]);
-      if(iio.isString(app)&&app.substring(app.length-4)=='.iio')
-         return iio.read('App.iio',function(s){iio.start(s)});
-      return new iio.App(c,app);
+
+      return c;
    }
 
    //SHARED FUNCTIONS
-   init=function(){
-      this.scale=1;
-      this.objs=[];
-      this.set=set;
-      this.add=add;
-      this.rmv=rmv;
-      this.rqAnimFrame=true;
-      this.partialPx=true;
-      this.alpha=1;
-      this.loops=[];
-      this.run=function(s,nd){ return iio.run(s,this,nd) }
-      this.loop=function(fps,fn){
-         this.looping=true;
+   iio.init_obj = function(o){
+
+      iio.init_obj_properties(o);
+
+      o.run=function(s,nd){ return iio.run(s,o,nd) }
+
+      o.loop=function(fps,fn){
+         o.looping=true;
          var loop;
          if(typeof fn=='undefined'){
             if(typeof fps=='undefined'){
-               if(this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
-               loop = this.app.mainLoop={fps:60,fn:this,af:this.rqAnimFrame,o:this.app};
-               this.app.fps=60;
-               loop.id = this.app.mainLoop.id=iio.loop(this.app.mainLoop);
+               if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
+               loop = o.app.mainLoop={fps:60,fn:o,af:o.rqAnimFrame,o:o.app};
+               o.app.fps=60;
+               loop.id = o.app.mainLoop.id=iio.loop(o.app.mainLoop);
             } else {
                if(!iio.isNumber(fps)){
-                  loop = {fps:60,fn:fps,af:this.rqAnimFrame}
+                  loop = {fps:60,fn:fps,af:o.rqAnimFrame}
                   loop.id = iio.loop(loop,fps);
                } else {
-                  if(this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
-                  loop=this.app.mainLoop={fps:fps,o:this.app,af:false}
-                  this.app.fps=fps;
-                  loop.id=this.app.mainLoop.id=iio.loop(this.app.mainLoop);
+                  if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
+                  loop=o.app.mainLoop={fps:fps,o:o.app,af:false}
+                  o.app.fps=fps;
+                  loop.id=o.app.mainLoop.id=iio.loop(o.app.mainLoop);
                }
             }
          } else {
-            loop = {fps:fps,fn:fn,o:this,af:this.rqAnimFrame};
+            loop = {fps:fps,fn:fn,o:o,af:o.rqAnimFrame};
             loop.id = iio.loop(fps,loop);
          }
-         this.loops.push(loop);
-         /*if(typeof this.app.fps=='undefined'||this.app.fps<fps){
-            if(this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
-            this.app.mainLoop={fps:fps,o:this.app,af:this.app.rqAnimFrame}
-            this.app.fps=fps;
-            this.app.mainLoop.id=iio.loop(this.app.mainLoop);
+         o.loops.push(loop);
+         /*if(typeof o.app.fps=='undefined'||o.app.fps<fps){
+            if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
+            o.app.mainLoop={fps:fps,o:o.app,af:o.app.rqAnimFrame}
+            o.app.fps=fps;
+            o.app.mainLoop.id=iio.loop(o.app.mainLoop);
          }*/
          return loop.id;
       }
-      this.clearLoops=function(){
-         for(var i=0;i<this.loops.length;i++)
+      o.clearLoops=function(){
+         for(var i=0;i<o.loops.length;i++)
             iio.cancelLoop
       }
-      this.pause=function(c){
-         if(this.paused){
-            this.paused=false;
-            for(var i=0;i<this.loops.length;i++)
-               iio.loop(this.loops[i]);
-            if(this.mainLoop) iio.loop(this.mainLoop);
+      o.pause=function(c){
+         if(o.paused){
+            o.paused=false;
+            for(var i=0;i<o.loops.length;i++)
+               iio.loop(o.loops[i]);
+            if(o.mainLoop) iio.loop(o.mainLoop);
             if(typeof c=='undefined')
-               for(var i=0;i<this.objs.length;i++)
-                  for(var l=0;l<this.objs[i].loops.length;l++)
-                     iio.loop(this.objs[i].loops[l]);
+               for(var i=0;i<o.objs.length;i++)
+                  for(var l=0;l<o.objs[i].loops.length;l++)
+                     iio.loop(o.objs[i].loops[l]);
          } else {
-            iio.cancelLoops(this);
-            iio.cancelLoop(this.mainLoop.id);
-            this.paused=true;
+            iio.cancelLoops(o);
+            iio.cancelLoop(o.mainLoop.id);
+            o.paused=true;
          }
       }
-      this.playAnim=function(fps,t,r,fn,s){
+      o.playAnim=function(fps,t,r,fn,s){
          if(iio.isString(t)){
-            for(var i=0;i<this.anims.length;i++)
-               if(this.anims[i].tag==t) {
-                  this.animKey=i;
-                  this.width=this.anims[i].frames[this.animFrame].w;
-                  this.height=this.anims[i].frames[this.animFrame].h;
+            for(var i=0;i<o.anims.length;i++)
+               if(o.anims[i].tag==t) {
+                  o.animKey=i;
+                  o.width=o.anims[i].frames[o.animFrame].w;
+                  o.height=o.anims[i].frames[o.animFrame].h;
                   break;
                }
          } else r=t;
-         this.animFrame=s||0;
+         o.animFrame=s||0;
          if(typeof(r)!='undefined'){
-            this.repeat=r;
-            this.onanimstop=fn;
+            o.repeat=r;
+            o.onanimstop=fn;
          } 
          forward=function(o){
             o.animFrame++;
@@ -478,92 +479,115 @@ iio={};
             o.app.draw();
          }
          var loop;
-         if(fps>0) loop=this.loop(fps,forward);
-         else if(fps<0) loop=this.loop(fps*-1,backward);
-         else this.app.draw();
+         if(fps>0) loop=o.loop(fps,forward);
+         else if(fps<0) loop=o.loop(fps*-1,backward);
+         else o.app.draw();
          return loop;
       }
-
-      this.eval=function(s){
+      o.eval=function(s){
          if(!s)return 0;
          if(iio.isNumber(s))
             return parseFloat(s);
-         else if(s=='center') return this.center;
-         else if(s=='width') return this.width;
-         else if(s=='height') return this.height;
-         else if(s=='hidden') return this.hidden;
+         else if(s=='center') return o.center;
+         else if(s=='width') return o.width;
+         else if(s=='height') return o.height;
+         else if(s=='hidden') return o.hidden;
          else if(s=='random') return iio.random();
          else if(s=='randomColor') return iio.randomColor();
          var op; op=s.indexOf('-');
-         if(op>-1) return this.eval(s.substring(0,op))-this.eval(s.substring(op+1));
+         if(op>-1) return o.eval(s.substring(0,op))-o.eval(s.substring(op+1));
          op=s.indexOf('+');
-         if(op>-1) return this.eval(s.substring(0,op))+this.eval(s.substring(op+1));
+         if(op>-1) return o.eval(s.substring(0,op))+o.eval(s.substring(op+1));
          op=s.indexOf('/');
-         if(op>-1) return this.eval(s.substring(0,op))/this.eval(s.substring(op+1));
+         if(op>-1) return o.eval(s.substring(0,op))/o.eval(s.substring(op+1));
          op=s.indexOf('*');
-         if(op>-1) return this.eval(s.substring(0,op))*this.eval(s.substring(op+1));
+         if(op>-1) return o.eval(s.substring(0,op))*o.eval(s.substring(op+1));
          return s;
       }
+   }
+   iio.init_obj_properties = function(o){
+      o.scale=1;
+      o.objs=[];
+      o.set=set;
+      o.add=add;
+      o.rmv=rmv;
+      o.rqAnimFrame=true;
+      o.partialPx=true;
+      o.alpha=1;
+      o.loops=[];
    }
    iio.set=function(os,p){
       for(var i=0;i<os.length;i++)
          os[i].set(p);
    }
-   set=function(s,nd){
-      if(s instanceof Array)
-         for(var i=0;i<s.length;i++)
-            this.set(s[i],nd);
-      else if(iio.isNumber(s)){
-      	if(this.radius) this.radius=s/2;
-      	else if(this.width==this.height) this.width=this.height=s;
-      	else this.width=s;
-      } else if(iio.isString(s)) iio.run(s.split(" "),this,true);
-      else for(var prop in s) this[prop]=s[prop];
-      if(this.text)this.type=iio.TEXT;
-      if(this.simple){
-         if(!(this.bbx instanceof Array)){
-            this.bbx=[this.bbx,this.bbx];
-         } else if(typeof(this.bbx[1]=='undefined'))
-            this.bbx[1]=this.bbx[0];
+   iio.update_object=function(o){
+      if(o.text)o.type=iio.TEXT;
+      if(o.simple){
+         if(!(o.bbx instanceof Array)){
+            o.bbx=[o.bbx,o.bbx];
+         } else if(typeof(o.bbx[1]=='undefined'))
+            o.bbx[1]=o.bbx[0];
       }
-      if(this.anims){
-         this.animKey=0;
-         this.animFrame=0;
-         if(!this.width)this.width=this.anims[this.animKey].frames[this.animFrame].w;
-         if(!this.height)this.height=this.anims[this.animKey].frames[this.animFrame].h;
+      if(o.anims){
+         o.animKey=0;
+         o.animFrame=0;
+         if(!o.width)o.width=o.anims[o.animKey].frames[o.animFrame].w;
+         if(!o.height)o.height=o.anims[o.animKey].frames[o.animFrame].h;
       }
-      if(this.bezier)
-         for(var i=0;i<this.bezier.length;i++)
-            if(this.bezier[i]=='n')this.bezier[i]=undefined;
-      if(this.img&&iio.isString(this.img)){
+      if(o.bezier)
+         for(var i=0;i<o.bezier.length;i++)
+            if(o.bezier[i]=='n')o.bezier[i]=undefined;
+      if(o.img&&iio.isString(o.img)){
          nd=false;
-         var src=this.img;
-         this.img=new Image();
-         this.img.src=src;
-         this.img.parent=this;
-         if((typeof this.width=='undefined'&&typeof this.radius=='undefined')||this.radius==0)
-            this.img.onload=function(e){
-               if(this.parent.radius==0) this.parent.radius=this.width/2;
+         var src=o.img;
+         o.img=new Image();
+         o.img.src=src;
+         o.img.parent=o;
+         if((typeof o.width=='undefined'&&typeof o.radius=='undefined')||o.radius==0)
+            o.img.onload=function(e){
+               if(o.parent.radius==0) o.parent.radius=o.width/2;
                else {
-                  this.parent.width=this.width||0;
-                  this.parent.height=this.height||0;
+                  o.parent.width=o.width||0;
+                  o.parent.height=o.height||0;
                }
-               if(nd); else this.parent.app.draw();
+               if(nd); else o.parent.app.draw();
             }
-      } else if(this.img){
-         if((typeof this.width=='undefined'&&typeof this.radius=='undefined')||this.radius==0){
-            if(this.radius==0) this.radius=this.img.width/2;
+      } else if(o.img){
+         if((typeof o.width=='undefined'&&typeof o.radius=='undefined')||o.radius==0){
+            if(o.radius==0) o.radius=o.img.width/2;
                else {
-                  this.width=this.img.width||0;
-                  this.height=this.img.height||0;
+                  o.width=o.img.width||0;
+                  o.height=o.img.height||0;
                }
-               if(nd); else this.app.draw();
+               if(nd); else o.app.draw();
          }
       }
-      if(((this.vel&&(this.vel.x!=0||this.vel.y!=0||this.vel.r!=0))||this.shrink||this.fade||(this.acc&&(this.acc.x!=0||this.acc.y!=0||this.acc.r!=0)))
-         &&(typeof this.app.looping=='undefined'||this.app.looping===false))
-         this.app.loop();
-      if(nd); else this.app.draw();
+      if(((o.vel&&(o.vel.x!=0||o.vel.y!=0||o.vel.r!=0))||o.shrink||o.fade||(o.acc&&(o.acc.x!=0||o.acc.y!=0||o.acc.r!=0)))
+         &&(typeof o.app.looping=='undefined'||o.app.looping===false))
+         o.app.loop();
+   }
+   set = function( s, no_draw ){
+
+      //set array of settings
+      if(s instanceof Array)
+         for(var i=0;i<s.length;i++)
+            this.set(s[i],no_draw);
+
+      //set with iio script
+      else if(iio.isNumber(s)){
+         if(this.radius) this.radius=s/2;
+         else if(this.width==this.height) this.width=this.height=s;
+         else this.width=s;
+      } else if(iio.isString(s)) iio.run(s.split(" "),this,true);
+
+      //set with JSON
+      else for(var p in s) this[p]=s[p];
+
+      iio.update_object(this);
+
+      //draw if not flagged
+      if(no_draw); else this.app.draw();
+
       return this;
    }
    add=function(o,ii,s,nd){
@@ -651,24 +675,47 @@ iio={};
       this.App.apply(this,arguments);
    }; iio.App=App;
    App.prototype.App=function(view,app,s){
-      this.type=iio.APP;
-      this.canvas=view;
+
+      //set type
+      this.type = iio.APP;
+      this.app=this;
+
+      //set canvas & context
+      this.canvas = view;
+      this.ctx = view.getContext('2d');
+
+      //prep canvas
       this.canvas.parent=this;
       iio.addInputListeners(this.canvas);
-      this.ctx=view.getContext('2d');
+
+      //get width & height from canvas
       this.width=view.clientWidth||view.width;
       this.height=view.clientHeight||view.height;
+
+      //set center
       this.center={x:this.width/2,y:this.height/2};
+
+      //get DOM offset of canvas
       var offset=view.getBoundingClientRect();
+
+      //set canvas DOM position
       this.pos={x:offset.left,y:offset.top};
+
+      //create convert function with offset
       this.convertEventPos=function(e){
          return {x:e.clientX-this.pos.x,y:e.clientY-this.pos.y}
       }
-      this.init=init;this.init();
-      //this.set(iio.app);
+
+      //initialize iio object
+      iio.init_obj(this);
+
+      //initialize app properties
       this.collisions=[];
-      this.app=this;
+
+      //add app to global app array
       iio.apps.push(this);
+
+      //run iio script
       if(iio.isString(app)){
          this.runScript=iio.run(app,this);
          this.draw();
@@ -703,7 +750,7 @@ iio={};
    }
    App.prototype.clear=function(){
       this.ctx.clearRect(0,0,this.width,this.height);
-/*      if(this.color){
+      /*if(this.color){
          this.ctx.fillStyle=this.color;
          this.ctx.fillRect(0,0,this.width,this.height);
       }*/
@@ -801,39 +848,68 @@ iio={};
    function Obj(){
       this.Obj.apply(this, arguments);
    }; iio.Obj=Obj;
+
    Obj.prototype.Obj = function(p,s,ss,pp){
-      this.init=init;this.init();
+
+      iio.init_obj(this);
+
+      //adjust parameters
       if(typeof(pp)=='undefined')pp=ss;
       if(pp){ this.parent=pp; this.app=pp.app }
+
+      //run iio script
       if(iio.isString(p)){
          var _p=iio.parsePos(p.split(' '),this.parent);
          if(_p.ps) p=_p.ps;
          else p={x:0,y:0};
          ss=s; s=_p.p; 
       } 
+
+      //get position
       p=iio.pointsToVecs(p);
       this.pos=p[0];
       if(p.length==2) this.type=iio.LINE;
+
+      //set positional properties
       this.center={x:0,y:0};
       this.rot=0;
       this.vel={x:0,y:0,r:0};
       this.acc={x:0,y:0,r:0};
+
+      //set specified properties
       s=[s,ss]; this.set(s,true);
+
+      //init polygon
       if(p.length>2){
          this.vs=p;
          iio.initPoly(this);
+
+      //init line
       } else if(p.length==2) {
          this.endPos=p[1];
          iio.initLine(this);
+
+      //init shape
       } else {
+
+         //init text
          if(this.type==iio.TEXT) iio.initText(this);
+
+         //init circle
          else if(this.type==iio.CIRC) iio.initCirc(this);
          else {
+
+            //init rect
             iio.initRect(this);
+
+            //init grid
             if(this.type==iio.GRID) 
                iio.initGrid(this);
+
             else this.type=iio.RECT;
          }
+
+         //define update properties for shapes
          this.updateProps=function(){
             this.center=this.pos;
             this.left=this.pos.x-this.width/2;
@@ -842,8 +918,14 @@ iio={};
             this.bottom=this.pos.y+this.height/2;
          }; this.updateProps();
       }  
+
+      //init origin
       if(this.origin=='center') this.origin=this.center;
-      this.clear=function(){
+
+      iio.init_obj_functions(this);
+   }
+   iio.init_obj_functions = function(o){
+      o.clear=function(){
          this.objs=[];
          this.app.draw();
       }
@@ -859,7 +941,7 @@ iio={};
          if(lim<bnd[0]) return iio.resolveBounds(bnd,c);
          return false;
       }
-      this._shrink=function(s,r){
+      o._shrink=function(s,r){
          this.width*=1-s;
          this.height*=1-s; 
          if(this.width<.02){
@@ -867,14 +949,14 @@ iio={};
             else return true;
          }
       }
-      this._fade=function(s,r){
+      o._fade=function(s,r){
          this.alpha*=1-s;
          if(this.alpha<.002){
             if(r) return r(this);
             else return true;
          }
       }
-      this._update=function(o,dt){
+      o._update=function(o,dt){
          if(this.update)this.update(dt);
          var remove = false;
          if(this.bounds&&!this.simple){
@@ -910,7 +992,7 @@ iio={};
                if(this.objs[i]._update(o,dt))
                   this.rmv(this.objs[i]);
       }
-      this.draw=function(ctx){
+      o.draw=function(ctx){
          if(this.hidden)return;
          if(typeof(ctx)=='undefined') ctx=this.app.ctx;
          ctx.save();
@@ -932,7 +1014,7 @@ iio={};
          } else this.__draw(ctx);
          ctx.restore();
       }
-      this.__draw=function(ctx){
+      o.__draw=function(ctx){
          ctx.save();
          ctx.globalAlpha=this.alpha;
          if(this.lineCap) ctx.lineCap=this.lineCap;
@@ -957,7 +1039,7 @@ iio={};
          this._draw(ctx);
          ctx.restore();
       }
-      this.createGradient=function(ctx,g){
+      o.createGradient=function(ctx,g){
          var gradient;
          var p=g.split(':');
          var ps=p[1].split(',');

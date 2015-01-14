@@ -1,21 +1,33 @@
 <!-- 
-	iio Engine v1.3.2 preview
+	iio Engine v1.3.4 preview
 	*************************
-	the source code for 1.3.2 is not yet available for download
-	this document previews the ability to start a .iio application
-
-	Live Demo: http://iioengine.com/1.3/demos/App.htm
  -->
 <!DOCTYPE html>
 <html>
 <body>  
-<script type="text/javascript" src="iioEngine.js"></script>
-<script type="text/javascript" src="iioParser.js"></script>
+<script type="text/javascript" src="../core/iioEngine.js"></script>
+<script type="text/javascript" src="../core/iioParser.js"></script>
 <script type="text/javascript">
 
 		//iio.start('TestApp.iio');
 
-		iio.start('App.iio');
+		//iio.start('App.iio');
+
+		iioApp = function( app, settings ){
+
+			//app.add('center 40 red');
+			//app.add('center 40 red');
+
+			app.color = 'red';
+			//app.draw();
+
+			app.add(app.center,{
+				color:'blue',
+				width:50,
+				height:50
+			});
+
+		}; iio.start(iioApp);
 
 </script>
 </body>
