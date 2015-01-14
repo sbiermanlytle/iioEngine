@@ -1,0 +1,189 @@
+@font-face {
+  font-family: Agency;
+  src: url('AgencyFB.woff');
+}
+/* RESET */
+html,body,ul,pre,li,ol,header,div,p,a,h1,h2,h3,h4,h5,h6,footer,img,canvas{
+	margin:0;
+	padding:0;
+}
+/* Global */
+html,body{
+	width:100%;
+	height:100%;
+}
+html{
+	background-image: url('bg.jpg');
+	background-repeat: repeat;
+	color:white;
+	font-family:'Century Gothic',verdana,arial,helvetica,sans-serif;
+}
+a{
+	text-decoration:none;
+}
+/* TRANSITIONS */
+a{
+	-webkit-transition: 0.5s ease;
+	   -moz-transition: 0.5s ease;
+	    -ms-transition: 0.5s ease;
+	     -o-transition: 0.5s ease;
+	        transition: 0.5s ease;
+}
+/* HEADER */
+header{
+	background: white;
+	height:50px;
+	font-size: 24px;
+	position: absolute;
+	top: 0;
+	-webkit-box-shadow: 0 2px 1px rgba(0,0,0,.25);
+	-moz-box-shadow: 0 2px 1px rgba(0,0,0,.25);
+	box-shadow: 0 2px 1px rgba(0,0,0,.25);
+	left: 0;
+	z-index: 1000;
+	color:black;
+	width: 389px;
+}
+header ul{
+	list-style: none;
+	height:50px;
+	padding-top: 8px;
+}
+header li{
+	float:left;
+}
+header a{
+	color:black;
+	padding:17px 9px 8px;
+	-webkit-box-shadow: 0 1px 1px rgba(0,0,0,.25);
+	-moz-box-shadow: 0 1px 1px rgba(0,0,0,.25);
+	box-shadow: 0 1px 1px rgba(0,0,0,.25);
+	cursor: pointer;
+}
+#home{
+	padding-left: 0px;
+}
+#home a{
+	font-size: 47px;
+	font-weight: normal;
+	text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+	background-color: #00baff;
+	line-height: .6;
+	padding:0px 25px;
+	color:white;
+	font-family: 'Agency';
+}
+#home a:hover,header li a:hover{
+	background-color: black;
+	color:#00baff;
+}
+#btnbar{
+	margin-top: 3px;
+}
+#files{
+	position: absolute;
+	right: 0;
+	top:0;
+	width: 198px;
+	display: none;
+}
+input[type="file"] {
+	font-size: 35px;
+	font-family: Times;
+}
+/* MAIN */
+#left,#right,#center{
+	height:100%;
+	position: absolute;
+}
+#left{
+	width: 389px;
+	overflow: hidden;
+	left:0;
+}
+#center{
+	background-color: gainsboro;
+	width:10px;
+	z-index:500;
+	cursor: col-resize;
+}
+#right{
+	width:70%;
+	overflow: hidden;
+	right: 0;
+}
+#editor1,#editor2{
+	width: 100%;
+	overflow: auto;
+}
+#editor1{
+	height: 45px;
+}
+#editor2{
+	height: 100%;
+}
+h2{
+	text-align: center;
+	border-bottom: 1px solid gainsboro;
+	border-top: 1px solid gainsboro;
+	padding: 5px 0 8px;
+	font-weight: normal;
+}
+#toolbar{
+	margin-top:50px;
+	padding:10px 0;
+	font-size: 14px;
+}
+.tool{
+	float:left;
+}
+#themes{
+	width:174px;
+	text-align: center;
+	margin-bottom: 5px;
+}
+#launchcode_head{
+	clear:both;
+}
+input[type="checkbox"] {
+	float:left;
+	cursor: pointer;
+	margin: 4px 5px 7px 10px;
+}
+#word_wrap{
+	width:104px;
+}
+#line_nums{
+	width: 80px;
+}
+#invisibles{
+	width:113px;
+}
+#drag-overlay{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 9000;
+	background-color: rgba(63, 63, 63, 0.33);
+	margin-top: 50px;
+	display: none;
+}
+#drag-overlay p{
+	text-align: center;
+	position: absolute;
+	font-size: 28px;
+	color: rgb(111, 111, 111);
+	width: 100%;
+	top: 45%;
+}
+#toolbar a{
+	color:white;
+	border:1px solid gainsboro;
+	font-weight: bold;
+	background-color:#00baff;
+	padding:2px 11px;
+}
+#toolbar a:hover{
+	color:#00baff;
+	background-color:black;
+}
