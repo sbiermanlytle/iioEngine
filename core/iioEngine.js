@@ -310,7 +310,7 @@ iio={};
          iio.apps[i].draw();
       }
    }
-   window.onresize=function(){iio.resize()}
+   window.onresize = iio.resize;
 
    //DEFAULT PROPERTIES
    iio.apps=[];
@@ -582,6 +582,8 @@ iio={};
 
       //set with JSON
       else for(var p in s) this[p]=s[p];
+      if(typeof(this.height)=='undefined')
+         this.height = this.width;
 
       iio.update_object(this);
 
@@ -866,6 +868,10 @@ iio={};
       } 
 
       //get position
+      if(typeof(s)=='undefined'){
+         s = p;
+         p = p.pos;
+      }
       p=iio.pointsToVecs(p);
       this.pos=p[0];
       if(p.length==2) this.type=iio.LINE;
