@@ -1,5 +1,38 @@
 /* iio Engine 1.3.4 api
 */
+--------------------------------------------
+// Summary
+--------------------------------------------
+Conditionals
+	- if else then
+
+Functions
+	- add( position properties )
+	- loop( fps code )
+	- draw()
+
+Constants
+	- randomColor
+
+Physical Properties
+	- pos
+	- rot
+	- width
+	- height
+	- radius
+	- center
+	- vel
+	- acc
+	- hidden
+	- simple
+	- o
+
+Display Properties
+	- color
+	- outline
+	- lineWidth
+	- alpha
+
 
 --------------------------------------------
 // Conditionals
@@ -43,7 +76,6 @@
 
 		'add center red 50'
 
-	-----------------------------
 	JS - (app|obj).pos
 	-----------------------------
 	- add shape to app
@@ -69,7 +101,6 @@
 
 		'loop 1 add center 50 randomColor'
 
-	-----------------------------
 	JS - (app|obj).pos
 	-----------------------------
 	- add shape to app
@@ -85,7 +116,6 @@
 	---------------
 	'draw'
 
-	-----------------------------
 	JS - app.draw()
 	-----------------------------
 	- add shape to app
@@ -99,64 +129,9 @@
 */
 	'radomColor'
 
-	-----------------------------
 	JS
 	-----------------------------
 	iio.randomColor();
-
-/* width
-	- app width
-*/
-	'width'
-
-	-----------------------------
-	JS
-	-----------------------------
-	app.width;
-
-/* height
-	- app height
-*/
-	'height'
-
-	-----------------------------
-	JS
-	-----------------------------
-	app.height;
-
-/* center
-	- app center
-*/
-	'center'
-
-	-----------------------------
-	JS
-	-----------------------------
-	app.center;
-
-/* loop( fps code )
-	- loop code at a specified rate
-	- loop terminated by a "|" key
-	- default fps is 60
-*/
-	app|obj loop()
-	---------------
-	- loop app color at 1 fps
-
-		'loop 1 randomColor'
-
-	- loop object creation
-
-		'loop 1 add center 50 randomColor'
-
-	-----------------------------
-	JS - (app|obj).pos
-	-----------------------------
-	- add shape to app
-
-		app.loop(1, function(){
-			app.color = iio.randomColor();
-		})
 
 --------------------------------------------
 // Physical Properties
@@ -177,7 +152,6 @@
 
 		'add 40:90 50 red' 
 
-	-----------------------------
 	JS - (app|obj).pos
 	-----------------------------
 	- set pos
@@ -208,7 +182,6 @@
 
 		'add center 50 red rot 2' 
 
-	-----------------------------
 	JS - obj.rot
 	-----------------------------
 	- set rot
@@ -234,15 +207,22 @@
 	---------------
 	- set width
 
+		'width'
+
+	- set width
+
 		'width 50'
 
 	- create shape with width
 
 		'add center 50 red' 
 
-	-----------------------------
 	JS - (app|obj).width
 	-----------------------------
+	- get width
+
+		obj.width;
+
 	- set width
 
 		obj.width = 50;
@@ -263,6 +243,10 @@
 */
 	app|obj height
 	---------------
+	- get height
+
+		'height'
+
 	- set height
 
 		'height 100'
@@ -271,9 +255,12 @@
 
 		'add center 50:100 red' 
 
-	-----------------------------
 	JS - (app|obj).height
 	-----------------------------
+	- get height
+
+		obj.height;
+
 	- set height
 
 		obj.height = 100;
@@ -302,7 +289,6 @@
 
 		'add center o 100 red' 
 
-	-----------------------------
 	JS - UNACCESSABLE
 	-----------------------------
 
@@ -322,7 +308,6 @@
 
 		'add center 50 red' 
 
-	-----------------------------
 	JS - (app|obj).center
 	-----------------------------
 	- get center
@@ -351,7 +336,6 @@
 
 		'add 50 red vel 1:1:.01' 
 
-	-----------------------------
 	JS - obj.vel
 	-----------------------------
 	- set vel
@@ -383,7 +367,6 @@
 
 		'add 50 red acc 1:1:.01' 
 
-	-----------------------------
 	JS - obj.acc
 	-----------------------------
 	- set acc
@@ -415,7 +398,6 @@
 
 		'add center 50 red hidden'
 
-	-----------------------------
 	JS - obj.hidden
 	-----------------------------
 	- set hidden
@@ -451,7 +433,6 @@
 
 		'add center 50:100 red o' 
 
-	-----------------------------
 	JS - UNDEFINED
 	-----------------------------
 
@@ -469,7 +450,6 @@
 
 		'add center 50 red simple' 
 
-	-----------------------------
 	JS - obj.simple
 	-----------------------------
 	- set simple
@@ -510,7 +490,6 @@
 
 		'add center 50 blue' 
 
-	-----------------------------
 	JS - (app|obj).color
 	-----------------------------
 	- set color to red
@@ -550,7 +529,6 @@
 
 		'add center 50 outline blue' 
 
-	-----------------------------
 	JS - (app|obj).outline
 	-----------------------------
 	- set outline to red
@@ -582,7 +560,6 @@
 
 		'add center 50 outline red 2' 
 
-	-----------------------------
 	JS - (app|obj).lineWidth
 	-----------------------------
 	- set lineWidth
@@ -614,7 +591,6 @@
 
 		'add center 50 red alpha .2' 
 
-	-----------------------------
 	JS - (app|obj).alpha
 	-----------------------------
 	- set alpha
