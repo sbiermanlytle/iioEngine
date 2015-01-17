@@ -102,23 +102,23 @@ iio={};
       var newY = y * Math.cos(r) + x * Math.sin(r);
       return {x:newX,y:newY};
    }
-   iio.addEvent = function(obj,evt,fn,capt){  
-      if(obj.addEventListener) {  
-         obj.addEventListener(evt, fn, capt);  
-         return true;  
-      } else if(obj.attachEvent) {  
-         obj.attachEvent('on'+evt, fn);  
-         return true;  
-      } else return false;  
+   iio.addEvent = function(obj,evt,fn,capt){
+      if(obj.addEventListener) {
+         obj.addEventListener(evt, fn, capt);
+         return true;
+      } else if(obj.attachEvent) {
+         obj.attachEvent('on'+evt, fn);
+         return true;
+      } else return false;
    }
    iio.read=function(f,c){
-       var raw=new XMLHttpRequest();
-       raw.open("GET",f,true);
-       raw.onreadystatechange=function(){
-         if(raw.readyState===4&&(raw.status===200 || raw.status==0))
-            c(raw.responseText);
+       var xhr=new XMLHttpRequest();
+       xhr.open("GET",f,true);
+       xhr.onreadystatechange=function(){
+         if(xhr.readyState===4&&(xhr.status===200 || xhr.status==0))
+            c(xhr.responseText);
        }
-       raw.send(null);
+       xhr.send(null);
    }
    iio.getKeyString=function(e){
       switch(e.keyCode){
@@ -271,7 +271,7 @@ iio={};
                caller.id=window.setTimeout(loop,1000/nufps);
             }
             //if(fn)fn(caller,correctedFPS/(1000/fps));
-         }; 
+         };
          caller.id=window.setTimeout(loop,1000/fps);
          return caller.id;
       } else {
@@ -345,9 +345,9 @@ iio={};
       if(app instanceof Array)
          return new iio.App(c,app[0],app[1]);
 
-      //run iio file 
+      //run iio file
       else if(iio.isString(app)&&app.substring(app.length-4)=='.iio')
-         return iio.read(app,function(s){iio.start(s)});
+         return iio.read(app, iio.start});
 
       //initialize application without settings
       return new iio.App(c,app);
@@ -457,7 +457,7 @@ iio={};
          if(typeof(r)!='undefined'){
             o.repeat=r;
             o.onanimstop=fn;
-         } 
+         }
          forward=function(o){
             o.animFrame++;
             if(o.animFrame>=o.anims[o.animKey].frames.length){
@@ -827,12 +827,12 @@ iio={};
       var s={};
       if(iio.isString(w)){
          s.tag=w; w=h; h=a; a=x; x=y; y=n;
-      } 
+      }
       if(w instanceof Array) s.frames=w;
       else if(a instanceof Array) s.frames=a;
       else {
          s.frames=[];
-         for(var i=0;i<a;i++) 
+         for(var i=0;i<a;i++)
             s.frames[i]={x:w*i,y:y,w:w,h:h};
       }
       for(var i=0;i<s.frames.length;i++){
@@ -864,8 +864,8 @@ iio={};
          var _p=iio.parsePos(p.split(' '),this.parent);
          if(_p.ps) p=_p.ps;
          else p={x:0,y:0};
-         ss=s; s=_p.p; 
-      } 
+         ss=s; s=_p.p;
+      }
 
       //get position
       if(typeof(s)=='undefined'){
@@ -909,7 +909,7 @@ iio={};
             iio.initRect(this);
 
             //init grid
-            if(this.type==iio.GRID) 
+            if(this.type==iio.GRID)
                iio.initGrid(this);
 
             else this.type=iio.RECT;
@@ -923,7 +923,7 @@ iio={};
             this.top=this.pos.y-this.height/2;
             this.bottom=this.pos.y+this.height/2;
          }; this.updateProps();
-      }  
+      }
 
       //init origin
       if(this.origin=='center') this.origin=this.center;
@@ -949,7 +949,7 @@ iio={};
       }
       o._shrink=function(s,r){
          this.width*=1-s;
-         this.height*=1-s; 
+         this.height*=1-s;
          if(this.width<.02){
             if(r) return r(this);
             else return true;
@@ -1485,9 +1485,9 @@ iio={};
                if (shift) this.text=pre+'"'+suf;
                else this.text=pre+"'"+suf;
                cI++;
-            } 
+            }
          } else {
-            if(shift||this.cursor.shift) 
+            if(shift||this.cursor.shift)
                this.text=pre+key.charAt(0).toUpperCase()+suf;
             else this.text=pre+key+suf;
             cI++;
