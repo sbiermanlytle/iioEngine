@@ -56,11 +56,7 @@ iio={};
       } return (val >= min && val <= max);
    }
    iio.isImage=function(img){
-      var ies=['png','jpg','gif','tiff'];
-      for(var i=0;i<ies.length;i++)
-         if(img.indexOf('.'+ies[i])!=-1)
-            return true;
-      return false;
+      return ['png','jpg','gif','tiff'].some(function(ie){return (img.indexOf('.'+ie)!=-1)});
    }
    iio.isFunction = function (fn) { return typeof fn === 'function' }
    iio.randomColor = function() {return "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")"}
@@ -224,27 +220,20 @@ iio={};
          default:return'undefined';
       }
    }
-   iio.keyCodeIs = function(key,event){
-      if (!(key instanceof Array)) key=[key];
+   iio.keyCodeIs = function(keys, event){
+      if (!(keys instanceof Array)) keys=[keys];
       var str=iio.getKeyString(event);
-      for (var _k=0;_k<key.length;_k++){
-         if(str==key[_k])
-            return true;
-      }
-      return false;
+      return keys.some(function(key) { return key === str; });
    }
    iio.cancelLoop=function(l){
       window.clearTimeout(l);
       window.cancelAnimationFrame(l);
    }
    iio.cancelLoops=function(o,c){
-      var i;
-      for(i=0;i<o.loops.length;i++)
-            iio.cancelLoop(o.loops[i].id);
+      o.loops.forEach(function(loop) { iio.cancelLoop(loop.id); });
       if(o.mainLoop) iio.cancelLoop(o.mainLoop.id);
       if(typeof c=='undefined')
-         for(i=0;i<o.objs.length;i++)
-            iio.cancelLoops(o.objs[i]);
+        o.objs.forEach(function(obj) { iio.cancelLoops(obj); });
    }
    iio.loop=function(fps,caller,fn){
       if(iio.isNumber(fps)||typeof window.requestAnimationFrame=='undefined'||!fps.af){
@@ -292,23 +281,23 @@ iio={};
       }
    }
    iio.resize=function(){
-      for(var i=0;i<iio.apps.length;i++){
-         if(iio.apps[i].canvas.fullscreen){
+      iio.apps.forEach(function(app) {
+         if(app.canvas.fullscreen){
             if(window.jQuery){
-               iio.apps[i].canvas.width=$(window).width();
-               iio.apps[i].canvas.height=$(window).height();
+               app.canvas.width=$(window).width();
+               app.canvas.height=$(window).height();
             } else {
-               iio.apps[i].canvas.width=window.innerWidth;
-               iio.apps[i].canvas.height=window.innerHeight;
+               app.canvas.width=window.innerWidth;
+               app.canvas.height=window.innerHeight;
             }
          }
-         iio.apps[i].width=iio.apps[i].canvas.width;
-         iio.apps[i].height=iio.apps[i].canvas.height;
-         iio.apps[i].center.x=iio.apps[i].canvas.width/2;
-         iio.apps[i].center.y=iio.apps[i].canvas.height/2;
-         if(iio.apps[i].runScript.resize) iio.apps[i].runScript.resize();
-         iio.apps[i].draw();
-      }
+         app.width=app.canvas.width;
+         app.height=app.canvas.height;
+         app.center.x=app.canvas.width/2;
+         app.center.y=app.canvas.height/2;
+         if(app.runScript && app.runScript.resize) app.runScript.resize();
+         app.draw();
+      });
    }
    window.onresize = iio.resize;
 
@@ -347,7 +336,7 @@ iio={};
 
       //run iio file
       else if(iio.isString(app)&&app.substring(app.length-4)=='.iio')
-         return iio.read(app, iio.start});
+         return iio.read(app, iio.start);
 
       //initialize application without settings
       return new iio.App(c,app);
@@ -430,13 +419,12 @@ iio={};
       o.pause=function(c){
          if(o.paused){
             o.paused=false;
-            for(var i=0;i<o.loops.length;i++)
-               iio.loop(o.loops[i]);
+            o.loops.forEach(function(loop) { iio.loop(loop); });
             if(o.mainLoop) iio.loop(o.mainLoop);
             if(typeof c=='undefined')
-               for(var i=0;i<o.objs.length;i++)
-                  for(var l=0;l<o.objs[i].loops.length;l++)
-                     iio.loop(o.objs[i].loops[l]);
+              o.objs.forEach(function(obj) {
+                obj.loops.forEach(function(loop) { iio.loop(loop); });
+              });
          } else {
             iio.cancelLoops(o);
             iio.cancelLoop(o.mainLoop.id);
@@ -445,13 +433,15 @@ iio={};
       }
       o.playAnim=function(fps,t,r,fn,s){
          if(iio.isString(t)){
-            for(var i=0;i<o.anims.length;i++)
-               if(o.anims[i].tag==t) {
-                  o.animKey=i;
-                  o.width=o.anims[i].frames[o.animFrame].w;
-                  o.height=o.anims[i].frames[o.animFrame].h;
-                  break;
-               }
+            o.anims.some(function(anim, i) {
+              if(o.anim.tag==t) {
+                o.animKey=i;
+                o.width=o.anim.frames[o.animFrame].w;
+                o.height=o.anim.frames[o.animFrame].h;
+                return true;
+              }
+              return false;
+            });
          } else r=t;
          o.animFrame=s||0;
          if(typeof(r)!='undefined'){
@@ -517,8 +507,7 @@ iio={};
       o.loops=[];
    }
    iio.set=function(os,p){
-      for(var i=0;i<os.length;i++)
-         os[i].set(p);
+     os.forEach(function(o) { o.set(p); });
    }
    iio.update_object=function(o){
       if(o.text)o.type=iio.TEXT;
@@ -535,8 +524,7 @@ iio={};
          if(!o.height)o.height=o.anims[o.animKey].frames[o.animFrame].h;
       }
       if(o.bezier)
-         for(var i=0;i<o.bezier.length;i++)
-            if(o.bezier[i]=='n')o.bezier[i]=undefined;
+        o.bezier.forEach(function(b,i) { if(b === 'n') o.bezier[i] = undefined; });
       if(o.img&&iio.isString(o.img)){
          nd=false;
          var src=o.img;
@@ -570,8 +558,7 @@ iio={};
 
       //set array of settings
       if(s instanceof Array)
-         for(var i=0;i<s.length;i++)
-            this.set(s[i],no_draw);
+        s.forEach(function(_s) { this.set(_s, no_draw); }, this);
 
       //set with iio script
       else if(iio.isNumber(s)){
@@ -595,8 +582,7 @@ iio={};
    add=function(o,ii,s,nd){
       if(typeof nd=='undefined') nd=s;
       if(o instanceof Array&&!iio.isNumber(o[0])&&typeof(o[0].x)=='undefined')
-         for(var i=0;i<o.length;i++)
-            this.add(o[i],ii,s,nd);
+        o.forEach(function(_o) { this.add(_o,ii,s,nd); }, this);
       else if(typeof(o.type)!='undefined'){
          o.parent=this;
          o.app=this.app;
@@ -609,30 +595,24 @@ iio={};
       return o;
    }
    rmv=function(o,nd){
+      callback = function(c, i, arr) {
+        if(c == o) { arr.splice(i, 1); return true; } else return false;
+      }
       if(typeof o=='undefined')
          this.objs=[];
       else if(o instanceof Array)
-         for(var i=0;i<o.length;i++) this.rmv(o[i]);
+         o.forEach(function(_o) { this.rmv(_o); }, this);
       else if(iio.isNumber(o)&&o<this.objs.length)
          this.objs.splice(o,1);
-      else if(this.objs) for(var i=0;i<this.objs.length;i++)
-         if(this.objs[i]==o) { this.objs.splice(i,1); break }
-      if(this.collisions) for(var i=0;i<this.collisions.length;i++){
-         if(this.collisions[i][0]==o||this.collisions[i][1]==o)
+      else if(this.objs) this.objs.some(callback);
+      if(this.collisions) this.collisions.forEach(function(collision, i) {
+         if(collision[0]==o||collision[1]==o)
             this.collisions.splice(i,1);
-         else if(this.collisions[i][0] instanceof Array)
-            for(var j=0;j<this.collisions[i][0].length;j++)
-               if(this.collisions[i][0][j]==o){
-                  this.collisions[i][0].splice(j,1);
-                  break;
-               }
-         if(this.collisions[i][1] instanceof Array)
-            for(var j=0;j<this.collisions[i][1].length;j++)
-               if(this.collisions[i][1][j]==o){
-                  this.collisions[i][1].splice(j,1);
-                  break;
-               }
-      }
+         else if(collision[0] instanceof Array)
+            collision[0].some(callback)
+         if(collision[1] instanceof Array)
+            collision[1].some(callback)
+      })
       if(nd); else this.app.draw();
       return o;
    }
@@ -641,36 +621,38 @@ iio={};
       o.onmousedown=function(e){
          var ep=this.parent.convertEventPos(e);
          if(this.parent.click) this.parent.click(e,ep);
-         for(var i=0;i<this.parent.objs.length;i++){
+         this.parent.objs.forEach(function(obj, i) {
             if(i!==0)ep=this.parent.convertEventPos(e);
-            if(this.parent.objs[i].contains&&this.parent.objs[i].contains(ep))
-               if(this.parent.objs[i].click){
-                  if(this.parent.objs[i].type==iio.GRID){
-                     var c=this.parent.objs[i].cellAt(ep);
-                     this.parent.objs[i].click(e,ep,c,this.parent.objs[i].cellCenter(c.c,c.r));
+            if(obj.contains&&obj.contains(ep))
+               if(obj.click){
+                  if(obj.type==iio.GRID){
+                     var c=obj.cellAt(ep);
+                     obj.click(e,ep,c,obj.cellCenter(c.c,c.r));
                   }
-                  else this.parent.objs[i].click(e,ep);
+                  else obj.click(e,ep);
                }
-         }
+         }, this)
       }
    }
    iio.addEvent(window,'keydown',function(e){
       var k=iio.getKeyString(e);
-      for(var i=0;i<iio.apps.length;i++)
-         if(iio.apps[i].runScript&&iio.apps[i].runScript.onKeyDown)
-            iio.apps[i].runScript.onKeyDown(e,k);
+      iio.apps.forEach(function(app) {
+         if(app.runScript&&app.runScript.onKeyDown)
+            app.runScript.onKeyDown(e,k);
+      });
    });
    iio.addEvent(window,'keyup',function(e){
       var k=iio.getKeyString(e);
-      for(var i=0;i<iio.apps.length;i++)
-         if(iio.apps[i].runScript&&iio.apps[i].runScript.onKeyUp)
-            iio.apps[i].runScript.onKeyUp(e,k);
+      iio.apps.forEach(function(app) {
+        if(app.runScript&&app.runScript.onKeyUp)
+            app.runScript.onKeyUp(e,k);
+      });
    });
    iio.addEvent(window, 'scroll', function(event){
-      for(var i=0;i<iio.apps.length;i++){
-         var p=iio.apps[i].canvas.getBoundingClientRect();
-         iio.apps[i].pos={x:p.left,y:p.top};
-      }
+      iio.apps.forEach(function(app) {
+       var p=app.canvas.getBoundingClientRect();
+         app.pos={x:p.left,y:p.top};
+      });
    });
    //APP
    function App(){
@@ -724,8 +706,7 @@ iio={};
       } else this.runScript = new app(this,s);
    }
    App.prototype.stop=function(){
-      for(var i=0;i<this.objs.length;i++)
-         iio.cancelLoops(this.objs[i]);
+      this.objs.forEach(function(obj) { iio.cancelLoops(obj); });
       iio.cancelLoops(this);
       if(this.mainLoop) iio.cancelLoop(this.mainLoop.id);
       this.clear();
@@ -746,9 +727,7 @@ iio={};
       if(this.alpha)
          this.canvas.style.opacity=this.alpha;
       if(this.objs.length>0)
-         for(var i=0;i<this.objs.length;i++)
-            if(this.objs[i].draw)
-               this.objs[i].draw(this.ctx);
+         this.objs.forEach(function(obj) { if(obj.draw) obj.draw(this.ctx); }, this);
    }
    App.prototype.clear=function(){
       this.ctx.clearRect(0,0,this.width,this.height);
@@ -764,34 +743,28 @@ iio={};
       if(o1 instanceof Array){
          if(o2 instanceof Array){
             if(o2.length==0) return;
-            for(var i1=0;i1<o1.length;i1++)
-               for(var i2=0;i2<o2.length;i2++)
-                  if(iio.checkCollision(o1[i1],o2[i2]))
-                     fn(o1[i1],o2[i2]);
+            o1.forEach(function(_o1) {
+              o2.forEach(function(_o2) { if(iio.checkCollision(_o1,_o2)) fn(_o1,_o2); });
+            });
          } else {
-            for(var i=0;i<o1.length;i++)
-               if(iio.checkCollision(o1[i],o2))
-                  fn(o1[i],o2);
+            o1.forEach(function(_o1) { if(iio.checkCollision(_o1,o2)) fn(_o1,o2); });
          }
       } else {
          if(o2 instanceof Array){
-            for(var i=0;i<o2.length;i++)
-               if(iio.checkCollision(o1,o2[i]))
-                  fn(o1,o2[i]);
-         } else if(iio.checkCollision(o1,o2))
-            fn(o1,o2);
+            o2.forEach(function(_o2) { if(iio.checkCollision(o1,_o2)) fn(o1,_o2); });
+         } else if(iio.checkCollision(o1,o2)) fn(o1,o2);
       }
    }
    App.prototype._update=function(o,dt){
       if(this.update)this.update(dt);
       if(this.objs&&this.objs.length>0)
-         for(var i=0;i<this.objs.length;i++)
-            if(this.objs[i]._update)
-               if(this.objs[i]._update(o,dt))
-                  this.rmv(this.objs[i]);
+         this.objs.forEach(function(obj) {
+           if(obj._update && obj._update(o,dt)) this.rmv(obj);
+         }, this);
       if(this.collisions&&this.collisions.length>0){
-         for(var i=0;i<this.collisions.length;i++)
-            this.cCollisions(this.collisions[i][0],this.collisions[i][1],this.collisions[i][2]);
+         this.collisions.forEach(function(collision) {
+            this.cCollisions(collision[0],collision[1],collision[2]);
+         }, this);
       }
    }
    iio.checkCollision=function(o1,o2){
@@ -835,14 +808,11 @@ iio={};
          for(var i=0;i<a;i++)
             s.frames[i]={x:w*i,y:y,w:w,h:h};
       }
-      for(var i=0;i<s.frames.length;i++){
-         if(typeof(s.frames[i].src)=='undefined')
-            s.frames[i].src=this.img;
-         if(typeof(s.frames[i].w)=='undefined')
-            s.frames[i].w=w;
-         if(typeof(s.frames[i].h)=='undefined')
-            s.frames[i].h=h;
-      }
+      s.frames.forEach(function(frame) {
+         if(typeof(frame.src)=='undefined') frame.src=this.img;
+         if(typeof(frame.w)=='undefined') frame.w=w;
+         if(typeof(frame.h)=='undefined') frame.h=h;
+      }, this);
       return s;
    }
 
@@ -993,10 +963,9 @@ iio={};
          if(this.vel.r)this.rot+=this.vel.r;
          if(!this.simple) this.updateProps(this.vel);
          if(this.objs&&this.objs.length>0)
-         for(var i=0;i<this.objs.length;i++)
-            if(this.objs[i]._update)
-               if(this.objs[i]._update(o,dt))
-                  this.rmv(this.objs[i]);
+           this.objs.forEach(function(obj) {
+             if(obj._update && obj._update(o,dt)) this.rmv(obj);
+           }, this);
       }
       o.draw=function(ctx){
          if(this.hidden)return;
@@ -1008,14 +977,13 @@ iio={};
          if(this.rot!=0) ctx.rotate(this.rot);
          if(this.objs.length>0){
             var drawnSelf=false;
-            for(var i=0;i<this.objs.length;i++){
-               if(!drawnSelf&&this.objs[i].z>=this.z){
-                  this.__draw(ctx);
-                  drawnSelf=true;
-               }
-               if(this.objs[i].draw)
-                  this.objs[i].draw(ctx);
-            }
+            this.objs.forEach(function(obj) {
+              if(!drawnSelf && obj.z >= this.z) {
+                this.__draw(ctx);
+                drawnSelf = true;
+              }
+              if(obj.draw) obj.draw(ctx);
+            }, this);
             if(!drawnSelf)this.__draw(ctx);
          } else this.__draw(ctx);
          ctx.restore();
@@ -1026,15 +994,15 @@ iio={};
          if(this.lineCap) ctx.lineCap=this.lineCap;
          if(this.shadow){
             var s=this.shadow.split(' ');
-            for(var i=0;i<s.length;i++){
-               if(iio.isNumber(s[i]))
-                  ctx.shadowBlur=s[i];
-               else if(s[i].indexOf(':')>-1){
-                  var _i=s[i].indexOf(':');
-                  ctx.shadowOffsetX=s[i].substring(0,_i);
-                  ctx.shadowOffsetY=s[i].substring(_i+1);
-               } else ctx.shadowColor=s[i];
-            }
+            s.forEach(function(_s) {
+               if(iio.isNumber(_s))
+                  ctx.shadowBlur=_s;
+               else if(_s.indexOf(':')>-1){
+                  var _i=_s.indexOf(':');
+                  ctx.shadowOffsetX=_s.substring(0,_i);
+                  ctx.shadowOffsetY=_s.substring(_i+1);
+               } else ctx.shadowColor=_s;
+            });
          }
          if(this.dash){
             if(this.dash.length>1&&this.dash.length%2==1)
@@ -1053,12 +1021,12 @@ iio={};
             gradient=ctx.createLinearGradient(this.eval(ps[0]),this.eval(ps[1]),this.eval(ps[2]),this.eval(ps[3]));
          else gradient=ctx.createRadialGradient(this.eval(ps[0]),this.eval(ps[1]),this.eval(ps[2]),this.eval(ps[3]),this.eval(ps[4]),this.eval(ps[5]));
          var c;
-         for(var i=2;i<p.length;i++){
-            c=p[i].indexOf(',');
-            var a=parseFloat(p[i].substring(0,c));
-            var b=this.eval(p[i].substring(c+1));
+         p.forEach(function(_p) {
+            c=_p.indexOf(',');
+            var a=parseFloat(_p.substring(0,c));
+            var b=this.eval(_p.substring(c+1));
             gradient.addColorStop(a,b);
-         }
+         });
          return gradient;
       }
    }
@@ -1143,20 +1111,18 @@ iio={};
          }
       }
       o.getTrueVertices=function(){
-         this.vs=[{x:this.left,y:this.top}
-                 ,{x:this.right,y:this.top}
-                 ,{x:this.right,y:this.bottom}
-                 ,{x:this.left,y:this.bottom}];
-         var vList=[];var x,y;
-         for(var i=0;i<this.vs.length;i++){
-            x=this.vs[i].x-this.pos.x;
-            y=this.vs[i].y-this.pos.y;
-            var v=iio.rotatePoint(x,y,this.rot);
-            v.x+=this.pos.x;
-            v.y+=this.pos.y;
-            vList[i]=v;
-         }
-         return vList;
+         this.vs = [
+           {x: this.left,  y: this.top},
+           {x: this.right, y: this.top},
+           {x: this.right, y: this.bottom},
+           {x: this.left,  y: this.bottom}
+         ];
+         return this.vs.map(function(_v) {
+           var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
+           v.x += this.pos.x;
+           v.y += this.pos.y;
+           return v;
+         }, this);
       }
       o.contains=function(v,y){
          if(this.rot) return iio.polyContains(this,v,y);
@@ -1205,8 +1171,8 @@ iio={};
          }
       }
       o.cellCenter=function(c,r){
-         return {x:-this.width/2+c*this.res.x+this.res.x/2
-            ,y:-this.height/2+r*this.res.y+this.res.y/2}
+         return {x:-this.width/2+c*this.res.x+this.res.x/2,
+                 y:-this.height/2+r*this.res.y+this.res.y/2}
       }
       o.cellAt=function(x,y){
          if(x.x) return this.cells[Math.floor((x.x-this.left)/this.res.x)][Math.floor((x.y-this.top)/this.res.y)];
@@ -1270,16 +1236,12 @@ iio={};
    iio.initPoly=function(o){
       o.type=iio.POLY;
       o.getTrueVertices=function(){
-         var vList=[];var x,y;
-         for(var i=0;i<this.vs.length;i++){
-            x=this.vs[i].x-this.pos.x;
-            y=this.vs[i].y-this.pos.y;
-            var v=iio.rotatePoint(x,y,this.rot);
-            v.x+=this.pos.x;
-            v.y+=this.pos.y;
-            vList[i]=v;
-         }
-         return vList;
+        return this.vs.map(function(_v) {
+          var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
+          v.x += this.pos.x;
+          v.y += this.pos.y;
+          return v;
+        }, this);
       }
       o._draw=function(ctx){
          iio.prepShape(ctx,this);
@@ -1305,7 +1267,8 @@ iio={};
          if ( ((vs[i].y>y) != (vs[j].y>y)) &&
             (v < (vs[j].x-vs[i].x) * (y-vs[i].y) / (vs[j].y-vs[i].y) + vs[i].x) )
                c = !c;
-      } return c;
+      }
+      return c;
    }
    iio.drawPoly=function(ctx,vs,bezier,open){
       ctx.beginPath();
@@ -1321,8 +1284,7 @@ iio={};
                   ,(bezier[_i++]||0),(bezier[_i++]||0)
                   ,0,0);
          }
-      } else for(var i=1;i<vs.length;i++)
-         ctx.lineTo(vs[i].x-vs[0].x,vs[i].y-vs[0].y);
+      } else vs.forEach(function(v) { ctx.lineTo(v.x-vs[0].x,v.y-vs[0].y); });
       if(typeof(open)=='undefined'||!open)
          ctx.closePath();
    }
