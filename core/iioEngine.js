@@ -19,7 +19,7 @@ All rights reserved.
 iio={};
 (function(){
 
-   //ENGINE DEFINITIONS
+//OBJECT TYPES
    iio.APP="App";
    iio.OBJ="Obj";
    iio.LINE="Line";
@@ -29,13 +29,13 @@ iio={};
    iio.GRID="Grid";
    iio.TEXT="Text";
 
-   //JS ADDITIONS
+//JS ADDITIONS
    Array.prototype.insert = function (index,item) {
       this.splice(index,0,item);
       return this;
    }
 
-   //UTIL FUNCTIONS
+//UTIL FUNCTIONS
    function emptyFn() {};
    iio.inherit = function(child, parent) {
       var tmp = child;
@@ -280,32 +280,31 @@ iio={};
          return caller.id;
       }
    }
-   iio.resize=function(){
-      iio.apps.forEach(function(app) {
-         if(app.canvas.fullscreen){
-            if(window.jQuery){
-               app.canvas.width=$(window).width();
-               app.canvas.height=$(window).height();
-            } else {
-               app.canvas.width=window.innerWidth;
-               app.canvas.height=window.innerHeight;
-            }
-         }
-         app.width=app.canvas.width;
-         app.height=app.canvas.height;
-         app.center.x=app.canvas.width/2;
-         app.center.y=app.canvas.height/2;
-         if(app.runScript && app.runScript.resize) app.runScript.resize();
-         app.draw();
-      });
-   }
-   window.onresize = iio.resize;
 
-   //DEFAULT PROPERTIES
-   iio.apps=[];
+//DEFAULT PROPERTIES
+iio.apps=[];
 
-   //INITIALIZATION FUNCTIONS
+//INITIALIZATION FUNCTIONS
    iio.start=function(app,id,d){
+
+      var c = iio.prep_canvas(id,d);
+
+      //initialize application with settings
+      if(app instanceof Array)
+         return new iio.App(c,app[0],app[1]);
+
+      //run iio file
+      else if(iio.isString(app)&&app.substring(app.length-4)=='.iio')
+         return iio.read(app, iio.start);
+
+      //initialize application without settings
+      return new iio.App(c,app);
+   }
+   iio.prep_fullscreen = function(){
+      document.body.style.margin=0;
+      document.body.style.padding=0;
+   }
+   iio.prep_canvas = function( id, d ){
       var c;
 
       //create with element id
@@ -329,21 +328,7 @@ iio={};
          c = iio.create_canvas();
          document.body.appendChild(c);
       }
-
-      //initialize application with settings
-      if(app instanceof Array)
-         return new iio.App(c,app[0],app[1]);
-
-      //run iio file
-      else if(iio.isString(app)&&app.substring(app.length-4)=='.iio')
-         return iio.read(app, iio.start);
-
-      //initialize application without settings
-      return new iio.App(c,app);
-   }
-   iio.prep_fullscreen = function(){
-      document.body.style.margin=0;
-      document.body.style.padding=0;
+      return c;
    }
    iio.create_canvas = function( w, h ){
       var c = document.createElement('canvas');
@@ -372,7 +357,7 @@ iio={};
       return c;
    }
 
-   //SHARED FUNCTIONS
+//SHARED FUNCTIONS
    iio.init_obj = function(o){
 
       iio.init_obj_properties(o);
@@ -617,6 +602,27 @@ iio={};
       return o;
    }
 
+//INPUT LISTENERS
+   iio.resize=function(){
+      iio.apps.forEach(function(app) {
+         if(app.canvas.fullscreen){
+            if(window.jQuery){
+               app.canvas.width=$(window).width();
+               app.canvas.height=$(window).height();
+            } else {
+               app.canvas.width=window.innerWidth;
+               app.canvas.height=window.innerHeight;
+            }
+         }
+         app.width=app.canvas.width;
+         app.height=app.canvas.height;
+         app.center.x=app.canvas.width/2;
+         app.center.y=app.canvas.height/2;
+         if(app.runScript && app.runScript.resize) app.runScript.resize();
+         app.draw();
+      });
+   }
+   window.onresize = iio.resize;
    iio.addInputListeners=function(o){
       o.onmousedown=function(e){
          var ep=this.parent.convertEventPos(e);
@@ -654,7 +660,8 @@ iio={};
          app.pos={x:p.left,y:p.top};
       });
    });
-   //APP
+
+//APP
    function App(){
       this.App.apply(this,arguments);
    }; iio.App=App;
@@ -662,6 +669,8 @@ iio={};
 
       //set type
       this.type = iio.APP;
+
+      //set app reference for shared functions
       this.app=this;
 
       //set canvas & context
@@ -703,7 +712,10 @@ iio={};
       if(iio.isString(app)){
          this.runScript=iio.run(app,this);
          this.draw();
-      } else this.runScript = new app(this,s);
+      } 
+      
+      //run js script
+      else this.runScript = new app(this,s);
    }
    App.prototype.stop=function(){
       this.objs.forEach(function(obj) { iio.cancelLoops(obj); });
@@ -767,6 +779,8 @@ iio={};
          }, this);
       }
    }
+
+//COLLISION FUNCTIONS
    iio.checkCollision=function(o1,o2){
       if(typeof(o1)=='undefined'||typeof(o2)=='undefined') return false;
       if(o1.type==iio.RECT&&o2.type==iio.RECT){
@@ -782,10 +796,24 @@ iio={};
          else return iio.rectXrect(o1.left,o1.right,o1.top,o1.bottom,o2.left,o2.right,o2.top,o2.bottom)
       }
    }
+   iio.polyContains=function(p,v,y){
+      y=(v.y||y);
+      v=(v.x||v);
+      var i = j = c = 0;
+      var vs = p.vs;
+      if(p.rot) vs = p.getTrueVertices();
+      for (i = 0, j = vs.length-1; i < vs.length; j = i++) {
+         if ( ((vs[i].y>y) != (vs[j].y>y)) &&
+            (v < (vs[j].x-vs[i].x) * (y-vs[i].y) / (vs[j].y-vs[i].y) + vs[i].x) )
+               c = !c;
+      }
+      return c;
+   }
    iio.rectXrect = function(r1L,r1R,r1T,r1B,r2L,r2R,r2T,r2B){
       if (r1L<r2R&&r1R>r2L&&r1T<r2B&&r1B>r2T) return true; return false;
    }
 
+//SPRITEMAP
    function SpriteMap(){
       this.SpriteMap.apply(this,arguments);
    }; iio.SpriteMap=SpriteMap;
@@ -816,7 +844,7 @@ iio={};
       return s;
    }
 
-   //OBJ
+//OBJ
    function Obj(){
       this.Obj.apply(this, arguments);
    }; iio.Obj=Obj;
@@ -1030,32 +1058,6 @@ iio={};
          return gradient;
       }
    }
-   iio.prepShape=function(ctx,o){
-      if(o.color){
-         if(o.color.indexOf&&o.color.indexOf('gradient')>-1)
-            o.color=o.createGradient(ctx,o.color);
-         ctx.fillStyle=o.color;
-      }
-      if(o.outline){
-         if(o.outline.indexOf&&o.outline.indexOf('gradient')>-1)
-            o.outline=o.createGradient(ctx,o.outline);
-         ctx.lineWidth=o.lineWidth;
-         ctx.strokeStyle=o.outline;
-      }
-   }
-   iio.finishPathShape=function(ctx,o){
-      if(o.color) ctx.fill();
-      if(o.img) ctx.drawImage(o.img,-o.width/2,-o.height/2,o.width,o.height);
-      if(o.outline) ctx.stroke();
-      if(o.clip) ctx.clip();
-   }
-   iio.prepX=function(ctx,o){
-      ctx.save();
-      if(o.xColor.indexOf&&o.xColor.indexOf('gradient')>-1)
-         o.xColor=o.createGradient(ctx,o.xColor);
-      ctx.strokeStyle=o.xColor;
-      ctx.lineWidth=o.lineWidth;
-   }
    iio.initLine=function(o){
       o.center.x=(o.pos.x+o.endPos.x)/2;
       o.center.y=(o.pos.y+o.endPos.y)/2;
@@ -1087,10 +1089,10 @@ iio={};
          ctx.stroke();
       }
       o.updateProps=function(v){
-      	this.endPos.x+=v.x;
-      	this.endPos.y+=v.y;
-      	this.center.x+=v.x;
-      	this.center.y+=v.y;
+         this.endPos.x+=v.x;
+         this.endPos.y+=v.y;
+         this.center.x+=v.x;
+         this.center.y+=v.y;
       }
    }
    iio.initRect=function(o){
@@ -1257,71 +1259,6 @@ iio={};
          this.bottom=this.pos.y+this.height/2;*/
       }
    }
-   iio.polyContains=function(p,v,y){
-      y=(v.y||y);
-      v=(v.x||v);
-      var i = j = c = 0;
-      var vs = p.vs;
-      if(p.rot) vs = p.getTrueVertices();
-      for (i = 0, j = vs.length-1; i < vs.length; j = i++) {
-         if ( ((vs[i].y>y) != (vs[j].y>y)) &&
-            (v < (vs[j].x-vs[i].x) * (y-vs[i].y) / (vs[j].y-vs[i].y) + vs[i].x) )
-               c = !c;
-      }
-      return c;
-   }
-   iio.drawPoly=function(ctx,vs,bezier,open){
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      if(bezier){
-         var _i=0;
-         for(var i=1;i<vs.length;i++)
-            ctx.bezierCurveTo((bezier[_i++]||vs[i-1].x-vs[0].x),(bezier[_i++]||vs[i-1].y-vs[0].y)
-               ,(bezier[_i++]||vs[i].x-vs[0].x),(bezier[_i++]||vs[i].y-vs[0].y)
-               ,vs[i].x-vs[0].x,vs[i].y-vs[0].y);
-         if(typeof(open)=='undefined'||!open){
-            i--; ctx.bezierCurveTo((bezier[_i++]||vs[i].x-vs[0].x),(bezier[_i++]||vs[i].y-vs[0].y)
-                  ,(bezier[_i++]||0),(bezier[_i++]||0)
-                  ,0,0);
-         }
-      } else vs.forEach(function(v) { ctx.lineTo(v.x-vs[0].x,v.y-vs[0].y); });
-      if(typeof(open)=='undefined'||!open)
-         ctx.closePath();
-   }
-   iio.drawRect=function(ctx,w,h,s,p){
-      if(p.round){
-         ctx.beginPath();
-         ctx.moveTo(p.round[0],0);
-         ctx.lineTo(w-p.round[1],0);
-         ctx.quadraticCurveTo(w,0,w,p.round[1]);
-         ctx.lineTo(w,h-p.round[2]);
-         ctx.quadraticCurveTo(w,h,w-p.round[2],h);
-         ctx.lineTo(p.round[3],h);
-         ctx.quadraticCurveTo(0,h,0,h-p.round[3]);
-         ctx.lineTo(0,p.round[0]);
-         ctx.quadraticCurveTo(0,0,p.round[0],0);
-         ctx.closePath();
-         ctx.stroke();
-         ctx.fill();
-         ctx.clip();
-      } else {
-         if(s.c) ctx.fillRect(0,0,w,h);
-         if(p.img) ctx.drawImage(p.img,0,0,w,h);
-         if(p.anims) ctx.drawImage(p.anims[p.animKey].frames[p.animFrame].src,
-            p.anims[p.animKey].frames[p.animFrame].x,
-            p.anims[p.animKey].frames[p.animFrame].y,
-            p.anims[p.animKey].frames[p.animFrame].w,
-            p.anims[p.animKey].frames[p.animFrame].h,
-            0,0,w,h);
-         if(s.o) ctx.strokeRect(0,0,w,h);
-      }
-   }
-   iio.drawLine=function(ctx,x,y,x1,y1){
-         ctx.beginPath();
-         ctx.moveTo(x,y);
-         ctx.lineTo(x1,y1);
-         ctx.stroke();
-   }
    iio.initText=function(o){
       o.size=o.width;
       o.app.ctx.font=o.size+'px '+o.font;
@@ -1460,6 +1397,88 @@ iio={};
          return cI;
       }
    }
+
+//RENDER FUNCTIONS
+   iio.prepShape=function(ctx,o){
+      if(o.color){
+         if(o.color.indexOf&&o.color.indexOf('gradient')>-1)
+            o.color=o.createGradient(ctx,o.color);
+         ctx.fillStyle=o.color;
+      }
+      if(o.outline){
+         if(o.outline.indexOf&&o.outline.indexOf('gradient')>-1)
+            o.outline=o.createGradient(ctx,o.outline);
+         ctx.lineWidth=o.lineWidth;
+         ctx.strokeStyle=o.outline;
+      }
+   }
+   iio.finishPathShape=function(ctx,o){
+      if(o.color) ctx.fill();
+      if(o.img) ctx.drawImage(o.img,-o.width/2,-o.height/2,o.width,o.height);
+      if(o.outline) ctx.stroke();
+      if(o.clip) ctx.clip();
+   }
+   iio.prepX=function(ctx,o){
+      ctx.save();
+      if(o.xColor.indexOf&&o.xColor.indexOf('gradient')>-1)
+         o.xColor=o.createGradient(ctx,o.xColor);
+      ctx.strokeStyle=o.xColor;
+      ctx.lineWidth=o.lineWidth;
+   }
+   iio.drawPoly=function(ctx,vs,bezier,open){
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      if(bezier){
+         var _i=0;
+         for(var i=1;i<vs.length;i++)
+            ctx.bezierCurveTo((bezier[_i++]||vs[i-1].x-vs[0].x),(bezier[_i++]||vs[i-1].y-vs[0].y)
+               ,(bezier[_i++]||vs[i].x-vs[0].x),(bezier[_i++]||vs[i].y-vs[0].y)
+               ,vs[i].x-vs[0].x,vs[i].y-vs[0].y);
+         if(typeof(open)=='undefined'||!open){
+            i--; ctx.bezierCurveTo((bezier[_i++]||vs[i].x-vs[0].x),(bezier[_i++]||vs[i].y-vs[0].y)
+                  ,(bezier[_i++]||0),(bezier[_i++]||0)
+                  ,0,0);
+         }
+      } else vs.forEach(function(v) { ctx.lineTo(v.x-vs[0].x,v.y-vs[0].y); });
+      if(typeof(open)=='undefined'||!open)
+         ctx.closePath();
+   }
+   iio.drawRect=function(ctx,w,h,s,p){
+      if(p.round){
+         ctx.beginPath();
+         ctx.moveTo(p.round[0],0);
+         ctx.lineTo(w-p.round[1],0);
+         ctx.quadraticCurveTo(w,0,w,p.round[1]);
+         ctx.lineTo(w,h-p.round[2]);
+         ctx.quadraticCurveTo(w,h,w-p.round[2],h);
+         ctx.lineTo(p.round[3],h);
+         ctx.quadraticCurveTo(0,h,0,h-p.round[3]);
+         ctx.lineTo(0,p.round[0]);
+         ctx.quadraticCurveTo(0,0,p.round[0],0);
+         ctx.closePath();
+         ctx.stroke();
+         ctx.fill();
+         ctx.clip();
+      } else {
+         if(s.c) ctx.fillRect(0,0,w,h);
+         if(p.img) ctx.drawImage(p.img,0,0,w,h);
+         if(p.anims) ctx.drawImage(p.anims[p.animKey].frames[p.animFrame].src,
+            p.anims[p.animKey].frames[p.animFrame].x,
+            p.anims[p.animKey].frames[p.animFrame].y,
+            p.anims[p.animKey].frames[p.animFrame].w,
+            p.anims[p.animKey].frames[p.animFrame].h,
+            0,0,w,h);
+         if(s.o) ctx.strokeRect(0,0,w,h);
+      }
+   }
+   iio.drawLine=function(ctx,x,y,x1,y1){
+         ctx.beginPath();
+         ctx.moveTo(x,y);
+         ctx.lineTo(x1,y1);
+         ctx.stroke();
+   }
+
+//Vector Math
    iio.V={};
    iio.V.add = function(v1, v2){for(var p in v2) if(v1[p]) v1[p]+=v2[p];return v1}
    iio.V.sub = function(v1, v2){for(var p in v2) if(v1[p]) v1[p]-=v2[p];return v1}
