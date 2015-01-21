@@ -2,11 +2,12 @@
 
 %%
 \s+                       /* skip whitespace */
+[0-9]+(?:\\.[0-9]+)?\b   return 'NUMBER';
 "end"                     return 'END';
 "add"                     return 'ADD';
-"red"                     return 'COLOR';
+"red"                     return 'RED';
+"blue"                    return 'BLUE';
 "center"                  return 'CENTER';
-[0-9]+(?:\\.[0-9]+)?\\b   return 'NUMBER';
 <<EOF>>                   return 'EOF';
 
 /lex
@@ -18,22 +19,26 @@
 expressions
   : ADDFN EOF
     {$1;}
-
-  | NUMBER
-    {$$ = Number(yytext);}
   ;
 
 ADDFN
-  : ADD POSITION COLOR NUMBER END
-    {$$ = iio.start(function(app, settings){ app.add({pos: $2, color: $3, width: $4}) }) }
+  : ADD POSITION COLOR SIZE END
+    {$$ = iio.start(function(app, settings){ obj = {color: $3, width: $4}; if ($2 === 'center') obj.pos = app.center; app.add(obj) }) }
   ;
 
 POSITION
   : CENTER
-    {$$ = app.center;}
+    {$$ = $1;}
   ;
 
 COLOR
   : RED
     {$$ = 'red';}
+  | BLUE
+    {$$ = 'blue';}
+  ;
+
+SIZE
+  : NUMBER
+    {$$ = Number(yytext);}
   ;
