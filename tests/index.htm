@@ -6,12 +6,20 @@
 <html>
 <body>
 <script type="text/javascript" src="../core/iioEngine.js"></script>
-<script type="text/javascript" src="../core/parser.js"></script>
+<script type="text/javascript" src="../core/parser2.js"></script>
 <script type="text/javascript">
 
 	iio.read('App.iio', function( code ){
-		parser.parse( code );
+
+		//use with parser.js
+		//parser.parse( code );
+
+		//use with parser2.js
+		iio.start([iioParser,{c:code}]);
+
 	});
+
+	
 
 </script>
 </body>
