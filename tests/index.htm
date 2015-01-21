@@ -9,29 +9,9 @@
 <script type="text/javascript" src="../core/parser.js"></script>
 <script type="text/javascript">
 
-		//iio.start('TestApp.iio');
-
-		//iio.start('App.iio');
-
-		// iioApp = function( app, settings ){
-		//
-		// 	//app.add('center 40 red');
-		// 	//app.add('center 40 red');
-		//
-		// 	app.color = 'red';
-		// 	//app.draw();
-		//
-		// 	app.add(app.center,{
-		// 		color:'blue',
-		// 		width:50,
-		// 		height:50
-		// 	});
-		//
-		// }; iio.start(iioApp);
-
-		//parser.parse("add center red 40 end")
-
-		parser.parse("add center blue 40 end");
+	iio.read('App.iio', function( code ){
+		parser.parse( code );
+	});
 
 </script>
 </body>
