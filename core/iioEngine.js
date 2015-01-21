@@ -357,6 +357,11 @@ iio.apps=[];
       return c;
    }
 
+//APP CONTROLLER FUNCTIONS
+   iio.set=function(os,p){
+     os.forEach(function(o) { o.set(p); });
+   }
+
 //SHARED FUNCTIONS
    iio.init_obj = function(o){
 
@@ -364,135 +369,84 @@ iio.apps=[];
 
       o.run=function(s,nd){ return iio.run(s,o,nd) }
 
-      o.loop=function(fps,fn){
-         o.looping=true;
-         var loop;
-         if(typeof fn=='undefined'){
-            if(typeof fps=='undefined'){
-               if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
-               loop = o.app.mainLoop={fps:60,fn:o,af:o.rqAnimFrame,o:o.app};
-               o.app.fps=60;
-               loop.id = o.app.mainLoop.id=iio.loop(o.app.mainLoop);
-            } else {
-               if(!iio.isNumber(fps)){
-                  loop = {fps:60,fn:fps,af:o.rqAnimFrame}
-                  loop.id = iio.loop(loop,fps);
-               } else {
-                  if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
-                  loop=o.app.mainLoop={fps:fps,o:o.app,af:false}
-                  o.app.fps=fps;
-                  loop.id=o.app.mainLoop.id=iio.loop(o.app.mainLoop);
-               }
-            }
-         } else {
-            loop = {fps:fps,fn:fn,o:o,af:o.rqAnimFrame};
-            loop.id = iio.loop(fps,loop);
-         }
-         o.loops.push(loop);
-         /*if(typeof o.app.fps=='undefined'||o.app.fps<fps){
-            if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
-            o.app.mainLoop={fps:fps,o:o.app,af:o.app.rqAnimFrame}
-            o.app.fps=fps;
-            o.app.mainLoop.id=iio.loop(o.app.mainLoop);
-         }*/
-         return loop.id;
-      }
-      o.clearLoops=function(){
-         for(var i=0;i<o.loops.length;i++)
-            iio.cancelLoop
-      }
-      o.pause=function(c){
-         if(o.paused){
-            o.paused=false;
-            o.loops.forEach(function(loop) { iio.loop(loop); });
-            if(o.mainLoop) iio.loop(o.mainLoop);
-            if(typeof c=='undefined')
-              o.objs.forEach(function(obj) {
-                obj.loops.forEach(function(loop) { iio.loop(loop); });
-              });
-         } else {
-            iio.cancelLoops(o);
-            iio.cancelLoop(o.mainLoop.id);
-            o.paused=true;
-         }
-      }
+      o.loop = iio._loop;
+      o.clearLoops = iio._clearLoops;
+      o.pause = iio._pause;
       o.playAnim=function(fps,t,r,fn,s){
-         if(iio.isString(t)){
-            o.anims.some(function(anim, i) {
-              if(o.anim.tag==t) {
-                o.animKey=i;
-                o.width=o.anim.frames[o.animFrame].w;
-                o.height=o.anim.frames[o.animFrame].h;
-                return true;
-              }
-              return false;
-            });
-         } else r=t;
-         o.animFrame=s||0;
-         if(typeof(r)!='undefined'){
-            o.repeat=r;
-            o.onanimstop=fn;
-         }
-         forward=function(o){
-            o.animFrame++;
-            if(o.animFrame>=o.anims[o.animKey].frames.length){
-               o.animFrame=0;
-               if(typeof(o.repeat)!='undefined'){
-                  if(o.repeat<=1){
-                     window.cancelAnimationFrame(id);
-                     window.clearTimeout(id);
-                     if(o.onanimstop) o.onanimstop(id,o);
-                     return;
-                  } else o.repeat--;
-               }
+      if(iio.isString(t)){
+         this.anims.some(function(anim, i) {
+           if(anim.tag==t) {
+             this.animKey=i;
+             this.width=anim.frames[o.animFrame].w;
+             this.height=anim.frames[o.animFrame].h;
+             return true;
+           }
+           return false;
+         });
+      } else r=t;
+      this.animFrame=s||0;
+      if(typeof(r)!='undefined'){
+         this.repeat=r;
+         this.onanimstop=fn;
+      }
+      forward=function(o){
+         o.animFrame++;
+         if(o.animFrame>=o.anims[o.animKey].frames.length){
+            o.animFrame=0;
+            if(typeof(o.repeat)!='undefined'){
+               if(o.repeat<=1){
+                  window.cancelAnimationFrame(id);
+                  window.clearTimeout(id);
+                  if(o.onanimstop) o.onanimstop(id,o);
+                  return;
+               } else o.repeat--;
             }
          }
-         backward=function(o){
-            o.animFrame--;
-            if(o.animFrame<0)
-               o.animFrame=o.anims[o.animKey].frames.length-1;
-            o.app.draw();
-         }
-         var loop;
-         if(fps>0) loop=o.loop(fps,forward);
-         else if(fps<0) loop=o.loop(fps*-1,backward);
-         else o.app.draw();
-         return loop;
       }
-      o.eval=function(s){
-         if(!s)return 0;
-         if(iio.isNumber(s))
-            return parseFloat(s);
-         else if(s=='center') return o.center;
-         else if(s=='width') return o.width;
-         else if(s=='height') return o.height;
-         else if(s=='hidden') return o.hidden;
-         else if(s=='random') return iio.random();
-         else if(s=='randomColor') return iio.randomColor();
-         var op; op=s.indexOf('-');
-         if(op>-1) return o.eval(s.substring(0,op))-o.eval(s.substring(op+1));
-         op=s.indexOf('+');
-         if(op>-1) return o.eval(s.substring(0,op))+o.eval(s.substring(op+1));
-         op=s.indexOf('/');
-         if(op>-1) return o.eval(s.substring(0,op))/o.eval(s.substring(op+1));
-         op=s.indexOf('*');
-         if(op>-1) return o.eval(s.substring(0,op))*o.eval(s.substring(op+1));
-         return s;
+      backward=function(o){
+         o.animFrame--;
+         if(o.animFrame<0)
+            o.animFrame=o.anims[o.animKey].frames.length-1;
+         o.app.draw();
       }
+      var loop;
+      if(fps>0) loop=this.loop(fps,forward);
+      else if(fps<0) loop=this.loop(fps*-1,backward);
+      else this.app.draw();
+      return loop;
+   }
+   o.eval=function(s){
+      if(!s)return 0;
+      if(iio.isNumber(s))
+         return parseFloat(s);
+      else if(s=='center') return this.center;
+      else if(s=='width') return this.width;
+      else if(s=='height') return this.height;
+      else if(s=='hidden') return this.hidden;
+      else if(s=='random') return iio.random();
+      else if(s=='randomColor') return iio.randomColor();
+      var op; op=s.indexOf('-');
+      if(op>-1) return this.eval(s.substring(0,op))-this.eval(s.substring(op+1));
+      op=s.indexOf('+');
+      if(op>-1) return this.eval(s.substring(0,op))+this.eval(s.substring(op+1));
+      op=s.indexOf('/');
+      if(op>-1) return this.eval(s.substring(0,op))/this.eval(s.substring(op+1));
+      op=s.indexOf('*');
+      if(op>-1) return this.eval(s.substring(0,op))*this.eval(s.substring(op+1));
+      return s;
+   }
+
    }
    iio.init_obj_properties = function(o){
       o.scale=1;
       o.objs=[];
-      o.set=set;
-      o.add=add;
-      o.rmv=rmv;
+      o.set=iio._set;
+      o.add=iio._add;
+      o.rmv=iio._rmv;
       o.rqAnimFrame=true;
       o.partialPx=true;
       o.alpha=1;
       o.loops=[];
-   }
-   iio.set=function(os,p){
-     os.forEach(function(o) { o.set(p); });
    }
    iio.update_object=function(o){
       if(o.text)o.type=iio.TEXT;
@@ -539,7 +493,9 @@ iio.apps=[];
          &&(typeof o.app.looping=='undefined'||o.app.looping===false))
          o.app.loop();
    }
-   set = function( s, no_draw ){
+
+//OBJ/APP FUNCTIONS
+   iio._set = function( s, no_draw ){
 
       //set array of settings
       if(s instanceof Array)
@@ -564,7 +520,7 @@ iio.apps=[];
 
       return this;
    }
-   add=function(o,ii,s,nd){
+   iio._add = function(o,ii,s,nd){
       if(typeof nd=='undefined') nd=s;
       if(o instanceof Array&&!iio.isNumber(o[0])&&typeof(o[0].x)=='undefined')
         o.forEach(function(_o) { this.add(_o,ii,s,nd); }, this);
@@ -579,7 +535,7 @@ iio.apps=[];
       if(nd); else this.app.draw();
       return o;
    }
-   rmv=function(o,nd){
+   iio._rmv=function(o,nd){
       callback = function(c, i, arr) {
         if(c == o) { arr.splice(i, 1); return true; } else return false;
       }
@@ -600,6 +556,121 @@ iio.apps=[];
       })
       if(nd); else this.app.draw();
       return o;
+   }
+   iio._loop=function(fps,fn){
+      this.looping=true;
+      var loop;
+      if(typeof fn=='undefined'){
+         if(typeof fps=='undefined'){
+            if(this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
+            loop = this.app.mainLoop={fps:60,fn:this,af:this.rqAnimFrame,o:this.app};
+            this.app.fps=60;
+            loop.id = this.app.mainLoop.id=iio.loop(this.app.mainLoop);
+         } else {
+            if(!iio.isNumber(fps)){
+               loop = {fps:60,fn:fps,af:this.rqAnimFrame}
+               loop.id = iio.loop(loop,fps);
+            } else {
+               if(this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
+               loop=this.app.mainLoop={fps:fps,o:this.app,af:false}
+               this.app.fps=fps;
+               loop.id=this.app.mainLoop.id=iio.loop(this.app.mainLoop);
+            }
+         }
+      } else {
+         loop = {fps:fps,fn:fn,o:this,af:this.rqAnimFrame};
+         loop.id = iio.loop(fps,loop);
+      }
+      this.loops.push(loop);
+      /*if(typeof o.app.fps=='undefined'||o.app.fps<fps){
+         if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
+         o.app.mainLoop={fps:fps,o:o.app,af:o.app.rqAnimFrame}
+         o.app.fps=fps;
+         o.app.mainLoop.id=iio.loop(o.app.mainLoop);
+      }*/
+      return loop.id;
+   }
+   iio._clearLoops=function(){
+      for(var i=0;i<this.loops.length;i++)
+         iio.cancelLoop(this.loops[i]);
+   }
+   iio._pause=function(c){
+      if(this.paused){
+         this.paused=false;
+         this.loops.forEach(function(loop) { iio.loop(loop); });
+         if(this.mainLoop) iio.loop(this.mainLoop);
+         if(typeof c=='undefined')
+           this.objs.forEach(function(obj) {
+             obj.loops.forEach(function(loop) { iio.loop(loop); });
+           });
+      } else {
+         iio.cancelLoops(this);
+         iio.cancelLoop(this.mainLoop.id);
+         this.paused=true;
+      }
+   }
+   iio._playAnim=function(fps,t,r,fn,s){
+      if(iio.isString(t)){
+         this.anims.some(function(anim, i) {
+           if(anim.tag==t) {
+             this.animKey=i;
+             this.width=anim.frames[this.animFrame].w;
+             this.height=anim.frames[this.animFrame].h;
+             return true;
+           }
+           return false;
+         });
+      } else r=t;
+      this.animFrame=s||0;
+      if(typeof(r)!='undefined'){
+         this.repeat=r;
+         this.onanimstop=fn;
+      }
+      forward=function(o){
+         o.animFrame++;
+         if(o.animFrame>=o.anims[o.animKey].frames.length){
+            o.animFrame=0;
+            if(typeof(o.repeat)!='undefined'){
+               if(o.repeat<=1){
+                  window.cancelAnimationFrame(id);
+                  window.clearTimeout(id);
+                  if(o.onanimstop) o.onanimstop(id,o);
+                  return;
+               } else o.repeat--;
+            }
+         }
+      }
+      backward=function(o){
+         o.animFrame--;
+         if(o.animFrame<0)
+            o.animFrame=o.anims[o.animKey].frames.length-1;
+         o.app.draw();
+      }
+      var loop;
+      if(fps>0) loop=this.loop(fps,forward);
+      else if(fps<0) loop=this.loop(fps*-1,backward);
+      else this.app.draw();
+      return loop;
+   }
+   iio._eval=function(s){
+      if(!s)return 0;
+      if(iio.isNumber(s))
+         return parseFloat(s);
+      else if(s=='center') return this.center;
+      else if(s=='width') return this.width;
+      else if(s=='height') return this.height;
+      else if(s=='hidden') return this.hidden;
+      else if(s=='random') return iio.random();
+      else if(s=='randomColor') return iio.randomColor();
+      var op; op=s.indexOf('-');
+      if(op>-1) return this.eval(s.substring(0,op))-this.eval(s.substring(op+1));
+      op=s.indexOf('+');
+      if(op>-1) return this.eval(s.substring(0,op))+this.eval(s.substring(op+1));
+      op=s.indexOf('/');
+      if(op>-1) return this.eval(s.substring(0,op))/this.eval(s.substring(op+1));
+      op=s.indexOf('*');
+      if(op>-1) return this.eval(s.substring(0,op))*this.eval(s.substring(op+1));
+      return s;
    }
 
 //INPUT LISTENERS
@@ -713,7 +784,7 @@ iio.apps=[];
          this.runScript=iio.run(app,this);
          this.draw();
       } 
-      
+
       //run js script
       else this.runScript = new app(this,s);
    }
