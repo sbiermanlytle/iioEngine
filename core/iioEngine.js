@@ -280,6 +280,18 @@ iio={};
          return caller.id;
       }
    }
+   iio.resolveBounds=function(b,c){
+      if(b.length>1) return b[1](c);
+      return true;
+   }
+   iio.upperBoundReached=function(bnd,lim,c){
+      if(lim>bnd[0]) return iio.resolveBounds(bnd,c);
+      return false;
+   }
+   iio.lowerBoundReached=function(bnd,lim,c){
+      if(lim<bnd[0]) return iio.resolveBounds(bnd,c);
+      return false;
+   }
 
 //DEFAULT PROPERTIES
 iio.apps=[];
@@ -365,88 +377,24 @@ iio.apps=[];
 //SHARED FUNCTIONS
    iio.init_obj = function(o){
 
-      iio.init_obj_properties(o);
+      //Properties
+      o.scale = 1;
+      o.objs = [];
+      o.rqAnimFrame = true;
+      o.partialPx = true;
+      o.alpha = 1;
+      o.loops = [];
 
-      o.run=function(s,nd){ return iio.run(s,o,nd) }
-
+      //Functions
+      o.run = iio._run;
+      o.set = iio._set;
+      o.add = iio._add;
+      o.rmv = iio._rmv;
       o.loop = iio._loop;
       o.clearLoops = iio._clearLoops;
       o.pause = iio._pause;
-      o.playAnim=function(fps,t,r,fn,s){
-      if(iio.isString(t)){
-         this.anims.some(function(anim, i) {
-           if(anim.tag==t) {
-             this.animKey=i;
-             this.width=anim.frames[o.animFrame].w;
-             this.height=anim.frames[o.animFrame].h;
-             return true;
-           }
-           return false;
-         });
-      } else r=t;
-      this.animFrame=s||0;
-      if(typeof(r)!='undefined'){
-         this.repeat=r;
-         this.onanimstop=fn;
-      }
-      forward=function(o){
-         o.animFrame++;
-         if(o.animFrame>=o.anims[o.animKey].frames.length){
-            o.animFrame=0;
-            if(typeof(o.repeat)!='undefined'){
-               if(o.repeat<=1){
-                  window.cancelAnimationFrame(id);
-                  window.clearTimeout(id);
-                  if(o.onanimstop) o.onanimstop(id,o);
-                  return;
-               } else o.repeat--;
-            }
-         }
-      }
-      backward=function(o){
-         o.animFrame--;
-         if(o.animFrame<0)
-            o.animFrame=o.anims[o.animKey].frames.length-1;
-         o.app.draw();
-      }
-      var loop;
-      if(fps>0) loop=this.loop(fps,forward);
-      else if(fps<0) loop=this.loop(fps*-1,backward);
-      else this.app.draw();
-      return loop;
-   }
-   o.eval=function(s){
-      if(!s)return 0;
-      if(iio.isNumber(s))
-         return parseFloat(s);
-      else if(s=='center') return this.center;
-      else if(s=='width') return this.width;
-      else if(s=='height') return this.height;
-      else if(s=='hidden') return this.hidden;
-      else if(s=='random') return iio.random();
-      else if(s=='randomColor') return iio.randomColor();
-      var op; op=s.indexOf('-');
-      if(op>-1) return this.eval(s.substring(0,op))-this.eval(s.substring(op+1));
-      op=s.indexOf('+');
-      if(op>-1) return this.eval(s.substring(0,op))+this.eval(s.substring(op+1));
-      op=s.indexOf('/');
-      if(op>-1) return this.eval(s.substring(0,op))/this.eval(s.substring(op+1));
-      op=s.indexOf('*');
-      if(op>-1) return this.eval(s.substring(0,op))*this.eval(s.substring(op+1));
-      return s;
-   }
-
-   }
-   iio.init_obj_properties = function(o){
-      o.scale=1;
-      o.objs=[];
-      o.set=iio._set;
-      o.add=iio._add;
-      o.rmv=iio._rmv;
-      o.rqAnimFrame=true;
-      o.partialPx=true;
-      o.alpha=1;
-      o.loops=[];
+      o.playAnim = iio._playAnim;
+      o.eval = iio._eval;
    }
    iio.update_object=function(o){
       if(o.text)o.type=iio.TEXT;
@@ -495,6 +443,7 @@ iio.apps=[];
    }
 
 //OBJ/APP FUNCTIONS
+   iio._run=function(s,nd){ return iio.run(s,o,nd) }
    iio._set = function( s, no_draw ){
 
       //set array of settings
@@ -611,11 +560,12 @@ iio.apps=[];
    }
    iio._playAnim=function(fps,t,r,fn,s){
       if(iio.isString(t)){
+         var o = this;
          this.anims.some(function(anim, i) {
            if(anim.tag==t) {
-             this.animKey=i;
-             this.width=anim.frames[this.animFrame].w;
-             this.height=anim.frames[this.animFrame].h;
+             o.animKey=i;
+             o.width=anim.frames[o.animFrame].w;
+             o.height=anim.frames[o.animFrame].h;
              return true;
            }
            return false;
@@ -626,33 +576,13 @@ iio.apps=[];
          this.repeat=r;
          this.onanimstop=fn;
       }
-      forward=function(o){
-         o.animFrame++;
-         if(o.animFrame>=o.anims[o.animKey].frames.length){
-            o.animFrame=0;
-            if(typeof(o.repeat)!='undefined'){
-               if(o.repeat<=1){
-                  window.cancelAnimationFrame(id);
-                  window.clearTimeout(id);
-                  if(o.onanimstop) o.onanimstop(id,o);
-                  return;
-               } else o.repeat--;
-            }
-         }
-      }
-      backward=function(o){
-         o.animFrame--;
-         if(o.animFrame<0)
-            o.animFrame=o.anims[o.animKey].frames.length-1;
-         o.app.draw();
-      }
       var loop;
-      if(fps>0) loop=this.loop(fps,forward);
-      else if(fps<0) loop=this.loop(fps*-1,backward);
+      if(fps>0) loop=this.loop(fps,iio.anim_next);
+      else if(fps<0) loop=this.loop(fps*-1,iio.anim_prev);
       else this.app.draw();
       return loop;
    }
-   iio._eval=function(s){
+   iio._eval = function(s){
       if(!s)return 0;
       if(iio.isNumber(s))
          return parseFloat(s);
@@ -671,6 +601,142 @@ iio.apps=[];
       op=s.indexOf('*');
       if(op>-1) return this.eval(s.substring(0,op))*this.eval(s.substring(op+1));
       return s;
+   }
+   iio.anim_next = function(o){
+      o.animFrame++;
+      if(o.animFrame>=o.anims[o.animKey].frames.length){
+         o.animFrame=0;
+         if(typeof(o.repeat)!='undefined'){
+            if(o.repeat<=1){
+               window.cancelAnimationFrame(id);
+               window.clearTimeout(id);
+               if(o.onanimstop) o.onanimstop(id,o);
+               return;
+            } else o.repeat--;
+         }
+      }
+   }
+   iio.anim_prev = function(o){
+         o.animFrame--;
+         if(o.animFrame<0)
+            o.animFrame=o.anims[o.animKey].frames.length-1;
+         o.app.draw();
+   }
+   iio._clear = function(){
+      this.objs=[];
+      this.app.draw();
+   }
+   iio._shrink = function(s,r){
+      this.width*=1-s;
+      this.height*=1-s;
+      if(this.width<.02){
+         if(r) return r(this);
+         else return true;
+      }
+   }
+   iio._fade = function(s,r){
+      this.alpha*=1-s;
+      if(this.alpha<.002){
+         if(r) return r(this);
+         else return true;
+      }
+   }
+   iio._update = function(o,dt){
+      if(this.update)this.update(dt);
+      var remove = false;
+      if(this.bounds&&!this.simple){
+         if(this.bounds.right)remove = iio.upperBoundReached(this.bounds.right,this.right,this);
+         if(this.bounds.left) remove = iio.lowerBoundReached(this.bounds.left,this.left,this);
+         if(this.bounds.top) remove = iio.lowerBoundReached(this.bounds.top,this.top,this);
+         if(this.bounds.bottom) remove = iio.upperBoundReached(this.bounds.bottom,this.bottom,this);
+      } else if(this.bounds){
+         if(this.bounds.right) remove = iio.upperBoundReached(this.bounds.right,this.pos.x,this);
+         if(this.bounds.left) remove = iio.lowerBoundReached(this.bounds.left,this.pos.x,this);
+         if(this.bounds.top) remove = iio.lowerBoundReached(this.bounds.top,this.pos.y,this);
+         if(this.bounds.bottom) remove = iio.upperBoundReached(this.bounds.bottom,this.pos.y,this);
+      }
+      if(this.shrink){
+         if(this.shrink instanceof Array)
+            remove=this._shrink(this.shrink[0],this.shrink[1]);
+         else remove=this._shrink(this.shrink);
+      } if(this.fade){
+         if(this.fade instanceof Array)
+            remove=this._fade(this.fade[0],this.fade[1]);
+         else remove=this._fade(this.fade);
+      } if(remove) return remove;
+      this.vel.x+=this.acc.x;
+      this.vel.y+=this.acc.y;
+      this.vel.r+=this.acc.r;
+      if(this.vel.x)this.pos.x+=this.vel.x;
+      if(this.vel.y)this.pos.y+=this.vel.y;
+      if(this.vel.r)this.rot+=this.vel.r;
+      if(!this.simple) this.updateProps(this.vel);
+      if(this.objs&&this.objs.length>0)
+        this.objs.forEach(function(obj) {
+          if(obj._update && obj._update(o,dt)) this.rmv(obj);
+        }, this);
+   }
+   iio._draw = function(ctx){
+      if(this.hidden)return;
+      if(typeof(ctx)=='undefined') ctx=this.app.ctx;
+      ctx.save();
+      if(this.origin)
+         ctx.translate(this.origin.x,this.origin.y);
+      else ctx.translate(this.pos.x,this.pos.y);
+      if(this.rot!=0) ctx.rotate(this.rot);
+      if(this.objs.length>0){
+         var drawnSelf=false;
+         this.objs.forEach(function(obj) {
+           if(!drawnSelf && obj.z >= this.z) {
+             this.__draw(ctx);
+             drawnSelf = true;
+           }
+           if(obj.draw) obj.draw(ctx);
+         }, this);
+         if(!drawnSelf)this.__draw(ctx);
+      } else this.__draw(ctx);
+      ctx.restore();
+   }
+   iio.__draw = function(ctx){
+      ctx.save();
+      ctx.globalAlpha=this.alpha;
+      if(this.lineCap) ctx.lineCap=this.lineCap;
+      if(this.shadow){
+         var s=this.shadow.split(' ');
+         s.forEach(function(_s) {
+            if(iio.isNumber(_s))
+               ctx.shadowBlur=_s;
+            else if(_s.indexOf(':')>-1){
+               var _i=_s.indexOf(':');
+               ctx.shadowOffsetX=_s.substring(0,_i);
+               ctx.shadowOffsetY=_s.substring(_i+1);
+            } else ctx.shadowColor=_s;
+         });
+      }
+      if(this.dash){
+         if(this.dash.length>1&&this.dash.length%2==1)
+            ctx.lineDashOffset=this.dash[this.dash.length-1];
+         //ctx.setLineDash(this.dash.slice().splice(0,this.dash.length-1));
+         ctx.setLineDash(this.dash);
+      }
+      this._draw(ctx);
+      ctx.restore();
+   }
+   iio._createGradient=function(ctx,g){
+      var gradient;
+      var p=g.split(':');
+      var ps=p[1].split(',');
+      if(ps.length==4)
+         gradient=ctx.createLinearGradient(this.eval(ps[0]),this.eval(ps[1]),this.eval(ps[2]),this.eval(ps[3]));
+      else gradient=ctx.createRadialGradient(this.eval(ps[0]),this.eval(ps[1]),this.eval(ps[2]),this.eval(ps[3]),this.eval(ps[4]),this.eval(ps[5]));
+      var c;
+      p.forEach(function(_p) {
+         c=_p.indexOf(',');
+         var a=parseFloat(_p.substring(0,c));
+         var b=this.eval(_p.substring(c+1));
+         gradient.addColorStop(a,b);
+      });
+      return gradient;
    }
 
 //INPUT LISTENERS
@@ -997,137 +1063,13 @@ iio.apps=[];
       //init origin
       if(this.origin=='center') this.origin=this.center;
 
-      iio.init_obj_functions(this);
-   }
-   iio.init_obj_functions = function(o){
-      o.clear=function(){
-         this.objs=[];
-         this.app.draw();
-      }
-      iio.resolveBounds=function(b,c){
-         if(b.length>1) return b[1](c);
-         return true;
-      }
-      iio.upperBoundReached=function(bnd,lim,c){
-         if(lim>bnd[0]) return iio.resolveBounds(bnd,c);
-         return false;
-      }
-      iio.lowerBoundReached=function(bnd,lim,c){
-         if(lim<bnd[0]) return iio.resolveBounds(bnd,c);
-         return false;
-      }
-      o._shrink=function(s,r){
-         this.width*=1-s;
-         this.height*=1-s;
-         if(this.width<.02){
-            if(r) return r(this);
-            else return true;
-         }
-      }
-      o._fade=function(s,r){
-         this.alpha*=1-s;
-         if(this.alpha<.002){
-            if(r) return r(this);
-            else return true;
-         }
-      }
-      o._update=function(o,dt){
-         if(this.update)this.update(dt);
-         var remove = false;
-         if(this.bounds&&!this.simple){
-            if(this.bounds.right)remove = iio.upperBoundReached(this.bounds.right,this.right,this);
-            if(this.bounds.left) remove = iio.lowerBoundReached(this.bounds.left,this.left,this);
-            if(this.bounds.top) remove = iio.lowerBoundReached(this.bounds.top,this.top,this);
-            if(this.bounds.bottom) remove = iio.upperBoundReached(this.bounds.bottom,this.bottom,this);
-         } else if(this.bounds){
-            if(this.bounds.right) remove = iio.upperBoundReached(this.bounds.right,this.pos.x,this);
-            if(this.bounds.left) remove = iio.lowerBoundReached(this.bounds.left,this.pos.x,this);
-            if(this.bounds.top) remove = iio.lowerBoundReached(this.bounds.top,this.pos.y,this);
-            if(this.bounds.bottom) remove = iio.upperBoundReached(this.bounds.bottom,this.pos.y,this);
-         }
-         if(this.shrink){
-            if(this.shrink instanceof Array)
-               remove=this._shrink(this.shrink[0],this.shrink[1]);
-            else remove=this._shrink(this.shrink);
-         } if(this.fade){
-            if(this.fade instanceof Array)
-               remove=this._fade(this.fade[0],this.fade[1]);
-            else remove=this._fade(this.fade);
-         } if(remove) return remove;
-         this.vel.x+=this.acc.x;
-         this.vel.y+=this.acc.y;
-         this.vel.r+=this.acc.r;
-         if(this.vel.x)this.pos.x+=this.vel.x;
-         if(this.vel.y)this.pos.y+=this.vel.y;
-         if(this.vel.r)this.rot+=this.vel.r;
-         if(!this.simple) this.updateProps(this.vel);
-         if(this.objs&&this.objs.length>0)
-           this.objs.forEach(function(obj) {
-             if(obj._update && obj._update(o,dt)) this.rmv(obj);
-           }, this);
-      }
-      o.draw=function(ctx){
-         if(this.hidden)return;
-         if(typeof(ctx)=='undefined') ctx=this.app.ctx;
-         ctx.save();
-         if(this.origin)
-            ctx.translate(this.origin.x,this.origin.y);
-         else ctx.translate(this.pos.x,this.pos.y);
-         if(this.rot!=0) ctx.rotate(this.rot);
-         if(this.objs.length>0){
-            var drawnSelf=false;
-            this.objs.forEach(function(obj) {
-              if(!drawnSelf && obj.z >= this.z) {
-                this.__draw(ctx);
-                drawnSelf = true;
-              }
-              if(obj.draw) obj.draw(ctx);
-            }, this);
-            if(!drawnSelf)this.__draw(ctx);
-         } else this.__draw(ctx);
-         ctx.restore();
-      }
-      o.__draw=function(ctx){
-         ctx.save();
-         ctx.globalAlpha=this.alpha;
-         if(this.lineCap) ctx.lineCap=this.lineCap;
-         if(this.shadow){
-            var s=this.shadow.split(' ');
-            s.forEach(function(_s) {
-               if(iio.isNumber(_s))
-                  ctx.shadowBlur=_s;
-               else if(_s.indexOf(':')>-1){
-                  var _i=_s.indexOf(':');
-                  ctx.shadowOffsetX=_s.substring(0,_i);
-                  ctx.shadowOffsetY=_s.substring(_i+1);
-               } else ctx.shadowColor=_s;
-            });
-         }
-         if(this.dash){
-            if(this.dash.length>1&&this.dash.length%2==1)
-               ctx.lineDashOffset=this.dash[this.dash.length-1];
-            //ctx.setLineDash(this.dash.slice().splice(0,this.dash.length-1));
-            ctx.setLineDash(this.dash);
-         }
-         this._draw(ctx);
-         ctx.restore();
-      }
-      o.createGradient=function(ctx,g){
-         var gradient;
-         var p=g.split(':');
-         var ps=p[1].split(',');
-         if(ps.length==4)
-            gradient=ctx.createLinearGradient(this.eval(ps[0]),this.eval(ps[1]),this.eval(ps[2]),this.eval(ps[3]));
-         else gradient=ctx.createRadialGradient(this.eval(ps[0]),this.eval(ps[1]),this.eval(ps[2]),this.eval(ps[3]),this.eval(ps[4]),this.eval(ps[5]));
-         var c;
-         p.forEach(function(_p) {
-            c=_p.indexOf(',');
-            var a=parseFloat(_p.substring(0,c));
-            var b=this.eval(_p.substring(c+1));
-            gradient.addColorStop(a,b);
-         });
-         return gradient;
-      }
+      this.clear = iio._clear;
+      this._shrink = iio._shrink;
+      this._fade = iio._fade;
+      this._update = iio._update;
+      this.draw = iio._draw;
+      this.__draw = iio.__draw;
+      this.createGradient = iio._createGradient;
    }
    iio.initLine=function(o){
       o.center.x=(o.pos.x+o.endPos.x)/2;
@@ -1543,10 +1485,10 @@ iio.apps=[];
       }
    }
    iio.drawLine=function(ctx,x,y,x1,y1){
-         ctx.beginPath();
-         ctx.moveTo(x,y);
-         ctx.lineTo(x1,y1);
-         ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x,y);
+      ctx.lineTo(x1,y1);
+      ctx.stroke();
    }
 
 //Vector Math
