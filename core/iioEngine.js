@@ -19,6 +19,9 @@ All rights reserved.
 iio={};
 (function(){
 
+//DEFAULT PROPERTIES
+   iio.apps=[];
+
 //OBJECT TYPES
    iio.APP="App";
    iio.OBJ="Obj";
@@ -43,36 +46,52 @@ iio={};
       child.prototype = new emptyFn();
       child.prototype.constructor = tmp;
    }
-   iio.isNumber=function(o) {
-      if (typeof o === 'number') return true;
-      return (o-0)==o && o.length>0;
+
+   iio.is = {
+      fn : function (fn) { return typeof fn === 'function' },
+      number : function(o) {
+         if (typeof o === 'number') return true;
+         return (o-0)==o && o.length>0;
+      },
+      string : function(s){return typeof s=='string'||s instanceof String},
+      image : function(img){
+         return ['png','jpg','gif','tiff'].some(
+            function(ie){return (img.indexOf('.'+ie)!=-1)});
+      },
+      between : function(val,min,max){
+         if(max < min) {
+            var tmp = min;
+            min = max;
+            max = tmp;
+         } return (val >= min && val <= max);
+      }
    }
-   iio.isString=function(s){return typeof s=='string'||s instanceof String}
-   iio.isBetween=function(val,min,max){
-      if(max < min) {
-         var tmp = min;
-         min = max;
-         max = tmp;
-      } return (val >= min && val <= max);
+
+   iio.random = {
+      num : function(min, max) {
+         min=min||0;max=(max===0||typeof(max)!='undefined')?max:1;
+         return Math.random() * (max - min) + min;
+      },
+      integer : function(min, max) {
+         min=min||0;max=max||1;
+         return Math.floor(Math.random() * (max - min)) + min;
+      },
+      color : function() {
+         return "rgb("+Math.floor(Math.random()*255)
+            +","+Math.floor(Math.random()*255)
+            +","+Math.floor(Math.random()*255)+")"
+      }
    }
-   iio.isImage=function(img){
-      return ['png','jpg','gif','tiff'].some(function(ie){return (img.indexOf('.'+ie)!=-1)});
+
+   iio.color = {
+      random : iio.random.color,
+      invert : function(c){
+         var ss=c.substr(c.indexOf(',')+1);
+         var ss2=ss.substr(ss.indexOf(',')+1);
+         return "rgb("+(255-parseInt(c.substr(c.indexOf('(')+1,c.indexOf(',')),10))+","+(255-parseInt(ss.substr(0,ss.indexOf(',')),10))+","+(255-parseInt(ss2.substr(0,ss2.indexOf(')')),10))+")"
+      }
    }
-   iio.isFunction = function (fn) { return typeof fn === 'function' }
-   iio.randomColor = function() {return "rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")"}
-   iio.random = function(min, max) {
-      min=min||0;max=(max===0||typeof(max)!='undefined')?max:1;
-      return Math.random() * (max - min) + min;
-   }
-   iio.randomInt = function(min, max) {
-      min=min||0;max=max||1;
-      return Math.floor(Math.random() * (max - min)) + min;
-   }
-   iio.invertColor=function(c){
-      var ss=c.substr(c.indexOf(',')+1);
-      var ss2=ss.substr(ss.indexOf(',')+1);
-      return "rgb("+(255-parseInt(c.substr(c.indexOf('(')+1,c.indexOf(',')),10))+","+(255-parseInt(ss.substr(0,ss.indexOf(',')),10))+","+(255-parseInt(ss2.substr(0,ss2.indexOf(')')),10))+")"
-   }
+
    iio.load=function(src,onload){
       var img=new Image();
       img.src=src;
@@ -107,7 +126,7 @@ iio={};
          return true;
       } else return false;
    }
-   iio.read=function(f,c){
+   iio.read = function(f,c){
        var xhr=new XMLHttpRequest();
        xhr.open("GET",f,true);
        xhr.onreadystatechange=function(){
@@ -225,20 +244,20 @@ iio={};
       var str=iio.getKeyString(event);
       return keys.some(function(key) { return key === str; });
    }
-   iio.cancelLoop=function(l){
+   iio.cancelLoop = function(l){
       window.clearTimeout(l);
       window.cancelAnimationFrame(l);
    }
-   iio.cancelLoops=function(o,c){
+   iio.cancelLoops = function(o,c){
       o.loops.forEach(function(loop) { iio.cancelLoop(loop.id); });
       if(o.mainLoop) iio.cancelLoop(o.mainLoop.id);
       if(typeof c=='undefined')
         o.objs.forEach(function(obj) { iio.cancelLoops(obj); });
    }
-   iio.loop=function(fps,caller,fn){
-      if(iio.isNumber(fps)||typeof window.requestAnimationFrame=='undefined'||!fps.af){
+   iio.loop = function(fps,caller,fn){
+      if(iio.is.number(fps)||typeof window.requestAnimationFrame=='undefined'||!fps.af){
          if(typeof(fps.af)!='undefined'&&typeof(fps.fps)=='undefined'){ fn=caller; caller=fps; fps=60 }
-         else if(!iio.isNumber(fps)) { caller=fps; fps=fps.fps; }
+         else if(!iio.is.number(fps)) { caller=fps; fps=fps.fps; }
          function loop(){
             var n = new Date().getTime();
             if(typeof caller.last=='undefined') var first=true;
@@ -248,7 +267,7 @@ iio={};
             if(typeof first=='undefined'){
                if(typeof caller.fn=='undefined')
                   nufps=caller.o._update(caller.o,correctedFPS);
-               else if(iio.isFunction(caller.fn))
+               else if(iio.is.fn(caller.fn))
                   nufps=caller.fn(caller.o,caller,correctedFPS);
                else nufps=caller.fn._update(caller,correctedFPS);
                caller.o.app.draw();
@@ -268,7 +287,7 @@ iio={};
          caller=fps;
          function animloop(){
             if(typeof caller.fn=='undefined') caller.o.draw();
-            else if(iio.isFunction(caller.fn)) caller.fn(caller.o);
+            else if(iio.is.fn(caller.fn)) caller.fn(caller.o);
             else {
                caller.fn._update();
                caller.fn.draw();
@@ -280,21 +299,18 @@ iio={};
          return caller.id;
       }
    }
-   iio.resolveBounds=function(b,c){
+   iio.resolveBounds = function(b,c){
       if(b.length>1) return b[1](c);
       return true;
    }
-   iio.upperBoundReached=function(bnd,lim,c){
+   iio.upperBoundReached = function(bnd,lim,c){
       if(lim>bnd[0]) return iio.resolveBounds(bnd,c);
       return false;
    }
-   iio.lowerBoundReached=function(bnd,lim,c){
+   iio.lowerBoundReached = function(bnd,lim,c){
       if(lim<bnd[0]) return iio.resolveBounds(bnd,c);
       return false;
    }
-
-//DEFAULT PROPERTIES
-iio.apps=[];
 
 //INITIALIZATION FUNCTIONS
    iio.start=function(app,id,d){
@@ -306,7 +322,7 @@ iio.apps=[];
          return new iio.App(c,app[0],app[1]);
 
       //run iio file
-      else if(iio.isString(app)&&app.substring(app.length-4)=='.iio')
+      else if(iio.is.string(app)&&app.substring(app.length-4)=='.iio')
          return iio.read(app, iio.start);
 
       //initialize application without settings
@@ -328,7 +344,7 @@ iio.apps=[];
             if(id.tagName=='CANVAS')c=id;
 
             //create in existing element
-            else if(iio.isNumber(id)||id.x){
+            else if(iio.is.number(id)||id.x){
                c = iio.create_canvas(id.x||id,id.y||id);
                if(d) d.appendChild(c);
                else document.body.appendChild(c);
@@ -396,7 +412,7 @@ iio.apps=[];
       o.playAnim = iio._playAnim;
       o.eval = iio._eval;
    }
-   iio.update_object=function(o){
+   iio.update_object=function(o,nd){
       if(o.text)o.type=iio.TEXT;
       if(o.simple){
          if(!(o.bbx instanceof Array)){
@@ -412,7 +428,7 @@ iio.apps=[];
       }
       if(o.bezier)
         o.bezier.forEach(function(b,i) { if(b === 'n') o.bezier[i] = undefined; });
-      if(o.img&&iio.isString(o.img)){
+      if(o.img&&iio.is.string(o.img)){
          nd=false;
          var src=o.img;
          o.img=new Image();
@@ -451,11 +467,11 @@ iio.apps=[];
         s.forEach(function(_s) { this.set(_s, no_draw); }, this);
 
       //set with iio script
-      else if(iio.isNumber(s)){
+      else if(iio.is.number(s)){
          if(this.radius) this.radius=s/2;
          else if(this.width==this.height) this.width=this.height=s;
          else this.width=s;
-      } else if(iio.isString(s)) iio.run(s.split(" "),this,true);
+      } else if(iio.is.string(s)) iio.run(s.split(" "),this,true);
 
       //set with JSON
       else for(var p in s) this[p]=s[p];
@@ -471,7 +487,7 @@ iio.apps=[];
    }
    iio._add = function(o,ii,s,nd){
       if(typeof nd=='undefined') nd=s;
-      if(o instanceof Array&&!iio.isNumber(o[0])&&typeof(o[0].x)=='undefined')
+      if(o instanceof Array&&!iio.is.number(o[0])&&typeof(o[0].x)=='undefined')
         o.forEach(function(_o) { this.add(_o,ii,s,nd); }, this);
       else if(typeof(o.type)!='undefined'){
          o.parent=this;
@@ -492,7 +508,7 @@ iio.apps=[];
          this.objs=[];
       else if(o instanceof Array)
          o.forEach(function(_o) { this.rmv(_o); }, this);
-      else if(iio.isNumber(o)&&o<this.objs.length)
+      else if(iio.is.number(o)&&o<this.objs.length)
          this.objs.splice(o,1);
       else if(this.objs) this.objs.some(callback);
       if(this.collisions) this.collisions.forEach(function(collision, i) {
@@ -516,7 +532,7 @@ iio.apps=[];
             this.app.fps=60;
             loop.id = this.app.mainLoop.id=iio.loop(this.app.mainLoop);
          } else {
-            if(!iio.isNumber(fps)){
+            if(!iio.is.number(fps)){
                loop = {fps:60,fn:fps,af:this.rqAnimFrame}
                loop.id = iio.loop(loop,fps);
             } else {
@@ -559,7 +575,7 @@ iio.apps=[];
       }
    }
    iio._playAnim=function(fps,t,r,fn,s){
-      if(iio.isString(t)){
+      if(iio.is.string(t)){
          var o = this;
          this.anims.some(function(anim, i) {
            if(anim.tag==t) {
@@ -584,14 +600,14 @@ iio.apps=[];
    }
    iio._eval = function(s){
       if(!s)return 0;
-      if(iio.isNumber(s))
+      if(iio.is.number(s))
          return parseFloat(s);
       else if(s=='center') return this.center;
       else if(s=='width') return this.width;
       else if(s=='height') return this.height;
       else if(s=='hidden') return this.hidden;
       else if(s=='random') return iio.random();
-      else if(s=='randomColor') return iio.randomColor();
+      else if(s=='randomColor') return iio.color.random();
       var op; op=s.indexOf('-');
       if(op>-1) return this.eval(s.substring(0,op))-this.eval(s.substring(op+1));
       op=s.indexOf('+');
@@ -704,7 +720,7 @@ iio.apps=[];
       if(this.shadow){
          var s=this.shadow.split(' ');
          s.forEach(function(_s) {
-            if(iio.isNumber(_s))
+            if(iio.is.number(_s))
                ctx.shadowBlur=_s;
             else if(_s.indexOf(':')>-1){
                var _i=_s.indexOf(':');
@@ -846,7 +862,7 @@ iio.apps=[];
       iio.apps.push(this);
 
       //run iio script
-      if(iio.isString(app)){
+      if(iio.is.string(app)){
          this.runScript=iio.run(app,this);
          this.draw();
       } 
@@ -963,7 +979,7 @@ iio.apps=[];
    }
    SpriteMap.prototype.sprite=function(w,h,a,x,y,n){
       var s={};
-      if(iio.isString(w)){
+      if(iio.is.string(w)){
          s.tag=w; w=h; h=a; a=x; x=y; y=n;
       }
       if(w instanceof Array) s.frames=w;
@@ -985,7 +1001,6 @@ iio.apps=[];
    function Obj(){
       this.Obj.apply(this, arguments);
    }; iio.Obj=Obj;
-
    Obj.prototype.Obj = function(p,s,ss,pp){
 
       iio.init_obj(this);
@@ -995,7 +1010,7 @@ iio.apps=[];
       if(pp){ this.parent=pp; this.app=pp.app }
 
       //run iio script
-      if(iio.isString(p)){
+      if(iio.is.string(p)){
          var _p=iio.parsePos(p.split(' '),this.parent);
          if(_p.ps) p=_p.ps;
          else p={x:0,y:0};
@@ -1023,29 +1038,29 @@ iio.apps=[];
       //init polygon
       if(p.length>2){
          this.vs=p;
-         iio.initPoly(this);
+         iio.poly.init(this);
 
       //init line
       } else if(p.length==2) {
          this.endPos=p[1];
-         iio.initLine(this);
+         iio.line.init(this);
 
       //init shape
       } else {
 
          //init text
-         if(this.type==iio.TEXT) iio.initText(this);
+         if(this.type==iio.TEXT) iio.text.init(this);
 
          //init circle
-         else if(this.type==iio.CIRC) iio.initCirc(this);
+         else if(this.type==iio.CIRC) iio.circ.init(this);
          else {
 
             //init rect
-            iio.initRect(this);
+            iio.rect.init(this);
 
             //init grid
             if(this.type==iio.GRID)
-               iio.initGrid(this);
+               iio.grid.init(this);
 
             else this.type=iio.RECT;
          }
@@ -1071,90 +1086,42 @@ iio.apps=[];
       this.__draw = iio.__draw;
       this.createGradient = iio._createGradient;
    }
-   iio.initLine=function(o){
+
+//LINE
+iio.line = {
+   init : function(o){
       o.center.x=(o.pos.x+o.endPos.x)/2;
       o.center.y=(o.pos.y+o.endPos.y)/2;
       o.width=iio.V.dist(o.pos,o.endPos);
       o.height=o.lineWidth;
-      o.contains = iio.line_contains;
-      o._draw = iio._drawLine;
-      o.updateProps = iio.updateLineProps;
-   }
-   iio.initRect=function(o){
-      o._draw = iio._drawRect;
-      o.getTrueVertices = iio.getTrueVertices_rect;
-      o.contains = iio.rect_contains;
-   }
-   iio.initGrid=function(o){
-      o.cells=[];
-      var x=-o.res.x*(o.C-1)/2;
-      var y=-o.res.y*(o.R-1)/2;
-      for(var c=0;c<o.C;c++){
-         o.cells[c]=[];
-         for(var r=0;r<o.R;r++){
-            o.cells[c][r]=o.add(new iio.Obj([x,y],{
-               c:c,r:r,
-               width:o.res.x,
-               height:o.res.y
-            },undefined,o));
-            y+=o.res.y;
-         }
-         y=-o.res.y*(o.R-1)/2;
-         x+=o.res.x;
-      }
-      o.clear = iio._clearGrid;
-      o._draw = iio._drawGrid;
-      o.cellCenter = iio._cellCenter;
-      o.cellAt = iio._cellAt;
-      o.foreachCell = iio._foreachCell;
-   }
-   iio.initCirc=function(o){
-      o.type=iio.CIRC;
-      o.contains = iio.circ_contains;
-      o._draw = iio._drawCirc;
-   }
-   iio.initPoly=function(o){
-      o.type=iio.POLY;
-      o.getTrueVertices = iio.getTrueVertices_poly;
-      o._draw = iio._drawPoly;
-      o.contains = iio.poly_contains;
-      o.updateProps = iio.updatePolyProps;
-   }
-   iio.initText=function(o){
-      o.size=o.width;
-      o.app.ctx.font=o.size+'px '+o.font;
-      o.width=o.app.ctx.measureText(o.text).width;
-      o.height=o.app.ctx.measureText('W').width;
-      o._draw = iio._drawText;
-      o.contains = iio.text_contains;
-      o.charWidth = iio.charWidth;
-      o.getX = iio.getX;
-      var tX=o.getX(o.text.length);
-      o.cursor = o.add([tX,10,tX,-o.size*.8],'2 '+(o.color||o.outline),{index:o.text.length,shift:false});
-      if(o.showCursor){
-         o.loop(2,function(o){
-            o.cursor.hidden=!o.cursor.hidden;
-         })
-      } else o.cursor.hidden=true;
-      o.keyup = iio.keyup;
-      o.keydown = iio.keydown;
-   }
-   iio.updateLineProps = function(v){
+      o.contains = iio.line.contains;
+      o._draw = iio.line.draw;
+      o.updateProps = iio.line.updateProps;
+   },
+   draw : function(ctx){
+      if(this.color.indexOf&&this.color.indexOf('gradient')>-1)
+         this.color=this.createGradient(ctx,this.color);
+      ctx.strokeStyle=this.color;
+      ctx.lineWidth=this.lineWidth;
+      if(this.origin)
+         ctx.translate(-this.origin.x,-this.origin.y);
+      else ctx.translate(-this.pos.x,-this.pos.y);
+      ctx.beginPath();
+      ctx.moveTo(this.pos.x,this.pos.y);
+      if(this.bezier)
+         ctx.bezierCurveTo(this.bezier[0],this.bezier[1],this.bezier[2],this.bezier[3],this.endPos.x,this.endPos.y);
+      else ctx.lineTo(this.endPos.x,this.endPos.y);
+      ctx.stroke();
+   },
+   updateProps : function(v){
       this.endPos.x+=v.x;
       this.endPos.y+=v.y;
       this.center.x+=v.x;
       this.center.y+=v.y;
-   }
-   iio.updatePolyProps = function(){
-      this.center=this.pos;
-      /*this.left=this.pos.x-this.width/2;
-      this.right=this.pos.x+this.width/2;
-      this.top=this.pos.y-this.height/2;
-      this.bottom=this.pos.y+this.height/2;*/
-   }
-   iio.line_contains = function(v,y){
+   },
+   contains : function(v,y){
       if(typeof(y)!='undefined') v={x:v,y:y}
-      if(iio.isBetween(v.x,this.pos.x,this.endPos.x)&&iio.isBetween(v.y,this.pos.y,this.endPos.y)){
+      if(iio.is.between(v.x,this.pos.x,this.endPos.x)&&iio.is.between(v.y,this.pos.y,this.endPos.y)){
          var a=(this.endPos.y-this.pos.y)/(this.endPos.x-this.pos.x);
          if(!isFinite(a))return true;
          var y=a*(this.endPos.x-this.pos.x)+this.pos.y;
@@ -1162,7 +1129,32 @@ iio.apps=[];
       }
       return false;
    }
-   iio.rect_contains = function(v,y){
+}
+
+//RECT
+iio.rect = {
+   init : function(o){
+      o._draw = iio.rect.draw;
+      o.getTrueVertices = iio.rect.getTrueVertices;
+      o.contains = iio.rect.contains;
+   },
+   draw : function(ctx){
+      iio.prepShape(ctx,this);
+      ctx.translate(-this.width/2,-this.height/2);
+      if(this.bezier){
+         iio.drawPoly(ctx,this.getTrueVertices(),this.bezier);
+         iio.finishPathShape(ctx,this);
+      } else {
+         iio.drawRect(ctx,this.width,this.height,{c:this.color,o:this.outline},{img:this.img,anims:this.anims,animKey:this.animKey,animFrame:this.animFrame,mov:this.mov,round:this.round});
+      }
+      if(this.xColor){
+         iio.prepX(ctx,this);
+         iio.drawLine(ctx,0,0,this.width,this.height);
+         iio.drawLine(ctx,this.width,0,0,this.height);
+         ctx.restore();
+      }
+   },
+   contains : function(v,y){
       if(this.rot) return iio.polyContains(this,v,y);
       y=v.y||y;
       v=v.x||v;
@@ -1171,8 +1163,56 @@ iio.apps=[];
       if (v>-this.width/2&&v<this.width/2&&y>-this.height/2&&y<this.height/2)
          return true;
       return false;
+   },
+   getTrueVertices : function(){
+      this.vs = [
+        {x: this.left,  y: this.top},
+        {x: this.right, y: this.top},
+        {x: this.right, y: this.bottom},
+        {x: this.left,  y: this.bottom}
+      ];
+      return this.vs.map(function(_v) {
+        var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
+        v.x += this.pos.x;
+        v.y += this.pos.y;
+        return v;
+      }, this);
    }
-   iio.circ_contains = function(v,y){
+}
+
+//CIRC
+iio.circ = {
+   init : function(o){
+      o.type=iio.CIRC;
+      o.contains = iio.circ.contains;
+      o._draw = iio.circ.draw;
+   },
+   draw : function(ctx){
+      iio.prepShape(ctx,this);
+      ctx.beginPath();
+      if(this.width!=this.height){
+         ctx.moveTo(0,-this.height/2);
+         if(this.bezier){
+            ctx.bezierCurveTo((this.bezier[0]||this.width/2),(this.bezier[1]||-this.height/2),(this.bezier[2]||this.width/2),(this.bezier[3]||this.height/2),0,this.height/2);
+            ctx.bezierCurveTo((this.bezier[4]||-this.width/2),(this.bezier[5]||this.height/2),(this.bezier[6]||-this.width/2),(this.bezier[7]||-this.height/2),0,-this.height/2);
+         } else {
+            ctx.bezierCurveTo(this.width/2,-this.height/2,this.width/2,this.height/2,0,this.height/2);
+            ctx.bezierCurveTo(-this.width/2,this.height/2,-this.width/2,-this.height/2,0,-this.height/2);
+         }
+      } else ctx.arc(0,0,this.width/2,0,2*Math.PI,false);
+      if(this.width!=this.height)ctx.closePath();
+      iio.finishPathShape(ctx,this);
+      if(this.xColor) {
+         ctx.rotate(Math.PI/4)
+         iio.prepX(ctx,this);
+         ctx.translate(0,-o.height/2);
+         iio.drawLine(ctx,0,0,0,o.height);
+         ctx.translate(0,o.height/2);
+         iio.drawLine(ctx,o.width/2,0,-o.width/2,0);
+         ctx.restore();
+      }
+   },
+   contains : function(v,y){
       if(typeof(y)!='undefined') v={x:v,y:y}
       if(this.width==this.height&&iio.V.dist(v,this.pos)<this.width/2)
          return true;
@@ -1189,8 +1229,73 @@ iio.apps=[];
       }
       return false;
    }
-   iio.poly_contains = function(v,y){return iio.polyContains(this,v,y)}
-   iio.text_contains = function(x,y){
+}
+
+//POLY
+iio.poly = {
+   init : function(o){
+      o.type=iio.POLY;
+      o.getTrueVertices = iio.poly.getTrueVertices;
+      o._draw = iio.poly.draw;
+      o.contains = iio.poly.contains;
+      o.updateProps = iio.updatePolyProps;
+   },
+   draw : function(ctx){
+      iio.prepShape(ctx,this);
+      iio.drawPoly(ctx,this.vs,this.bezier,this.open);
+      iio.finishPathShape(ctx,this);
+   },
+   updateProps : function(){
+      this.center=this.pos;
+      /*this.left=this.pos.x-this.width/2;
+      this.right=this.pos.x+this.width/2;
+      this.top=this.pos.y-this.height/2;
+      this.bottom=this.pos.y+this.height/2;*/
+   },
+   contains : function(v,y){
+      return iio.polyContains(this,v,y)
+   },
+   getTrueVertices : function(){
+      return this.vs.map(function(_v) {
+          var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
+          v.x += this.pos.x;
+          v.y += this.pos.y;
+          return v;
+      }, this);
+   }
+}
+
+//TEXT
+iio.text = {
+   init : function(o){
+      o.size=o.width;
+      o.app.ctx.font=o.size+'px '+o.font;
+      o.width=o.app.ctx.measureText(o.text).width;
+      o.height=o.app.ctx.measureText('W').width;
+      o._draw = iio.text.draw;
+      o.contains = iio.text.contains;
+      o.charWidth = iio.text.charWidth;
+      o.getX = iio.text.getX;
+      var tX=o.getX(o.text.length);
+      o.cursor = o.add([tX,10,tX,-o.size*.8],'2 '+(o.color||o.outline),{index:o.text.length,shift:false});
+      if(o.showCursor){
+         o.loop(2,function(o){
+            o.cursor.hidden=!o.cursor.hidden;
+         })
+      } else o.cursor.hidden=true;
+      o.keyUp = iio.text.keyUp;
+      o.keyDown = iio.text.keyDown;
+   },
+   draw : function(ctx){
+      ctx.font=this.size+'px '+this.font;
+      ctx.textAlign=this.align;
+      iio.prepShape(ctx,this);
+      if(this.color) ctx.fillText(this.text,0,0);
+      if(this.outline) ctx.strokeText(this.text,0,0);
+      if(this.showCursor)
+         this.cursor.pos.x=this.cursor.endPos.x=this.getX(this.cursor.index);
+   },
+   contains : function(x,y){
       if(typeof(y)=='undefined'){y=x.y;x=x.x}
       x-=this.pos.x;
       y-=this.pos.y;
@@ -1201,57 +1306,13 @@ iio.apps=[];
       else if((this.align=='right'||this.align=='end')&&x>-this.width&&x<0&&y<0&&y>-this.height)
          return true;
       return false;
-   }
-   iio.getTrueVertices_rect = function(){
-      this.vs = [
-        {x: this.left,  y: this.top},
-        {x: this.right, y: this.top},
-        {x: this.right, y: this.bottom},
-        {x: this.left,  y: this.bottom}
-      ];
-      return this.vs.map(function(_v) {
-        var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
-        v.x += this.pos.x;
-        v.y += this.pos.y;
-        return v;
-      }, this);
-   }
-   iio.getTrueVertices_poly = function(){
-      return this.vs.map(function(_v) {
-          var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
-          v.x += this.pos.x;
-          v.y += this.pos.y;
-          return v;
-      }, this);
-   }
-   iio._clearGrid = function(){
-      this.objs=[];
-      iio.initGrid(this);
-      this.app.draw();
-   }
-   iio._cellCenter = function(c,r){
-      return {x:-this.width/2+c*this.res.x+this.res.x/2,
-              y:-this.height/2+r*this.res.y+this.res.y/2}
-   }
-   iio._cellAt = function(x,y){
-      if(x.x) return this.cells[Math.floor((x.x-this.left)/this.res.x)][Math.floor((x.y-this.top)/this.res.y)];
-      else return this.cells[Math.floor((x-this.left)/this.res.x)][Math.floor((y-this.top)/this.res.y)];
-   }
-   iio._foreachCell = function(fn,p){
-      var keepGoing=true;
-      for (var c=0;c<this.C;c++)
-         for(var r=0;r<this.R;r++){
-            keepGoing=fn(this.cells[c][r],p);
-            if (typeof keepGoing!='undefined'&&!keepGoing)
-               return [r,c];
-         }
-   }
-   iio.charWidth = function(i){
+   },
+   charWidth : function(i){
       i=i||0;
       this.app.ctx.font=this.size+'px '+this.font;
       return this.app.ctx.measureText(this.text.charAt(i)).width;
-   }
-   iio.getX=function(i){
+   },
+   getX : function(i){
       this.app.ctx.font=this.size+'px '+this.font;
       if(typeof(this.align)=='undefined'||this.align=='left')
          return this.app.ctx.measureText(this.text.substring(0,i)).width;
@@ -1261,12 +1322,13 @@ iio.apps=[];
          var x=-Math.floor(this.app.ctx.measureText(this.text).width/2);
          return x+this.app.ctx.measureText(this.text.substring(0,i)).width;
       }
-   }
-   iio.keyUp = function(k){
-      if(k=='shift') this.cursor.shift=false;
-   }
-   iio.keyDown = function(key,cI,shift,fn){
-      if(!iio.isNumber(cI)){
+   },
+   keyUp : function(k){
+      if(k=='shift') 
+         this.cursor.shift=false;
+   },
+   keyDown : function(key,cI,shift,fn){
+      if(!iio.is.number(cI)){
          fn=cI; cI=this.cursor.index;
       }
       var str;
@@ -1350,6 +1412,69 @@ iio.apps=[];
       this.app.draw();
       return cI;
    }
+}
+
+//GRID
+iio.grid = {
+   init : function(o){
+      o.cells=[];
+      var x=-o.res.x*(o.C-1)/2;
+      var y=-o.res.y*(o.R-1)/2;
+      for(var c=0;c<o.C;c++){
+         o.cells[c]=[];
+         for(var r=0;r<o.R;r++){
+            o.cells[c][r]=o.add(new iio.Obj([x,y],{
+               c:c,r:r,
+               width:o.res.x,
+               height:o.res.y
+            },undefined,o));
+            y+=o.res.y;
+         }
+         y=-o.res.y*(o.R-1)/2;
+         x+=o.res.x;
+      }
+      o.clear = iio.grid.clear;
+      o._draw = iio.grid.draw;
+      o.cellCenter = iio.grid.cellCenter;
+      o.cellAt = iio.grid.cellAt;
+      o.foreachCell = iio.grid.foreachCell;
+   },
+   draw : function(ctx){
+      iio.prepShape(ctx,this);
+      ctx.translate(-this.width/2,-this.height/2);
+      iio.drawRect(ctx,this.width,this.height,{c:this.color,o:this.outline},{img:this.img,anims:this.anims,mov:this.mov,round:this.round});
+      if(this.gridColor){
+         if(this.gridColor.indexOf&&this.gridColor.indexOf('gradient')>-1)
+            this.gridColor=this.createGradient(ctx,this.gridColor);
+         ctx.strokeStyle=this.gridColor;
+         ctx.lineWidth=this.lineWidth;
+         for(var c=1;c<this.C;c++)iio.drawLine(ctx,c*this.res.x,0,c*this.res.x,this.height);
+         for(var r=1;r<this.R;r++)iio.drawLine(ctx,0,r*this.res.y,this.width,r*this.res.y);
+      }
+   },
+   clear : function(){
+      this.objs=[];
+      iio.initGrid(this);
+      this.app.draw();
+   },
+   cellCenter : function(c,r){
+      return {x:-this.width/2+c*this.res.x+this.res.x/2,
+              y:-this.height/2+r*this.res.y+this.res.y/2}
+   },
+   cellAt : function(x,y){
+      if(x.x) return this.cells[Math.floor((x.x-this.left)/this.res.x)][Math.floor((x.y-this.top)/this.res.y)];
+      else return this.cells[Math.floor((x-this.left)/this.res.x)][Math.floor((y-this.top)/this.res.y)];
+   },
+   foreachCell : function(fn,p){
+      var keepGoing=true;
+      for (var c=0;c<this.C;c++)
+         for(var r=0;r<this.R;r++){
+            keepGoing=fn(this.cells[c][r],p);
+            if (typeof keepGoing!='undefined'&&!keepGoing)
+               return [r,c];
+         }
+   }
+}
 
 //RENDER FUNCTIONS
    iio.prepShape = function(ctx,o){
@@ -1396,11 +1521,6 @@ iio.apps=[];
       if(typeof(open)=='undefined'||!open)
          ctx.closePath();
    }
-   iio._drawPoly = function(ctx){
-      iio.prepShape(ctx,this);
-      iio.drawPoly(ctx,this.vs,this.bezier,this.open);
-      iio.finishPathShape(ctx,this);
-   }
    iio.drawRect = function(ctx,w,h,s,p){
       if(p.round){
          ctx.beginPath();
@@ -1429,89 +1549,11 @@ iio.apps=[];
          if(s.o) ctx.strokeRect(0,0,w,h);
       }
    }
-   iio._drawRect = function(ctx){
-      iio.prepShape(ctx,this);
-      ctx.translate(-this.width/2,-this.height/2);
-      if(this.bezier){
-         iio.drawPoly(ctx,this.getTrueVertices(),this.bezier);
-         iio.finishPathShape(ctx,this);
-      } else {
-         iio.drawRect(ctx,this.width,this.height,{c:this.color,o:this.outline},{img:this.img,anims:this.anims,animKey:this.animKey,animFrame:this.animFrame,mov:this.mov,round:this.round});
-      }
-      if(this.xColor){
-         iio.prepX(ctx,this);
-         iio.drawLine(ctx,0,0,this.width,this.height);
-         iio.drawLine(ctx,this.width,0,0,this.height);
-         ctx.restore();
-      }
-   }
    iio.drawLine = function(ctx,x,y,x1,y1){
       ctx.beginPath();
       ctx.moveTo(x,y);
       ctx.lineTo(x1,y1);
       ctx.stroke();
-   }
-   iio._drawLine = function(ctx){
-      if(o.color.indexOf&&o.color.indexOf('gradient')>-1)
-         o.color=o.createGradient(ctx,o.color);
-      ctx.strokeStyle=this.color;
-      ctx.lineWidth=this.lineWidth;
-      if(this.origin)
-         ctx.translate(-this.origin.x,-this.origin.y);
-      else ctx.translate(-this.pos.x,-this.pos.y);
-      ctx.beginPath();
-      ctx.moveTo(this.pos.x,this.pos.y);
-      if(this.bezier)
-         ctx.bezierCurveTo(this.bezier[0],this.bezier[1],this.bezier[2],this.bezier[3],this.endPos.x,this.endPos.y);
-      else ctx.lineTo(this.endPos.x,this.endPos.y);
-      ctx.stroke();
-   }
-   iio._drawGrid = function(ctx){
-      iio.prepShape(ctx,this);
-      ctx.translate(-this.width/2,-this.height/2);
-      iio.drawRect(ctx,this.width,this.height,{c:this.color,o:this.outline},{img:this.img,anims:this.anims,mov:this.mov,round:this.round});
-      if(this.gridColor){
-         if(this.gridColor.indexOf&&this.gridColor.indexOf('gradient')>-1)
-            this.gridColor=this.createGradient(ctx,this.gridColor);
-         ctx.strokeStyle=this.gridColor;
-         ctx.lineWidth=this.lineWidth;
-         for(var c=1;c<this.C;c++)iio.drawLine(ctx,c*this.res.x,0,c*this.res.x,this.height);
-         for(var r=1;r<this.R;r++)iio.drawLine(ctx,0,r*this.res.y,this.width,r*this.res.y);
-      }
-   }
-   iio._drawCirc = function(ctx){
-      iio.prepShape(ctx,this);
-      ctx.beginPath();
-      if(this.width!=this.height){
-         ctx.moveTo(0,-this.height/2);
-         if(this.bezier){
-            ctx.bezierCurveTo((this.bezier[0]||this.width/2),(this.bezier[1]||-this.height/2),(this.bezier[2]||this.width/2),(this.bezier[3]||this.height/2),0,this.height/2);
-            ctx.bezierCurveTo((this.bezier[4]||-this.width/2),(this.bezier[5]||this.height/2),(this.bezier[6]||-this.width/2),(this.bezier[7]||-this.height/2),0,-this.height/2);
-         } else {
-            ctx.bezierCurveTo(this.width/2,-this.height/2,this.width/2,this.height/2,0,this.height/2);
-            ctx.bezierCurveTo(-this.width/2,this.height/2,-this.width/2,-this.height/2,0,-this.height/2);
-         }
-      } else ctx.arc(0,0,this.width/2,0,2*Math.PI,false);
-      if(this.width!=this.height)ctx.closePath();
-      iio.finishPathShape(ctx,this);
-      if(this.xColor) {
-         ctx.rotate(Math.PI/4)
-         iio.prepX(ctx,this);
-         ctx.translate(0,-o.height/2);
-         iio.drawLine(ctx,0,0,0,o.height);
-         ctx.translate(0,o.height/2);
-         iio.drawLine(ctx,o.width/2,0,-o.width/2,0);
-         ctx.restore();
-      }
-   }
-   iio._drawText = function(ctx){
-      ctx.font=this.size+'px '+this.font;
-      ctx.textAlign=this.align;
-      iio.prepShape(ctx,this);
-      if(this.color) ctx.fillText(this.text,0,0);
-      if(this.outline) ctx.strokeText(this.text,0,0);
-      if(this.showCursor)
-         this.cursor.pos.x=this.cursor.endPos.x=this.getX(this.cursor.index);
    }
 
 //Vector Math

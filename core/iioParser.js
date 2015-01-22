@@ -61,7 +61,7 @@ iio.isColor=function(s){
    for(var i=0;i<iio.operators.length;i++)
       if(s.indexOf(iio.operators[i])>-1)
          return false;
-   if(iio.isNumber(s)||s.indexOf(':')>-1||s.indexOf('px')>-1||s=='width'||s=='height'||s=='center') 
+   if(iio.is.number(s)||s.indexOf(':')>-1||s.indexOf('px')>-1||s=='width'||s=='height'||s=='center') 
       return false;
    return true;
 }
@@ -79,7 +79,6 @@ iio.indexOfiioDelineator=function(s){
    if(s.indexOf('http://')==i-4) i=-1;
    return i;
 }
-
 iio.parsePos=function(o,s){
    var i=0;
    var ps=[];
@@ -175,11 +174,11 @@ iio.run=function(o,s){
             o=o.splice(1);
          }
       }
-   } else if(iio.isString(o)) 
+   } else if(iio.is.string(o)) 
       nO=iio.run(o.split(" "),s);
    else {
       for(var i=0;i<s.length;i++)
-         if(iio.isNumber(s[i]))
+         if(iio.is.number(s[i]))
             o.lineWidth=o.eval(s[i]);
          else o.color=s[i];
    }
@@ -192,7 +191,7 @@ iio.run=function(o,s){
 iio.runiioFn=function(o,s){
    if(o[0]=='loop'){
       var ps;
-      if(iio.isNumber(o[1])){
+      if(iio.is.number(o[1])){
          ps=o.slice().splice(2,o.length);
          s.loop(o[1],function(){
             iio.run(ps.slice(),s);
@@ -254,10 +253,10 @@ iio.runiioProp=function(o,s){
       }
    } else if(s[0]=='outline'){
       for(var i=1;i<s.length;i++)
-         if(iio.isNumber(s[i].substring(0,1))||(s[i].substring(0,1)=='-'))
+         if(iio.is.number(s[i].substring(0,1))||(s[i].substring(0,1)=='-'))
             o.lineWidth=o.eval(s[i]);
          else if(s[i]=='randomColor')
-            o.outline=iio.randomColor();
+            o.outline=iio.random.color();
          else o.outline=s[i];
    } else if(s[0]=='alpha')
       o.alpha=s[1];
@@ -287,7 +286,7 @@ iio.runiioProp=function(o,s){
          var _c=s[_i].indexOf(':');
          if(_c<0){
             var v=o.eval(s[_i]);
-            if(iio.isString(v))
+            if(iio.is.string(v))
                o.gridColor=v;
             else {
                o.C=v;
@@ -302,7 +301,7 @@ iio.runiioProp=function(o,s){
    } else if(s[0]=='x') {
       if(s.length==1) o.xColor=o.color||o.outline;
       else for(var _i=1;_i<s.length;_i++)
-         if(iio.isNumber(s[_i])) o.lineWidth=o.eval(s[_i]);
+         if(iio.is.number(s[_i])) o.lineWidth=o.eval(s[_i]);
          else o.xColor=o.eval(s[_i]);
    } else if(s[0]=='font') o.font=s[1];
    else if(s[0]=='simple') o.simple=true;
@@ -318,12 +317,12 @@ iio.runiioConst=function(o,c){
       o.center.x=o.pos.x;
       o.center.y=o.pos.y;
    } else if(c=='randomColor')
-      o.color=iio.randomColor();
-   else if(iio.isNumber(c.substring(0,1))){
+      o.color=iio.random.color();
+   else if(iio.is.number(c.substring(0,1))){
       if(o.type==iio.LINE) o.lineWidth=o.eval(c);
       else o.width=o.height=o.eval(c);
    }
-   else if(iio.isImage(c))
+   else if(iio.is.image(c))
       o.img=c;
    else if(c=='center'||c=='left'||c=='right'||c=='end') o.align=c;
    else if(c!='') o.color=c;

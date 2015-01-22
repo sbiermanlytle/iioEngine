@@ -29,8 +29,8 @@ Snake = function(app,s){
 	function reset(){
 		app.rmv();
 		if(s && s.preview) snake_color = 'rgb(240,240,240)';
-		else snake_color = iio.randomColor();
-		inverted = iio.invertColor(snake_color);
+		else snake_color = iio.random.color();
+		inverted = iio.color.invert(snake_color);
 		app.set(inverted);
 		head = app.add([startPos.x,startPos.y], snake_color
 			+ ' simple outline 1 white shadow 0:0 20 black '
@@ -49,8 +49,8 @@ Snake = function(app,s){
 	var food;
 	function makeFood(){
 		var randomPos = {
-			x:snake_size*iio.randomInt(0,res)+snake_size/2,
-			y:snake_size*iio.randomInt(0,app.height/snake_size)
+			x:snake_size*iio.random.integer(0,res)+snake_size/2,
+			y:snake_size*iio.random.integer(0,app.height/snake_size)
 				+snake_size/2
 		}
 		food = app.add([randomPos.x,randomPos.y], snake_color
@@ -92,8 +92,8 @@ Snake = function(app,s){
 				if(head.pos.x==body[i].pos.x 
 					&& head.pos.y==body[i].pos.y)
 					reset();
-		if(s && s.preview && iio.random()<.4)
-			direction = iio.randomInt(0,4);
+		if(s && s.preview && iio.random.num()<.4)
+			direction = iio.random.integer(0,4);
 		switch(direction){
 			case UP: 
 				head.pos.y -= snake_size; 

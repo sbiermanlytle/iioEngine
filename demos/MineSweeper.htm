@@ -13,8 +13,8 @@
 MineSweeper = function(app,s){
 
 	//set colors with random values
-	var color = iio.randomColor();
-	var inverted = iio.invertColor(color);
+	var color = iio.random.color();
+	var inverted = iio.color.invert(color);
 	app.set(inverted);
 
 	//decide max number of rows/columns
@@ -41,8 +41,8 @@ MineSweeper = function(app,s){
 	while(bombs_placed < num_bombs){
 
 		//get random coordinate
-		c = iio.randomInt( 0, grid.C );
-		r = iio.randomInt( 0, grid.R );
+		c = iio.random.integer( 0, grid.C );
+		r = iio.random.integer( 0, grid.R );
 
 		//if no bomb is present, place a bomb
 		if( !grid.cells[c][r].BOMB ){
@@ -102,9 +102,9 @@ MineSweeper = function(app,s){
 		for(var i=0; i<100; i++)
 			app.add({x:x,y:y},color+' 5 simple',{
 				vel:{
-					x:iio.random(-8,8),
-					y:iio.random(-8,8),
-					r:iio.random(-.01,.01)
+					x:iio.random.num(-8,8),
+					y:iio.random.num(-8,8),
+					r:iio.random.num(-.01,.01)
 				},
 				bounds:{
 					top:0,

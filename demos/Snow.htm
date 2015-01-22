@@ -18,17 +18,17 @@ function Snow(app,s){
 	if(s&&s.preview) num = 50;
 
 	for(var i=0; i<num; i++)
-		app.add([iio.random(0,app.width),iio.random(-app.height,0)]
-			,iio.random(30,140)+' o simple '+(s.color||'white'),{
+		app.add([iio.random.num(0,app.width),iio.random.num(-app.height,0)]
+			,iio.random.num(30,140)+' o simple '+(s.color||'white'),{
 				vel:{
-					x:iio.random(-.1,.1),
-					y:iio.random(.3,1)
+					x:iio.random.num(-.1,.1),
+					y:iio.random.num(.3,1)
 				},
-				fade:[iio.random(.0001,.001),function(o){
+				fade:[iio.random.num(.0001,.001),function(o){
 					return false;
 				}],
 				update:function(){
-					this.vel.x+=iio.random(-.01,.01);
+					this.vel.x+=iio.random.num(-.01,.01);
 				}
 			});
 
@@ -36,8 +36,8 @@ function Snow(app,s){
 		for(var i=0; i<app.objs.length; i++)
 			app.objs[i].bounds={
 				bottom:[app.height+140,function(o){
-					o.pos.x=iio.random(0,app.width);
-					o.pos.y=iio.random(-app.height,-100);
+					o.pos.x=iio.random.num(0,app.width);
+					o.pos.y=iio.random.num(-app.height,-100);
 				}],
 				left:[0,function(o){o.vel.x*=-1}],
 				right:[app.width,function(o){o.vel.x*=-1}]

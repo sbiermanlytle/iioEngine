@@ -19,20 +19,20 @@ Squares = function(app,s){
 	else num = app.width/5;
 
 	for(var i=0; i<num; i++)
-		app.add([iio.random(0,app.width),iio.random(0,app.height)]
-			,iio.random(60,140)+' simple',{
+		app.add([iio.random.num(0,app.width),iio.random.num(0,app.height)]
+			,iio.random.num(60,140)+' simple',{
 				color:'white',
 				vel:{
-					x:iio.random(-.5,.5),
-					y:iio.random(-.5,.5)
+					x:iio.random.num(-.5,.5),
+					y:iio.random.num(-.5,.5)
 				},
-				alpha:iio.random(.3,.6),
-				fade:[iio.random(.0001,.0006),function(o){
+				alpha:iio.random.num(.3,.6),
+				fade:[iio.random.num(.0001,.0006),function(o){
 					o.alpha=1;
 				}],
 				update:function(){
-					this.vel.x+=iio.random(-.01,.01);
-					this.vel.y+=iio.random(-.01,.01);
+					this.vel.x+=iio.random.num(-.01,.01);
+					this.vel.y+=iio.random.num(-.01,.01);
 				}
 			})
 

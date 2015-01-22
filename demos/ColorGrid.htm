@@ -16,8 +16,8 @@ ColorGrid = function(app,s){
 	app.set('black');
 
 	function getShrinkRate(){
-		if(s&&s.preview) return iio.random(.05,.09);
-		else return iio.random(.05,.2);
+		if(s&&s.preview) return iio.random.num(.05,.09);
+		else return iio.random.num(.05,.2);
 	}
 
 	function reset(){
@@ -28,7 +28,7 @@ ColorGrid = function(app,s){
 				shrink:[getShrinkRate(),function(o){
 					o.width=size;
 					o.height=size;
-					o.color=iio.randomColor();
+					o.color=iio.random.color();
 				}]
 			},true);
 		app.draw();
