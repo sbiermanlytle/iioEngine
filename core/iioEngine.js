@@ -1076,79 +1076,14 @@ iio.apps=[];
       o.center.y=(o.pos.y+o.endPos.y)/2;
       o.width=iio.V.dist(o.pos,o.endPos);
       o.height=o.lineWidth;
-      /*o.contains=function(v,y){
-         if(typeof(y)!='undefined') v={x:v,y:y}
-         if(iio.isBetween(v.x,this.pos.x,this.endPos.x)&&iio.isBetween(v.y,this.pos.y,this.endPos.y)){
-            var a=(this.endPos.y-this.pos.y)/(this.endPos.x-this.pos.x);
-            if(!isFinite(a))return true;
-            var y=a*(this.endPos.x-this.pos.x)+this.pos.y;
-            if(y==v.y) return true;
-         }
-         return false;
-      }*/
-      o._draw=function(ctx){
-         if(o.color.indexOf&&o.color.indexOf('gradient')>-1)
-            o.color=o.createGradient(ctx,o.color);
-         ctx.strokeStyle=this.color;
-         ctx.lineWidth=this.lineWidth;
-         if(this.origin)
-            ctx.translate(-this.origin.x,-this.origin.y);
-         else ctx.translate(-this.pos.x,-this.pos.y);
-         ctx.beginPath();
-         ctx.moveTo(this.pos.x,this.pos.y);
-         if(this.bezier)
-            ctx.bezierCurveTo(this.bezier[0],this.bezier[1],this.bezier[2],this.bezier[3],this.endPos.x,this.endPos.y);
-         else ctx.lineTo(this.endPos.x,this.endPos.y);
-         ctx.stroke();
-      }
-      o.updateProps=function(v){
-         this.endPos.x+=v.x;
-         this.endPos.y+=v.y;
-         this.center.x+=v.x;
-         this.center.y+=v.y;
-      }
+      o.contains = iio.line_contains;
+      o._draw = iio._drawLine;
+      o.updateProps = iio.updateLineProps;
    }
    iio.initRect=function(o){
-      o._draw=function(ctx){
-         iio.prepShape(ctx,this);
-         ctx.translate(-this.width/2,-this.height/2);
-         if(this.bezier){
-            iio.drawPoly(ctx,this.getTrueVertices(),this.bezier);
-            iio.finishPathShape(ctx,this);
-         } else {
-            iio.drawRect(ctx,this.width,this.height,{c:this.color,o:this.outline},{img:this.img,anims:this.anims,animKey:this.animKey,animFrame:this.animFrame,mov:this.mov,round:this.round});
-         }
-         if(this.xColor){
-            iio.prepX(ctx,this);
-            iio.drawLine(ctx,0,0,this.width,this.height);
-            iio.drawLine(ctx,this.width,0,0,this.height);
-            ctx.restore();
-         }
-      }
-      o.getTrueVertices=function(){
-         this.vs = [
-           {x: this.left,  y: this.top},
-           {x: this.right, y: this.top},
-           {x: this.right, y: this.bottom},
-           {x: this.left,  y: this.bottom}
-         ];
-         return this.vs.map(function(_v) {
-           var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
-           v.x += this.pos.x;
-           v.y += this.pos.y;
-           return v;
-         }, this);
-      }
-      o.contains=function(v,y){
-         if(this.rot) return iio.polyContains(this,v,y);
-         y=v.y||y;
-         v=v.x||v;
-         v-=this.pos.x;
-         y-=this.pos.y;
-         if (v>-this.width/2&&v<this.width/2&&y>-this.height/2&&y<this.height/2)
-            return true;
-         return false;
-      }
+      o._draw = iio._drawRect;
+      o.getTrueVertices = iio.getTrueVertices_rect;
+      o.contains = iio.rect_contains;
    }
    iio.initGrid=function(o){
       o.cells=[];
@@ -1167,153 +1102,33 @@ iio.apps=[];
          y=-o.res.y*(o.R-1)/2;
          x+=o.res.x;
       }
-      o.clear=function(){
-         this.objs=[];
-         iio.initGrid(this);
-         this.app.draw();
-      }
-      o._draw=function(ctx){
-         iio.prepShape(ctx,this);
-         ctx.translate(-this.width/2,-this.height/2);
-         iio.drawRect(ctx,this.width,this.height,{c:this.color,o:this.outline},{img:this.img,anims:this.anims,mov:this.mov,round:this.round});
-         if(this.gridColor){
-            if(this.gridColor.indexOf&&this.gridColor.indexOf('gradient')>-1)
-               this.gridColor=this.createGradient(ctx,this.gridColor);
-            ctx.strokeStyle=this.gridColor;
-            ctx.lineWidth=this.lineWidth;
-            for(var c=1;c<this.C;c++)iio.drawLine(ctx,c*this.res.x,0,c*this.res.x,this.height);
-            for(var r=1;r<this.R;r++)iio.drawLine(ctx,0,r*this.res.y,this.width,r*this.res.y);
-         }
-      }
-      o.cellCenter=function(c,r){
-         return {x:-this.width/2+c*this.res.x+this.res.x/2,
-                 y:-this.height/2+r*this.res.y+this.res.y/2}
-      }
-      o.cellAt=function(x,y){
-         if(x.x) return this.cells[Math.floor((x.x-this.left)/this.res.x)][Math.floor((x.y-this.top)/this.res.y)];
-         else return this.cells[Math.floor((x-this.left)/this.res.x)][Math.floor((y-this.top)/this.res.y)];
-      }
-      o.foreachCell = function(fn,p){
-         var keepGoing=true;
-         for (var c=0;c<this.C;c++)
-            for(var r=0;r<this.R;r++){
-               keepGoing=fn(this.cells[c][r],p);
-               if (typeof keepGoing!='undefined'&&!keepGoing)
-                  return [r,c];
-            }
-      }
+      o.clear = iio._clearGrid;
+      o._draw = iio._drawGrid;
+      o.cellCenter = iio._cellCenter;
+      o.cellAt = iio._cellAt;
+      o.foreachCell = iio._foreachCell;
    }
    iio.initCirc=function(o){
       o.type=iio.CIRC;
-      o.contains=function(v,y){
-         if(typeof(y)!='undefined') v={x:v,y:y}
-         if(this.width==this.height&&iio.V.dist(v,this.pos)<this.width/2)
-            return true;
-         else {
-            if(this.rot){
-               v.x-=this.pos.x;
-               v.y-=this.pos.y;
-               v=iio.rotatePoint(v.x,v.y,-this.rot);
-               v.x+=this.pos.x;
-               v.y+=this.pos.y;
-            }
-            if(Math.pow(v.x-this.pos.x,2)/Math.pow(this.width/2,2)+Math.pow(v.y-this.pos.y,2)/Math.pow(this.height/2,2)<=1)
-               return true;
-         }
-         return false;
-      }
-      o._draw=function(ctx){
-         iio.prepShape(ctx,this);
-         ctx.beginPath();
-         if(this.width!=this.height){
-            ctx.moveTo(0,-this.height/2);
-            if(this.bezier){
-               ctx.bezierCurveTo((this.bezier[0]||this.width/2),(this.bezier[1]||-this.height/2),(this.bezier[2]||this.width/2),(this.bezier[3]||this.height/2),0,this.height/2);
-               ctx.bezierCurveTo((this.bezier[4]||-this.width/2),(this.bezier[5]||this.height/2),(this.bezier[6]||-this.width/2),(this.bezier[7]||-this.height/2),0,-this.height/2);
-            } else {
-               ctx.bezierCurveTo(this.width/2,-this.height/2,this.width/2,this.height/2,0,this.height/2);
-               ctx.bezierCurveTo(-this.width/2,this.height/2,-this.width/2,-this.height/2,0,-this.height/2);
-            }
-         } else ctx.arc(0,0,this.width/2,0,2*Math.PI,false);
-         if(this.width!=this.height)ctx.closePath();
-         iio.finishPathShape(ctx,this);
-         if(this.xColor) {
-            ctx.rotate(Math.PI/4)
-            iio.prepX(ctx,this);
-            ctx.translate(0,-o.height/2);
-            iio.drawLine(ctx,0,0,0,o.height);
-            ctx.translate(0,o.height/2);
-            iio.drawLine(ctx,o.width/2,0,-o.width/2,0);
-            ctx.restore();
-         }
-      }
+      o.contains = iio.circ_contains;
+      o._draw = iio._drawCirc;
    }
    iio.initPoly=function(o){
       o.type=iio.POLY;
-      o.getTrueVertices=function(){
-        return this.vs.map(function(_v) {
-          var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
-          v.x += this.pos.x;
-          v.y += this.pos.y;
-          return v;
-        }, this);
-      }
-      o._draw=function(ctx){
-         iio.prepShape(ctx,this);
-         iio.drawPoly(ctx,this.vs,this.bezier,this.open);
-         iio.finishPathShape(ctx,this);
-      }
-      o.contains=function(v,y){return iio.polyContains(this,v,y)}
-      o.updateProps=function(){
-         this.center=this.pos;
-         /*this.left=this.pos.x-this.width/2;
-         this.right=this.pos.x+this.width/2;
-         this.top=this.pos.y-this.height/2;
-         this.bottom=this.pos.y+this.height/2;*/
-      }
+      o.getTrueVertices = iio.getTrueVertices_poly;
+      o._draw = iio._drawPoly;
+      o.contains = iio.poly_contains;
+      o.updateProps = iio.updatePolyProps;
    }
    iio.initText=function(o){
       o.size=o.width;
       o.app.ctx.font=o.size+'px '+o.font;
       o.width=o.app.ctx.measureText(o.text).width;
       o.height=o.app.ctx.measureText('W').width;
-      o._draw=function(ctx){
-         ctx.font=this.size+'px '+this.font;
-         ctx.textAlign=this.align;
-         iio.prepShape(ctx,this);
-         if(this.color) ctx.fillText(this.text,0,0);
-         if(this.outline) ctx.strokeText(this.text,0,0);
-         if(this.showCursor)
-            this.cursor.pos.x=this.cursor.endPos.x=this.getX(this.cursor.index);
-      }
-      o.contains=function(x,y){
-         if(typeof(y)=='undefined'){y=x.y;x=x.x}
-         x-=this.pos.x;
-         y-=this.pos.y;
-         if((typeof(this.align)=='undefined'||this.align=='left')&&x>0&&x<this.width&&y<0&&y>-this.height)
-            return true;
-         else if(this.align=='center'&&x>-this.width/2&&x<this.width/2&&y<0&&y>-this.height)
-            return true;
-         else if((this.align=='right'||this.align=='end')&&x>-this.width&&x<0&&y<0&&y>-this.height)
-            return true;
-         return false;
-      }
-      o.charWidth=function(i){
-         i=i||0;
-         this.app.ctx.font=this.size+'px '+this.font;
-         return this.app.ctx.measureText(this.text.charAt(i)).width;
-      }
-      o.getX=function(i){
-         this.app.ctx.font=this.size+'px '+this.font;
-         if(typeof(this.align)=='undefined'||this.align=='left')
-            return this.app.ctx.measureText(this.text.substring(0,i)).width;
-         if(this.align=='right'||this.align=='end')
-            return -this.app.ctx.measureText(this.text.substring(0,this.text.length-i)).width;
-         if(this.align=='center'){
-            var x=-Math.floor(this.app.ctx.measureText(this.text).width/2);
-            return x+this.app.ctx.measureText(this.text.substring(0,i)).width;
-         }
-      }
+      o._draw = iio._drawText;
+      o.contains = iio.text_contains;
+      o.charWidth = iio.charWidth;
+      o.getX = iio.getX;
       var tX=o.getX(o.text.length);
       o.cursor = o.add([tX,10,tX,-o.size*.8],'2 '+(o.color||o.outline),{index:o.text.length,shift:false});
       if(o.showCursor){
@@ -1321,98 +1136,223 @@ iio.apps=[];
             o.cursor.hidden=!o.cursor.hidden;
          })
       } else o.cursor.hidden=true;
-      o.keyUp=function(k){
-         if(k=='shift') this.cursor.shift=false;
+      o.keyup = iio.keyup;
+      o.keydown = iio.keydown;
+   }
+   iio.updateLineProps = function(v){
+      this.endPos.x+=v.x;
+      this.endPos.y+=v.y;
+      this.center.x+=v.x;
+      this.center.y+=v.y;
+   }
+   iio.updatePolyProps = function(){
+      this.center=this.pos;
+      /*this.left=this.pos.x-this.width/2;
+      this.right=this.pos.x+this.width/2;
+      this.top=this.pos.y-this.height/2;
+      this.bottom=this.pos.y+this.height/2;*/
+   }
+   iio.line_contains = function(v,y){
+      if(typeof(y)!='undefined') v={x:v,y:y}
+      if(iio.isBetween(v.x,this.pos.x,this.endPos.x)&&iio.isBetween(v.y,this.pos.y,this.endPos.y)){
+         var a=(this.endPos.y-this.pos.y)/(this.endPos.x-this.pos.x);
+         if(!isFinite(a))return true;
+         var y=a*(this.endPos.x-this.pos.x)+this.pos.y;
+         if(y==v.y) return true;
       }
-      o.keyDown=function(key,cI,shift,fn){
-         if(!iio.isNumber(cI)){
-            fn=cI; cI=this.cursor.index;
+      return false;
+   }
+   iio.rect_contains = function(v,y){
+      if(this.rot) return iio.polyContains(this,v,y);
+      y=v.y||y;
+      v=v.x||v;
+      v-=this.pos.x;
+      y-=this.pos.y;
+      if (v>-this.width/2&&v<this.width/2&&y>-this.height/2&&y<this.height/2)
+         return true;
+      return false;
+   }
+   iio.circ_contains = function(v,y){
+      if(typeof(y)!='undefined') v={x:v,y:y}
+      if(this.width==this.height&&iio.V.dist(v,this.pos)<this.width/2)
+         return true;
+      else {
+         if(this.rot){
+            v.x-=this.pos.x;
+            v.y-=this.pos.y;
+            v=iio.rotatePoint(v.x,v.y,-this.rot);
+            v.x+=this.pos.x;
+            v.y+=this.pos.y;
          }
-         var str;
-         var pre=this.text.substring(0,cI);
-         var suf=this.text.substring(cI);
-         if(typeof fn!='undefined'){
-            str=fn(key,shift,pre,suf);
-            if (str!=false){
-               this.text=pre+str+suf;
-               this.cursor.index=cI+1;
-               if(this.showCursor) this.cursor.hidden=false;
-               this.app.draw();
-               return this.cursor.index;
-            }
+         if(Math.pow(v.x-this.pos.x,2)/Math.pow(this.width/2,2)+Math.pow(v.y-this.pos.y,2)/Math.pow(this.height/2,2)<=1)
+            return true;
+      }
+      return false;
+   }
+   iio.poly_contains = function(v,y){return iio.polyContains(this,v,y)}
+   iio.text_contains = function(x,y){
+      if(typeof(y)=='undefined'){y=x.y;x=x.x}
+      x-=this.pos.x;
+      y-=this.pos.y;
+      if((typeof(this.align)=='undefined'||this.align=='left')&&x>0&&x<this.width&&y<0&&y>-this.height)
+         return true;
+      else if(this.align=='center'&&x>-this.width/2&&x<this.width/2&&y<0&&y>-this.height)
+         return true;
+      else if((this.align=='right'||this.align=='end')&&x>-this.width&&x<0&&y<0&&y>-this.height)
+         return true;
+      return false;
+   }
+   iio.getTrueVertices_rect = function(){
+      this.vs = [
+        {x: this.left,  y: this.top},
+        {x: this.right, y: this.top},
+        {x: this.right, y: this.bottom},
+        {x: this.left,  y: this.bottom}
+      ];
+      return this.vs.map(function(_v) {
+        var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
+        v.x += this.pos.x;
+        v.y += this.pos.y;
+        return v;
+      }, this);
+   }
+   iio.getTrueVertices_poly = function(){
+      return this.vs.map(function(_v) {
+          var v = iio.rotatePoint(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
+          v.x += this.pos.x;
+          v.y += this.pos.y;
+          return v;
+      }, this);
+   }
+   iio._clearGrid = function(){
+      this.objs=[];
+      iio.initGrid(this);
+      this.app.draw();
+   }
+   iio._cellCenter = function(c,r){
+      return {x:-this.width/2+c*this.res.x+this.res.x/2,
+              y:-this.height/2+r*this.res.y+this.res.y/2}
+   }
+   iio._cellAt = function(x,y){
+      if(x.x) return this.cells[Math.floor((x.x-this.left)/this.res.x)][Math.floor((x.y-this.top)/this.res.y)];
+      else return this.cells[Math.floor((x-this.left)/this.res.x)][Math.floor((y-this.top)/this.res.y)];
+   }
+   iio._foreachCell = function(fn,p){
+      var keepGoing=true;
+      for (var c=0;c<this.C;c++)
+         for(var r=0;r<this.R;r++){
+            keepGoing=fn(this.cells[c][r],p);
+            if (typeof keepGoing!='undefined'&&!keepGoing)
+               return [r,c];
          }
-         if(key.length>1){
-            if(key=='space') {
-               this.text=pre+" "+suf;
-               cI++;
-            } else if(key=='backspace'&&cI>0) {
-               this.text=pre.substring(0,pre.length-1)+suf;
-               cI--;
-            } else if(key=='delete'&&cI<this.text.length)
-               this.text=pre+suf.substring(1);
-            else if(key=='left arrow'&&cI>0) cI--;
-            else if(key=='right arrow'&&cI<this.text.length) cI++;
-            else if(key=='shift') this.cursor.shift=true;
-            else if(key=='semi-colon'){
-               if (shift) this.text=pre+':'+suf;
-               else this.text=pre+';'+suf;
-               cI++;
-            } else if(key=='equal') {
-               if (shift) this.text=pre+'+'+suf;
-               else this.text=pre+'='+suf;
-               cI++;
-            } else if(key=='comma') {
-               if (shift) this.text=pre+'<'+suf;
-               else this.text=pre+','+suf;
-               cI++;
-            } else if(key=='dash') {
-               if (shift) this.text=pre+'_'+suf;
-               else this.text=pre+'-'+suf;
-               cI++;
-            } else if(key=='period') {
-               if (shift) this.text=pre+'>'+suf;
-               else this.text=pre+'.'+suf;
-               cI++;
-            } else if(key=='forward slash') {
-               if (shift) this.text=pre+'?'+suf;
-               else this.text=pre+'/'+suf;
-               cI++;
-            } else if(key=='grave accent') {
-               if (shift) this.text=pre+'~'+suf;
-               else this.text=pre+'`'+suf;
-               cI++;
-            } else if(key=='open bracket') {
-               if (shift) this.text=pre+'{'+suf;
-               else this.text=pre+'['+suf;
-               cI++;
-            } else if(key=='back slash') {
-               if (shift) this.text=pre+'|'+suf;
-               else this.text=pre+"/"+suf;
-               cI++;
-            } else if(key=='close bracket') {
-               if (shift) this.text=pre+'}'+suf;
-               else this.text=pre+']'+suf;
-               cI++;
-            } else if(key=='single quote') {
-               if (shift) this.text=pre+'"'+suf;
-               else this.text=pre+"'"+suf;
-               cI++;
-            }
-         } else {
-            if(shift||this.cursor.shift)
-               this.text=pre+key.charAt(0).toUpperCase()+suf;
-            else this.text=pre+key+suf;
+   }
+   iio.charWidth = function(i){
+      i=i||0;
+      this.app.ctx.font=this.size+'px '+this.font;
+      return this.app.ctx.measureText(this.text.charAt(i)).width;
+   }
+   iio.getX=function(i){
+      this.app.ctx.font=this.size+'px '+this.font;
+      if(typeof(this.align)=='undefined'||this.align=='left')
+         return this.app.ctx.measureText(this.text.substring(0,i)).width;
+      if(this.align=='right'||this.align=='end')
+         return -this.app.ctx.measureText(this.text.substring(0,this.text.length-i)).width;
+      if(this.align=='center'){
+         var x=-Math.floor(this.app.ctx.measureText(this.text).width/2);
+         return x+this.app.ctx.measureText(this.text.substring(0,i)).width;
+      }
+   }
+   iio.keyUp = function(k){
+      if(k=='shift') this.cursor.shift=false;
+   }
+   iio.keyDown = function(key,cI,shift,fn){
+      if(!iio.isNumber(cI)){
+         fn=cI; cI=this.cursor.index;
+      }
+      var str;
+      var pre=this.text.substring(0,cI);
+      var suf=this.text.substring(cI);
+      if(typeof fn!='undefined'){
+         str=fn(key,shift,pre,suf);
+         if (str!=false){
+            this.text=pre+str+suf;
+            this.cursor.index=cI+1;
+            if(this.showCursor) this.cursor.hidden=false;
+            this.app.draw();
+            return this.cursor.index;
+         }
+      }
+      if(key.length>1){
+         if(key=='space') {
+            this.text=pre+" "+suf;
+            cI++;
+         } else if(key=='backspace'&&cI>0) {
+            this.text=pre.substring(0,pre.length-1)+suf;
+            cI--;
+         } else if(key=='delete'&&cI<this.text.length)
+            this.text=pre+suf.substring(1);
+         else if(key=='left arrow'&&cI>0) cI--;
+         else if(key=='right arrow'&&cI<this.text.length) cI++;
+         else if(key=='shift') this.cursor.shift=true;
+         else if(key=='semi-colon'){
+            if (shift) this.text=pre+':'+suf;
+            else this.text=pre+';'+suf;
+            cI++;
+         } else if(key=='equal') {
+            if (shift) this.text=pre+'+'+suf;
+            else this.text=pre+'='+suf;
+            cI++;
+         } else if(key=='comma') {
+            if (shift) this.text=pre+'<'+suf;
+            else this.text=pre+','+suf;
+            cI++;
+         } else if(key=='dash') {
+            if (shift) this.text=pre+'_'+suf;
+            else this.text=pre+'-'+suf;
+            cI++;
+         } else if(key=='period') {
+            if (shift) this.text=pre+'>'+suf;
+            else this.text=pre+'.'+suf;
+            cI++;
+         } else if(key=='forward slash') {
+            if (shift) this.text=pre+'?'+suf;
+            else this.text=pre+'/'+suf;
+            cI++;
+         } else if(key=='grave accent') {
+            if (shift) this.text=pre+'~'+suf;
+            else this.text=pre+'`'+suf;
+            cI++;
+         } else if(key=='open bracket') {
+            if (shift) this.text=pre+'{'+suf;
+            else this.text=pre+'['+suf;
+            cI++;
+         } else if(key=='back slash') {
+            if (shift) this.text=pre+'|'+suf;
+            else this.text=pre+"/"+suf;
+            cI++;
+         } else if(key=='close bracket') {
+            if (shift) this.text=pre+'}'+suf;
+            else this.text=pre+']'+suf;
+            cI++;
+         } else if(key=='single quote') {
+            if (shift) this.text=pre+'"'+suf;
+            else this.text=pre+"'"+suf;
             cI++;
          }
-         if(this.showCursor)this.cursor.hidden=false;
-         this.cursor.index=cI;
-         this.app.draw();
-         return cI;
+      } else {
+         if(shift||this.cursor.shift)
+            this.text=pre+key.charAt(0).toUpperCase()+suf;
+         else this.text=pre+key+suf;
+         cI++;
       }
+      if(this.showCursor)this.cursor.hidden=false;
+      this.cursor.index=cI;
+      this.app.draw();
+      return cI;
    }
 
 //RENDER FUNCTIONS
-   iio.prepShape=function(ctx,o){
+   iio.prepShape = function(ctx,o){
       if(o.color){
          if(o.color.indexOf&&o.color.indexOf('gradient')>-1)
             o.color=o.createGradient(ctx,o.color);
@@ -1425,20 +1365,20 @@ iio.apps=[];
          ctx.strokeStyle=o.outline;
       }
    }
-   iio.finishPathShape=function(ctx,o){
+   iio.finishPathShape = function(ctx,o){
       if(o.color) ctx.fill();
       if(o.img) ctx.drawImage(o.img,-o.width/2,-o.height/2,o.width,o.height);
       if(o.outline) ctx.stroke();
       if(o.clip) ctx.clip();
    }
-   iio.prepX=function(ctx,o){
+   iio.prepX = function(ctx,o){
       ctx.save();
       if(o.xColor.indexOf&&o.xColor.indexOf('gradient')>-1)
          o.xColor=o.createGradient(ctx,o.xColor);
       ctx.strokeStyle=o.xColor;
       ctx.lineWidth=o.lineWidth;
    }
-   iio.drawPoly=function(ctx,vs,bezier,open){
+   iio.drawPoly = function(ctx,vs,bezier,open){
       ctx.beginPath();
       ctx.moveTo(0,0);
       if(bezier){
@@ -1456,7 +1396,12 @@ iio.apps=[];
       if(typeof(open)=='undefined'||!open)
          ctx.closePath();
    }
-   iio.drawRect=function(ctx,w,h,s,p){
+   iio._drawPoly = function(ctx){
+      iio.prepShape(ctx,this);
+      iio.drawPoly(ctx,this.vs,this.bezier,this.open);
+      iio.finishPathShape(ctx,this);
+   }
+   iio.drawRect = function(ctx,w,h,s,p){
       if(p.round){
          ctx.beginPath();
          ctx.moveTo(p.round[0],0);
@@ -1484,11 +1429,89 @@ iio.apps=[];
          if(s.o) ctx.strokeRect(0,0,w,h);
       }
    }
-   iio.drawLine=function(ctx,x,y,x1,y1){
+   iio._drawRect = function(ctx){
+      iio.prepShape(ctx,this);
+      ctx.translate(-this.width/2,-this.height/2);
+      if(this.bezier){
+         iio.drawPoly(ctx,this.getTrueVertices(),this.bezier);
+         iio.finishPathShape(ctx,this);
+      } else {
+         iio.drawRect(ctx,this.width,this.height,{c:this.color,o:this.outline},{img:this.img,anims:this.anims,animKey:this.animKey,animFrame:this.animFrame,mov:this.mov,round:this.round});
+      }
+      if(this.xColor){
+         iio.prepX(ctx,this);
+         iio.drawLine(ctx,0,0,this.width,this.height);
+         iio.drawLine(ctx,this.width,0,0,this.height);
+         ctx.restore();
+      }
+   }
+   iio.drawLine = function(ctx,x,y,x1,y1){
       ctx.beginPath();
       ctx.moveTo(x,y);
       ctx.lineTo(x1,y1);
       ctx.stroke();
+   }
+   iio._drawLine = function(ctx){
+      if(o.color.indexOf&&o.color.indexOf('gradient')>-1)
+         o.color=o.createGradient(ctx,o.color);
+      ctx.strokeStyle=this.color;
+      ctx.lineWidth=this.lineWidth;
+      if(this.origin)
+         ctx.translate(-this.origin.x,-this.origin.y);
+      else ctx.translate(-this.pos.x,-this.pos.y);
+      ctx.beginPath();
+      ctx.moveTo(this.pos.x,this.pos.y);
+      if(this.bezier)
+         ctx.bezierCurveTo(this.bezier[0],this.bezier[1],this.bezier[2],this.bezier[3],this.endPos.x,this.endPos.y);
+      else ctx.lineTo(this.endPos.x,this.endPos.y);
+      ctx.stroke();
+   }
+   iio._drawGrid = function(ctx){
+      iio.prepShape(ctx,this);
+      ctx.translate(-this.width/2,-this.height/2);
+      iio.drawRect(ctx,this.width,this.height,{c:this.color,o:this.outline},{img:this.img,anims:this.anims,mov:this.mov,round:this.round});
+      if(this.gridColor){
+         if(this.gridColor.indexOf&&this.gridColor.indexOf('gradient')>-1)
+            this.gridColor=this.createGradient(ctx,this.gridColor);
+         ctx.strokeStyle=this.gridColor;
+         ctx.lineWidth=this.lineWidth;
+         for(var c=1;c<this.C;c++)iio.drawLine(ctx,c*this.res.x,0,c*this.res.x,this.height);
+         for(var r=1;r<this.R;r++)iio.drawLine(ctx,0,r*this.res.y,this.width,r*this.res.y);
+      }
+   }
+   iio._drawCirc = function(ctx){
+      iio.prepShape(ctx,this);
+      ctx.beginPath();
+      if(this.width!=this.height){
+         ctx.moveTo(0,-this.height/2);
+         if(this.bezier){
+            ctx.bezierCurveTo((this.bezier[0]||this.width/2),(this.bezier[1]||-this.height/2),(this.bezier[2]||this.width/2),(this.bezier[3]||this.height/2),0,this.height/2);
+            ctx.bezierCurveTo((this.bezier[4]||-this.width/2),(this.bezier[5]||this.height/2),(this.bezier[6]||-this.width/2),(this.bezier[7]||-this.height/2),0,-this.height/2);
+         } else {
+            ctx.bezierCurveTo(this.width/2,-this.height/2,this.width/2,this.height/2,0,this.height/2);
+            ctx.bezierCurveTo(-this.width/2,this.height/2,-this.width/2,-this.height/2,0,-this.height/2);
+         }
+      } else ctx.arc(0,0,this.width/2,0,2*Math.PI,false);
+      if(this.width!=this.height)ctx.closePath();
+      iio.finishPathShape(ctx,this);
+      if(this.xColor) {
+         ctx.rotate(Math.PI/4)
+         iio.prepX(ctx,this);
+         ctx.translate(0,-o.height/2);
+         iio.drawLine(ctx,0,0,0,o.height);
+         ctx.translate(0,o.height/2);
+         iio.drawLine(ctx,o.width/2,0,-o.width/2,0);
+         ctx.restore();
+      }
+   }
+   iio._drawText = function(ctx){
+      ctx.font=this.size+'px '+this.font;
+      ctx.textAlign=this.align;
+      iio.prepShape(ctx,this);
+      if(this.color) ctx.fillText(this.text,0,0);
+      if(this.outline) ctx.strokeText(this.text,0,0);
+      if(this.showCursor)
+         this.cursor.pos.x=this.cursor.endPos.x=this.getX(this.cursor.index);
    }
 
 //Vector Math
