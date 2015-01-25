@@ -63,6 +63,11 @@ iio = {};
     child.prototype = new emptyFn();
     child.prototype.constructor = tmp;
   }
+  iio.merge = function(o1,o2){
+    for(var p in o2)
+      o1[p] = o2[p];
+    return o1;
+  }
   iio.addEvent = function(obj, evt, fn, capt) {
     if (obj.addEventListener) {
       obj.addEventListener(evt, fn, capt);
@@ -863,6 +868,7 @@ iio = {};
       //set with JSON
       else
         for (var p in s) this[p] = s[p];
+
       if (typeof(this.height) == 'undefined')
         this.height = this.width;
 
@@ -1885,7 +1891,9 @@ iio = {};
       return s.type === 'text/iioscript';
     });
     iioScripts.forEach(function(script) {
-      iio.read(script.src, iioParser.parse);
+      iio.read(script.src, function(code){
+        iio.start([iioParser,{c:code}]);
+      });
     });
   }
 
