@@ -23,7 +23,7 @@ expressions
 
 ADDFN
   : ADD POSITION COLOR SIZE END
-    {$$ = iio.start(function(app, settings){ obj = {color: $3, width: $4}; if ($2 === 'center') obj.pos = app.center; app.add(obj) }) }
+    {$$ = obj = {color: $3, width: $4}; if ($2 === 'center') obj.pos = app.center; app.add(obj) }) }
   ;
 
 POSITION
