@@ -16,7 +16,9 @@
     <link rel="icon" type="image/png" href="res/favicon.png">
     <link href="res/sandbox.css" rel="stylesheet">
     <script type="text/javascript" src="ace/ace.js"></script>
-    <script type="text/javascript" src="http://iioengine.com/iioEngine.js"></script>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript" src="../core/iioParser.js"></script>
+    <script type="text/javascript" src="../core/parser2.js"></script>
 </head>
 <body>
     <div id='left'>
@@ -90,39 +92,16 @@
         </div>
     </div>
     <div id='drag-overlay'><p>drop in any iio file</p></div>
+    <div style="display:none">
     <h2 id='launchcode_head'>JavaScript Launch Code</h2>
-    <pre id="editor1">iio.start(App_Name,'canvas');</pre>
-    <h2>App Code</h2>
-    <pre id="editor2">app.add([app.center.x,app.height/5],
-  '"click the objects" red font Arial 40 center');
-
-var src = 'http://iioengine.com/img/enemyUFO.png';
-var UFO = app.add('center vel ::.02 '+src);
-
-UFO.click=function(){
-    for(var i=0; i&lt;50; i++)
-        app.add([UFO.pos.x,UFO.pos.y],
-          '10 o randomColor',{
-            vel:{
-                x:iio.random(-10,10),
-                y:iio.random(-10,10)
-            }
-        })
-    app.rmv(UFO);
-}
-
-function bounce(o){ o.vel.x*=-1 }
-var square = app.add([app.center.x,app.height/5*4],
-  '100 red vel 5 add o 80 #00baff',{
-    bounds:{
-        right:[app.width,bounce],
-        left:[0,bounce]
-    }
-}); 
-
-square.click=function(){
-  alert('selected')
-}</pre>
+    <pre id="editor1">iio.start([iioParser,{c:code}],'canvas');</pre> 
+    </div>
+    <h2 style="clear:both">App Code</h2>
+    <pre id="editor2">add
+    center
+    blue
+    50
+end</pre>
     </div>
     <!--<div id='center'></div>-->
     <div id='right'>
@@ -205,11 +184,12 @@ square.click=function(){
         return start.substring(start.indexOf("(")+1,start.indexOf(","));
     }
     updateApp=function(){
-        data = getName()+'=function(app,s){';
+        /*data = getName()+'=function(app,s){';
         data += editor2.getSession().getValue();
         data += '}'
-        createScript(data); 
-        createScript(editor1.getSession().getValue());
+        createScript(data); */
+        iio.start([iioParser,{c:editor2.getSession().getValue()}],'canvas');
+        //createScript(editor1.getSession().getValue());
     }
     updateApp();
     function createPopup(name){
@@ -246,16 +226,17 @@ square.click=function(){
         handleFileSelect(e);
     };
       document.getElementById('load').addEventListener('mousedown', load, false);
-  function handleFileSelect(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-    handleLeave();
 
-    var files;
-    if(evt.dataTransfer) files = evt.dataTransfer.files;
-    else files = evt.target.files;
-    var reader = new FileReader();
-    reader.addEventListener("load", function(event) {
+  function handleFileSelect(evt) {
+     evt.stopPropagation();
+     evt.preventDefault();
+     handleLeave();
+
+     var files;
+     if(evt.dataTransfer) files = evt.dataTransfer.files;
+     else files = evt.target.files;
+     var reader = new FileReader();
+     reader.addEventListener("load", function(event) {
         event.stopPropagation();
         event.preventDefault();
         var code = event.target.result;
@@ -276,19 +257,19 @@ square.click=function(){
         code=code.substring(0,code.lastIndexOf("}"));
         editor2.setValue(code);
         updateApp();
-    });
-    reader.readAsText(files[0]);
-    //editor2.setValue(reader.result);
+     });
+     reader.readAsText(files[0]);
+     //editor2.setValue(reader.result);
 
-    // files is a FileList of File objects. List some properties.
-    /*var output = [];
-    for (var i = 0, f; f = files[i]; i++) {
+     // files is a FileList of File objects. List some properties.
+     /*var output = [];
+     for (var i = 0, f; f = files[i]; i++) {
       output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
                   f.size, ' bytes, last modified: ',
                   f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
                   '</li>');
-    }*/
-    //document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+     }*/
+     //document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
   }
 
   function handleDragOver(evt) {
