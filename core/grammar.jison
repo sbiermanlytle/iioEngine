@@ -2,11 +2,11 @@
 
 %%
 \s+                       /* skip whitespace */
-[0-9]+(?:\\.[0-9]+)?\b   return 'NUMBER';
+[0-9]+(?:\\.[0-9]+)?\b    return 'NUMBER';
 "end"                     return 'END';
 "add"                     return 'ADD';
-"red"                     return 'RED';
-"blue"                    return 'BLUE';
+"set"                     return 'SET';
+(red|blue)                return 'COLOR_STRING';
 "center"                  return 'CENTER';
 <<EOF>>                   return 'EOF';
 
@@ -17,28 +17,61 @@
 %%
 
 expressions
-  : ADDFN EOF
+  : FUNCTIONS EOF
     {$1;}
   ;
 
+FUNCTIONS
+  : FUNCTION
+    {$$ = $1;}
+  | FUNCTIONS FUNCTION
+    {$$ = $1 + $2;}
+  ;
+
+FUNCTION
+  : ADDFN
+    {$$ = $1;}
+  | SETFN
+    {$$ = $1;}
+  ;
+
 ADDFN
-  : ADD POSITION COLOR SIZE END
-    {$$ = obj = {color: $3, width: $4}; if ($2 === 'center') obj.pos = app.center; app.add(obj) }) }
+  : ADD ADDPARAMS END
+    {$$ = app.add( $2 ); }
+  ;
+
+ADDPARAMS
+  : ADDPARAM
+    {$$ = $1}
+  | ADDPARAMS ADDPARAM
+    {$$ = iio.merge($1,$2)}
+  ;
+
+ADDPARAM
+  : POSITION
+    {$$ = {pos: $1} }
+  | SIZE
+    {$$ = {width: $1} }
+  | COLOR
+    {$$ = {color: $1} }
+  ;
+
+SETFN
+  : SET COLOR END
+    {$$ = app.set( { color: $2 } ); }
   ;
 
 POSITION
   : CENTER
-    {$$ = $1;}
-  ;
-
-COLOR
-  : RED
-    {$$ = 'red';}
-  | BLUE
-    {$$ = 'blue';}
+    {$$ = app.center;}
   ;
 
 SIZE
   : NUMBER
     {$$ = Number(yytext);}
+  ;
+
+COLOR
+  : COLOR_STRING
+    {$$ = yytext;}
   ;
