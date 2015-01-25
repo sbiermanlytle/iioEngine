@@ -1,6 +1,6 @@
 <!--
     iio engine sandbox
-    url: iioengine.com/sandbox
+    url: iioengine.com/sandbox/iio.htm
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     iio Engine is licensed under the BSD 2-clause Open Source license
     Copyright (c) 2014, Sebastian Bierman-Lytle
@@ -298,7 +298,7 @@ end</pre>
    var _run=false;
    iio.addEvent(window,'keydown',function(e){
         _run=false;
-        var k=iio.getKeyString(e);
+        var k=iio.key.string(e);
         for(var i=0;i<iio.apps.length;i++)
             if(iio.apps[i].runScript.onKeyDown)
                 iio.apps[i].runScript.onKeyDown(e,k);
@@ -309,7 +309,7 @@ end</pre>
             if(_run) updateApp();
             _run=false;
         },500);
-        var k=iio.getKeyString(e);
+        var k=iio.key.string(e);
         for(var i=0;i<iio.apps.length;i++)
             if(iio.apps[i].runScript.onKeyUp)
                 iio.apps[i].runScript.onKeyUp(e,k);
