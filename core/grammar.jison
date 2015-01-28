@@ -3,6 +3,7 @@
 %%
 \s+                       /* skip whitespace */
 "end"                     return 'END';
+"="                       return 'ASSIGN';
 
 [0-9]+(?:\\.[0-9]+)?\b    return 'NUMBER';
 "random"                  return 'NUMBER_RANDOM';
@@ -25,6 +26,8 @@
 "o"                       return 'TYPE_CIRC';
 "x"                       return 'TYPE_X';
 
+[a-zA-Z]+                 return 'VARIABLE';
+
 <<EOF>>                   return 'EOF';
 
 /lex
@@ -34,15 +37,27 @@
 %%
 
 expressions
-  : FUNCTIONS EOF
+  : STATEMENTS EOF
     {$1;}
   ;
 
-FUNCTIONS
+STATEMENTS
+  : STATEMENT
+    {$$ = $1;}
+  | STATEMENTS STATEMENT
+    {$$ = $1 + $2;}
+  ;
+
+STATEMENT
   : FUNCTION
     {$$ = $1;}
-  | FUNCTIONS FUNCTION
-    {$$ = $1 + $2;}
+  | DEFINITION
+    {$$ = $1;}
+  ;
+
+DEFINITION
+  : VARIABLE ASSIGN NUMBER
+    {s.vars[$1] = $3;}
   ;
 
 FUNCTION
@@ -127,6 +142,8 @@ TYPE
 POSITION
   : CENTER
     {$$ = app.center;}
+  | VARIABLE
+    {$$ = s.vars[$1];}
   ;
 
 SIZE
@@ -138,6 +155,8 @@ SIZE
     {$$ = app.width;}
   | HEIGHT
     {$$ = app.height;}
+  | VARIABLE
+    {$$ = s.vars[$1];}
   ;
 
 COLOR
@@ -147,4 +166,6 @@ COLOR
     {$$ = yytext;}
   | COLOR_RANDOM
     {$$ = iio.random.color(); }
+  | VARIABLE
+    {$$ = s.vars[$1];}
   ;

@@ -93,16 +93,16 @@ case 3:
 this.$ = $$[$0-1] + $$[$0];
 break;
 case 8:
-this.$ = alert( $$[$0-1] ); 
+this.$ = alert( $$[$0-1] );
 break;
 case 9: case 10: case 18: case 19:
-this.$ = $$[$0] 
+this.$ = $$[$0]
 break;
 case 11:
-this.$ = app.add( $$[$0-1] ); 
+this.$ = app.add( $$[$0-1] );
 break;
 case 12:
-this.$ = app.set( $$[$0-1] ); 
+this.$ = app.set( $$[$0-1] );
 break;
 case 13: case 21:
 this.$ = $$[$0]
@@ -111,28 +111,28 @@ case 14: case 22:
 this.$ = iio.merge($$[$0-1],$$[$0])
 break;
 case 15:
-this.$ = { pos: $$[$0]} 
+this.$ = { pos: $$[$0]}
 break;
 case 16:
-this.$ = { width: $$[$0] } 
+this.$ = { width: $$[$0] }
 break;
 case 17:
-this.$ = { color:$$[$0] } 
+this.$ = { color:$$[$0] }
 break;
 case 20:
-this.$ = $$[$0-1] 
+this.$ = $$[$0-1]
 break;
 case 23:
-this.$ = { lineWidth: $$[$0] } 
+this.$ = { lineWidth: $$[$0] }
 break;
 case 24:
-this.$ = { outline:$$[$0] } 
+this.$ = { outline:$$[$0] }
 break;
 case 25:
-this.$ = { type:iio.CIRC } 
+this.$ = { type:iio.CIRC }
 break;
 case 26:
-this.$ = { xColor:'red' } 
+this.$ = { xColor:'red' }
 break;
 case 27:
 this.$ = app.center;
@@ -153,7 +153,7 @@ case 32: case 33:
 this.$ = yytext;
 break;
 case 34:
-this.$ = iio.random.color(); 
+this.$ = iio.random.color();
 break;
 }
 },
