@@ -3,13 +3,12 @@
 %%
 \s+                       /* skip whitespace */
 "end"                     return 'END';
+":"                       return 'DELIMITER_VECTOR';
 
 [0-9]+(?:\\.[0-9]+)?\b    return 'NUMBER';
-"random"                  return 'NUMBER_RANDOM';
-
 (red|blue)                return 'COLOR_CONSTANT';
-#[0-9a-fA-F]+             return 'COLOR_HEX';
 "random color"            return 'COLOR_RANDOM';
+"random"                  return 'NUMBER_RANDOM';
 
 "alert"                   return 'ALERT';
 
@@ -126,7 +125,14 @@ TYPE
 
 POSITION
   : CENTER
-    {$$ = app.center;}
+    {$$ = app.center}
+  | VECTOR
+    {$$ = $1} 
+  ;
+
+VECTOR
+  : NUMBER DELIMITER_VECTOR NUMBER
+    {$$ = { x:$1, y:$3 }}
   ;
 
 SIZE
@@ -142,8 +148,6 @@ SIZE
 
 COLOR
   : COLOR_CONSTANT
-    {$$ = yytext;}
-  | COLOR_HEX
     {$$ = yytext;}
   | COLOR_RANDOM
     {$$ = iio.random.color(); }
