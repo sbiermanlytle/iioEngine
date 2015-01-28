@@ -1,5 +1,6 @@
+s = 50
 add 
 	center 
 	blue 
-	50 
+	size s 
 end

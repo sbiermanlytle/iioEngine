@@ -96,10 +96,12 @@
     <h2 id='launchcode_head'>JavaScript Launch Code</h2>
     <pre id="editor1">iio.start([iioParser,{c:code}],'canvas');</pre> 
     </div>
-    <pre id="editor2">add
-    300 : 300
+    <pre id="editor2">for i = 0 to 10
+ add
+    random : random
+    20
     random color
-    random
+end
 end</pre>
     </div>
     <!--<div id='center'></div>-->
@@ -187,7 +189,7 @@ end</pre>
         data += editor2.getSession().getValue();
         data += '}'
         createScript(data); */
-        iio.start([iioParser,{c:editor2.getSession().getValue()}],'canvas');
+        iio.start([iioParser,{c:editor2.getSession().getValue(), vars: {}}],'canvas');
         //createScript(editor1.getSession().getValue());
     }
     updateApp();

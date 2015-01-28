@@ -1885,6 +1885,9 @@ iio = {};
     }
   }
 
+  // Set up a hash for storing variables. Scope is limited to app.
+  iio.vars = iio.vars || {};
+
   var runScripts = function() {
     var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
     var iioScripts = scripts.filter(function(s) {
@@ -1892,7 +1895,8 @@ iio = {};
     });
     iioScripts.forEach(function(script) {
       iio.read(script.src, function(code){
-        iio.start([iioParser,{c:code}]);
+        iio.vars[script.src] = iio.vars[script.src] || {};
+        iio.start([iioParser,{c: code, vars: iio.vars[script.src]}]);
       });
     });
   }

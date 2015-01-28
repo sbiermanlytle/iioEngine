@@ -4,6 +4,10 @@
 \s+                       /* skip whitespace */
 "end"                     return 'END';
 ":"                       return 'DELIMITER_VECTOR';
+"="                       return 'ASSIGN';
+"for"                     return 'FOR_KEYWORD';
+"to"                      return 'TO_KEYWORD';
+"i"                       return 'I_KEYWORD';
 
 [0-9]+(?:\\.[0-9]+)?\b    return 'NUMBER';
 (red|blue)                return 'COLOR_CONSTANT';
@@ -15,6 +19,9 @@
 "add"                     return 'ADD';
 "set"                     return 'SET';
 
+"pos"                     return 'POS_KEYWORD';
+"size"                    return 'SIZE_KEYWORD';
+"color"                   return 'COLOR_KEYWORD';
 "outline"                 return 'OUTLINE';
 
 "center"                  return 'CENTER';
@@ -23,6 +30,8 @@
 
 "o"                       return 'TYPE_CIRC';
 "x"                       return 'TYPE_X';
+
+[a-zA-Z]+                 return 'VARIABLE';
 
 <<EOF>>                   return 'EOF';
 
@@ -33,15 +42,29 @@
 %%
 
 expressions
-  : FUNCTIONS EOF
+  : STATEMENTS EOF
     {$1;}
   ;
 
-FUNCTIONS
-  : FUNCTION
+STATEMENTS
+  : STATEMENT
     {$$ = $1;}
-  | FUNCTIONS FUNCTION
+  | STATEMENTS STATEMENT
     {$$ = $1 + $2;}
+  ;
+
+STATEMENT
+  : FUNCTION
+    {$$ = $1();}
+  | DEFINITION
+    {$$ = $1;}
+  | FORFN
+    {$$ = $1;}
+  ;
+
+DEFINITION
+  : VARIABLE ASSIGN VALUE
+    {s.vars[$1] = $3;}
   ;
 
 FUNCTION
@@ -54,6 +77,12 @@ FUNCTION
   | OUTLINEFN
     {$$ = $1;}
   ;
+
+FORFN
+  : FOR_KEYWORD I_KEYWORD ASSIGN VALUE TO_KEYWORD VALUE FUNCTION END
+    {$$ = 4; for(var i=$4; i<$6; i++ ) { $7() } }
+  ;
+
 
 ALERTFN
   : ALERT ALERTPARAM END
@@ -69,7 +98,7 @@ ALERTPARAM
 
 ADDFN
   : ADD GENPARAMS END
-    {$$ = app.add( $2 ); }
+    {$$ = function() {app.add( $2 );} }
   ;
 
 SETFN
@@ -85,11 +114,11 @@ GENPARAMS
   ;
 
 GENPARAM
-  : POSITION
+  : POSITION_PROPERTY
     {$$ = { pos: $1} }
-  | SIZE
+  | SIZE_PROPERTY
     {$$ = { width: $1 } }
-  | COLOR
+  | COLOR_PROPERTY
     {$$ = { color:$1 } }
   | TYPE
     {$$ = $1 }
@@ -123,32 +152,43 @@ TYPE
     {$$ = { xColor:'red' } }
   ;
 
-POSITION
+POSITION_PROPERTY
   : CENTER
     {$$ = app.center}
   | VECTOR
     {$$ = $1} 
+  | POS_KEYWORD VARIABLE
+    {$$ = s.vars[$2];}
   ;
 
 VECTOR
-  : NUMBER DELIMITER_VECTOR NUMBER
+  : VALUE DELIMITER_VECTOR VALUE
     {$$ = { x:$1, y:$3 }}
   ;
 
-SIZE
-  : NUMBER
-    {$$ = Number(yytext);}
-  | NUMBER_RANDOM
-    {$$ = iio.random.num(40,100);}
+SIZE_PROPERTY
+  : VALUE
+    {$$ = $1;}
   | WIDTH
     {$$ = app.width;}
   | HEIGHT
     {$$ = app.height;}
+  | SIZE_KEYWORD VARIABLE
+    {$$ = s.vars[$2];}    
   ;
 
-COLOR
+COLOR_PROPERTY
   : COLOR_CONSTANT
     {$$ = yytext;}
   | COLOR_RANDOM
     {$$ = iio.random.color(); }
+  | COLOR_KEYWORD VARIABLE
+    {$$ = s.vars[$2];}
+  ;
+
+VALUE
+  : NUMBER
+    {$$ = Number(yytext);}
+  | NUMBER_RANDOM
+    {$$ = iio.random.num(40,100);}
   ;
