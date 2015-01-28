@@ -71,13 +71,13 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-iioParser = function(app,s){var parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,6],$V1=[1,7],$V2=[5,9,16],$V3=[1,15],$V4=[1,16],$V5=[1,17],$V6=[11,17,18,19];
+iioParser = function(app,s){ var parser = (function(){
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,6],$V1=[1,7],$V2=[5,9,16],$V3=[1,15],$V4=[1,16],$V5=[1,17],$V6=[1,18],$V7=[11,17,18,19,20];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"expressions":3,"FUNCTIONS":4,"EOF":5,"FUNCTION":6,"ADDFN":7,"SETFN":8,"ADD":9,"ADDPARAMS":10,"END":11,"ADDPARAM":12,"POSITION":13,"SIZE":14,"COLOR":15,"SET":16,"CENTER":17,"NUMBER":18,"COLOR_STRING":19,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",9:"ADD",11:"END",16:"SET",17:"CENTER",18:"NUMBER",19:"COLOR_STRING"},
-productions_: [0,[3,2],[4,1],[4,2],[6,1],[6,1],[7,3],[10,1],[10,2],[12,1],[12,1],[12,1],[8,3],[13,1],[14,1],[15,1]],
+symbols_: {"error":2,"expressions":3,"FUNCTIONS":4,"EOF":5,"FUNCTION":6,"ADDFN":7,"SETFN":8,"ADD":9,"ADDPARAMS":10,"END":11,"ADDPARAM":12,"POSITION":13,"SIZE":14,"COLOR":15,"SET":16,"CENTER":17,"NUMBER":18,"COLOR_CONSTANT":19,"COLOR_HEX":20,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",9:"ADD",11:"END",16:"SET",17:"CENTER",18:"NUMBER",19:"COLOR_CONSTANT",20:"COLOR_HEX"},
+productions_: [0,[3,2],[4,1],[4,2],[6,1],[6,1],[7,3],[10,1],[10,2],[12,1],[12,1],[12,1],[8,3],[13,1],[14,1],[15,1],[15,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -119,12 +119,12 @@ break;
 case 14:
 this.$ = Number(yytext);
 break;
-case 15:
+case 15: case 16:
 this.$ = yytext;
 break;
 }
 },
-table: [{3:1,4:2,6:3,7:4,8:5,9:$V0,16:$V1},{1:[3]},{5:[1,8],6:9,7:4,8:5,9:$V0,16:$V1},o($V2,[2,2]),o($V2,[2,4]),o($V2,[2,5]),{10:10,12:11,13:12,14:13,15:14,17:$V3,18:$V4,19:$V5},{15:18,19:$V5},{1:[2,1]},o($V2,[2,3]),{11:[1,19],12:20,13:12,14:13,15:14,17:$V3,18:$V4,19:$V5},o($V6,[2,7]),o($V6,[2,9]),o($V6,[2,10]),o($V6,[2,11]),o($V6,[2,13]),o($V6,[2,14]),o($V6,[2,15]),{11:[1,21]},o($V2,[2,6]),o($V6,[2,8]),o($V2,[2,12])],
+table: [{3:1,4:2,6:3,7:4,8:5,9:$V0,16:$V1},{1:[3]},{5:[1,8],6:9,7:4,8:5,9:$V0,16:$V1},o($V2,[2,2]),o($V2,[2,4]),o($V2,[2,5]),{10:10,12:11,13:12,14:13,15:14,17:$V3,18:$V4,19:$V5,20:$V6},{15:19,19:$V5,20:$V6},{1:[2,1]},o($V2,[2,3]),{11:[1,20],12:21,13:12,14:13,15:14,17:$V3,18:$V4,19:$V5,20:$V6},o($V7,[2,7]),o($V7,[2,9]),o($V7,[2,10]),o($V7,[2,11]),o($V7,[2,13]),o($V7,[2,14]),o($V7,[2,15]),o($V7,[2,16]),{11:[1,22]},o($V2,[2,6]),o($V7,[2,8]),o($V2,[2,12])],
 defaultActions: {8:[2,1]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
@@ -610,14 +610,16 @@ case 4:return 16;
 break;
 case 5:return 19;
 break;
-case 6:return 17;
+case 6:return 20;
 break;
-case 7:return 5;
+case 7:return 17;
+break;
+case 8:return 5;
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:[0-9]+(?:\\.[0-9]+)?\b)/,/^(?:end\b)/,/^(?:add\b)/,/^(?:set\b)/,/^(?:(red|blue))/,/^(?:center\b)/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:[0-9]+(?:\\.[0-9]+)?\b)/,/^(?:end\b)/,/^(?:add\b)/,/^(?:set\b)/,/^(?:(red|blue))/,/^(?:[0-9a-fA-F]+)/,/^(?:center\b)/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8],"inclusive":true}}
 });
 return lexer;
 })();
@@ -646,4 +648,5 @@ if (typeof module !== 'undefined' && require.main === module) {
   exports.main(process.argv.slice(1));
 }
 }
-parser.parse(s.c);}
+ parser.parse(s.c);
+}

@@ -6,7 +6,8 @@
 "end"                     return 'END';
 "add"                     return 'ADD';
 "set"                     return 'SET';
-(red|blue)                return 'COLOR_STRING';
+(red|blue)                return 'COLOR_CONSTANT';
+#[0-9a-fA-F]+             return 'COLOR_HEX';
 "center"                  return 'CENTER';
 <<EOF>>                   return 'EOF';
 
@@ -72,6 +73,8 @@ SIZE
   ;
 
 COLOR
-  : COLOR_STRING
+  : COLOR_CONSTANT
+    {$$ = yytext;}
+  | COLOR_HEX
     {$$ = yytext;}
   ;
