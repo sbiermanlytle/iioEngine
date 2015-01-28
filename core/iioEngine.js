@@ -886,7 +886,7 @@ iio = {};
         o.forEach(function(_o) {
           this.add(_o, ii, s, nd);
         }, this);
-      else if (typeof(o.type) != 'undefined') {
+      else if (typeof(o.app) != 'undefined') {
         o.parent = this;
         o.app = this.app;
         nd = ii;
