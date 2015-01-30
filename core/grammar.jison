@@ -23,6 +23,8 @@
 "size"                    return 'SIZE_KEYWORD';
 "color"                   return 'COLOR_KEYWORD';
 "outline"                 return 'OUTLINE';
+"vel"                     return 'VEL_KEYWORD';
+"acc"                     return 'ACC_KEYWORD';
 
 "center"                  return 'CENTER';
 "width"                   return 'WIDTH';
@@ -76,6 +78,10 @@ FUNCTION
     {$$ = $1;}
   | OUTLINEFN
     {$$ = $1;}
+  | VELFN
+    {$$ = $1;}
+  | ACCFN
+    {$$ = $1;}
   ;
 
 FORFN
@@ -117,18 +123,32 @@ GENPARAM
   : POSITION_PROPERTY
     {$$ = { pos: $1} }
   | SIZE_PROPERTY
-    {$$ = { width: $1 } }
+    {$$ = $1 }
   | COLOR_PROPERTY
     {$$ = { color:$1 } }
   | TYPE
     {$$ = $1 }
   | OUTLINEFN
     {$$ = $1 }
+  | VELFN
+    {$$ = $1 }
+  | ACCFN
+    {$$ = $1 }
   ;
 
 OUTLINEFN
   : OUTLINE OUTLINEPARAMS END
     {$$ = $2 }
+  ;
+
+VELFN
+  : VEL_KEYWORD VECTOR END
+    {$$ = { vel:$2 }}
+  ;
+
+ACCFN
+  : ACC_KEYWORD VECTOR END
+    {$$ = { acc:$2 } }
   ;
 
 OUTLINEPARAMS
@@ -141,7 +161,7 @@ OUTLINEPARAMS
 OUTLINEPARAM
   : SIZE
     {$$ = { lineWidth: $1 } }
-  | COLOR
+  | COLOR_PROPERTY
     {$$ = { outline:$1 } }
   ;
 
@@ -164,17 +184,23 @@ POSITION_PROPERTY
 VECTOR
   : VALUE DELIMITER_VECTOR VALUE
     {$$ = { x:$1, y:$3 }}
+  | VALUE DELIMITER_VECTOR VALUE DELIMITER_VECTOR VALUE
+    {$$ = { x:$1, y:$3, r:$5 }}
   ;
 
 SIZE_PROPERTY
   : VALUE
-    {$$ = $1;}
+    {$$ = { width:$1 }}
   | WIDTH
-    {$$ = app.width;}
+    {$$ = { width:app.width }}
   | HEIGHT
-    {$$ = app.height;}
+    {$$ = { width:app.height }}
   | SIZE_KEYWORD VARIABLE
-    {$$ = s.vars[$2];}    
+    {$$ = { width:s.vars[$2] }}    
+  | SIZE_KEYWORD VALUE
+    {$$ = { width: $2 }}
+  | SIZE_KEYWORD VALUE DELIMITER_VECTOR VALUE
+    {$$ = { width: $2, height:$4 }}
   ;
 
 COLOR_PROPERTY
@@ -190,5 +216,5 @@ VALUE
   : NUMBER
     {$$ = Number(yytext);}
   | NUMBER_RANDOM
-    {$$ = iio.random.num(40,100);}
+    {$$ = Math.random();}
   ;
