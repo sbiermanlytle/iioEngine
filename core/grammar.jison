@@ -159,7 +159,7 @@ OUTLINEPARAMS
   ;
 
 OUTLINEPARAM
-  : SIZE
+  : SIZE_PROPERTY
     {$$ = { lineWidth: $1 } }
   | COLOR_PROPERTY
     {$$ = { outline:$1 } }
@@ -169,7 +169,7 @@ TYPE
   : TYPE_CIRC
     {$$ = { type:iio.CIRC } }
   | TYPE_X
-    {$$ = { xColor:'red' } }
+    {$$ = { type:iio.X } }
   ;
 
 POSITION_PROPERTY

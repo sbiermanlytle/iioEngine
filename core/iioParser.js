@@ -299,10 +299,10 @@ iio.runiioProp=function(o,s){
          o.res={x:o.width/o.C,y:o.height/o.R};
       }
    } else if(s[0]=='x') {
-      if(s.length==1) o.xColor=o.color||o.outline;
+      if(s.length==1) o.type=iio.X;
       else for(var _i=1;_i<s.length;_i++)
          if(iio.is.number(s[_i])) o.lineWidth=o.eval(s[_i]);
-         else o.xColor=o.eval(s[_i]);
+         else { o.color=o.eval(s[_i]); o.type=iio.X }
    } else if(s[0]=='font') o.font=s[1];
    else if(s[0]=='simple') o.simple=true;
    else if(s[0]=='cursor') o.showCursor=true;
