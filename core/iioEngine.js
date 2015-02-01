@@ -95,7 +95,7 @@ iio = {};
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0))
-        callback(xhr.responseText);
+        return callback(xhr.responseText);
     }
     xhr.send(null);
   }
@@ -1895,8 +1895,9 @@ iio = {};
     });
     iioScripts.forEach(function(script) {
       iio.read(script.src, function(code){
-        iio.vars[script.src] = iio.vars[script.src] || {};
-        iio.start([iioParser,{c: code, vars: iio.vars[script.src]}]);
+        // iio.vars[script.src] = iio.vars[script.src] || {};
+        // iio.start([iioParser,{c: code, vars: iio.vars[script.src]}]);
+        iio.scripts[script.src] = eval(iio.read(script.src, parser.parse));
       });
     });
   }

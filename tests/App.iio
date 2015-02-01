@@ -1,6 +1,5 @@
-s = 50
-add 
-	center 
-	blue 
-	size s 
+add
+	center
+	size 75:80
+	red
 end
