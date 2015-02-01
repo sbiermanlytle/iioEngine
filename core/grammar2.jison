@@ -7,6 +7,7 @@
 "="                       return 'assign';
 "for"                     return 'for_keyword';
 "to"                      return 'to_keyword';
+"var"                     return 'var_keyword';
 
 [0-9]+(?:\\.[0-9]+)?\b    return 'number';
 (red|blue)                return 'color_constant';
@@ -59,13 +60,13 @@ statement
     {$$ = $1;}
   | definition
     {$$ = $1;}
-  | forfn
+  | for_statement
     {$$ = $1;}
   ;
 
 definition
-  : variable assign expression
-    {$$ = 'var ' + $1 + ' = ' + $3 + ';\n' }
+  : var_keyword variable assign expression
+    {$$ = 'var ' + $2 + ' = ' + $4 + ';\n' }
   ;
 
 expression
@@ -88,9 +89,9 @@ function
     {$$ = $1;}
   ;
 
-forfn
-  : for_keyword i_keyword assign value to_keyword value function end
-    {$$ = 4; for(var i=$4; i<$6; i++ ) { $7() } }
+for_statement
+  : for_keyword var_keyword variable assign expression to_keyword value statements end
+    {$$ = 'for(var ' + $3 + ' = ' + $5 + '; '+$3+'<'+$7+';'+$3+'++) { ' + $8 + ' }'}
   ;
 
 
@@ -129,13 +130,13 @@ genparam
   | size_property
     {$$ = $1 }
   | color_property
-    {$$ = "color: '" + $1 + "'" }
+    {$$ = "color: " + $1 }
   | type
     {$$ = $1 }
   | outlinefn
     {$$ = $1 }
   | velfn
-    {$$ = $1 }
+    {$$ = "vel: " + $1 }
   | accfn
     {$$ = $1 }
   ;
@@ -147,7 +148,7 @@ outlinefn
 
 velfn
   : vel_keyword vector end
-    {$$ = { vel:$2 }}
+    {$$ = $2 }
   ;
 
 accfn
@@ -183,13 +184,15 @@ position_property
     {$$ = $1}
   | pos_keyword variable
     {$$ = $2;}
+  | pos_keyword vector
+    {$$ = $2;}
   ;
 
 vector
   : value delimiter_vector value
-    {$$ = { x:$1, y:$3 }}
+    {$$ = '{ x: ' + $1 + ', y: ' + $3 + '}' }
   | value delimiter_vector value delimiter_vector value
-    {$$ = { x:$1, y:$3, r:$5 }}
+    {$$ = '{ x: ' + $1 + ', y: ' + $3 + ', r:' + $5 + '}'}
   ;
 
 size_property
@@ -199,8 +202,6 @@ size_property
     {$$ = "width: app.width" }
   | height
     {$$ = "width: app.height" }
-  | size_keyword variable
-    {$$ = "width: " + $2 }
   | size_keyword value
     {$$ = "width: " + $2 }
   | size_keyword value delimiter_vector value
@@ -209,7 +210,7 @@ size_property
 
 color_property
   : color_constant
-    {$$ = $1 }
+    {$$ = "'" + $1 + "'" }
   | color_random
     {$$ = "iio.random.color()" }
   | color_keyword variable
@@ -218,7 +219,9 @@ color_property
 
 value
   : number
-    {$$ = $1;}
+    {$$ = $1}
   | number_random
-    {$$ = math.random();}
+    {$$ = "iio.random.num(0,200)"}
+  | variable
+    {$$ = $1}
   ;

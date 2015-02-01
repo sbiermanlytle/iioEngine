@@ -7,6 +7,17 @@
 <body>
 <script type="text/javascript" src="../core/iioEngine.js"></script>
 <script type="text/javascript" src="../core/parser.js"></script>
-<script type="text/iioscript" src="App.iio"></script>
+<!-- <script type="text/iioscript" src="App.iio"></script> -->
+<script type="text/javascript">
+var App = function(app, settings) {
+for(var i = 0; i<10;i++) { 
+	app.add({
+		pos: {x:iio.random.num(0,app.width),y:iio.random.num(0,app.height)}, 
+		width: 20, 
+		color: iio.random.color(), 
+	}); 
+ }
+}; iio.start(App);
+</script>
 </body>
 </html>
