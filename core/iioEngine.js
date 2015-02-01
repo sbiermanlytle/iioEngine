@@ -96,7 +96,7 @@ iio = {};
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0))
-        callback(xhr.responseText);
+        return callback(xhr.responseText);
     }
     xhr.send(null);
   }
@@ -1891,7 +1891,7 @@ iio = {};
   }
 
   // Set up a hash for storing variables. Scope is limited to app.
-  iio.vars = iio.vars || {};
+  iio.scripts = iio.scripts || {};
 
   var runScripts = function() {
     var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
@@ -1900,10 +1900,9 @@ iio = {};
     });
     iioScripts.forEach(function(script) {
       iio.read(script.src, function(code){
-        iio.vars[script.src] = iio.vars[script.src] || {};
+        //iio.vars[script.src] = iio.vars[script.src] || {};
         //iio.start([iioParser,{c: code, vars: iio.vars[script.src]}]);
-        var c = parser.parse(code);
-        alert(c);
+        iio.scripts[script.src] = eval(iio.read(script.src, parser.parse));
       });
     });
   }
