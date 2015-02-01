@@ -23,14 +23,15 @@ iio = {};
   iio.apps = [];
 
   //OBJECT TYPES
-  iio.APP = "App";
-  iio.OBJ = "Obj";
-  iio.LINE = "Line";
-  iio.CIRC = "Ellipse";
-  iio.RECT = "Rectangle";
-  iio.POLY = "Polygon";
-  iio.GRID = "Grid";
-  iio.TEXT = "Text";
+  iio.APP = 0;
+  iio.OBJ = 1;
+  iio.LINE = 2;
+  iio.X = 3;
+  iio.CIRC = 4;
+  iio.RECT = 5;
+  iio.POLY = 6;
+  iio.GRID = 7;
+  iio.TEXT = 8;
 
   //INITIALIZATION
   iio.start = function(app, id, d) {
@@ -793,9 +794,9 @@ iio = {};
     },
     prep_x: function(ctx, o) {
       ctx.save();
-      if (o.xColor.indexOf && o.xColor.indexOf('gradient') > -1)
-        o.xColor = o.createGradient(ctx, o.xColor);
-      ctx.strokeStyle = o.xColor;
+      if (o.color.indexOf && o.color.indexOf('gradient') > -1)
+        o.color = o.createGradient(ctx, o.color);
+      ctx.strokeStyle = o.color||o.outline;
       ctx.lineWidth = o.lineWidth;
     },
     obj: function(ctx) {
@@ -1418,7 +1419,11 @@ iio = {};
         if (this.type == iio.GRID)
           iio.grid.init(this);
 
-        else this.type = iio.RECT;
+        //init x
+        else if (this.type != iio.X)
+
+        //init rect
+          this.type = iio.RECT;
       }
 
       //define update properties for shapes
@@ -1505,7 +1510,12 @@ iio = {};
       if (this.bezier) {
         iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
         iio.draw.finish_path_shape(ctx, this);
-      } else {
+      } else if (this.type==iio.X) {
+        iio.draw.prep_x(ctx, this);
+        iio.draw.line(ctx, 0, 0, this.width, this.height);
+        iio.draw.line(ctx, this.width, 0, 0, this.height);
+        ctx.restore();
+      } else{
         iio.draw.rect(ctx, this.width, this.height, {
           c: this.color,
           o: this.outline
@@ -1518,12 +1528,7 @@ iio = {};
           round: this.round
         });
       }
-      if (this.xColor) {
-        iio.draw.prep_x(ctx, this);
-        iio.draw.line(ctx, 0, 0, this.width, this.height);
-        iio.draw.line(ctx, this.width, 0, 0, this.height);
-        ctx.restore();
-      }
+      
     },
     contains: function(v, y) {
       if (this.rot) return iio.poly.contains(v, y);
@@ -1580,7 +1585,7 @@ iio = {};
       } else ctx.arc(0, 0, this.width / 2, 0, 2 * Math.PI, false);
       if (this.width != this.height) ctx.closePath();
       iio.draw.finish_path_shape(ctx, this);
-      if (this.xColor) {
+      if (this.type==iio.X) {
         ctx.rotate(Math.PI / 4)
         iio.prep_x(ctx, this);
         ctx.translate(0, -o.height / 2);
