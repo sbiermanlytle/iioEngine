@@ -117,10 +117,10 @@ case 22:
 this.$ = $$[$0-1] + ", " + $$[$0] 
 break;
 case 23:
-this.$ = "pos:" + $$[$0] 
+this.$ = "pos: " + $$[$0] 
 break;
 case 25:
-this.$ = "color:" +$$[$0] 
+this.$ = "color: '" + $$[$0] + "'" 
 break;
 case 30:
 this.$ = $$[$0-1] 
