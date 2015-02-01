@@ -1053,13 +1053,13 @@ iio = {};
         o.img.parent = o;
         if ((typeof o.width == 'undefined' && typeof o.radius == 'undefined') || o.radius == 0)
           o.img.onload = function(e) {
-            if (o.parent.radius == 0) o.parent.radius = o.width / 2;
+            if (o.radius == 0) o.radius = o.width / 2;
             else {
-              o.parent.width = o.width || 0;
-              o.parent.height = o.height || 0;
+              o.width = o.width || 0;
+              o.height = o.height || 0;
             }
             if (nd);
-            else o.parent.app.draw();
+            else o.app.draw();
           }
       } else if (o.img) {
         if ((typeof o.width == 'undefined' && typeof o.radius == 'undefined') || o.radius == 0) {
@@ -1901,7 +1901,9 @@ iio = {};
     iioScripts.forEach(function(script) {
       iio.read(script.src, function(code){
         iio.vars[script.src] = iio.vars[script.src] || {};
-        iio.start([iioParser,{c: code, vars: iio.vars[script.src]}]);
+        //iio.start([iioParser,{c: code, vars: iio.vars[script.src]}]);
+        var c = parser.parse(code);
+        alert(c);
       });
     });
   }
