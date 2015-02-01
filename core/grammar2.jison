@@ -171,9 +171,9 @@ outlineparam
 
 type
   : type_circ
-    {$$ = { type:iio.circ } }
+    {$$ = { type:iio.CIRC } }
   | type_x
-    {$$ = { xcolor:'red' } }
+    {$$ = { type:iio.X } }
   ;
 
 position_property

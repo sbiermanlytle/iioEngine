@@ -1899,11 +1899,20 @@ iio = {};
       return s.type === 'text/iioscript';
     });
     iioScripts.forEach(function(script) {
-      iio.read(script.src, function(code){
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", script.src, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
+          iio.scripts[script.src] = eval(parser.parse(xhr.responseText));
+          iio.start(iio.scripts[script.src]);
+        }
+      }
+      xhr.send(null);
+      /*iio.read(script.src, function(code){
         //iio.vars[script.src] = iio.vars[script.src] || {};
         //iio.start([iioParser,{c: code, vars: iio.vars[script.src]}]);
-        iio.scripts[script.src] = eval(iio.read(script.src, parser.parse));
-      });
+        //iio.scripts[script.src] = eval(iio.read(script.src, parser.parse));
+      });*/
     });
   }
 
