@@ -125,11 +125,11 @@ genparams
 
 genparam
   : position_property
-    {$$ = "pos:" + $1 }
+    {$$ = "pos: " + $1 }
   | size_property
     {$$ = $1 }
   | color_property
-    {$$ = "color:" +$1 }
+    {$$ = "color: '" + $1 + "'" }
   | type
     {$$ = $1 }
   | outlinefn

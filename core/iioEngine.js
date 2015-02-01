@@ -1528,7 +1528,7 @@ iio = {};
           round: this.round
         });
       }
-      
+
     },
     contains: function(v, y) {
       if (this.rot) return iio.poly.contains(v, y);
