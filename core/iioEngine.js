@@ -22,16 +22,16 @@ iio = {};
   //DEFAULT PROPERTIES
   iio.apps = [];
 
-  //OBJECT TYPES
-  iio.APP = 0;
-  iio.OBJ = 1;
-  iio.LINE = 2;
-  iio.X = 3;
-  iio.CIRC = 4;
-  iio.RECT = 5;
-  iio.POLY = 6;
-  iio.GRID = 7;
-  iio.TEXT = 8;
+  //OBJECT TYPE SINGLETONS
+  iio.APP  = {};
+  iio.OBJ  = {};
+  iio.LINE = {};
+  iio.X    = {};
+  iio.CIRC = {};
+  iio.RECT = {};
+  iio.POLY = {};
+  iio.GRID = {};
+  iio.TEXT = {};
 
   //INITIALIZATION
   iio.start = function(app, id, d) {
@@ -1880,13 +1880,10 @@ iio = {};
       else return this.cells[Math.floor((x - this.left) / this.res.x)][Math.floor((y - this.top) / this.res.y)];
     },
     foreachCell: function(fn, p) {
-      var keepGoing = true;
       for (var c = 0; c < this.C; c++)
-        for (var r = 0; r < this.R; r++) {
-          keepGoing = fn(this.cells[c][r], p);
-          if (typeof keepGoing != 'undefined' && !keepGoing)
+        for (var r = 0; r < this.R; r++)
+          if (fn(this.cells[c][r], p) === false)
             return [r, c];
-        }
     }
   }
 
