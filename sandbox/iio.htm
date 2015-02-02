@@ -96,11 +96,16 @@
     <h2 id='launchcode_head'>JavaScript Launch Code</h2>
     <pre id="editor1">iio.start([iioParser,{c:code}],'canvas');</pre> 
     </div>
-<pre id="editor2">for var i = 0 to 10
-    add
-        pos random:random
-        20
+<pre id="editor2">
+set random color end
+
+for var i = 0 to 100
+    add o
+        pos random 0 to width : random 0 to height
+        random 20 to 80
         random color
+        outline random 2 to 20 random color
+        vel random 0 to 1 : random 0 to 1
     end
 end</pre>
     </div>

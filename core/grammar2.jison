@@ -12,7 +12,7 @@
 [0-9]+(?:\\.[0-9]+)?\b    return 'number';
 (red|blue)                return 'color_constant';
 "random color"            return 'color_random';
-"random"                  return 'number_random';
+"random"                  return 'random_keyword';
 
 "alert"                   return 'alert';
 
@@ -22,7 +22,7 @@
 "pos"                     return 'pos_keyword';
 "size"                    return 'size_keyword';
 "color"                   return 'color_keyword';
-"outline"                 return 'outline';
+"outline"                 return 'outline_keyword';
 "vel"                     return 'vel_keyword';
 "acc"                     return 'acc_keyword';
 
@@ -81,12 +81,6 @@ function
     {$$ = $1;}
   | setfn
     {$$ = $1;}
-  | outlinefn
-    {$$ = $1;}
-  | velfn
-    {$$ = $1;}
-  | accfn
-    {$$ = $1;}
   ;
 
 for_statement
@@ -97,13 +91,13 @@ for_statement
 
 alertfn
   : alert alertparam end
-    {$$ = alert( $2 ); }
+    {$$ = "alert(" + $2 + " ); \n" }
   ;
 
 alertparam
-  : size
+  : value
     {$$ = $1 }
-  | color
+  | color_property
     {$$ = $1 }
   ;
 
@@ -114,7 +108,7 @@ addfn
 
 setfn
   : set genparams end
-    {$$ = app.set( $2 ); }
+    {$$ = "app.set({" + $2 + "}); \n" }
   ;
 
 genparams
@@ -132,49 +126,20 @@ genparam
   | color_property
     {$$ = "color: " + $1 }
   | type
+    {$$ = "type: " + $1 }
+  | outline_property
     {$$ = $1 }
-  | outlinefn
-    {$$ = $1 }
-  | velfn
+  | vel_property
     {$$ = "vel: " + $1 }
-  | accfn
+  | acc_property
     {$$ = $1 }
-  ;
-
-outlinefn
-  : outline outlineparams end
-    {$$ = $2 }
-  ;
-
-velfn
-  : vel_keyword vector end
-    {$$ = $2 }
-  ;
-
-accfn
-  : acc_keyword vector end
-    {$$ = { acc:$2 } }
-  ;
-
-outlineparams
-  : outlineparam
-    {$$ = $1}
-  | outlineparams outlineparam
-    {$$ = iio.merge($1,$2)}
-  ;
-
-outlineparam
-  : size
-    {$$ = { linewidth: $1 } }
-  | color_property
-    {$$ = { outline:$1 } }
   ;
 
 type
   : type_circ
-    {$$ = { type:iio.CIRC } }
+    {$$ = "iio.CIRC" }
   | type_x
-    {$$ = { type:iio.X } }
+    {$$ = "iio.X" }
   ;
 
 position_property
@@ -188,6 +153,23 @@ position_property
     {$$ = $2;}
   ;
 
+outline_property
+  : outline_keyword value color_property
+    {$$ = "lineWidth: "+$2+", outline: "+$3 }
+  | outline_keyword color_property value
+    {$$ = "outline: "+$2+", lineWidth: "+$3 }
+  ;
+
+vel_property
+  : vel_keyword vector
+    {$$ = $2}
+  ;
+
+acc_property
+  : acc_keyword vector
+    {$$ = $2}
+  ;
+
 vector
   : value delimiter_vector value
     {$$ = '{ x: ' + $1 + ', y: ' + $3 + '}' }
@@ -198,10 +180,6 @@ vector
 size_property
   : value
     {$$ = "width: " + $1 }
-  | width
-    {$$ = "width: app.width" }
-  | height
-    {$$ = "width: app.height" }
   | size_keyword value
     {$$ = "width: " + $2 }
   | size_keyword value delimiter_vector value
@@ -217,11 +195,20 @@ color_property
     {$$ = $2 }
   ;
 
+random_property
+  : random_keyword value to_keyword value
+    {$$ = "iio.random.num("+$2+","+$4+")" }
+  ;
+
 value
   : number
     {$$ = $1}
-  | number_random
-    {$$ = "iio.random.num(0,200)"}
+  | width
+    {$$ = "app.width"}
+  | height
+    {$$ = "app.height"}
+  | random_property
+    {$$ = $1}
   | variable
     {$$ = $1}
   ;
