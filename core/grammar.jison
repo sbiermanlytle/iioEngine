@@ -2,219 +2,213 @@
 
 %%
 \s+                       /* skip whitespace */
-"end"                     return 'END';
-":"                       return 'DELIMITER_VECTOR';
-"="                       return 'ASSIGN';
-"for"                     return 'FOR_KEYWORD';
-"to"                      return 'TO_KEYWORD';
-"i"                       return 'I_KEYWORD';
+"end"                     return 'end';
+":"                       return 'delimiter_vector';
+"="                       return 'assign';
+"for"                     return 'for_keyword';
+"to"                      return 'to_keyword';
+"var"                     return 'var_keyword';
 
-[0-9]+(?:\\.[0-9]+)?\b    return 'NUMBER';
-(red|blue)                return 'COLOR_CONSTANT';
-"random color"            return 'COLOR_RANDOM';
-"random"                  return 'NUMBER_RANDOM';
+[0-9]+(?:\\.[0-9]+)?\b    return 'number';
+(red|blue)                return 'color_constant';
+"random color"            return 'color_random';
+"random"                  return 'random_keyword';
 
-"alert"                   return 'ALERT';
+"alert"                   return 'alert';
 
-"add"                     return 'ADD';
-"set"                     return 'SET';
+"add"                     return 'add';
+"set"                     return 'set';
 
-"pos"                     return 'POS_KEYWORD';
-"size"                    return 'SIZE_KEYWORD';
-"color"                   return 'COLOR_KEYWORD';
-"outline"                 return 'OUTLINE';
-"vel"                     return 'VEL_KEYWORD';
-"acc"                     return 'ACC_KEYWORD';
+"pos"                     return 'pos_keyword';
+"size"                    return 'size_keyword';
+"color"                   return 'color_keyword';
+"outline"                 return 'outline_keyword';
+"vel"                     return 'vel_keyword';
+"acc"                     return 'acc_keyword';
 
-"center"                  return 'CENTER';
-"width"                   return 'WIDTH';
-"height"                  return 'HEIGHT';
+"center"                  return 'center';
+"width"                   return 'width';
+"height"                  return 'height';
 
-"o"                       return 'TYPE_CIRC';
-"x"                       return 'TYPE_X';
+"o"                       return 'type_circ';
+"x"                       return 'type_x';
 
-[a-zA-Z]+                 return 'VARIABLE';
+[a-zA-Z]+                 return 'variable';
 
-<<EOF>>                   return 'EOF';
+<<EOF>>                   return 'eof';
 
 /lex
 
-%start expressions
+%start iioscript
 
 %%
 
-expressions
-  : STATEMENTS EOF
-    {$1;}
+iioscript
+  : statements eof
+    { return "(function() { return function(app, settings) {\n" + $1 + "\n}})()" }
   ;
 
-STATEMENTS
-  : STATEMENT
+statements
+  : statement
     {$$ = $1;}
-  | STATEMENTS STATEMENT
+  | statements statement
     {$$ = $1 + $2;}
   ;
 
-STATEMENT
-  : FUNCTION
-    {$$ = $1();}
-  | DEFINITION
+statement
+  : function
     {$$ = $1;}
-  | FORFN
+  | definition
     {$$ = $1;}
-  ;
-
-DEFINITION
-  : VARIABLE ASSIGN VALUE
-    {s.vars[$1] = $3;}
-  ;
-
-FUNCTION
-  : ADDFN
-    {$$ = $1;}
-  | ALERTFN
-    {$$ = $1;}
-  | SETFN
-    {$$ = $1;}
-  | OUTLINEFN
-    {$$ = $1;}
-  | VELFN
-    {$$ = $1;}
-  | ACCFN
+  | for_statement
     {$$ = $1;}
   ;
 
-FORFN
-  : FOR_KEYWORD I_KEYWORD ASSIGN VALUE TO_KEYWORD VALUE FUNCTION END
-    {$$ = 4; for(var i=$4; i<$6; i++ ) { $7() } }
+definition
+  : var_keyword variable assign expression
+    {$$ = 'var ' + $2 + ' = ' + $4 + ';\n' }
   ;
 
-
-ALERTFN
-  : ALERT ALERTPARAM END
-    {$$ = alert( $2 ); }
-  ;
-
-ALERTPARAM
-  : SIZE
-    {$$ = $1 }
-  | COLOR
-    {$$ = $1 }
-  ;
-
-ADDFN
-  : ADD GENPARAMS END
-    {$$ = function() {app.add( $2 );} }
-  ;
-
-SETFN
-  : SET GENPARAMS END
-    {$$ = app.set( $2 ); }
-  ;
-
-GENPARAMS
-  : GENPARAM
+expression
+  : value
     {$$ = $1}
-  | GENPARAMS GENPARAM
-    {$$ = iio.merge($1,$2)}
   ;
 
-GENPARAM
-  : POSITION_PROPERTY
-    {$$ = { pos: $1} }
-  | SIZE_PROPERTY
+function
+  : addfn
+    {$$ = $1;}
+  | alertfn
+    {$$ = $1;}
+  | setfn
+    {$$ = $1;}
+  ;
+
+for_statement
+  : for_keyword var_keyword variable assign expression to_keyword value statements end
+    {$$ = 'for(var ' + $3 + ' = ' + $5 + '; '+$3+'<'+$7+';'+$3+'++) { ' + $8 + ' }'}
+  ;
+
+
+alertfn
+  : alert alertparam end
+    {$$ = "alert(" + $2 + " ); \n" }
+  ;
+
+alertparam
+  : value
     {$$ = $1 }
-  | COLOR_PROPERTY
-    {$$ = { color:$1 } }
-  | TYPE
-    {$$ = $1 }
-  | OUTLINEFN
-    {$$ = $1 }
-  | VELFN
-    {$$ = $1 }
-  | ACCFN
+  | color_property
     {$$ = $1 }
   ;
 
-OUTLINEFN
-  : OUTLINE OUTLINEPARAMS END
+addfn
+  : add genparams end
+    {$$ = "app.add({" + $2 + "}); \n" }
+  ;
+
+setfn
+  : set genparams end
+    {$$ = "app.set({" + $2 + "}); \n" }
+  ;
+
+genparams
+  : genparam
+    {$$ = $1}
+  | genparams genparam
+    {$$ = $1 + ", " + $2 }
+  ;
+
+genparam
+  : position_property
+    {$$ = "pos: " + $1 }
+  | size_property
+    {$$ = $1 }
+  | color_property
+    {$$ = "color: " + $1 }
+  | type
+    {$$ = "type: " + $1 }
+  | outline_property
+    {$$ = $1 }
+  | vel_property
+    {$$ = "vel: " + $1 }
+  | acc_property
+    {$$ = $1 }
+  ;
+
+type
+  : type_circ
+    {$$ = "iio.CIRC" }
+  | type_x
+    {$$ = "iio.X" }
+  ;
+
+position_property
+  : center
+    {$$ = "app.center"}
+  | vector
+    {$$ = $1}
+  | pos_keyword variable
+    {$$ = $2;}
+  | pos_keyword vector
+    {$$ = $2;}
+  ;
+
+outline_property
+  : outline_keyword value color_property
+    {$$ = "lineWidth: "+$2+", outline: "+$3 }
+  | outline_keyword color_property value
+    {$$ = "outline: "+$2+", lineWidth: "+$3 }
+  ;
+
+vel_property
+  : vel_keyword vector
+    {$$ = $2}
+  ;
+
+acc_property
+  : acc_keyword vector
+    {$$ = $2}
+  ;
+
+vector
+  : value delimiter_vector value
+    {$$ = '{ x: ' + $1 + ', y: ' + $3 + '}' }
+  | value delimiter_vector value delimiter_vector value
+    {$$ = '{ x: ' + $1 + ', y: ' + $3 + ', r:' + $5 + '}'}
+  ;
+
+size_property
+  : value
+    {$$ = "width: " + $1 }
+  | size_keyword value
+    {$$ = "width: " + $2 }
+  | size_keyword value delimiter_vector value
+    {$$ = "width: " + $2+ ", height: " + $4 }
+  ;
+
+color_property
+  : color_constant
+    {$$ = "'" + $1 + "'" }
+  | color_random
+    {$$ = "iio.random.color()" }
+  | color_keyword variable
     {$$ = $2 }
   ;
 
-VELFN
-  : VEL_KEYWORD VECTOR END
-    {$$ = { vel:$2 }}
+random_property
+  : random_keyword value to_keyword value
+    {$$ = "iio.random.num("+$2+","+$4+")" }
   ;
 
-ACCFN
-  : ACC_KEYWORD VECTOR END
-    {$$ = { acc:$2 } }
-  ;
-
-OUTLINEPARAMS
-  : OUTLINEPARAM
+value
+  : number
     {$$ = $1}
-  | OUTLINEPARAMS OUTLINEPARAM
-    {$$ = iio.merge($1,$2)}
-  ;
-
-OUTLINEPARAM
-  : SIZE_PROPERTY
-    {$$ = { lineWidth: $1 } }
-  | COLOR_PROPERTY
-    {$$ = { outline:$1 } }
-  ;
-
-TYPE
-  : TYPE_CIRC
-    {$$ = { type:iio.CIRC } }
-  | TYPE_X
-    {$$ = { type:iio.X } }
-  ;
-
-POSITION_PROPERTY
-  : CENTER
-    {$$ = app.center}
-  | VECTOR
-    {$$ = $1} 
-  | POS_KEYWORD VARIABLE
-    {$$ = s.vars[$2];}
-  ;
-
-VECTOR
-  : VALUE DELIMITER_VECTOR VALUE
-    {$$ = { x:$1, y:$3 }}
-  | VALUE DELIMITER_VECTOR VALUE DELIMITER_VECTOR VALUE
-    {$$ = { x:$1, y:$3, r:$5 }}
-  ;
-
-SIZE_PROPERTY
-  : VALUE
-    {$$ = { width:$1 }}
-  | WIDTH
-    {$$ = { width:app.width }}
-  | HEIGHT
-    {$$ = { width:app.height }}
-  | SIZE_KEYWORD VARIABLE
-    {$$ = { width:s.vars[$2] }}    
-  | SIZE_KEYWORD VALUE
-    {$$ = { width: $2 }}
-  | SIZE_KEYWORD VALUE DELIMITER_VECTOR VALUE
-    {$$ = { width: $2, height:$4 }}
-  ;
-
-COLOR_PROPERTY
-  : COLOR_CONSTANT
-    {$$ = yytext;}
-  | COLOR_RANDOM
-    {$$ = iio.random.color(); }
-  | COLOR_KEYWORD VARIABLE
-    {$$ = s.vars[$2];}
-  ;
-
-VALUE
-  : NUMBER
-    {$$ = Number(yytext);}
-  | NUMBER_RANDOM
-    {$$ = Math.random();}
+  | width
+    {$$ = "app.width"}
+  | height
+    {$$ = "app.height"}
+  | random_property
+    {$$ = $1}
+  | variable
+    {$$ = $1}
   ;
