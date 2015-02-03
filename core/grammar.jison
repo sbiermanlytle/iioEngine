@@ -23,6 +23,7 @@
 "size"                    return 'size_keyword';
 "color"                   return 'color_keyword';
 "outline"                 return 'outline_keyword';
+"alpha"                   return 'alpha_keyword';
 "vel"                     return 'vel_keyword';
 "acc"                     return 'acc_keyword';
 
@@ -88,7 +89,6 @@ for_statement
     {$$ = 'for(var ' + $3 + ' = ' + $5 + '; '+$3+'<'+$7+';'+$3+'++) { ' + $8 + ' }'}
   ;
 
-
 alertfn
   : alert alertparam end
     {$$ = "alert(" + $2 + " ); \n" }
@@ -129,6 +129,8 @@ genparam
     {$$ = "type: " + $1 }
   | outline_property
     {$$ = $1 }
+  | alpha_property
+    {$$ = "alpha: " + $1 }
   | vel_property
     {$$ = "vel: " + $1 }
   | acc_property
@@ -158,6 +160,11 @@ outline_property
     {$$ = "lineWidth: "+$2+", outline: "+$3 }
   | outline_keyword color_property value
     {$$ = "outline: "+$2+", lineWidth: "+$3 }
+  ;
+
+alpha_property
+  : alpha_keyword value
+    {$$ = $2 }
   ;
 
 vel_property
