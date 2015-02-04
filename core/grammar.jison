@@ -4,15 +4,20 @@
 \s+                       /* skip whitespace */
 "end"                     return 'end';
 ":"                       return 'delimiter_vector';
+","                       return 'delimiter_list';
 "="                       return 'assign';
+"("                       return 'open_paren';
+")"                       return 'close_paren';
 "for"                     return 'for_keyword';
 "to"                      return 'to_keyword';
 "var"                     return 'var_keyword';
+"fn"                      return 'fn_keyword';
 
-[0-9]+(?:\\.[0-9]+)?\b    return 'number';
+\-?(?:\d*\.)?\d+          return 'number';
 (red|blue)                return 'color_constant';
 "random color"            return 'color_random';
 "random"                  return 'random_keyword';
+"color"                   return 'color_keyword';
 
 "alert"                   return 'alert';
 
@@ -33,6 +38,11 @@
 
 "o"                       return 'type_circ';
 "x"                       return 'type_x';
+"square"                  return 'type_square';
+"rectangle"               return 'type_rectangle';
+"circle"                  return 'type_circle';
+"ellipse"                 return 'type_ellipse';
+
 
 [a-zA-Z]+                 return 'variable';
 
@@ -59,20 +69,52 @@ statements
 statement
   : function
     {$$ = $1;}
-  | definition
+  | var_definition
     {$$ = $1;}
   | for_statement
     {$$ = $1;}
+  | expression
+    {$$ = $1;}
   ;
 
-definition
+var_definition
   : var_keyword variable assign expression
     {$$ = 'var ' + $2 + ' = ' + $4 + ';\n' }
   ;
 
-expression
-  : value
+fn_definition
+  : fn_keyword open_paren variables close_paren statements end
+    {$$ = 'function(' + $3 + '){ \n' + $5 + '\n}' }
+  ;
+
+fn_call
+  : variable open_paren expressions close_paren
+    {$$ = $1 + '(' +$3 + ');\n' }
+  ;
+
+variables
+  : variable
     {$$ = $1}
+  | variables variable
+    {$$ = $1 + ", " + $2}
+  ;
+
+expression
+  : color_property
+    {$$ = $1}
+  | value
+    {$$ = $1}
+  | fn_call
+    {$$ = $1}
+  | fn_definition
+    {$$ = $1}
+  ;
+
+expressions
+  : expression
+    {$$ = $1}
+  | expressions expression
+    {$$ = $1 + ", " + $2}
   ;
 
 function
@@ -98,7 +140,7 @@ alertparam
   : value
     {$$ = $1 }
   | color_property
-    {$$ = $1 }
+    {$$ = $1}
   ;
 
 addfn
@@ -125,6 +167,8 @@ genparam
     {$$ = $1 }
   | color_property
     {$$ = "color: " + $1 }
+  | color_keyword color_property
+    {$$ = "color: " + $2 }
   | type
     {$$ = "type: " + $1 }
   | outline_property
@@ -142,6 +186,14 @@ type
     {$$ = "iio.CIRC" }
   | type_x
     {$$ = "iio.X" }
+  | type_circle
+    {$$ = "iio.CIRC" }
+  | type_ellipse
+    {$$ = "iio.CIRC" }
+  | type_square
+    {$$ = "iio.RECT" }
+  | type_rectangle
+    {$$ = "iio.RECT" }
   ;
 
 position_property
@@ -149,6 +201,8 @@ position_property
     {$$ = "app.center"}
   | vector
     {$$ = $1}
+  | pos_keyword center 
+    {$$ = "app.center"}
   | pos_keyword variable
     {$$ = $2;}
   | pos_keyword vector
@@ -160,6 +214,13 @@ outline_property
     {$$ = "lineWidth: "+$2+", outline: "+$3 }
   | outline_keyword color_property value
     {$$ = "outline: "+$2+", lineWidth: "+$3 }
+  ;
+
+outline_params
+  : outline_param
+    {$$ = $1 }
+  | outline_params
+    {$$ = $1 }
   ;
 
 alpha_property

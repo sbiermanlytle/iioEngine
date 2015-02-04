@@ -96,17 +96,27 @@
     <h2 id='launchcode_head'>JavaScript Launch Code</h2>
     <pre id="editor1">iio.start([iioParser,{c:code}],'canvas');</pre> 
     </div>
-<pre id="editor2">
-set random color end
+<pre id="editor2">set random color end
+
+var addSquare = fn( s c )
+    add square
+        size s
+        pos center 
+        color random color 
+        outline c random color 
+    end
+end
+
+addSquare( 100 50 )
 
 for var i = 0 to 100
-    add o
+    add circle
         pos random 0 to width : random 0 to height
-        random 20 to 80
-        random color
-        alpha 1
-        outline random 2 to 20 random color
-        vel random 0 to 0.1 : random 0 to 1
+        size random 20 to 80
+        color random color
+        alpha 0.7
+        outline random 10 to 30 random color
+        vel random -.5 to .5 : random -.5 to .5
     end
 end</pre>
     </div>
