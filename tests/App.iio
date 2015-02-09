@@ -1,5 +1,4 @@
-add
+add grid red 3
 	center
-	size 75:80
-	red
+	size 200:200
 end

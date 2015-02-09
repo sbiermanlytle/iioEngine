@@ -98,8 +98,8 @@
     </div>
 <pre id="editor2">set random color end
 
-var addSquare = fn( s c )
-    add square
+var addGrid = fn( s c )
+    add grid random color c
         size s
         pos center 
         color random color 
@@ -107,17 +107,25 @@ var addSquare = fn( s c )
     end
 end
 
-addSquare( 100 50 )
+addGrid( height random 2 to 30 )
 
-for var i = 0 to 100
+var addCircle = fn( s )
     add circle
         pos random 0 to width : random 0 to height
-        size random 20 to 80
+        size random 80 to 200
         color random color
-        alpha 0.7
+        alpha random 0.2 to 0.8
         outline random 10 to 30 random color
         vel random -.5 to .5 : random -.5 to .5
+        shrink random 0.01 to 0.2 fn( obj )
+            addCircle( 10 )
+            return 1
+        end
     end
+end
+
+for var i = 0 to 100
+    addCircle( 10 )
 end</pre>
     </div>
     <!--<div id='center'></div>-->
@@ -173,7 +181,7 @@ end</pre>
         //center.style.left=parseInt(left.style.width,10)+'px';
         app.width=w;
         app.height=right.clientHeight;
-        document.getElementById('editor2').style.height=(left.clientHeight-50-51*2-45-48)+'px';
+        document.getElementById('editor2').style.height=(left.clientHeight)+'px';
         //if(iio.apps.length>0)
             //io.apps[0].resize(e,w,app.height);
     }; 

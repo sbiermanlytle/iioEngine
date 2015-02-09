@@ -1820,6 +1820,7 @@ iio = {};
   //GRID
   iio.grid = {
     init: function(o) {
+      o.res = { x:o.width/o.C, y:o.height/o.R };
       o.cells = [];
       var x = -o.res.x * (o.C - 1) / 2;
       var y = -o.res.y * (o.R - 1) / 2;
