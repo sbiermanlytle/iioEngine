@@ -12,6 +12,7 @@
 "to"                      return 'to_keyword';
 "var"                     return 'var_keyword';
 "fn"                      return 'fn_keyword';
+"return"                  return 'return_keyword';
 
 \-?(?:\d*\.)?\d+          return 'number';
 (red|blue)                return 'color_constant';
@@ -31,6 +32,7 @@
 "alpha"                   return 'alpha_keyword';
 "vel"                     return 'vel_keyword';
 "acc"                     return 'acc_keyword';
+"shrink"                  return 'shrink_keyword';
 
 "center"                  return 'center';
 "width"                   return 'width';
@@ -42,7 +44,7 @@
 "rectangle"               return 'type_rectangle';
 "circle"                  return 'type_circle';
 "ellipse"                 return 'type_ellipse';
-
+"grid"                    return 'type_grid';
 
 [a-zA-Z]+                 return 'variable';
 
@@ -56,12 +58,12 @@
 
 iioscript
   : statements eof
-    { return "(function() { return function(app, settings) {\n" + $1 + "\n}})()" }
+    { return "(function() { \n\treturn function(app, settings) {\n\n" + $1 + "\t}\n})()" }
   ;
 
 statements
   : statement
-    {$$ = $1;}
+    {$$ = "\t\t"+$1;}
   | statements statement
     {$$ = $1 + $2;}
   ;
@@ -79,17 +81,17 @@ statement
 
 var_definition
   : var_keyword variable assign expression
-    {$$ = 'var ' + $2 + ' = ' + $4 + ';\n' }
+    {$$ = '\t\tvar ' + $2 + ' = ' + $4 + ';\n' }
   ;
 
 fn_definition
   : fn_keyword open_paren variables close_paren statements end
-    {$$ = 'function(' + $3 + '){ \n' + $5 + '\n}' }
+    {$$ = 'function(' + $3 + '){ \n' + $5 + '\n\t}\n' }
   ;
 
 fn_call
   : variable open_paren expressions close_paren
-    {$$ = $1 + '(' +$3 + ');\n' }
+    {$$ = '\t\t' + $1 + '(' +$3 + ');\n' }
   ;
 
 variables
@@ -108,6 +110,13 @@ expression
     {$$ = $1}
   | fn_definition
     {$$ = $1}
+  | return
+    {$$ = $1}
+  ;
+
+return
+  : return_keyword value
+    {$$ = "\t\treturn " + $2}
   ;
 
 expressions
@@ -128,12 +137,12 @@ function
 
 for_statement
   : for_keyword var_keyword variable assign expression to_keyword value statements end
-    {$$ = 'for(var ' + $3 + ' = ' + $5 + '; '+$3+'<'+$7+';'+$3+'++) { ' + $8 + ' }'}
+    {$$ = '\t\tfor(var ' + $3 + ' = ' + $5 + '; '+$3+'<'+$7+';'+$3+'++) {\n' + $8 + '\t\t}\n'}
   ;
 
 alertfn
   : alert alertparam end
-    {$$ = "alert(" + $2 + " ); \n" }
+    {$$ = "alert(" + $2 + " );\n" }
   ;
 
 alertparam
@@ -145,19 +154,19 @@ alertparam
 
 addfn
   : add genparams end
-    {$$ = "app.add({" + $2 + "}); \n" }
+    {$$ = "app.add({\n\t\t\t" + $2 + "\n\t\t});\n\n" }
   ;
 
 setfn
   : set genparams end
-    {$$ = "app.set({" + $2 + "}); \n" }
+    {$$ = "app.set({\n\t\t\t" + $2 + "\n\t\t});\n\n" }
   ;
 
 genparams
   : genparam
     {$$ = $1}
   | genparams genparam
-    {$$ = $1 + ", " + $2 }
+    {$$ = $1 + ",\n\t\t\t" + $2 }
   ;
 
 genparam
@@ -179,6 +188,10 @@ genparam
     {$$ = "vel: " + $1 }
   | acc_property
     {$$ = $1 }
+  | shrink_property
+    {$$ = $1 }
+  | grid_property
+    {$$ = $1 }
   ;
 
 type
@@ -194,6 +207,19 @@ type
     {$$ = "iio.RECT" }
   | type_rectangle
     {$$ = "iio.RECT" }
+  ;
+
+grid_property
+  : type_grid color_property value
+    {$$ = "type:iio.GRID,\n\t\t\tgridColor:" + $2 + ",\n\t\t\tC: " + $3 + ",\n\t\t\tR: " + $3 }
+  ;
+
+
+shrink_property
+  : shrink_keyword value
+    {$$ = "shrink:[" + $2 + "\t\t\t]" }
+  | shrink_keyword value fn_definition
+    {$$ = "shrink:[" + $2 + ", " + $3 + "\t\t\t]" }
   ;
 
 position_property
@@ -259,7 +285,7 @@ color_property
     {$$ = "'" + $1 + "'" }
   | color_random
     {$$ = "iio.random.color()" }
-  | color_keyword variable
+  | color_keyword variable 
     {$$ = $2 }
   ;
 
