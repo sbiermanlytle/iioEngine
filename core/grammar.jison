@@ -67,9 +67,9 @@ statements
   ;
 
 statement
-  : function
+  : definition
     {$$ = $1;}
-  | var_definition
+  | declaration
     {$$ = $1;}
   | for_statement
     {$$ = $1;}
@@ -77,12 +77,23 @@ statement
     {$$ = $1;}
   ;
 
-var_definition
-  : var_keyword variable assign expression
-    {$$ = 'var ' + $2 + ' = ' + $4 + ';\n' }
+definition
+  : var_keyword assignment
+    {$$ = 'var ' + $2 + '\n' }
+  | assignment
+    {$$ = $1 + '\n'}
+
+declaration
+  : var_keyword variable
+    {$$ = 'var ' + $2 + ';\n' }
   ;
 
-fn_definition
+assignment
+  : variable assign expression
+    {$$ = $1 + ' = ' + $3 + ';' }
+  ;
+
+anon_fn
   : fn_keyword open_paren variables close_paren statements end
     {$$ = 'function(' + $3 + '){ \n' + $5 + '\n}' }
   ;
@@ -90,6 +101,8 @@ fn_definition
 fn_call
   : variable open_paren expressions close_paren
     {$$ = $1 + '(' +$3 + ');\n' }
+  | iio_fn
+    {$$ = $1}
   ;
 
 variables
@@ -106,7 +119,7 @@ expression
     {$$ = $1}
   | fn_call
     {$$ = $1}
-  | fn_definition
+  | anon_fn
     {$$ = $1}
   ;
 
@@ -117,12 +130,12 @@ expressions
     {$$ = $1 + ", " + $2}
   ;
 
-function
-  : addfn
+iio_fn
+  : add_fn
     {$$ = $1;}
-  | alertfn
+  | alert_fn
     {$$ = $1;}
-  | setfn
+  | set_fn
     {$$ = $1;}
   ;
 
@@ -131,7 +144,7 @@ for_statement
     {$$ = 'for(var ' + $3 + ' = ' + $5 + '; '+$3+'<'+$7+';'+$3+'++) { ' + $8 + ' }'}
   ;
 
-alertfn
+alert_fn
   : alert alertparam end
     {$$ = "alert(" + $2 + " ); \n" }
   ;
@@ -143,12 +156,12 @@ alertparam
     {$$ = $1}
   ;
 
-addfn
+add_fn
   : add genparams end
     {$$ = "app.add({" + $2 + "}); \n" }
   ;
 
-setfn
+set_fn
   : set genparams end
     {$$ = "app.set({" + $2 + "}); \n" }
   ;
@@ -201,7 +214,7 @@ position_property
     {$$ = "app.center"}
   | vector
     {$$ = $1}
-  | pos_keyword center 
+  | pos_keyword center
     {$$ = "app.center"}
   | pos_keyword variable
     {$$ = $2;}
