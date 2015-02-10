@@ -107,7 +107,13 @@ var addGrid = fn( s c )
     end
 end
 
-addGrid( height random 2 to 30 )
+var block = add 
+    pos center
+    size 80
+    color blue
+end
+
+block.set 100 + 100:200 + 100 end
 
 var addCircle = fn( s )
     add circle
@@ -117,10 +123,11 @@ var addCircle = fn( s )
         alpha random 0.2 to 0.8
         outline random 10 to 30 random color
         vel random -.5 to .5 : random -.5 to .5
-        shrink random 0.01 to 0.2 fn( obj )
-            addCircle( 10 )
-            return 1
-        end
+        shrink random 0.01 to 0.2 
+            then
+                addCircle( 10 )
+                return 1
+            end
     end
 end
 

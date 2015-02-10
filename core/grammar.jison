@@ -6,15 +6,28 @@
 ":"                       return 'delimiter_vector';
 ","                       return 'delimiter_list';
 "="                       return 'assign';
-"("                       return 'open_paren';
-")"                       return 'close_paren';
 "for"                     return 'for_keyword';
 "to"                      return 'to_keyword';
 "var"                     return 'var_keyword';
 "fn"                      return 'fn_keyword';
 "return"                  return 'return_keyword';
+"if"                      return 'if_keyword';
+"else if"                 return 'elseif_keyword';
+"else"                    return 'else_keyword';
+"then"                    return 'then_keyword';
 
 \-?(?:\d*\.)?\d+          return 'number';
+"."                       return 'dot';
+"*"                       return '*';
+"/"                       return '/';
+"-"                       return '-';
+"+"                       return '+';
+"^"                       return '^';
+"("                       return '(';
+")"                       return ')';
+"PI"                      return 'PI';
+"E"                       return 'E';
+
 (red|blue)                return 'color_constant';
 "random color"            return 'color_random';
 "random"                  return 'random_keyword';
@@ -52,6 +65,13 @@
 
 /lex
 
+/* operator associations and precedence */
+
+%left '+' '-'
+%left '*' '/'
+%left '^'
+%left UMINUS
+
 %start iioscript
 
 %%
@@ -75,6 +95,8 @@ statement
     {$$ = $1;}
   | for_statement
     {$$ = $1;}
+  | if_statement
+    {$$ = $1;}
   | expression
     {$$ = $1;}
   ;
@@ -84,6 +106,7 @@ definition
     {$$ = 'var ' + $2 + '\n' }
   | assignment
     {$$ = $1 + '\n'}
+  ;
 
 declaration
   : var_keyword variable
@@ -96,15 +119,17 @@ assignment
   ;
 
 anon_fn
-  : fn_keyword open_paren variables close_paren statements end
+  : fn_keyword '(' variables ')' statements end
     {$$ = 'function(' + $3 + '){ \n' + $5 + '\n\t}\n' }
   ;
 
 fn_call
-  : variable open_paren expressions close_paren
+  : variable '(' expressions ')'
     {$$ = '\t\t' + $1 + '(' +$3 + ');\n' }
   | iio_fn
-    {$$ = $1}
+    {$$ = 'app.' + $1}
+  | variable dot iio_fn
+    {$$ = $1 + '.' + $3}
   ;
 
 variables
@@ -115,15 +140,15 @@ variables
   ;
 
 expression
-  : color_property
-    {$$ = $1}
-  | value
+  : value
     {$$ = $1}
   | fn_call
     {$$ = $1}
   | anon_fn
     {$$ = $1}
   | return
+    {$$ = $1}
+  | random_property
     {$$ = $1}
   ;
 
@@ -149,8 +174,13 @@ iio_fn
   ;
 
 for_statement
-  : for_keyword var_keyword variable assign expression to_keyword value statements end
+  : for_keyword var_keyword variable assign expression to_keyword expression statements end
     {$$ = '\t\tfor(var ' + $3 + ' = ' + $5 + '; '+$3+'<'+$7+';'+$3+'++) {\n' + $8 + '\t\t}\n'}
+  ;
+
+if_statement
+  : if_keyword expression statements end
+    {$$ = "\t\tif(" + $2 + "){\n" + $3 + "\t\t}\n"}
   ;
 
 alert_fn
@@ -159,7 +189,7 @@ alert_fn
   ;
 
 alertparam
-  : value
+  : expression
     {$$ = $1 }
   | color_property
     {$$ = $1}
@@ -167,12 +197,12 @@ alertparam
 
 add_fn
   : add genparams end
-    {$$ = "app.add({\n\t\t\t" + $2 + "\n\t\t});\n\n" }
+    {$$ = "add({\n\t\t\t" + $2 + "\n\t\t});\n\n" }
   ;
 
 set_fn
   : set genparams end
-    {$$ = "app.set({\n\t\t\t" + $2 + "\n\t\t});\n\n" }
+    {$$ = "set({\n\t\t\t" + $2 + "\n\t\t});\n\n" }
   ;
 
 genparams
@@ -223,16 +253,16 @@ type
   ;
 
 grid_property
-  : type_grid color_property value
+  : type_grid color_property expression
     {$$ = "type:iio.GRID,\n\t\t\tgridColor:" + $2 + ",\n\t\t\tC: " + $3 + ",\n\t\t\tR: " + $3 }
   ;
 
 
 shrink_property
-  : shrink_keyword value
+  : shrink_keyword expression
     {$$ = "shrink:[" + $2 + "\t\t\t]" }
-  | shrink_keyword value fn_definition
-    {$$ = "shrink:[" + $2 + ", " + $3 + "\t\t\t]" }
+  | shrink_keyword expression then_keyword statements end
+    {$$ = "shrink:[" + $2 + ",function(o){" + $4 + "\t\t\t}]" }
   ;
 
 position_property
@@ -249,9 +279,9 @@ position_property
   ;
 
 outline_property
-  : outline_keyword value color_property
+  : outline_keyword expression color_property
     {$$ = "lineWidth: "+$2+", outline: "+$3 }
-  | outline_keyword color_property value
+  | outline_keyword color_property expression
     {$$ = "outline: "+$2+", lineWidth: "+$3 }
   ;
 
@@ -263,7 +293,7 @@ outline_params
   ;
 
 alpha_property
-  : alpha_keyword value
+  : alpha_keyword expression
     {$$ = $2 }
   ;
 
@@ -278,18 +308,18 @@ acc_property
   ;
 
 vector
-  : value delimiter_vector value
+  : expression delimiter_vector expression
     {$$ = '{ x: ' + $1 + ', y: ' + $3 + '}' }
-  | value delimiter_vector value delimiter_vector value
+  | expression delimiter_vector expression delimiter_vector expression
     {$$ = '{ x: ' + $1 + ', y: ' + $3 + ', r:' + $5 + '}'}
   ;
 
 size_property
-  : value
+  : expression
     {$$ = "width: " + $1 }
-  | size_keyword value
+  | size_keyword expression
     {$$ = "width: " + $2 }
-  | size_keyword value delimiter_vector value
+  | size_keyword expression delimiter_vector expression
     {$$ = "width: " + $2+ ", height: " + $4 }
   ;
 
@@ -303,7 +333,7 @@ color_property
   ;
 
 random_property
-  : random_keyword value to_keyword value
+  : random_keyword expression to_keyword expression
     {$$ = "iio.random.num("+$2+","+$4+")" }
   ;
 
@@ -314,8 +344,20 @@ value
     {$$ = "app.width"}
   | height
     {$$ = "app.height"}
-  | random_property
-    {$$ = $1}
   | variable
     {$$ = $1}
+  | value '+' value
+      {$$ = $1 + '+' + $3;}
+  | value '-' value
+      {$$ = $1 + '-' + $3;}
+  | value '*' value
+      {$$ = $1 + '*' + $3;}
+  | value '/' value
+      {$$ = $1 + '/' + $3;}
+  | value '^' value
+      {$$ = 'Math.pow('+ $1 + ',' + $3 + ')' }
+  | E
+      {$$ = 'Math.E' }
+  | PI
+      {$$ = 'Math.PI' }
   ;
