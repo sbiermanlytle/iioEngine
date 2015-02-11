@@ -28,7 +28,7 @@
 "PI"                      return 'PI';
 "E"                       return 'E';
 
-(red|blue|black)          return 'color_constant';
+(red|blue|black|white)    return 'color_constant';
 "random color"            return 'color_random';
 "random"                  return 'random_keyword';
 "color"                   return 'color_keyword';
