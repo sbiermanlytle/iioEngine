@@ -1,0 +1,13 @@
+set black end
+
+var num = width/5
+
+for var i = 0 to 200
+  add
+    pos random 0 to width : random 0 to height
+    size random 60 to 140
+    color white
+    vel random -.5 to .5 : random -.5 to .5
+    alpha random .3 to .6
+  end
+end

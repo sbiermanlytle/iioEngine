@@ -8,6 +8,7 @@
 "="                       return 'assign';
 "for"                     return 'for_keyword';
 "to"                      return 'to_keyword';
+"by"                      return 'by_keyword';
 "var"                     return 'var_keyword';
 "fn"                      return 'fn_keyword';
 "return"                  return 'return_keyword';
@@ -37,6 +38,11 @@
 
 "add"                     return 'add';
 "set"                     return 'set';
+"draw"                    return 'draw';
+"clear"                   return 'clear';
+"onresize"                return 'onresize';
+
+"obj"                     return 'obj_keyword';
 
 "pos"                     return 'pos_keyword';
 "size"                    return 'size_keyword';
@@ -99,6 +105,8 @@ statement
     {$$ = $1;}
   | expression
     {$$ = $1;}
+  | iio_cmd
+    {$$ = $1;}
   ;
 
 definition
@@ -121,11 +129,15 @@ assignment
 anon_fn
   : fn_keyword '(' variables ')' statements end
     {$$ = 'function(' + $3 + '){ \n' + $5 + '\n\t}\n' }
+  | fn_keyword '(' ')' statements end
+    {$$ = 'function(){ \n' + $4 + '\n\t}\n' }
   ;
 
 fn_call
   : variable '(' expressions ')'
     {$$ = '\t\t' + $1 + '(' +$3 + ');\n' }
+  | variable '(' ')'
+    {$$ = '\t\t' + $1 + '();\n' }
   | iio_fn
     {$$ = 'app.' + $1}
   | variable dot iio_fn
@@ -152,6 +164,30 @@ expression
     {$$ = $1}
   ;
 
+iio_cmd
+  : clear
+    {$$ = "app.objs = [];\n" }
+  | draw
+    {$$ = "app.draw();" }
+  | onresize expression
+    {$$ = "this.resize = " + $2 + ";\n" }
+  | obj_keyword dot obj_property expression
+    {$$ = 'o.' + $3 + ' = ' + $4 + ';' }
+  | obj_keyword dot color_keyword color_property
+    {$$ = 'o.' + $3 + ' = ' + $4 + ';' }
+  ;
+
+obj_property
+  : width
+    {$$ = $1;}
+  | height
+    {$$ = $1;}
+  | color_keyword
+    {$$ = $1;}
+  | size_keyword
+    {$$ = $1;}
+  ;
+
 return
   : return_keyword value
     {$$ = "\t\treturn " + $2}
@@ -176,6 +212,8 @@ iio_fn
 for_statement
   : for_keyword var_keyword variable assign expression to_keyword expression statements end
     {$$ = '\t\tfor(var ' + $3 + ' = ' + $5 + '; '+$3+'<'+$7+';'+$3+'++) {\n' + $8 + '\t\t}\n'}
+  | for_keyword var_keyword variable assign expression to_keyword expression by_keyword expression statements end
+    {$$ = '\t\tfor(var ' + $3 + ' = ' + $5 + '; '+$3+'<'+$7+';'+$3+'+=' + $9 + ') {\n' + $10 + '\t\t}\n'}
   ;
 
 if_statement
