@@ -19,6 +19,7 @@
 
 \-?(?:\d*\.)?\d+          return 'number';
 "."                       return 'dot';
+"!"                       return 'not';
 "*"                       return '*';
 "/"                       return '/';
 "-"                       return '-';
@@ -52,6 +53,7 @@
 "vel"                     return 'vel_keyword';
 "acc"                     return 'acc_keyword';
 "shrink"                  return 'shrink_keyword';
+"click"                   return 'click_keyword';
 
 "center"                  return 'center';
 "width"                   return 'width';
@@ -154,6 +156,8 @@ variables
 expression
   : value
     {$$ = $1}
+  | not value
+    {$$ = '!' + $2;}
   | fn_call
     {$$ = $1}
   | anon_fn
@@ -219,6 +223,12 @@ for_statement
 if_statement
   : if_keyword expression statements end
     {$$ = "\t\tif(" + $2 + "){\n" + $3 + "\t\t}\n"}
+  | if_keyword expression statements else_keyword statements end
+    {$$ = "\t\tif(" + $2 + "){\n" + $3 + "\t\t} else {\n" + $5 + "\n}" }
+  | if_keyword expression statements elseif_keyword expression statements end
+    {$$ = "\t\tif(" + $2 + "){\n" + $3 + "\t\t} else if( "+ $5 +" ){\n" + $6 + "\n}" }
+  | if_keyword expression statements elseif_keyword expression statements else_keyword statements end
+    {$$ = "\t\tif(" + $2 + "){\n" + $3 + "\t\t} else if( "+ $5 +" ){\n" + $6 + "\n} else {\n" + $8 + "\n}" }
   ;
 
 alert_fn
@@ -273,6 +283,8 @@ genparam
     {$$ = $1 }
   | grid_property
     {$$ = $1 }
+  | click_property
+    {$$ = $1 }
   ;
 
 type
@@ -295,6 +307,10 @@ grid_property
     {$$ = "type:iio.GRID,\n\t\t\tgridColor:" + $2 + ",\n\t\t\tC: " + $3 + ",\n\t\t\tR: " + $3 }
   ;
 
+click_property
+  : click_keyword '(' variable ')' statements end
+    {$$ = "click:function(event,ePos," + $3 + "){" + $5 + "}" }
+  ;
 
 shrink_property
   : shrink_keyword expression
