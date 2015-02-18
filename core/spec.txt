@@ -86,12 +86,12 @@ Function Calls
 Core Function Calls
 
 	core functions are called by adding the function keyword,
-	a set of parameters, and an 'end' keyword
+	a set of named parameters, and an 'end' keyword
 
 	core function call:
 
 		set 
-			value
+			property value ...
 		end
 
 Value Function Calls
@@ -102,6 +102,77 @@ Value Function Calls
 	value function call:
 
 		random 0 to 100
+
+ACTUAL FUNCTION CALLS
+
+	functions are called with their function name, followed
+	by any number of named or un-named parameters.
+
+	function calls may be ended with an 'end' keyword to
+	preserve proper scoping.
+
+	myFunction arg0 arg1
+
+	myFunction
+		name0 arg0 
+		name1 arg1
+
+	myFunction
+		name0 arg0 
+		name1 arg1
+	end
+
+Conditionals
+
+	conditional blocks are created using the following syntax:
+
+	if boolean_value
+		...
+	else if boolean_value
+		...
+	else
+		...
+	end
+
+Objects
+
+	obj
+		Properties
+			pos 		{ x : y : z }
+			vel 		{ x : y }
+			acc			{ x : y }
+			width
+			height
+			lineWidth
+			color
+			alpha
+			shrink
+		Functions
+			set
+			update
+			draw
+			click
+
+	regular_shape extends obj
+		Properties
+			size
+
+	line extends obj
+		Properties
+			endPos 		{ x : y }
+
+	square extends regular_shape
+
+	circle extends regular_shape
+
+	rectangle extends obj
+
+	ellipse extends obj
+
+	x extends obj
+		Properties
+			width
+			height
 
 Expressions
 	Definitions
