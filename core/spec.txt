@@ -20,7 +20,6 @@ Syntax
 
 		keywords
 		variables
-		core functions
 		operators
 		values
 
@@ -95,36 +94,15 @@ Core Function Calls
 	core function call:
 
 		set
-			property value ...
+			property value 
+			...
 		end
 
-Value Function Calls
+	core functions:
 
-	value functions are called with their function keyword
-	and one or more parameters
-
-	value function call:
-
-		random 0 to 100
-
-ACTUAL FUNCTION CALLS
-
-	functions are called with their function name, followed
-	by any number of named or un-named parameters.
-
-	function calls may be ended with an 'end' keyword to
-	preserve proper scoping.
-
-	myFunction arg0 arg1
-
-	myFunction
-		name0 arg0
-		name1 arg1
-
-	myFunction
-		name0 arg0
-		name1 arg1
-	end
+		new
+		add
+		set
 
 Conditionals
 
@@ -152,67 +130,43 @@ Loops
 		...
 	end
 
-Objects
+Shapes
 
-	obj
-		Properties
-			pos 		{ x : y : z }
-			vel 		{ x : y }
-			acc			{ x : y }
-			width
-			height
-			lineWidth
-			color
-			alpha
-			shrink
-		Functions
-			set
-			update
-			draw
-			click
+	shapes are created with the 'new' or 'add' keyword followed by
+	a set of properties and the 'end' keyword
 
-	regular_shape extends obj
-		Properties
-			size
+	var myShape = new 
+		type circle
+		size 40
+		...
+	end
 
-	line extends obj
-		Properties
-			endPos 		{ x : y }
+	add
+		type square
+		size 40
+	end
 
-	square extends regular_shape
+	shape properties
+		type
+		vs
+		pos 		x : y : z
+		vel 		x : y
+		acc			x : y
+		width
+		height
+		lineWidth
+		color
+		alpha
+		shrink
 
-	circle extends regular_shape
+	some shapes have additional properties:
 
-	rectangle extends obj
+	grid properties
+		R
+		C
+		res
 
-	ellipse extends obj
-
-	x extends obj
-		Properties
-			width
-			height
-
-Expressions
-	Definitions
-	Assignments
-	Function Calls
-	Core Function Calls
-	Value Function Calls
-	Conditionals
-	Loops
-
-Values
-	Functions
-	Numbers
-	Vectors
-	Ranges
-	Colors
-
-Objects
-	Line
-	Square
-	Rectangle
-	Circle
-	Ellipse
-	X
-	Grid
+	text properties
+		font
+		text
+		align
