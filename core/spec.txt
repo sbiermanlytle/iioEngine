@@ -120,7 +120,7 @@ Loops
 
 	looping blocks are created using the following syntax:
 
-	for var = start_range to end_range [by step]
+	for var = range [by step]
 		...
 	end
 
@@ -129,6 +129,14 @@ Loops
 	while boolean_value
 		...
 	end
+
+Ranges
+	
+	ranges are defined with two values seperated by a 'to' keyword:
+
+		0 to 100
+
+	ranges can be used in loop definitions or random function calls.
 
 Shapes
 
