@@ -1,0 +1,30 @@
+<!-- 
+	iio Engine v1.3
+	***************
+ -->
+<!DOCTYPE html>
+<html>
+	<body>
+		<script type="text/javascript" src="../core/iioEngine.js"></script>
+		<script type="text/javascript" src="../core/iioParser.js"></script>
+		<script type="text/javascript">
+
+TextEdit = function(app,s){
+	app.set('black');
+
+	var text = app.add(app.center,
+		"'edit this text' #00baff font Consolas 60 center cursor");
+
+	this.onKeyDown=function(e,k){
+		text.keyDown(k);
+	}
+
+	this.onKeyUp=function(e,k){
+		text.keyUp(k);
+	}
+
+}; iio.start(TextEdit);
+
+		</script>
+	</body>
+</html>

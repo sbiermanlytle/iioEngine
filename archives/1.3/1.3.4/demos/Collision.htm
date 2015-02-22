@@ -1,0 +1,38 @@
+<!-- 
+	iio Engine v1.3
+	***************
+ -->
+<!DOCTYPE html>
+<html>
+	<body>
+		<script type="text/javascript" src="../core/iioEngine.js"></script>
+		<script type="text/javascript" src="../core/iioParser.js"></script>
+		<script type="text/javascript" src="../extensions/iioDebugger.js"></script>
+		<script type="text/javascript">
+
+function Collision(app){
+	app.set('black').debug();
+
+	var r = app.add([app.width/3,app.center.y],
+		'100 outline white 5 vel 6 add 0:0 50 red');
+
+	var r2 = app.add([app.width*2/3,app.center.y],
+		'100 outline white 5 vel -6 add 0:0 50 #00baff');
+
+	function reverseX(o){ o.vel.x*=-1 }
+	r.bounds=r2.bounds={
+		left:[0,reverseX],
+		right:[app.width,reverseX]
+	}
+
+	app.collision(r,r2,function(r,r2){
+		app.log('collision');
+		r.vel.x*=-1;
+		r2.vel.x*=-1;
+	})
+
+}; iio.start(Collision);
+
+		</script>
+	</body>
+</html>

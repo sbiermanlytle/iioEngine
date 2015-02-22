@@ -1,0 +1,129 @@
+iio script specification
+========================
+v 1.0
+
+Syntax
+
+	iio script is a series of statments, which can be
+	composed of one or more expressions.
+
+	An expression can be a:
+		
+		definition
+		assignment
+		function call
+		core function call
+		conditional
+		loop
+
+	expressions are composed of:
+
+		keywords
+		variables
+		core functions
+		operators
+		values
+
+	whitespace is used to delineate expressions, statements,
+	keywords, functions, and values.
+
+Defnitions
+	
+	named variables are created using the 'var' keyword.
+
+	variable definition:
+
+		var i = value
+
+Assignments
+
+	values are assigned using the '=' operator.
+
+	variable assignment:
+
+		i = value
+
+	variable definition and assignment:
+
+		var i = value
+
+Functions
+
+	functions are variables that can be defined with 
+	the 'fn' keyword. The 'end' keyword is required
+	at the end of the function body.
+
+	function definition:
+
+		var myFunction = fn
+			...
+		end
+
+	ordered parameters may be defined within trailing
+	parentheses. Whitespace is used to delineate parameters.
+
+	function with parameters definition:
+
+		var myFunction = fn( arg0 arg1 ... )
+			...
+		end
+
+
+Function Calls
+
+	functions are called by adding a training parentheses to
+	the function name.
+
+	function call:
+
+		myFunction()
+
+	function call with parameters:
+
+		myFunction( arg0 arg1 ... )
+
+
+Core Function Calls
+
+	core functions are called by adding the function keyword,
+	a set of parameters, and an 'end' keyword
+
+	core function call:
+
+		set 
+			value
+		end
+
+Value Function Calls
+
+	value functions are called with their function keyword
+	and one or more parameters
+
+	value function call:
+
+		random 0 to 100
+
+Expressions
+	Definitions
+	Assignments
+	Function Calls
+	Core Function Calls
+	Value Function Calls
+	Conditionals
+	Loops
+
+Values
+	Functions
+	Numbers
+	Vectors
+	Ranges
+	Colors
+
+Objects
+	Line
+	Square
+	Rectangle
+	Circle
+	Ellipse
+	X
+	Grid

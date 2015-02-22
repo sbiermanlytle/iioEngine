@@ -1,0 +1,46 @@
+<!-- 
+	iio Engine v1.3
+	***************
+	Live Demo: iioapps.com/tic-tac-toe
+ -->
+<!DOCTYPE html>
+<html>
+	<body>
+		<script type="text/javascript" src="../core/iioEngine.js"></script>
+		<script type="text/javascript" src="../core/iioParser.js"></script>
+		<script type="text/javascript">
+
+TicTacToe=function(app,s){
+
+	app.set('black');
+				
+	var grid = app.add(app.center,
+		((app.height<app.width)?app.height:app.width)+
+		' outline 10 grid 3 white');
+
+	app.canvas.oncontextmenu=function(){ return false };
+
+	var xTurn = true;
+	grid.click=function(event,ePos,cell){
+		if(event.button==2) {
+			event.preventDefault();
+			grid.clear();
+		} else {
+			if(!cell.taken){
+				if(xTurn) cell.add('height/1.3: x red 10');
+				else cell.add('height/1.3: o outline #00baff 10');
+				xTurn=!xTurn;
+			} cell.taken=true;
+		}
+	}
+
+	if(s&&s.preview)
+		for(var i=0; i<3; i++)
+			grid.click({},{},
+				grid.cells[iio.randomInt(0,3)][iio.randomInt(0,3)]);
+
+}; iio.start(TicTacToe);
+
+		</script>
+	</body>
+</html>
