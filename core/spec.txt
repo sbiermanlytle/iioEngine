@@ -4,11 +4,11 @@ v 1.0
 
 Syntax
 
-	iio script is a series of statments, which can be
+	iio script is a series of statements, which can be
 	composed of one or more expressions.
 
 	An expression can be a:
-		
+
 		definition
 		assignment
 		function call
@@ -20,7 +20,6 @@ Syntax
 
 		keywords
 		variables
-		core functions
 		operators
 		values
 
@@ -28,7 +27,7 @@ Syntax
 	keywords, functions, and values.
 
 Defnitions
-	
+
 	named variables are created using the 'var' keyword.
 
 	variable definition:
@@ -49,13 +48,13 @@ Assignments
 
 Functions
 
-	functions are variables that can be defined with 
+	functions are variables that can be defined with
 	the 'fn' keyword. The 'end' keyword is required
 	at the end of the function body.
 
 	function definition:
 
-		var myFunction = fn
+		var myFunction = fn(params...)
 			...
 		end
 
@@ -82,48 +81,100 @@ Function Calls
 
 		myFunction( arg0 arg1 ... )
 
+	function call with named parameters:
+
+		myFunction( arg0: a0 arg1: a1)
+
 
 Core Function Calls
 
 	core functions are called by adding the function keyword,
-	a set of parameters, and an 'end' keyword
+	a set of named parameters, and an 'end' keyword
 
 	core function call:
 
-		set 
-			value
+		set
+			property value 
+			...
 		end
 
-Value Function Calls
+	core functions:
 
-	value functions are called with their function keyword
-	and one or more parameters
+		new
+		add
+		set
 
-	value function call:
+Conditionals
 
-		random 0 to 100
+	conditional blocks are created using the following syntax:
 
-Expressions
-	Definitions
-	Assignments
-	Function Calls
-	Core Function Calls
-	Value Function Calls
-	Conditionals
-	Loops
+	if boolean_value
+		...
+	else if boolean_value
+		...
+	else
+		...
+	end
 
-Values
-	Functions
-	Numbers
-	Vectors
-	Ranges
-	Colors
+Loops
 
-Objects
-	Line
-	Square
-	Rectangle
-	Circle
-	Ellipse
-	X
-	Grid
+	looping blocks are created using the following syntax:
+
+	for var = range [by step]
+		...
+	end
+
+	OR
+
+	while boolean_value
+		...
+	end
+
+Ranges
+	
+	ranges are defined with two values seperated by a 'to' keyword:
+
+		0 to 100
+
+	ranges can be used in loop definitions or random function calls.
+
+Shapes
+
+	shapes are created with the 'new' or 'add' keyword followed by
+	a set of properties and the 'end' keyword
+
+	var myShape = new 
+		type circle
+		size 40
+		...
+	end
+
+	add
+		type square
+		size 40
+	end
+
+	shape properties
+		type
+		vs
+		pos 		x : y : z
+		vel 		x : y
+		acc			x : y
+		width
+		height
+		lineWidth
+		color
+		alpha
+		shrink
+
+	some shapes have additional properties:
+
+	grid properties
+		R
+		C
+		res
+
+	text properties
+		font
+		text
+		align
