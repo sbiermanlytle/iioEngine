@@ -18,7 +18,7 @@ function Snow(app,s){
 	if(s&&s.preview) num = 50;
 
 	for(var i=0; i<num; i++)
-		app.add([iio.random.num(0,app.width),iio.random.num(-app.height,0)]
+		app.add({x:iio.random.num(0,app.width),y:iio.random.num(-app.height,0)}
 			,iio.random.num(30,140)+' o simple '+(s.color||'white'),{
 				vel:{
 					x:iio.random.num(-.1,.1),

@@ -1,6 +1,6 @@
 /*
    iio engine
-   Version 1.3.4 Working Version
+   Version 1.3.5 Working Version
 
    1.3 is a work in progress, but already useful for many apps
    1.2 has more features, less bugs, and is available on github
@@ -853,6 +853,14 @@ iio = {};
     },
     set: function(s, no_draw) {
 
+      if(s==null) return this;
+
+      if(s.x && s.y){
+        this.pos.x = s.x;
+        this.pos.y = s.y;
+        return this;
+      }
+
       //set array of settings
       if (s instanceof Array)
         s.forEach(function(_s) {
@@ -881,24 +889,22 @@ iio = {};
 
       return this;
     },
-    add: function(o, ii, s, nd) {
-      if (typeof nd == 'undefined') nd = s;
-      if (o instanceof Array && !iio.is.number(o[0]) && typeof(o[0].x) == 'undefined')
-        o.forEach(function(_o) {
-          this.add(_o, ii, s, nd);
+    add: function() {
+      if (arguments[0] instanceof Array)
+        arguments[0].forEach(function() {
+          this.add(arguments);
         }, this);
-      else if (typeof(o.app) != 'undefined') {
-        o.parent = this;
-        o.app = this.app;
-        nd = ii;
-        if (typeof(o.z) == 'undefined') o.z = 0;
+      else if (typeof(arguments[0].app) != 'undefined') {
+        arguments[0].parent = this;
+        arguments[0].app = this.app;
+        if (typeof(arguments[0].z) == 'undefined') arguments[0].z = 0;
         var i = 0;
-        while (i < this.objs.length && typeof(this.objs[i].z) != 'undefined' && o.z >= this.objs[i].z) i++;
-        this.objs.insert(i, o);
-      } else o = this.add(new iio.Obj(o, ii, s, this), true);
-      if (nd);
+        while (i < this.objs.length && typeof(this.objs[i].z) != 'undefined' && arguments[0].z >= this.objs[i].z) i++;
+        this.objs.insert(i, arguments[0]);
+      } else arguments[0] = this.add(new iio.Obj(this, arguments), true);
+      if (arguments[arguments.length-1] === true);
       else this.app.draw();
-      return o;
+      return arguments[0];
     },
     rmv: function(o, nd) {
       callback = function(c, i, arr) {
@@ -1339,39 +1345,17 @@ iio = {};
     this.Obj.apply(this, arguments);
   };
   iio.Obj = Obj;
-  Obj.prototype.Obj = function(p, s, ss, pp) {
+  Obj.prototype.Obj = function(parent, args) {
 
     iio.api.init_obj(this);
-
-    //adjust parameters
-    if (typeof(pp) == 'undefined') pp = ss;
-    if (pp) {
-      this.parent = pp;
-      this.app = pp.app
-    }
-
-    //run iio script
-    if (iio.is.string(p)) {
-      var _p = iio.parsePos(p.split(' '), this.parent);
-      if (_p.ps) p = _p.ps;
-      else p = {
-        x: 0,
-        y: 0
-      };
-      ss = s;
-      s = _p.p;
-    }
-
-    //get position
-    if (typeof(s) == 'undefined') {
-      s = p;
-      p = p.pos;
-    }
-    p = iio.point.vector(p);
-    this.pos = p[0];
-    if (p.length == 2) this.type = iio.LINE;
+    this.parent = parent;
+    this.app = parent.app
 
     //set positional properties
+    this.pos = {
+      x: 0,
+      y: 0
+    };
     this.center = {
       x: 0,
       y: 0
@@ -1388,18 +1372,20 @@ iio = {};
       r: 0
     };
 
-    //set specified properties
-    s = [s, ss];
-    this.set(s, true);
+    for (var arg in args){
+      //set specified properties
+      this.set(args[arg], true);
+    }
+
 
     //init polygon
-    if (p.length > 2) {
-      this.vs = p;
+    if (this.pos.length > 2) {
+      this.vs = this.pos;
       iio.poly.init(this);
 
       //init line
-    } else if (p.length == 2) {
-      this.endPos = p[1];
+    } else if (this.pos.length == 2) {
+      this.endPos = this.pos[1];
       iio.line.init(this);
 
       //init shape
@@ -1827,12 +1813,16 @@ iio = {};
       for (var c = 0; c < o.C; c++) {
         o.cells[c] = [];
         for (var r = 0; r < o.R; r++) {
-          o.cells[c][r] = o.add(new iio.Obj([x, y], {
+          o.cells[c][r] = o.add({
+            pos:{
+              x:x,
+              y:y
+            },
             c: c,
             r: r,
             width: o.res.x,
             height: o.res.y
-          }, undefined, o));
+          });
           y += o.res.y;
         }
         y = -o.res.y * (o.R - 1) / 2;
