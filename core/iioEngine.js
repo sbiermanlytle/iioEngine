@@ -894,14 +894,16 @@ iio = {};
         arguments[0].forEach(function() {
           this.add(arguments);
         }, this);
-      else if (typeof(arguments[0].app) != 'undefined') {
+      else {//if (typeof(arguments[0].app) != 'undefined') {
         arguments[0].parent = this;
         arguments[0].app = this.app;
         if (typeof(arguments[0].z) == 'undefined') arguments[0].z = 0;
         var i = 0;
         while (i < this.objs.length && typeof(this.objs[i].z) != 'undefined' && arguments[0].z >= this.objs[i].z) i++;
         this.objs.insert(i, arguments[0]);
-      } else arguments[0] = this.add(new iio.Obj(this, arguments), true);
+        if (arguments[0].app && ((arguments[0].vel && (arguments[0].vel.x != 0 || arguments[0].vel.y != 0 || arguments[0].vel.r != 0)) || arguments[0].shrink || arguments[0].fade || (arguments[0].acc && (arguments[0].acc.x != 0 || arguments[0].acc.y != 0 || arguments[0].acc.r != 0))) && (typeof arguments[0].app.looping == 'undefined' || arguments[0].app.looping === false))
+          arguments[0].app.loop();
+      } //else arguments[0] = this.add(new iio.Obj(this, arguments), true);
       if (arguments[arguments.length-1] === true);
       else this.app.draw();
       return arguments[0];
@@ -1078,8 +1080,6 @@ iio = {};
           else o.app.draw();
         }
       }
-      if (((o.vel && (o.vel.x != 0 || o.vel.y != 0 || o.vel.r != 0)) || o.shrink || o.fade || (o.acc && (o.acc.x != 0 || o.acc.y != 0 || o.acc.r != 0))) && (typeof o.app.looping == 'undefined' || o.app.looping === false))
-        o.app.loop();
     },
     update_physical: function(o, dt) {
       if (this.update) this.update(dt);
@@ -1345,11 +1345,11 @@ iio = {};
     this.Obj.apply(this, arguments);
   };
   iio.Obj = Obj;
-  Obj.prototype.Obj = function(parent, args) {
+  Obj.prototype.Obj = function() {
 
     iio.api.init_obj(this);
-    this.parent = parent;
-    this.app = parent.app
+    //this.parent = arguments[0];
+    //this.app = parent.app
 
     //set positional properties
     this.pos = {
@@ -1372,9 +1372,9 @@ iio = {};
       r: 0
     };
 
-    for (var arg in args){
+    for (var i=0; i<arguments.length;i++){
       //set specified properties
-      this.set(args[arg], true);
+      this.set(arguments[i], true);
     }
 
 
@@ -1412,7 +1412,7 @@ iio = {};
           this.type = iio.RECT;
       }
 
-      //define update properties for shapes
+      //define update roperties for shapes
       this.updateProps = function() {
         this.center = this.pos;
         this.left = this.pos.x - this.width / 2;

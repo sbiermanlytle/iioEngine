@@ -32,15 +32,15 @@ Snake = function(app,s){
 		else snake_color = iio.random.color();
 		inverted = iio.color.invert(snake_color);
 		app.set(inverted);
-		head = app.add({x:startPos.x,y:startPos.y}, snake_color
+		head = app.add(new iio.Obj({x:startPos.x,y:startPos.y}, snake_color
 			+ ' simple outline 1 white shadow 0:0 20 black '
-			+ snake_size);
+			+ snake_size));
 		body = [];
 		for(var i=0; i<starting_body-1; i++)
-			body[i] = app.add({x:startPos.x-snake_size*(i+1),y:startPos.y}, 
+			body[i] = app.add(new iio.Obj({x:startPos.x-snake_size*(i+1),y:startPos.y}, 
 				snake_color+
 				' simple outline 1 white shadow 0:0 20 black '
-				+ snake_size);
+				+ snake_size));
 		direction = RIGHT;
 		snake_speed=starting_speed;
 		makeFood();
@@ -53,9 +53,9 @@ Snake = function(app,s){
 			y:snake_size*iio.random.integer(0,app.height/snake_size)
 				+snake_size/2
 		}
-		food = app.add({x:randomPos.x,y:randomPos.y}, snake_color
+		food = app.add(new iio.Obj({x:randomPos.x,y:randomPos.y}, snake_color
 			+ ' simple outline 1 white shadow 0:0 20 black '
-			+ snake_size);
+			+ snake_size));
 	}; makeFood();
 	
 	var UP = 0;
