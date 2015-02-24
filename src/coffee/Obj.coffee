@@ -2,25 +2,29 @@
 root = exports ? @
 iio = root.iio = root.iio ? {}
 
-class iio.Obj
-  constructor: (p, s, ss, pp) ->
+class iio.Object
+  constructor: (properties, others...) ->
     # TODO init_obj
 
-    # Adjust parameters
-    if not pp? then pp = ss
-    if pp
-      @parent = pp
-      @app = pp.app
+    # TODO add in Sebastian's new changes
 
-    if iio.isString p
-      _p = iio.parsePos p.split(' '), @parent
-      p = _p.ps ? { x: 0, y: 0 }
-      ss = s
-      s = _p.p
+    if properties not instanceof Object
+      # Set it up so that it is, with no properties set
+      unstructured = [properties].concat unstructured
+      properties = {}
 
-    if not s?
-      s = p
-      p = p.pos
-    p = iio.point.vector p
-    @pos = p[0]
-    @type = iio.LINE if p.length is 2
+    # Add all unstructured properties into the properties object
+    for property in unstructured
+      if property in iio.colors # iio.colors will contain every color mapped to a string repr of that color
+        properties.color = property
+      if property instanceof Number
+        if not properties.size?
+          properties.size = property
+        else
+          # anything else?
+      if property instanceof Array # vector TODO: perhaps make a Vector class in iio?
+        if not properties.pos?
+          properties.pos = property
+
+    # Add all properties to this object
+    @[prop] = value for prop, value in properties

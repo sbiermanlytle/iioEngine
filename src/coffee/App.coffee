@@ -69,10 +69,10 @@ class iio.App
 
   clear: -> @ctx.clearRect 0, 0, @width, @height
 
-  collision: (object1, object2, callback) ->
-    @collisions.push [object1, object2, func]
+  addCollision: (object1, object2, callback) ->
+    @collisions.push [object1, object2, callback]
 
-  cCollisions: (objects1, objects2, callback) ->
+  checkCollisions: (objects1, objects2, callback) ->
     objects1 = [objects1] if objects1 not instanceof Array
     objects2 = [objects2] if objects2 not instanceof Array
     for obj1 in objects1
@@ -85,4 +85,4 @@ class iio.App
     if @objs and @objs.length > 0
       @rm obj for obj in @objs when obj._update and obj._update obj, dt
     if @collisions and @collisions.length > 0
-      @cCollisions collision[0], collision[1], collision[2] for collision in @collisions
+      @checkCollisions collision[0], collision[1], collision[2] for collision in @collisions
