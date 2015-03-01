@@ -1,6 +1,4 @@
-@Squares = ( app ) -> 
-
-	irn = iio.random.num
+Squares = ( app ) -> 
 
 	app.set 'black'
 
@@ -12,16 +10,16 @@
 		app.add new iio.Obj 
 			color: 'white'
 			simple: true
-			width: irn 60,140
-			alpha: irn .3,.6
+			width: iio.random.num 60,140
+			alpha: iio.random.num .3,.6
 			pos:
-				x: irn 0,app.width
-				y: irn 0,app.height
+				x: iio.random.num 0,app.width
+				y: iio.random.num 0,app.height
 			vel: 
-				x: irn -speed,speed
-				y: irn -speed,speed
+				x:iio.random.num -speed,speed
+				y:iio.random.num -speed,speed
 			fade: [
-				irn .0001,.0006
+				iio.random.num .0001,.0006
 				(o)-> o.alpha = 1
 			]
 

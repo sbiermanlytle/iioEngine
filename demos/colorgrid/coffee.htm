@@ -6,11 +6,13 @@
 <!DOCTYPE html>
 <html>
 	<body>
+		<script type="text/javascript" src="../../core/coffee-script.js"></script>	
 		<script type="text/javascript" src="../../core/iioEngine.js"></script>	
 		<script type="text/javascript" src="../../core/iioParser.js"></script>
-		<script type="text/iioscript" src="ColorGrid.js"></script>
-		<script type="text/javascript">
-			iio.start(ColorGrid)
+		<script type="text/javascript" src="../../core/parser.js"></script>
+		<script type="text/coffeescript" src="ColorGrid.coffee"></script>
+		<script type="text/coffeescript">
+			iio.start @ColorGrid
 		</script>
 	</body>
 </html>
