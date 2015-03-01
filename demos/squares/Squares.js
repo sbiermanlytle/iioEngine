@@ -43,4 +43,4 @@ Squares = function(app,s){
 			}
 	}; this.resize();
 
-}; iio.start(Squares)
+}

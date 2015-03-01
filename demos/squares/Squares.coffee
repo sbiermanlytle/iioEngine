@@ -32,5 +32,3 @@ Squares = ( app ) ->
  				right: [ app.width, (o)-> o.vel.x = -speed ]
 
  	this.resize()
-
-iio.start Squares
