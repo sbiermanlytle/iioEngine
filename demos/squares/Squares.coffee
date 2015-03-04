@@ -1,4 +1,4 @@
-Squares = ( app ) -> 
+@Squares = ( app ) -> 
 
 	app.set 'black'
 
@@ -7,7 +7,7 @@ Squares = ( app ) ->
 	speed = .5
 
 	for i in [0..num] by 1
-		app.add new iio.Obj 
+		app.add
 			color: 'white'
 			simple: true
 			width: iio.random.num 60,140
@@ -22,6 +22,7 @@ Squares = ( app ) ->
 				iio.random.num .0001,.0006
 				(o)-> o.alpha = 1
 			]
+			,true
 
  	this.resize = ()->
  		for obj in app.objs
