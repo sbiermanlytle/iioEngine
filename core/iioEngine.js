@@ -867,16 +867,18 @@ iio = {};
           this.set(_s, no_draw);
         }, this);
 
-      //set with iio script
+      //set with number defaults
       else if (iio.is.number(s)) {
         if (this.radius) this.radius = s / 2;
         else if (this.width == this.height) this.width = this.height = s;
         else this.width = s;
-      } else if (iio.is.string(s)) iio.run(s.split(" "), this, true);
+
+      //set with string defaults
+      } else if(iio.is.string(s))
+        this.color = s;
 
       //set with JSON
-      else
-        for (var p in s) this[p] = s[p];
+      else for (var p in s) this[p] = s[p];
 
       if (typeof(this.height) == 'undefined')
         this.height = this.width;
@@ -894,16 +896,16 @@ iio = {};
         arguments[0].forEach(function() {
           this.add(arguments);
         }, this);
-      else {//if (typeof(arguments[0].app) != 'undefined') {
+      else if (typeof(arguments[0].app) != 'undefined') {
         arguments[0].parent = this;
-        arguments[0].app = this.app;
+        //arguments[0].app = this.app;
         if (typeof(arguments[0].z) == 'undefined') arguments[0].z = 0;
         var i = 0;
         while (i < this.objs.length && typeof(this.objs[i].z) != 'undefined' && arguments[0].z >= this.objs[i].z) i++;
         this.objs.insert(i, arguments[0]);
         if (arguments[0].app && ((arguments[0].vel && (arguments[0].vel.x != 0 || arguments[0].vel.y != 0 || arguments[0].vel.r != 0)) || arguments[0].shrink || arguments[0].fade || (arguments[0].acc && (arguments[0].acc.x != 0 || arguments[0].acc.y != 0 || arguments[0].acc.r != 0))) && (typeof arguments[0].app.looping == 'undefined' || arguments[0].app.looping === false))
           arguments[0].app.loop();
-      } //else arguments[0] = this.add(new iio.Obj(this, arguments), true);
+      } else arguments[0] = this.add(new iio.Obj(this, arguments), true);
       if (arguments[arguments.length-1] === true);
       else this.app.draw();
       return arguments[0];
@@ -1214,14 +1216,8 @@ iio = {};
     //add app to global app array
     iio.apps.push(this);
 
-    //run iio script
-    if (iio.is.string(app)) {
-      this.runScript = iio.run(app, this);
-      this.draw();
-    }
-
     //run js script
-    else this.runScript = new app(this, s);
+    this.runScript = new app(this, s);
   }
   App.prototype.stop = function() {
     this.objs.forEach(function(obj) {
@@ -1348,8 +1344,8 @@ iio = {};
   Obj.prototype.Obj = function() {
 
     iio.api.init_obj(this);
-    //this.parent = arguments[0];
-    //this.app = parent.app
+    this.parent = arguments[0];
+    this.app = this.parent.app;
 
     //set positional properties
     this.pos = {
@@ -1372,11 +1368,11 @@ iio = {};
       r: 0
     };
 
-    for (var i=0; i<arguments.length;i++){
-      //set specified properties
+    if(arguments.length==2)
+      for (var i=0; i<arguments[1].length;i++)
+        this.set(arguments[1][i], true);
+    else for (var i=1; i<arguments.length;i++)
       this.set(arguments[i], true);
-    }
-
 
     //init polygon
     if (this.pos.length > 2) {
@@ -1624,12 +1620,12 @@ iio = {};
       this.top=this.pos.y-this.height/2;
       this.bottom=this.pos.y+this.height/2;*/
     },
-    contains: function(p, v, y) {
+    contains: function(v, y) {
       y = (v.y || y);
       v = (v.x || v);
       var i = j = c = 0;
-      var vs = p.vs;
-      if (p.rot) vs = p.getTrueVertices();
+      var vs = this.vs;
+      if (this.rot) vs = this.getTrueVertices();
       for (i = 0, j = vs.length - 1; i < vs.length; j = i++) {
         if (((vs[i].y > y) != (vs[j].y > y)) &&
           (v < (vs[j].x - vs[i].x) * (y - vs[i].y) / (vs[j].y - vs[i].y) + vs[i].x))
@@ -1650,7 +1646,10 @@ iio = {};
   //TEXT
   iio.text = {
     init: function(o) {
-      o.size = o.width;
+      o.size = o.width || 20;
+      o.color = o.color || 'black';
+      o.font = o.font || 'Arial';
+      o.align = o.align || 'center';
       o.app.ctx.font = o.size + 'px ' + o.font;
       o.width = o.app.ctx.measureText(o.text).width;
       o.height = o.app.ctx.measureText('W').width;
