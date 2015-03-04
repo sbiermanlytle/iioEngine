@@ -12,7 +12,7 @@ ColorGrid = function(app,s){
 		app.objs=[];
 		for(var c=size/2; c<app.width; c+=size)
 		for(var r=size/2; r<app.height; r+=size)
-			app.add(new iio.Obj({
+			app.add({
 				pos: {x:c,y:r},
 				width: size,
 				simple: true,
@@ -22,7 +22,7 @@ ColorGrid = function(app,s){
 					o.height=size;
 					o.color=iio.random.color();
 				}]
-			}), true);
+			}, true);
 		app.draw();
 	}; reset();
 

@@ -15,7 +15,7 @@
 
 		for c in [size/2..app.width] by size
 			for r in [size/2..app.height] by size
-				app.add new iio.Obj(
+				app.add
 					pos: 
 						x:c
 						y:r
@@ -30,7 +30,7 @@
 							o.color = iio.random.color()
 							false
 					]
-				), true
+				,true
 
 		app.draw()
 	

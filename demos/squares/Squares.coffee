@@ -9,7 +9,7 @@
 	speed = .5
 
 	for i in [0..num] by 1
-		app.add new iio.Obj 
+		app.add
 			color: 'white'
 			simple: true
 			width: irn 60,140

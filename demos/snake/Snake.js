@@ -1,15 +1,3 @@
-<!-- 
-	iio Engine v1.3
-	***************
-	Live Demo: iioapps.com/snake
- -->
-<!DOCTYPE html>
-<html>
-	<body>
-		<script type="text/javascript" src="../core/iioEngine.js"></script>
-		<script type="text/javascript" src="../core/iioParser.js"></script>
-		<script type="text/javascript">
-
 Snake = function(app,s){
 
 	//set size of the game grid
@@ -32,15 +20,32 @@ Snake = function(app,s){
 		else snake_color = iio.random.color();
 		inverted = iio.color.invert(snake_color);
 		app.set(inverted);
-		head = app.add([startPos.x,startPos.y], snake_color
-			+ ' simple outline 1 white shadow 0:0 20 black '
-			+ snake_size);
+		head = app.add({
+			pos:{
+				x:startPos.x,
+				y:startPos.y
+			}, 
+			color: snake_color,
+			simple: true,
+			outline: 'white',
+			lineWidth: 1,
+			shadow: '0:0 20 black',
+			width:snake_size
+		});
 		body = [];
 		for(var i=0; i<starting_body-1; i++)
-			body[i] = app.add([startPos.x-snake_size*(i+1),startPos.y], 
-				snake_color+
-				' simple outline 1 white shadow 0:0 20 black '
-				+ snake_size);
+			body[i] = app.add({
+				pos:{
+					x:startPos.x-snake_size*(i+1),
+					y:startPos.y
+				}, 
+				color: snake_color,
+				simple: true,
+				outline: 'white',
+				lineWidth: 1,
+				shadow: '0:0 20 black',
+				width: snake_size
+			});
 		direction = RIGHT;
 		snake_speed=starting_speed;
 		makeFood();
@@ -53,9 +58,17 @@ Snake = function(app,s){
 			y:snake_size*iio.random.integer(0,app.height/snake_size)
 				+snake_size/2
 		}
-		food = app.add([randomPos.x,randomPos.y], snake_color
-			+ ' simple outline 1 white shadow 0:0 20 black '
-			+ snake_size);
+		food = app.add({
+			pos:{
+				x:randomPos.x,
+				y:randomPos.y
+			},
+			color:snake_color,
+			simple: true,
+			outline: 'white',
+			shadow: '0:0 20 black',
+			width: snake_size
+		});
 	}; makeFood();
 	
 	var UP = 0;
@@ -118,8 +131,4 @@ Snake = function(app,s){
 
 	app.loop(starting_speed,updateSnake);
 	reset();
-}; iio.start(Snake);
-
-		</script>
-	</body>
-</html>
+}
