@@ -193,6 +193,85 @@
       }
       return _results;
     };
+    this.loadImg = function(src, onload) {
+      var img;
+      img = new Image();
+      img.src = src;
+      img.onload = onload;
+      return img;
+    };
+    this.load = function(url, callback) {
+      var xhr;
+      xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && (xhr.status === 0 || xhr.status === 200)) {
+          return callback(xhr.responseText);
+        }
+      };
+      return xhr.send(null);
+    };
+    this.loop = function(fps, caller, fn) {
+      var animLoop, _loop;
+      if (this.isNumber(fps || (window.requestAnimationFrame == null) || !!fps.af)) {
+        if ((fps.af != null) && (fps.fps != null)) {
+          fn = caller;
+          caller = fps;
+          fps = 60;
+        } else if (!this.isNumber(fps)) {
+          caller = fps;
+          fps = fps.fps;
+        }
+        _loop = (function(_this) {
+          return function() {
+            var correctedFps, first, now, nuFps;
+            now = new Date().getTime();
+            if (caller.last == null) {
+              first = true;
+            }
+            correctedFps = Math.floor(Math.max(0, 1000 / fps - (now - (caller.last || fps))));
+            caller.last = now + correctedFps;
+            if (first == null) {
+              if (!caller.fn) {
+                nuFps = caller.o._update(caller.o, correctedFps);
+              } else if (_this.isFunction(caller.fn)) {
+                nuFps = caller.fn(caller.o, caller, correctedFps);
+              } else {
+                nuFps = caller.fn._update(caller, correctedFps);
+              }
+              caller.o.app.draw();
+            }
+            if (nuFps == null) {
+              return caller.id = window.setTimeout(_loop, correctedFps);
+            } else {
+              fps = nuFps;
+              return caller.id = window.setTimeout(_loop, 1000 / nuFps);
+            }
+          };
+        })(this);
+        caller.id = window.setTimeout(_loop, 1000 / fps);
+        return caller.id;
+      } else {
+        fn = caller;
+        caller = fps;
+        animLoop = (function(_this) {
+          return function() {
+            if (caller.fn == null) {
+              caller.o.draw();
+            } else if (_this.isFunction(caller.fn)) {
+              caller.fn(caller.o);
+            } else {
+              caller.fn._update();
+              caller.fn.draw();
+            }
+            caller.o.app.draw();
+            return caller.id = window.requestAnimationFrame(animLoop);
+          };
+        })(this);
+        caller.id = window.requestAnimationFrame(animLoop);
+        return caller.id;
+      }
+    };
     this.cancelLoop = function(l) {
       window.clearTimeout(l);
       return window.cancelAnimationFrame(l);
@@ -948,6 +1027,75 @@
         this.app.draw();
       }
       return this;
+    };
+    this.add = function(obj, noDraw) {
+      var _k, _len1, _obj, _results;
+      if (obj instanceof Array) {
+        _results = [];
+        for (_k = 0, _len1 = obj.length; _k < _len1; _k++) {
+          _obj = obj[_k];
+          _results.push(this.add(_obj));
+        }
+        return _results;
+      } else {
+        obj.parent = this;
+        obj.app = this.app;
+        if (obj.z == null) {
+          return obj.z = 0;
+        }
+      }
+    };
+    this.remove = function(obj, noDraw) {
+      var callback, collision, i, numObjsToRemove, _k, _l, _len1, _len2, _obj, _ref2;
+      callback = function(c, i, arr) {
+        if (c === obj) {
+          arr.splice(i, 1);
+          return true;
+        } else {
+          return false;
+        }
+      };
+      if (obj == null) {
+        this.objs = [];
+      } else if (obj instanceof Array) {
+        for (_k = 0, _len1 = obj.length; _k < _len1; _k++) {
+          _obj = obj[_k];
+          this.remove(_obj);
+        }
+      } else if (this.isNumber(obj && obj < this.objs.length)) {
+        numObjsToRemove = obj;
+        this.objs.splice(numObjsToRemove, 1);
+      } else if (this.objs) {
+        this.objs.some(callback);
+      }
+      if (this.collisions) {
+        _ref2 = this.collisions;
+        for (i = _l = 0, _len2 = _ref2.length; _l < _len2; i = ++_l) {
+          collision = _ref2[i];
+          if (collision[0] === obj || collision[1] === obj) {
+            this.collisions.splice(i, 1);
+          } else if (collision[0] instanceof Array) {
+            collision[0].some(callback);
+          }
+          if (collision[1] instanceof Array) {
+            collision[1].some(callback);
+          }
+        }
+      }
+      if (!noDraw) {
+        this.app.draw();
+      }
+      return obj;
+    };
+    this.clearLoops = function() {
+      var l, _k, _len1, _ref2, _results;
+      _ref2 = this.loops;
+      _results = [];
+      for (_k = 0, _len1 = _ref2.length; _k < _len1; _k++) {
+        l = _ref2[_k];
+        _results.push(this.cancelLoop(l));
+      }
+      return _results;
     };
     this.clear = function() {
       this.objs = [];

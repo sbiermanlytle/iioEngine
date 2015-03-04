@@ -185,7 +185,70 @@ Array.prototype.insert = (index, item) ->
   @set = (objects, properties) ->
     object.set properties for object in objects
 
-  # TODO loadImg, load, loop
+  # TODO loop
+  @loadImg = (src, onload) ->
+    img = new Image()
+    img.src = src
+    img.onload = onload
+    return img
+
+  @load = (url, callback) ->
+    xhr = new XMLHttpRequest()
+    xhr.open('GET', url, true)
+    xhr.onreadystatechange = ->
+      if xhr.readyState is 4 and (xhr.status is 0 or xhr.status is 200)
+        return callback xhr.responseText
+    xhr.send null
+
+  @loop = (fps, caller, fn) ->
+    if @isNumber fps or not window.requestAnimationFrame? or not !fps.af
+      if fps.af? and fps.fps?
+        fn = caller
+        caller = fps
+        fps = 60
+      else if not @isNumber fps
+        caller = fps
+        fps = fps.fps
+
+      _loop = =>
+        now = new Date().getTime()
+        if not caller.last? then first = true
+        correctedFps = Math.floor Math.max 0, 1000 / fps - (now - (caller.last or fps))
+        caller.last = now + correctedFps
+        if not first?
+          if not caller.fn
+            nuFps = caller.o._update caller.o, correctedFps
+          else if @isFunction caller.fn
+            nuFps = caller.fn caller.o, caller, correctedFps
+          else
+            nuFps = caller.fn._update caller, correctedFps
+          caller.o.app.draw()
+        if not nuFps?
+          caller.id = window.setTimeout _loop, correctedFps
+        else
+          fps = nuFps
+          caller.id = window.setTimeout _loop, 1000 / nuFps
+
+      caller.id = window.setTimeout _loop, 1000 / fps
+      return caller.id
+    else
+      fn = caller
+      caller = fps
+
+      animLoop = =>
+        if not caller.fn?
+          caller.o.draw()
+        else if @isFunction caller.fn
+          caller.fn caller.o
+        else
+          caller.fn._update()
+          caller.fn.draw()
+
+        caller.o.app.draw()
+        caller.id = window.requestAnimationFrame animLoop
+
+      caller.id = window.requestAnimationFrame animLoop
+      return caller.id
 
   @cancelLoop = (l) ->
     window.clearTimeout l
@@ -206,7 +269,6 @@ Array.prototype.insert = (index, item) ->
       app.runScript.resize() if app.runScript and app.runScript.resize
       app.draw()
 
-  # TODO prep_input
   @prepInput = ->
     window.onresize = @resize
     @addEvent window, 'keydown', (event) =>
@@ -515,7 +577,7 @@ Array.prototype.insert = (index, item) ->
       if r1L < r2R or r1R > r2L or r1T < r2B or r1B > r2T then true else false
   }
 
-  # These should probably be instance methods of each object class
+  # TODO These should probably be instance methods of each object class
   @draw = {
     line: (ctx, x, y, x1, y1) ->
       ctx.beginPath()
@@ -651,7 +713,7 @@ Array.prototype.insert = (index, item) ->
       ctx.restore()
   }
 
-  # TODO This probably should be functions of iio. Should be instance methods
+  # TODO This probably shouldn't be functions of iio. Should be instance methods
   # of classes such as App, Obj, etc
   @set = (properties, noDraw) ->
     if not properties? then return @
@@ -678,8 +740,50 @@ Array.prototype.insert = (index, item) ->
 
     return @
 
-  # TODO @add
-  # TODO @remove
+  @add = (obj, noDraw) ->
+    if obj instanceof Array
+      @add _obj for _obj in obj
+    else
+      obj.parent = @
+      obj.app = @app
+      if not obj.z? then obj.z = 0
+      # TODO
+
+  @remove = (obj, noDraw) ->
+    callback = (c, i, arr) ->
+      if c is obj
+        arr.splice i, 1
+        return true
+      else
+        return false
+
+    if not obj?
+      @objs = [] # Remove all
+    else if obj instanceof Array
+      @remove _obj for _obj in obj
+    else if @isNumber obj and obj < @objs.length
+      numObjsToRemove = obj
+      @objs.splice numObjsToRemove, 1
+    else if @objs
+      @objs.some callback
+
+    if @collisions
+      for collision, i in @collisions
+        if collision[0] is obj or collision[1] is obj
+          @collisions.splice i, 1
+        else if collision[0] instanceof Array
+          collision[0].some callback
+
+        if collision[1] instanceof Array
+          collision[1].some callback
+
+    if not noDraw
+      @app.draw()
+
+    return obj
+
+  @clearLoops = ->
+    @cancelLoop l for l in @loops
 
   @clear = ->
     @objs = []
@@ -721,4 +825,5 @@ Array.prototype.insert = (index, item) ->
     if not @simple then @updateProps @vel
     for _obj in @objs
       if _obj._update and _obj._update obj, dt then @remove _obj
+
 ).call(iio)
