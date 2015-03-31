@@ -1,0 +1,271 @@
+/*
+	iio engine
+	url: iioengine.com/api
+	-----------------------------------------------------------------
+	iio Engine is licensed under the BSD 2-clause Open Source license
+	Copyright (c) 2014, Sebastian Bierman-Lytle
+	All rights reserved.
+*/
+@font-face {
+  font-family: Agency;
+  src: url('AgencyFB.woff');
+}
+html,body,h1,ul,li,a,div,p,h2,h3,h4,h5,h6{
+	padding:0;
+	margin:0;
+}
+html{
+	color:white;
+	background-color: black;
+}
+ul{
+	list-style: none;
+}
+body{
+	font-family: monospace;
+}
+a{
+	text-decoration:none;
+}
+a:hover{
+	color:white;
+}
+/* TRANSITIONS */
+a{
+	-webkit-transition: 0.5s ease;
+	   -moz-transition: 0.5s ease;
+	    -ms-transition: 0.5s ease;
+	     -o-transition: 0.5s ease;
+	        transition: 0.5s ease;
+}
+li{
+	position: relative;
+}
+/* HEADER */
+header{
+	width:100%;
+	height:50px;
+	-webkit-box-shadow: 0 2px 10px rgba(0,0,0,.25);
+	-moz-box-shadow: 0 2px 10px rgba(0,0,0,.25);
+	box-shadow: 0 2px 10px rgba(0,0,0,.25);
+	font-size: 40px;
+	top:0;
+	font-family: 'Agency';
+}
+header ul{
+	list-style: none;
+	height:50px;
+}
+header li{
+	float:left;
+	padding-left: 20px;
+	font-size: 22px;
+	padding-top: 17px;
+	font-size: 26px;
+	padding-top: 14px;
+}
+#home{
+	padding-left: 0px;
+	padding-top:7px;
+}
+#home a{
+	font-size: 47px;
+	font-weight: normal;
+	text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+	background-color: #00baff;
+	-webkit-box-shadow: 0 2px 10px rgba(0,0,0,.25);
+	-moz-box-shadow: 0 2px 10px rgba(0,0,0,.25);
+	box-shadow: 0 2px 10px rgba(0,0,0,.25);
+	color: white;
+	line-height: .6;
+	padding: 0 25px;
+	padding-bottom: 2px;
+}
+#home a:hover,header li a:hover{
+	background-color: black;
+	color:#00baff;
+}
+.primary,.secondary,h3 a{
+	color:white;
+	display:block;
+}
+.primary{
+	padding:8px 10px;
+	border-top:1px solid white;
+	border-bottom:1px solid white;
+	font-size: 18px;
+	font-weight: bold;
+}
+.primary:hover,h3 a:hover{
+	background-color: rgb(100,100,100);
+	color:white;
+}
+.secondary{
+	border-top:1px solid white;
+	padding:8px 25px;
+	cursor:pointer;
+	background-color: rgb(60, 0, 0);
+	/*background-color: rgb(245, 245, 245);*/
+}
+.implemented{
+	background-color:black;
+}
+.tertiary{
+	padding: 5px 25px;
+	font-size: 12px;
+	display: block;
+}
+.secondary:hover,.tertiary:hover{
+	background-color: #00baff;
+	color:white;
+}
+.selected{
+	background-color: black;
+	color:white;
+}
+.selected:hover{
+	color:white;
+}
+.inner{
+	padding:0 10px;
+}
+.inner2 a{
+	color:#00baff;
+}
+.inner2 a:hover{
+	color:white;
+}
+.inner2 p{
+	padding:10px 0 0;
+}
+#overview p{
+	padding:5px 0;
+}
+.closed{
+	display:none;
+	border:none;
+}
+.scope{
+	position: absolute;
+	top: 10px;
+	right: 20px;
+}
+.scope p{
+	padding:0;
+	display: inline;
+	padding-left: 10px;
+}
+.obj,.red{
+	color:red;
+}
+h3 a{
+	padding:10px 15px 6px;
+	background-color: rgb(50,50,50);
+}
+.lower{
+	border-top:1px solid white;
+}
+.title{
+	font-size: 18px;
+	padding:10px 0 !important;
+	border-bottom: 1px solid white;
+}
+.inner4 .title{
+	font-size: 14px;
+}
+.parent{
+	color:rgb(160, 160, 160);
+}
+.const{
+	color:red !important;
+}
+.info_cont{
+	margin:0 10px 5px;
+}
+.info{
+	border-bottom:1px solid white;
+	margin-bottom: 5px;
+}
+.inner3{
+	margin:0 10px;
+}
+#ul{
+	margin-bottom: 100px;
+}
+h6{
+	font-size: 18px;
+	margin-top: 10px;
+	border-bottom: 1px solid white;
+}
+#overview ul{
+	list-style: initial;
+	margin-left: 20px;
+	list-style-type: square;
+}
+.bottomp{
+	padding-top: 0 !important;
+	margin-bottom: 10px;
+}
+
+/* PRETTIFY CSS
+-------------------------------------------------- */
+
+/* Pretty printing styles. Used with prettify.js. */
+/* Vim sunburst theme by David Leibovic */
+
+pre .str, code .str { color: #00baff; } /* string  - green */
+pre .kwd, code .kwd, .app, .normal { color: #61CF2E; } /* keyword - dark pink */
+pre .com, code .com { color: #AEAEAE; font-style: italic; } /* comment - gray */
+pre .typ, code .typ { color: #F00000; font-weight: bold; } /* type - light blue */
+pre .lit, code .lit { color: #00baff; } /* literal - blue */
+pre .pun, code .pun { color: #E8E8E8; } /* punctuation - white */
+pre .pln, code .pln { color: white; } /* plaintext - white */
+pre .tag, code .tag { color: #89bdff; } /* html/xml tag    - light blue */
+pre .atn, code .atn { color: #e0c589; } /* html/xml attribute name  - khaki */
+pre .atv, code .atv, .green { color: #61CF2E; } /* html/xml attribute value - green */
+pre .dec, code .dec { color: #89bdff; } /* decimal - blue */
+
+pre.prettyprint, code.prettyprint {
+      background-color: transparent;
+}
+
+pre.prettyprint {
+  width: 95%;
+  margin: 0;
+  padding: 1em;
+  border:none;
+  overflow: auto;
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums { margin-top: 0; margin-bottom: 0; color: #AEAEAE; } /* IE indents via margin-left */
+li.L0,li.L1,li.L2,li.L3,li.L4,li.L5,li.L6,li.L7,li.L8,li.L9 { list-style-type: inherit; background-color: black;}
+/* Alternate shading for lines */
+li.L1,li.L3,li.L5,li.L7,li.L9 { }
+
+@media print {
+  pre .str, code .str { color: #060; }
+  pre .kwd, code .kwd { color: #006; font-weight: bold; }
+  pre .com, code .com { color: #600; font-style: italic; }
+  pre .typ, code .typ { color: #404; font-weight: bold; }
+  pre .lit, code .lit { color: #044; }
+  pre .pun, code .pun { color: #440; }
+  pre .pln, code .pln { color: #000; }
+  pre .tag, code .tag { color: #006; font-weight: bold; }
+  pre .atn, code .atn { color: #404; }
+  pre .atv, code .atv { color: #060; }
+}
+.prettyprint ol.linenums li {
+  padding-left: 10px;
+  border-left: 3px #00baff solid;
+  background:transparent;
+}
+pre{
+  background-color: black;
+  font-family: Consolas,'Bitstream Vera Sans Mono','Courier New',Courier,monospace;
+  font-size: 14px;
+}
+.prettyprint ol.linenums {
+  list-style: decimal outside;
+  margin-left: -53px
+}
