@@ -6,16 +6,28 @@
 <html>
 <body>
 <script type="text/javascript" src="../core/iioEngine.js"></script>
-<script type="text/javascript" src="../core/iioParser.js"></script>
-<script type="text/javascript" src="../core/parser.js"></script>
-<script type="text/iioscript" src="App.iio"></script>
 <script type="text/javascript">
-/*App = function(app,s){
-	app.set('black');
-	var grid = app.add(app.center,
-			((app.height<app.width)?app.height:app.width)+
-			' outline 10 black #00baff grid 3:6 red');
-}; iio.start(App);*/
+App = function(app,s){
+
+	app.set({ color:'black' });
+
+	var obj = new iio.Rectangle({
+		pos:app.center,
+		width:200,
+		color:'blue'
+	});
+
+	var text = new iio.SimpleText({
+		pos:app.center,
+		color:'white',
+		text:'Hello World',
+		vel:{x:1,y:1,r:.01}
+	});
+
+	app.add(obj);
+	app.add(text);
+
+}; iio.start(App);
 </script>
 </body>
 </html>
