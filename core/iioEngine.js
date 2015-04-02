@@ -1679,13 +1679,11 @@ iio = {};
 	  "Rectangle", 
 	  "SimpleText"
 	].forEach(function(shape) {
-	  app[shape] = iio[shape];
-	});
+	  this[shape] = iio[shape];
+	}, this);
 
     //run js script
 	app.call(this, s);
-	this.runScript = {}
-    //this.runScript = new app(s);
   }
   iio.App.prototype.stop = function() {
     this.objs.forEach(function(obj) {
