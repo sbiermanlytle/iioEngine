@@ -854,21 +854,14 @@ iio = {};
 
   iio.Obj = function(){ this.Obj.apply(this, arguments) }
   iio.Obj.prototype.Obj = function() {
+    this.objs = [];
     this.set(arguments[0], true);
   }
   iio.Obj.prototype.set = function() {
     for (var p in arguments[0]) this[p] = arguments[0][p];
     if(this.pos) this.pos = { x:this.pos.x, y:this.pos.y }
   }
-
-  iio.Parent = function(){ this.Parent.apply(this, arguments) }
-  iio.inherit(iio.Parent, iio.Obj);
-  iio.Parent.prototype._super = iio.Obj.prototype;
-  iio.Parent.prototype.Parent = function() {
-    this._super.Obj.call(this,arguments[0]);
-    this.objs = [];
-  }
-  iio.Parent.prototype.add = function() {
+  iio.Obj.prototype.add = function() {
     if (arguments[0] instanceof Array)
       arguments[0].forEach(function() {
         this.add(arguments);
@@ -889,13 +882,13 @@ iio = {};
     else if(this.app) this.app.draw();
     return arguments[0];
   }
-  iio.Parent.prototype.create = function(){
+  iio.Obj.prototype.create = function(){
     var obj = this.add(new iio.Obj(this, arguments), true);
     if (arguments[arguments.length-1] === true);
     else this.app.draw();
     return obj;
   }
-  iio.Parent.prototype.rmv = function(o, nd) {
+  iio.Obj.prototype.rmv = function(o, nd) {
     callback = function(c, i, arr) {
       if (c == o) {
         arr.splice(i, 1);
@@ -923,10 +916,10 @@ iio = {};
     else this.app.draw();
     return o;
   }
-  iio.Parent.prototype.clear = function() {
+  iio.Obj.prototype.clear = function() {
     this.objs = [];
   }
-  iio.Parent.prototype.loop = function(fps, fn) {
+  iio.Obj.prototype.loop = function(fps, fn) {
     this.looping = true;
     var loop;
     if (typeof fn == 'undefined') {
@@ -977,11 +970,11 @@ iio = {};
     }*/
     return loop.id;
   }
-  iio.Parent.prototype.clear_loops = function() {
+  iio.Obj.prototype.clear_loops = function() {
     for (var i = 0; i < this.loops.length; i++)
       iio.cancelLoop(this.loops[i]);
   }
-  iio.Parent.prototype.pause = function(c) {
+  iio.Obj.prototype.pause = function(c) {
     if (this.paused) {
       this.paused = false;
       this.loops.forEach(function(loop) {
@@ -1011,6 +1004,9 @@ iio = {};
     this._shrink = iio.anim.shrink;
     this._fade = iio.anim.fade;
     this.createGradient = iio.api.createGradient;
+
+    if(!this.pos) this.pos = {x:0, y:0}
+    this.rot = this.rot || 0;
   }
   iio.Drawable.prototype.update = function() {
 
@@ -1024,6 +1020,11 @@ iio = {};
     // update position
     if (this.acc) this.update_acc();
     if (this.vel) this.update_vel();
+
+    if (this.objs && this.objs.length > 0)
+        this.objs.forEach(function(obj) {
+          if (obj.update && obj.update(o, dt)) this.rmv(obj);
+        }, this);
   }
   iio.Drawable.prototype.update_vel = function(){
     if (this.vel.x) this.pos.x += this.vel.x;
@@ -1114,34 +1115,6 @@ iio = {};
   }
   iio.Drawable.prototype.draw = function(ctx){
 
-    //return if hidden
-    if (this.hidden) return;
-
-    ctx = this.prep_ctx(ctx);
-    this.draw_obj(ctx);
-    ctx.restore();
-  }
-
-  iio.ParentDrawable = function(){ this.ParentDrawable.apply(this, arguments) }
-  iio.inherit(iio.ParentDrawable, iio.Drawable);
-  iio.ParentDrawable.prototype._super = iio.Drawable.prototype;
-  iio.ParentDrawable.prototype.ParentDrawable = function() {
-    this._super.Drawable.call(this,arguments[0]);
-    this.objs = [];
-    if(!this.pos) this.pos = {x:0, y:0}
-  } 
-  iio.ParentDrawable.prototype.add = iio.Parent.prototype.add;
-  iio.ParentDrawable.prototype.rmv = iio.Parent.prototype.rmv;
-  iio.ParentDrawable.prototype.loop = iio.Parent.prototype.loop;
-  iio.ParentDrawable.prototype.update = function(){
-    this._super._super.update.call(this,arguments);
-    if (this.objs && this.objs.length > 0)
-        this.objs.forEach(function(obj) {
-          if (obj.update && obj.update(o, dt)) this.rmv(obj);
-        }, this);
-  }
-  iio.ParentDrawable.prototype.draw = function(ctx){
-
     if (this.hidden) return;
     ctx = this.prep_ctx(ctx);
     
@@ -1162,13 +1135,13 @@ iio = {};
     ctx.restore();
   }
 
-  iio.SimpleCircle = function(){ this.SimpleCircle.apply(this, arguments) };
-  iio.inherit(iio.SimpleCircle, iio.Drawable);
-  iio.SimpleCircle.prototype._super = iio.Drawable.prototype;
-  iio.SimpleCircle.prototype.SimpleCircle = function() {
+  iio.Circle = function(){ this.Circle.apply(this, arguments) };
+  iio.inherit(iio.Circle, iio.Drawable);
+  iio.Circle.prototype._super = iio.Drawable.prototype;
+  iio.Circle.prototype.Circle = function() {
     this._super.Drawable.call(this,arguments[0]);
   }
-  iio.SimpleCircle.prototype.draw_shape = function(ctx) {
+  iio.Circle.prototype.draw_shape = function(ctx) {
     ctx.beginPath();
     ctx.arc(0, 0, this.radius, 0, 2 * Math.PI, false);
     if (this.color) ctx.fill();
@@ -1176,13 +1149,6 @@ iio = {};
     if (this.outline) ctx.stroke();
     if (this.clip) ctx.clip();
     ctx.restore();
-  }
-
-  iio.Circle = function(){ this.Circle.apply(this, arguments) };
-  iio.inherit(iio.Circle, iio.ParentDrawable);
-  iio.Circle.prototype._super = iio.ParentDrawable.prototype;
-  iio.Circle.prototype.Circle = function() {
-    this._super.ParentDrawable.call(this,arguments[0]);
   }
   iio.Circle.prototype.contains = function(v, y) {
     if (typeof(y) != 'undefined') v = {
@@ -1215,39 +1181,11 @@ iio = {};
     iio.draw.finish_path_shape(ctx, this);
   }
 
-  iio.SimpleRectangle = function(){ this.SimpleRectangle.apply(this, arguments) };
-  iio.inherit(iio.SimpleRectangle, iio.Drawable);
-  iio.SimpleRectangle.prototype._super = iio.Drawable.prototype;
-  iio.SimpleRectangle.prototype.SimpleRectangle = function() {
-    this._super.Drawable.call(this,arguments[0]);
-    this.height = this.height || this.width;
-  }
-  iio.SimpleRectangle.prototype.draw_shape = function(ctx) {
-    ctx.translate(-this.width / 2, -this.height / 2);
-    if (this.color) ctx.fillRect(0, 0, this.width, this.height)
-    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
-    if (this.anims) ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
-      this.anims[this.animKey].frames[this.animFrame].x,
-      this.anims[this.animKey].frames[this.animFrame].y,
-      this.anims[this.animKey].frames[this.animFrame].w,
-      this.anims[this.animKey].frames[this.animFrame].h,
-      0, 0, this.width, this.height);
-    if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
-  }
-
-  iio.SimpleSquare = function(){ this.SimpleSquare.apply(this, arguments) };
-  iio.inherit(iio.SimpleSquare, iio.SimpleRectangle);
-  iio.SimpleSquare.prototype._super = iio.SimpleRectangle.prototype;
-  iio.SimpleSquare.prototype.SimpleSquare = function() {
-    this._super.SimpleRectangle.call(this,arguments[0]);
-    this.height = this.width;
-  }
-
   iio.Rectangle = function(){ this.Rectangle.apply(this, arguments) };
-  iio.inherit(iio.Rectangle, iio.ParentDrawable);
-  iio.Rectangle.prototype._super = iio.ParentDrawable.prototype;
+  iio.inherit(iio.Rectangle, iio.Drawable);
+  iio.Rectangle.prototype._super = iio.Drawable.prototype;
   iio.Rectangle.prototype.Rectangle = function() {
-    this._super.ParentDrawable.call(this,arguments[0]);
+    this._super.Drawable.call(this,arguments[0]);
     this.height = this.height || this.width;
   }
   iio.Rectangle.prototype.contains = function(v, y) {
@@ -1393,10 +1331,10 @@ iio = {};
     }, this);
   }
 
-  iio.SimpleText = function(){ this.SimpleText.apply(this, arguments) };
-  iio.inherit(iio.SimpleText, iio.Drawable);
-  iio.SimpleText.prototype._super = iio.Drawable.prototype;
-  iio.SimpleText.prototype.SimpleText = function() {
+  iio.Text = function(){ this.Text.apply(this, arguments) };
+  iio.inherit(iio.Text, iio.Drawable);
+  iio.Text.prototype._super = iio.Drawable.prototype;
+  iio.Text.prototype.Text = function() {
     this._super.Drawable.call(this,arguments[0]);
     this.size = this.size || 20;
     this.color = this.color || 'black';
@@ -1418,7 +1356,7 @@ iio = {};
       })
     } else this.cursor.hidden = true;*/
   }
-  iio.SimpleText.prototype.draw_shape = function(ctx) {
+  iio.Text.prototype.draw_shape = function(ctx) {
     ctx.font = this.size + 'px ' + this.font;
     ctx.textAlign = this.align;
     if (this.color) ctx.fillText(this.text, 0, 0);
@@ -1426,7 +1364,7 @@ iio = {};
     if (this.showCursor)
       this.cursor.pos.x = this.cursor.endPos.x = this.getX(this.cursor.index);
   }
-  iio.SimpleText.prototype.contains = function(x, y) {
+  iio.Text.prototype.contains = function(x, y) {
     if (typeof(y) == 'undefined') {
       y = x.y;
       x = x.x
@@ -1441,12 +1379,12 @@ iio = {};
       return true;
     return false;
   }
-  iio.SimpleText.prototype.charWidth = function(i) {
+  iio.Text.prototype.charWidth = function(i) {
     i = i || 0;
     this.app.ctx.font = this.size + 'px ' + this.font;
     return this.app.ctx.measureText(this.text.charAt(i)).width;
   }
-  iio.SimpleText.prototype.getX = function(i) {
+  iio.Text.prototype.getX = function(i) {
     this.app.ctx.font = this.size + 'px ' + this.font;
     if (typeof(this.align) == 'undefined' || this.align == 'left')
       return this.app.ctx.measureText(this.text.substring(0, i)).width;
@@ -1457,11 +1395,11 @@ iio = {};
       return x + this.app.ctx.measureText(this.text.substring(0, i)).width;
     }
   }
-  iio.SimpleText.prototype.keyUp = function(k) {
+  iio.Text.prototype.keyUp = function(k) {
     if (k == 'shift')
       this.cursor.shift = false;
   }
-  iio.SimpleText.prototype.keyDown = function(key, cI, shift, fn) {
+  iio.Text.prototype.keyDown = function(key, cI, shift, fn) {
     if (!iio.is.number(cI)) {
       fn = cI;
       cI = this.cursor.index;
@@ -1619,11 +1557,11 @@ iio = {};
   }
 
   iio.App =  function() { this.App.apply(this, arguments) }
-  iio.inherit(iio.App, iio.Parent);
-  iio.App.prototype._super = iio.Parent.prototype;
+  iio.inherit(iio.App, iio.Obj);
+  iio.App.prototype._super = iio.Obj.prototype;
   iio.App.prototype.App = function(view, app, s) {
 
-    this._super.Parent.call(this,arguments);
+    this._super.Obj.call(this,arguments);
 
     //set type
     this.draw = iio.App.prototype.draw;
