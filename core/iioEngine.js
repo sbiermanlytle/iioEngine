@@ -1674,8 +1674,18 @@ iio = {};
     //add app to global app array
     iio.apps.push(this);
 
+	// Include iio shape constructors into app's context
+	[
+	  "Rectangle", 
+	  "SimpleText"
+	].forEach(function(shape) {
+	  app[shape] = iio[shape];
+	});
+
     //run js script
-    this.runScript = new app(this, s);
+	app.call(this, s);
+	this.runScript = {}
+    //this.runScript = new app(s);
   }
   iio.App.prototype.stop = function() {
     this.objs.forEach(function(obj) {
@@ -1788,4 +1798,31 @@ iio = {};
     }, this);
     return s;
   }
+
+  // Set up a hash for storing variables. Scope is limited to app.
+  iio.scripts = iio.scripts || {};
+
+  var runScripts = function() {
+    var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
+    var iioScripts = scripts.filter(function(s) {
+      return s.type === 'text/iioscript';
+    });
+    iioScripts.forEach(function(script) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", script.src, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
+          iio.scripts[script.src] = eval("(function() {\nreturn function(settings) {\n" + CoffeeScript.compile(xhr.responseText, {bare: true}) + "}\n})()");
+		  iio.start(iio.scripts[script.src]);
+        }
+      }
+      xhr.send(null);
+    });
+  }
+
+  // Listen for window load, both in decent browsers and in IE
+  if (window.addEventListener)
+    window.addEventListener('DOMContentLoaded', runScripts, false);
+  else
+    window.attachEvent('onload', runScripts);
 })();

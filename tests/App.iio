@@ -1,4 +1,16 @@
-add grid red 3
-	center
-	size 200:200
-end
+@set color: 'black'
+
+obj = new @Rectangle
+	pos: @center
+	width: 200
+	color: 'blue'
+
+text = new @SimpleText
+	pos: @center
+	color: 'white'
+	text: 'Hello World'
+	vel: {x: 1, y: 1, r: .01}
+
+@add obj
+@add text
+
