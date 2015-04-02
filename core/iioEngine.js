@@ -1006,6 +1006,7 @@ iio = {};
     this.createGradient = iio.api.createGradient;
 
     if(!this.pos) this.pos = {x:0, y:0}
+    this.rot = this.rot || 0;
   }
   iio.Drawable.prototype.update = function() {
 
