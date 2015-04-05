@@ -15,8 +15,6 @@ The iio Engine is licensed under the BSD 2-clause Open Source license
 Copyright (c) 2014, Sebastian Bierman-Lytle
 All rights reserved.
 */
-<<<<<<< HEAD
-
 iio_dependency_path = "http://iioengine.com/core/src/"
 iio_dependencies = [
   'functions.js',
