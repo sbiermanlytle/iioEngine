@@ -185,3 +185,30 @@ iio.prep_input = function() {
   });
 }
 iio.prep_input();
+
+// Set up a hash for storing variables. Scope is limited to app.
+iio.scripts = iio.scripts || {};
+
+var runScripts = function() {
+  var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
+  var iioScripts = scripts.filter(function(s) {
+    return s.type === 'text/iioscript';
+  });
+  iioScripts.forEach(function(script) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", script.src, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
+        iio.scripts[script.src] = eval("(function() {\nreturn function(settings) {\n" + CoffeeScript.compile(xhr.responseText, {bare: true}) + "}\n})()");
+    iio.start(iio.scripts[script.src]);
+      }
+    }
+    xhr.send(null);
+  });
+}
+
+// Listen for window load, both in decent browsers and in IE
+if (window.addEventListener)
+  window.addEventListener('DOMContentLoaded', runScripts, false);
+else
+  window.attachEvent('onload', runScripts);

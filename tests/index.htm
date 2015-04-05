@@ -6,28 +6,7 @@
 <html>
 <body>
 <script type="text/javascript" src="../core/iioEngine.js"></script>
-<script type="text/javascript">
-App = function(app,s){
-
-	app.set({ color:'black' });
-
-	var obj = new iio.Rectangle({
-		pos:app.center,
-		width:200,
-		color:'blue'
-	});
-
-	var text = new iio.SimpleText({
-		pos:app.center,
-		color:'white',
-		text:'Hello World',
-		vel:{x:1,y:1,r:.01}
-	});
-
-	app.add(obj);
-	app.add(text);
-
-}; iio.start(App);
-</script>
+<script type="text/javascript" src="http://coffeescript.org/extras/coffee-script.js"></script>
+<script type="text/iioscript" src="App.iio"></script>
 </body>
 </html>
