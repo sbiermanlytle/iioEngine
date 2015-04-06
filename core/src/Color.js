@@ -27,9 +27,9 @@ iio.Color.prototype.invert = function(){
 	return this;
 }
 iio.Color.prototype.randomize = function(alpha){
-	this.r = iio.random.integer(0,255);
-	this.g = iio.random.integer(0,255);
-	this.b = iio.random.integer(0,255);
-	if(alpha) this.a = iio.random.num(0,1);
+	this.r = iio.randomInt(0,255);
+	this.g = iio.randomInt(0,255);
+	this.b = iio.randomInt(0,255);
+	if(alpha) this.a = iio.random();
 	return this;
 }
