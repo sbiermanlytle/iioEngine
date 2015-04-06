@@ -1,5 +1,6 @@
 iio = {};
 iio.apps = [];
+iio.scripts = iio.scripts || {};
 
 //INITIALIZATION
 iio.start = function(app, id, d) {
@@ -16,6 +17,23 @@ iio.start = function(app, id, d) {
 
   //initialize application without settings
   return new iio.App(c, app);
+}
+iio.runScripts = function() {
+  var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
+  var iioScripts = scripts.filter(function(s) {
+    return s.type === 'text/iioscript';
+  });
+  iioScripts.forEach(function(script) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", script.src, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
+        iio.scripts[script.src] = eval("(function() {\nreturn function(settings) {\n" + CoffeeScript.compile(xhr.responseText, {bare: true}) + "}\n})()");
+    iio.start(iio.scripts[script.src]);
+      }
+    }
+    xhr.send(null);
+  });
 }
 
 //JS ADDITIONS
@@ -50,6 +68,16 @@ iio.set = function(os, p) {
   os.forEach(function(o) {
     o.set(p);
   });
+}
+iio.random = function(min, max) {
+  min = min || 0;
+  max = (max === 0 || typeof(max) != 'undefined') ? max : 1;
+  return Math.random() * (max - min) + min;
+}
+iio.randomInt = function(min, max) {
+  min = min || 0;
+  max = max || 1;
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 //IO
@@ -186,29 +214,26 @@ iio.prep_input = function() {
 }
 iio.prep_input();
 
-// Set up a hash for storing variables. Scope is limited to app.
-iio.scripts = iio.scripts || {};
-
-var runScripts = function() {
-  var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
-  var iioScripts = scripts.filter(function(s) {
-    return s.type === 'text/iioscript';
+//DEPRECATED
+iio.createGradient = function(ctx, g) {
+  var gradient;
+  var p = g.split(':');
+  var ps = p[1].split(',');
+  if (ps.length == 4)
+    gradient = ctx.createLinearGradient(ps[0], ps[1], ps[2], ps[3]);
+  else gradient = ctx.createRadialGradient(ps[0], ps[1], ps[2], ps[3], ps[4], ps[5]);
+  var c;
+  p.forEach(function(_p) {
+    c = _p.indexOf(',');
+    var a = parseFloat(_p.substring(0, c));
+    var b = _p.substring(c + 1);
+    gradient.addColorStop(a, b);
   });
-  iioScripts.forEach(function(script) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", script.src, true);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
-        iio.scripts[script.src] = eval("(function() {\nreturn function(settings) {\n" + CoffeeScript.compile(xhr.responseText, {bare: true}) + "}\n})()");
-    iio.start(iio.scripts[script.src]);
-      }
-    }
-    xhr.send(null);
-  });
+  return gradient;
 }
 
 // Listen for window load, both in decent browsers and in IE
 if (window.addEventListener)
-  window.addEventListener('DOMContentLoaded', runScripts, false);
+  window.addEventListener('DOMContentLoaded', iio.runScripts, false);
 else
-  window.attachEvent('onload', runScripts);
+  window.attachEvent('onload', iio.runScripts);

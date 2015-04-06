@@ -71,7 +71,7 @@ iio.App.prototype.stop = function() {
 iio.App.prototype.draw = function(noClear) {
   if (!noClear) this.ctx.clearRect(0, 0, this.width, this.height);
   if (this.color) {
-    this.ctx.fillStyle = this.color;
+    this.ctx.fillStyle = this.color.toString();
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
   if (this.round && this.canvas.style.borderRadius != this.round) {

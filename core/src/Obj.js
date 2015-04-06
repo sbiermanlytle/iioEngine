@@ -11,7 +11,17 @@ iio.Obj.prototype.Obj = function() {
 //FUNCTIONS
 iio.Obj.prototype.set = function() {
   for (var p in arguments[0]) this[p] = arguments[0][p];
-  if(this.pos) this.pos = { x:this.pos.x, y:this.pos.y }
+  this.convert_props();
+}
+iio.Obj.prototype.convert_props = function(){
+  
+  // string color to iio.Color
+  if(iio.is.string(this.color)) 
+    this.color = iio.convert.color(this.color);
+
+  // array pos to iio.V
+  if(this.pos instanceof Array)
+    this.pos = new iio.V(this.pos[0],this.pos[1]);
 }
 iio.Obj.prototype.add = function() {
   if (arguments[0] instanceof Array)

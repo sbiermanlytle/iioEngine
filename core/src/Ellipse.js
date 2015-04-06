@@ -47,5 +47,5 @@ iio.Circle.prototype.draw_shape = function(ctx){
   ctx.beginPath();
   ctx.arc(0, 0, this.radius, 0, 2 * Math.PI, false);
   if (this.radius != this.radius) ctx.closePath();
-  iio.draw.finish_path_shape(ctx, this);
+  this.finish_path_shape(ctx);
 }

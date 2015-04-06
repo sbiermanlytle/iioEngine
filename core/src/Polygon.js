@@ -25,7 +25,7 @@ iio.Polygon.prototype.draw_shape = function(ctx) {
     ctx.lineTo(this.vs[i].x - this.vs[0].x, this.vs[i].y - this.vs[0].y);
   if (typeof(this.open) == 'undefined' || !this.open)
     ctx.closePath();
-  iio.draw.finish_path_shape(ctx, this);
+  this.finish_path_shape(ctx);
 }
 iio.Polygon.prototype.contains = function(v, y) {
   y = (v.y || y);

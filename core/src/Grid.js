@@ -48,8 +48,8 @@ iio.Grid.prototype.draw_shape = function(ctx) {
       this.color = this.createGradient(ctx, this.color);
     ctx.strokeStyle = this.color;
     ctx.lineWidth = this.lineWidth;
-    for (var c = 1; c < this.C; c++) iio.draw.line(ctx, c * this.res.x, 0, c * this.res.x, this.height);
-    for (var r = 1; r < this.R; r++) iio.draw.line(ctx, 0, r * this.res.y, this.width, r * this.res.y);
+    for (var c = 1; c < this.C; c++) this.draw_line(ctx, c * this.res.x, 0, c * this.res.x, this.height);
+    for (var r = 1; r < this.R; r++) this.draw_line(ctx, 0, r * this.res.y, this.width, r * this.res.y);
   }
 }
 iio.Grid.prototype.clear = function() {

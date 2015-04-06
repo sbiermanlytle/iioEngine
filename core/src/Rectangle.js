@@ -66,13 +66,15 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
   ctx.translate(-this.width / 2, -this.width / 2);
   if (this.bezier) {
     iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
-    iio.draw.finish_path_shape(ctx, this);
-  } else if (this.type==iio.X) {
-    iio.draw.prep_x(ctx, this);
-    iio.draw.line(ctx, 0, 0, this.width, this.width);
-    iio.draw.line(ctx, this.width, 0, 0, this.width);
-    ctx.restore();
-  } else if(this.round)
+    this.finish_path_shape(ctx);
+  }
+  // } else if (this.type==iio.X) {
+  //   iio.draw.prep_x(ctx, this);
+  //   iio.draw.line(ctx, 0, 0, this.width, this.width);
+  //   iio.draw.line(ctx, this.width, 0, 0, this.width);
+  //   ctx.restore();
+  // } 
+  else if(this.round)
     this.draw_rounded(ctx);
   else{
     if (this.color) ctx.fillRect(0, 0, this.width, this.width)

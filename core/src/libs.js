@@ -26,43 +26,13 @@ iio.is = {
   }
 }
 
-iio.random = {
-  num: function(min, max) {
-    min = min || 0;
-    max = (max === 0 || typeof(max) != 'undefined') ? max : 1;
-    return Math.random() * (max - min) + min;
-  },
-  integer: function(min, max) {
-    min = min || 0;
-    max = max || 1;
-    return Math.floor(Math.random() * (max - min)) + min;
-  },
-  color: function() {
-    return "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")"
-  }
-}
-
-iio.color = {
-  random: iio.random.color,
-  invert: function(c) {
-    var ss = c.substr(c.indexOf(',') + 1);
-    var ss2 = ss.substr(ss.indexOf(',') + 1);
-    return "rgb(" + (255 - parseInt(c.substr(c.indexOf('(') + 1, c.indexOf(',')), 10)) + "," + (255 - parseInt(ss.substr(0, ss.indexOf(',')), 10)) + "," + (255 - parseInt(ss2.substr(0, ss2.indexOf(')')), 10)) + ")"
-  }
-}
-
-iio.bounds = {
-  resolve: function(b, c) {
-    if (b.length > 1) return b[1](c);
-    return true;
-  },
-  over_upper_limit: function(bnd, lim, c) {
-    if (lim > bnd[0]) return iio.bounds.resolve(bnd, c);
-    return false;
-  },
-  below_lower_limit: function(bnd, lim, c) {
-    if (lim < bnd[0]) return iio.bounds.resolve(bnd, c);
-    return false;
+iio.convert = {
+  color: function(c){
+    if(c.toLowerCase()=='white') return new iio.Color(255,255,255);
+    if(c.toLowerCase()=='black') return new iio.Color();
+    if(c.toLowerCase()=='red') return new iio.Color(255);
+    if(c.toLowerCase()=='green') return new iio.Color(0,255);
+    if(c.toLowerCase()=='blue') return new iio.Color(0,0,255);
   }
 }
 
@@ -316,32 +286,6 @@ iio.key = {
   }
 }
 
-iio.v = {
-  add: function(v1, v2) {
-    for (var p in v2)
-      if (v1[p]) v1[p] += v2[p];
-    return v1
-  },
-  sub: function(v1, v2) {
-    for (var p in v2)
-      if (v1[p]) v1[p] -= v2[p];
-    return v1
-  },
-  mult: function(v1, v2) {
-    for (var p in v2)
-      if (v1[p]) v1[p] *= v2[p];
-    return v1
-  },
-  div: function(v1, v2) {
-    for (var p in v2)
-      if (v1[p]) v1[p] /= v2[p];
-    return v1
-  },
-  dist: function(v1, v2) {
-    return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2))
-  }
-}
-
 iio.canvas = {
   create: function(w, h) {
     var c = document.createElement('canvas');
@@ -417,68 +361,6 @@ iio.canvas = {
   }
 }
 
-iio.anim = {
-  play: function(fps, t, r, fn, s) {
-    if (iio.is.string(t)) {
-      var o = this;
-      this.anims.some(function(anim, i) {
-        if (anim.tag == t) {
-          o.animKey = i;
-          o.width = anim.frames[o.animFrame].w;
-          o.height = anim.frames[o.animFrame].h;
-          return true;
-        }
-        return false;
-      });
-    } else r = t;
-    this.animFrame = s || 0;
-    if (typeof(r) != 'undefined') {
-      this.repeat = r;
-      this.onanimstop = fn;
-    }
-    var loop;
-    if (fps > 0) loop = this.loop(fps, iio.anim.next);
-    else if (fps < 0) loop = this.loop(fps * -1, iio.anim.prev);
-    else this.app.draw();
-    return loop;
-  },
-  next: function(o) {
-    o.animFrame++;
-    if (o.animFrame >= o.anims[o.animKey].frames.length) {
-      o.animFrame = 0;
-      if (typeof(o.repeat) != 'undefined') {
-        if (o.repeat <= 1) {
-          window.cancelAnimationFrame(id);
-          window.clearTimeout(id);
-          if (o.onanimstop) o.onanimstop(id, o);
-          return;
-        } else o.repeat--;
-      }
-    }
-  },
-  prev: function(o) {
-    o.animFrame--;
-    if (o.animFrame < 0)
-      o.animFrame = o.anims[o.animKey].frames.length - 1;
-    o.app.draw();
-  },
-  shrink: function(s, r) {
-    this.width *= 1 - s;
-    this.height *= 1 - s;
-    if (this.width < .02) {
-      if (r) return r(this);
-      else return true;
-    }
-  },
-  fade: function(s, r) {
-    this.alpha *= 1 - s;
-    if (this.alpha < .002) {
-      if (r) return r(this);
-      else return true;
-    }
-  }
-}
-
 iio.collision = {
   check: function(o1, o2) {
     if (typeof(o1) == 'undefined' || typeof(o2) == 'undefined') return false;
@@ -498,92 +380,5 @@ iio.collision = {
   rectXrect: function(r1L, r1R, r1T, r1B, r2L, r2R, r2T, r2B) {
     if (r1L < r2R && r1R > r2L && r1T < r2B && r1B > r2T) return true;
     return false;
-  }
-}
-
-iio.draw = {
-  line: function(ctx, x, y, x1, y1) {
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x1, y1);
-    ctx.stroke();
-  },
-  finish_path_shape: function(ctx, o) {
-    if (o.color) ctx.fill();
-    if (o.img) ctx.drawImage(o.img, -o.width / 2, -o.height / 2, o.width, o.height);
-    if (o.outline) ctx.stroke();
-    if (o.clip) ctx.clip();
-  },
-  prep_x: function(ctx, o) {
-    ctx.save();
-    if (o.color.indexOf && o.color.indexOf('gradient') > -1)
-      o.color = o.createGradient(ctx, o.color);
-    ctx.strokeStyle = o.color||o.outline;
-    ctx.lineWidth = o.lineWidth;
-  }
-}
-
-iio.api = {
-  update: function(o, nd) {
-    if (o.text) o.type = iio.TEXT;
-    if (o.simple) {
-      if (!(o.bbx instanceof Array)) {
-        o.bbx = [o.bbx, o.bbx];
-      } else if (typeof(o.bbx[1] == 'undefined'))
-        o.bbx[1] = o.bbx[0];
-    }
-    if (o.anims) {
-      o.animKey = 0;
-      o.animFrame = 0;
-      if (!o.width) o.width = o.anims[o.animKey].frames[o.animFrame].w;
-      if (!o.height) o.height = o.anims[o.animKey].frames[o.animFrame].h;
-    }
-    if (o.bezier)
-      o.bezier.forEach(function(b, i) {
-        if (b === 'n') o.bezier[i] = undefined;
-      });
-    if (o.img && iio.is.string(o.img)) {
-      nd = false;
-      var src = o.img;
-      o.img = new Image();
-      o.img.src = src;
-      o.img.parent = o;
-      if ((typeof o.width == 'undefined' && typeof o.radius == 'undefined') || o.radius == 0)
-        o.img.onload = function(e) {
-          if (o.radius == 0) o.radius = o.width / 2;
-          else {
-            o.width = o.width || 0;
-            o.height = o.height || 0;
-          }
-          if (nd);
-          else o.app.draw();
-        }
-    } else if (o.img) {
-      if ((typeof o.width == 'undefined' && typeof o.radius == 'undefined') || o.radius == 0) {
-        if (o.radius == 0) o.radius = o.img.width / 2;
-        else {
-          o.width = o.img.width || 0;
-          o.height = o.img.height || 0;
-        }
-        if (nd);
-        else o.app.draw();
-      }
-    }
-  },
-  createGradient: function(ctx, g) {
-    var gradient;
-    var p = g.split(':');
-    var ps = p[1].split(',');
-    if (ps.length == 4)
-      gradient = ctx.createLinearGradient(ps[0], ps[1], ps[2], ps[3]);
-    else gradient = ctx.createRadialGradient(ps[0], ps[1], ps[2], ps[3], ps[4], ps[5]);
-    var c;
-    p.forEach(function(_p) {
-      c = _p.indexOf(',');
-      var a = parseFloat(_p.substring(0, c));
-      var b = _p.substring(c + 1);
-      gradient.addColorStop(a, b);
-    });
-    return gradient;
   }
 }

@@ -13,22 +13,6 @@ iio.Line.prototype.Line = function() {
   //this.height = o.lineWidth;
 }
 
-//FUNCTIONS
-iio.Line.prototype.draw_shape = function(ctx) {
-  /*if (this.color.indexOf && this.color.indexOf('gradient') > -1)
-    this.color = this.createGradient(ctx, this.color);*/
-  ctx.strokeStyle = this.color;
-  ctx.lineWidth = this.lineWidth;
-  if (this.origin)
-    ctx.translate(-this.origin.x, -this.origin.y);
-  else ctx.translate(-this.pos.x, -this.pos.y);
-  ctx.beginPath();
-  ctx.moveTo(this.pos.x, this.pos.y);
-  if (this.bezier)
-    ctx.bezierCurveTo(this.bezier[0], this.bezier[1], this.bezier[2], this.bezier[3], this.endPos.x, this.endPos.y);
-  else ctx.lineTo(this.endPos.x, this.endPos.y);
-  ctx.stroke();
-}
 iio.Line.prototype.update_props = function(v) {
   this.endPos.x += v.x;
   this.endPos.y += v.y;
@@ -47,4 +31,21 @@ iio.Line.prototype.contains = function(v, y) {
     if (y == v.y) return true;
   }
   return false;
+}
+
+//FUNCTIONS
+iio.Line.prototype.draw_shape = function(ctx) {
+  /*if (this.color.indexOf && this.color.indexOf('gradient') > -1)
+    this.color = this.createGradient(ctx, this.color);*/
+  ctx.strokeStyle = this.color.toString();
+  ctx.lineWidth = this.lineWidth || 1;
+  if (this.origin)
+    ctx.translate(-this.origin.x, -this.origin.y);
+  else ctx.translate(-this.pos.x, -this.pos.y);
+  ctx.beginPath();
+  ctx.moveTo(this.pos.x, this.pos.y);
+  if (this.bezier)
+    ctx.bezierCurveTo(this.bezier[0], this.bezier[1], this.bezier[2], this.bezier[3], this.endPos.x, this.endPos.y);
+  else ctx.lineTo(this.endPos.x, this.endPos.y);
+  ctx.stroke();
 }
