@@ -60,6 +60,31 @@ iio.App.prototype.App = function(view, app, s) {
 }
 
 //FUNCTIONS
+iio.App.prototype.create = function(){
+  var props = {};
+  for(var i=0; i<arguments.length; i++){
+    if(arguments[i] === null) break;
+    if(arguments[i] instanceof iio.V)
+      props.pos = arguments[i];
+    else if(typeof arguments[i] === 'object')
+      props = iio.merge(props,arguments[i]);
+
+    else if(iio.is.number(arguments[i]))
+      props.width = arguments[i];
+
+    else if(iio.is.string(arguments[i]))
+      props.color = arguments[i];
+
+  }
+  if(props.vs){
+    if(props.vs.length == 2)
+      return this.add(new iio.Line(props));
+  } else if(this.radius)
+    return this.add(new iio.Ellipse(props));
+  else if(this.height)
+    return this.add(new iio.Rectangle(props));
+  else return this.add(new iio.Square(props));
+}
 iio.App.prototype.stop = function() {
   this.objs.forEach(function(obj) {
     iio.cancelLoops(obj);

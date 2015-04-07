@@ -19,9 +19,18 @@ iio.Obj.prototype.convert_props = function(){
   if(iio.is.string(this.color)) 
     this.color = iio.convert.color(this.color);
 
-  // array pos to iio.V
-  if(this.pos instanceof Array)
-    this.pos = new iio.V(this.pos[0],this.pos[1]);
+  // arrays to iio.V
+  this.convert_v("pos");
+  this.convert_v("vel");
+  this.convert_v("acc");
+  if(this.vs)
+    for(var i=0; i<this.vs.length; i++)
+      if(this.vs[i] instanceof Array)
+        this.vs[i] = new iio.V(this.vs[i]);
+}
+iio.Obj.prototype.convert_v = function(p){
+  if(this[p] && this[p] instanceof Array)
+    this[p] = new iio.V(this[p]);
 }
 iio.Obj.prototype.add = function() {
   if (arguments[0] instanceof Array)

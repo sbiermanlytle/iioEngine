@@ -4,8 +4,8 @@ iio.V = function(){ this.V.apply(this, arguments) };
 
 //CONSTRUCTOR
 iio.V.prototype.V = function(v,y) {
-	this.x = v.x || v || 0;
-	this.y = v.y || y || 0;
+	this.x = v.x || v[0] || v || 0;
+	this.y = v.y || v[1] || y || 0;
 }
 
 //STATIC FUNCTIONS

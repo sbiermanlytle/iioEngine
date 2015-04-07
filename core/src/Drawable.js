@@ -7,7 +7,7 @@ iio.Drawable.prototype._super = iio.Obj.prototype;
 //CONSTRUCTOR
 iio.Drawable.prototype.Drawable = function() {
   this._super.Obj.call(this,arguments[0]);
-  if(!this.pos) this.pos = {x:0, y:0}
+  //if(!this.pos) this.pos = {x:0, y:0}
 }
 
 //BOUNDS FUNCTIONS
