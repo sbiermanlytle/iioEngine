@@ -28,8 +28,10 @@ iio.runScripts = function() {
     xhr.open("GET", script.src, true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
-        iio.scripts[script.src] = eval("(function() {\nreturn function(settings) {\n" + CoffeeScript.compile(xhr.responseText, {bare: true}) + "}\n})()");
-    iio.start(iio.scripts[script.src]);
+        iio.scripts[script.src] = eval("(function() {\nreturn function(settings) {\n" + 
+									   CoffeeScript.compile(xhr.responseText, {bare: true}) + 
+									   "}\n})()");
+        iio.start(iio.scripts[script.src]);
       }
     }
     xhr.send(null);

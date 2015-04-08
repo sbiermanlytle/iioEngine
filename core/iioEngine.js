@@ -34,7 +34,7 @@ iio_dependencies = [
   'Text.js',
 ]
 
-var load_iio = function(onload){
+var load_iio_remote = function(onload){
   iio_load_dependency(0,onload);
 }
 
