@@ -25,27 +25,19 @@ iio.App.prototype.App = function(view, app, s) {
   this.height = view.clientHeight || view.height;
 
   //set center
-  this.center = {
-    x: this.width / 2,
-    y: this.height / 2
-  };
+  this.center = new iio.V(
+    this.width / 2,
+    this.height / 2
+  );
 
   //get DOM offset of canvas
   var offset = view.getBoundingClientRect();
 
   //set canvas DOM position
-  this.pos = {
-    x: offset.left,
-    y: offset.top
-  };
-
-  //create convert function with offset
-  this.convertEventPos = function(e) {
-    return {
-      x: e.clientX - this.pos.x,
-      y: e.clientY - this.pos.y
-    }
-  }
+  this.pos = new iio.V(
+    offset.left,
+    offset.top
+  );
 
   //initialize app properties
   this.collisions = [];
@@ -60,30 +52,11 @@ iio.App.prototype.App = function(view, app, s) {
 }
 
 //FUNCTIONS
-iio.App.prototype.create = function(){
-  var props = {};
-  for(var i=0; i<arguments.length; i++){
-    if(arguments[i] === null) break;
-    if(arguments[i] instanceof iio.V)
-      props.pos = arguments[i];
-    else if(typeof arguments[i] === 'object')
-      props = iio.merge(props,arguments[i]);
-
-    else if(iio.is.number(arguments[i]))
-      props.width = arguments[i];
-
-    else if(iio.is.string(arguments[i]))
-      props.color = arguments[i];
-
-  }
-  if(props.vs){
-    if(props.vs.length == 2)
-      return this.add(new iio.Line(props));
-  } else if(this.radius)
-    return this.add(new iio.Ellipse(props));
-  else if(this.height)
-    return this.add(new iio.Rectangle(props));
-  else return this.add(new iio.Square(props));
+iio.App.prototype.convertEventPos = function(e) {
+  return new iio.V( 
+    e.clientX - this.pos.x, 
+    e.clientY - this.pos.y
+  )
 }
 iio.App.prototype.stop = function() {
   this.objs.forEach(function(obj) {
@@ -109,9 +82,8 @@ iio.App.prototype.draw = function(noClear) {
   if (this.alpha)
     this.canvas.style.opacity = this.alpha;
   if (this.objs.length > 0)
-    this.objs.forEach(function(obj) {
-      if (obj.draw) obj.draw(this.ctx);
-    }, this);
+    for(var i=0; i<this.objs.length; i++)
+      if (this.objs[i].draw) this.objs[i].draw(this.ctx);
 }
 iio.App.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.width, this.height);
