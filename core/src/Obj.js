@@ -12,6 +12,8 @@ iio.Obj.prototype.Obj = function() {
 iio.Obj.prototype.set = function() {
   for (var p in arguments[0]) this[p] = arguments[0][p];
   this.convert_props();
+  if (arguments[arguments.length-1] === true);
+  else if(this.app) this.app.draw();
 }
 iio.Obj.prototype.convert_props = function(){
   
@@ -27,37 +29,57 @@ iio.Obj.prototype.convert_props = function(){
     for(var i=0; i<this.vs.length; i++)
       if(this.vs[i] instanceof Array)
         this.vs[i] = new iio.V(this.vs[i]);
+
+  //set required properties
+  if(this.torque) this.rot = 0;
 }
 iio.Obj.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)
     this[p] = new iio.V(this[p]);
 }
+iio.Obj.prototype.create = function(){
+  var props = {};
+  for(var i=0; i<arguments.length; i++){
+    if(arguments[i] === null) break;
+    if(arguments[i] instanceof iio.V)
+      props.pos = arguments[i];
+    else if(typeof arguments[i] === 'object')
+      props = iio.merge(props,arguments[i]);
+
+    else if(iio.is.number(arguments[i]))
+      props.width = arguments[i];
+
+    else if(iio.is.string(arguments[i]))
+      props.color = arguments[i];
+  }
+  if(props.vs){
+    if(props.vs.length == 2)
+      return this.add(new iio.Line(props));
+  } else if(this.radius)
+    return this.add(new iio.Ellipse(props));
+  else if(this.height)
+    return this.add(new iio.Rectangle(props));
+  else return this.add(new iio.Square(props));
+}
 iio.Obj.prototype.add = function() {
   if (arguments[0] instanceof Array)
-    arguments[0].forEach(function() {
+    for(var i=0; i<arguments[0].length; i++)
       this.add(arguments);
-    }, this);
   else {
     arguments[0].parent = this;
     arguments[0].app = this.app;
-    if(!arguments[0].pos)
-      arguments[0].pos = {x:this.app.center.x,y:this.app.center.y};
+    //if(!arguments[0].pos)
+      //arguments[0].pos = {x:this.app.center.x,y:this.app.center.y};
     if (typeof(arguments[0].z) == 'undefined') arguments[0].z = 0;
     var i = 0;
     while (i < this.objs.length && typeof(this.objs[i].z) != 'undefined' && arguments[0].z >= this.objs[i].z) i++;
     this.objs.insert(i, arguments[0]);
-    if (arguments[0].app && ((arguments[0].vel && (arguments[0].vel.x != 0 || arguments[0].vel.y != 0 || arguments[0].vel.r != 0)) || arguments[0].shrink || arguments[0].fade || (arguments[0].acc && (arguments[0].acc.x != 0 || arguments[0].acc.y != 0 || arguments[0].acc.r != 0))) && (typeof arguments[0].app.looping == 'undefined' || arguments[0].app.looping === false))
+    if (arguments[0].app && ((arguments[0].vel && (arguments[0].vel.x != 0 || arguments[0].vel.y != 0 )) || arguments[0].torque || arguments[0].shrink || arguments[0].fade || (arguments[0].acc && (arguments[0].acc.x != 0 || arguments[0].acc.y != 0 || arguments[0].acc.r != 0))) && (typeof arguments[0].app.looping == 'undefined' || arguments[0].app.looping === false))
       arguments[0].app.loop();
   }
   if (arguments[arguments.length-1] === true);
   else if(this.app) this.app.draw();
   return arguments[0];
-}
-iio.Obj.prototype.create = function(){
-  var obj = this.add(new iio.Obj(this, arguments), true);
-  if (arguments[arguments.length-1] === true);
-  else this.app.draw();
-  return obj;
 }
 iio.Obj.prototype.rmv = function(o, nd) {
   callback = function(c, i, arr) {

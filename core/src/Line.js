@@ -7,7 +7,7 @@ iio.Line.prototype._super = iio.Drawable.prototype;
 //CONSTRUCTOR
 iio.Line.prototype.Line = function() {
   this._super.Drawable.call(this,arguments[0]);
-  this.pos = this.pos || this.vs[0];
+  //this.pos = this.pos || this.vs[0];
   //this.center.x = (this.pos.x + this.endPos.x) / 2;
   //this.center.y = (this.pos.y + this.endPos.y) / 2;
   //this.width = iio.v.dist(this.pos, this.endPos);
@@ -17,7 +17,7 @@ iio.Line.prototype.Line = function() {
 
 //FUNCTIONS
 iio.Line.prototype.update_props = function(v) {
-  
+
 }
 iio.Line.prototype.contains = function(v, y) {
   if (typeof(y) != 'undefined') v = {
@@ -32,15 +32,18 @@ iio.Line.prototype.contains = function(v, y) {
   }
   return false;
 }
+iio.Drawable.prototype.prep_ctx_color = function(ctx){
+  //if (o.color.indexOf && o.color.indexOf('gradient') > -1)
+    //o.color = o.createGradient(ctx, o.color);
+  ctx.strokeStyle = this.color.toString();
+  return ctx;
+}
 
 iio.Line.prototype.draw_shape = function(ctx) {
   /*if (this.color.indexOf && this.color.indexOf('gradient') > -1)
     this.color = this.createGradient(ctx, this.color);*/
   ctx.strokeStyle = this.color.toString();
-  ctx.lineWidth = this.lineWidth || 1;
-  if (this.origin)
-    ctx.translate(-this.origin.x, -this.origin.y);
-  else if(this.pos) ctx.translate(-this.pos.x, -this.pos.y);
+  ctx.lineWidth = this.width || 1;
   ctx.beginPath();
   ctx.moveTo(this.vs[0].x, this.vs[0].y);
   if (this.bezier)

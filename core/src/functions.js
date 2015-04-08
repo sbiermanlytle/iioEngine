@@ -12,8 +12,8 @@ iio.start = function(app, id, d) {
     return new iio.App(c, app[0], app[1]);
 
   //run iio file
-  else if (iio.is.string(app) && app.substring(app.length - 4) == '.iio')
-    return iio.read(app, iio.start);
+  /*else if (iio.is.string(app) && app.substring(app.length - 4) == '.iio')
+    return iio.read(app, iio.start);*/
 
   //initialize application without settings
   return new iio.App(c, app);
@@ -42,6 +42,15 @@ iio.runScripts = function() {
 Array.prototype.insert = function(index, item) {
   this.splice(index, 0, item);
   return this;
+}
+if (Function.prototype.name === undefined){
+  // Add a custom property to all function values
+  // that actually invokes a method to get the value
+  Object.defineProperty(Function.prototype,'name',{
+    get:function(){
+      return /function ([^(]*)/.exec( this+"" )[1];
+    }
+  });
 }
 
 //UTIL FUNCTIONS

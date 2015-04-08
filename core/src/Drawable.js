@@ -37,6 +37,7 @@ iio.Drawable.prototype.update = function() {
   // update position
   if (this.acc) this.update_acc();
   if (this.vel) this.update_vel();
+  if (this.torque) this.update_torque();
 
   if (this.objs && this.objs.length > 0)
       this.objs.forEach(function(obj) {
@@ -44,14 +45,23 @@ iio.Drawable.prototype.update = function() {
       }, this);
 }
 iio.Drawable.prototype.update_vel = function(){
-  if (this.vel.x) this.pos.x += this.vel.x;
-  if (this.vel.y) this.pos.y += this.vel.y;
-  if (this.vel.r) this.rot += this.vel.r;
+  if(this.pos){
+    if (this.vel.x) this.pos.x += this.vel.x;
+    if (this.vel.y) this.pos.y += this.vel.y;
+  }
+  if(this.vs){
+    for(var i=0; i<this.vs.length; i++){
+      if (this.vel.x) this.vs[i].x += this.vel.x;
+      if (this.vel.y) this.vs[i].y += this.vel.y;
+    }
+  }
+}
+iio.Drawable.prototype.update_torque = function(){
+  this.rot += this.torque;
 }
 iio.Drawable.prototype.update_acc = function(){
   this.vel.x += this.acc.x;
   this.vel.y += this.acc.y;
-  this.vel.r += this.acc.r;
 }
 iio.Drawable.prototype.update_shrink = function(){
   if (this.shrink instanceof Array)
@@ -233,7 +243,7 @@ iio.Drawable.prototype.finish_path_shape = function(ctx){
 } 
 iio.Drawable.prototype.draw_obj = function(ctx){
   ctx.save();
-  ctx.globalAlpha = this.alpha;
+  if(this.alpha) ctx.globalAlpha = this.alpha;
   if (this.lineCap) ctx.lineCap = this.lineCap;
   if (this.shadow) ctx = this.prep_ctx_shadow(ctx);
   if (this.dash) ctx = this.prep_ctx_dash(ctx);
