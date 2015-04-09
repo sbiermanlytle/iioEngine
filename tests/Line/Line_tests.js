@@ -39,7 +39,7 @@ function Test_Line_rotation( app, settings ){
 		pos: app.center,
 		color: _color[settings.c].clone(),
 		width: _width,
-		rVel: .02,
+		rotation: Math.PI/2,
 		vs:[
 			[ -_height, -_height ],
 			[ _height, _height ]
@@ -51,7 +51,7 @@ function Test_Line_rotation_no_pos( app, settings ){
 	app.add(new iio.Line({
 		color: _color[settings.c].clone(),
 		width: _width,
-		rVel: -.02,
+		rotation: Math.PI/2,
 		origin: app.center,
 		vs:[
 			[ _padding, _padding ],
@@ -71,6 +71,117 @@ function Test_Line_origin( app, settings ){
 			[ -_height/2, -_height/2 ],
 			[ _height/2, _height/2 ]
 		]
+	}));
+}
+function Test_Line_vel_bounds( app, settings ){
+
+	var speed = 0.4;
+
+	function reverse(o){ o.vel.x *= -1 }
+
+	var line = app.add(new iio.Line({
+		pos: app.center.clone(),
+		color: _color[settings.c].clone(),
+		width: 10,
+		vel: [ speed,0 ],
+		vs:[
+			[ 0, -_height ],
+			[ 0, _height ]
+		],
+		bounds: {
+			right: [ app.center.x+15, reverse ],
+			left: [ app.center.x-15, reverse ]
+		}
+	}));
+}
+function Test_Line_acc_bounds( app, settings ){
+
+	var speed = 0.4;
+
+	var line = app.add(new iio.Line({
+		pos: app.center.clone(),
+		color: _color[settings.c].clone(),
+		width: 10,
+		vel: [ speed,0 ],
+		acc: [ .01, 0 ],
+		vs:[
+			[ 0, -_height ],
+			[ 0, _height ]
+		],
+		bounds: {
+			right: [ app.center.x+15, function(o){
+				o.vel.x = -.5;
+			} ],
+			left: [ app.center.x-15, function(o){
+				o.vel.x = .5;
+			} ]
+		}
+	}));
+}
+function Test_Line_vels( app, settings ){
+
+	var speed = 0.5;
+
+	checkBound = function(o,v){
+		if(o.vs[v].x > app.width/2 || o.vs[v].x < -app.width/2)
+			o.vels[v].x *= -1;
+	}
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: _color[settings.c].clone(),
+		width: 10,
+		vs:[
+			[ 0, -_height ],
+			[ 0, _height ]
+		],
+		vels:[
+			[ speed, 0 ],
+			[ -speed, 0 ]
+		],
+		onUpdate: function(){
+			checkBound(this,0);
+			checkBound(this,1);
+		}
+	}));
+}
+function Test_Line_rVel_bounds( app, settings ){
+
+	function reverse(o){ o.rVel *= -1 }
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: _color[settings.c].clone(),
+		width: _width,
+		rVel: .02,
+		vs:[
+			[ -_height, -_height ],
+			[ _height, _height ]
+		],
+		bounds: {
+			rightRotation: [ Math.PI/2, reverse ],
+			leftRotation: [ 0, reverse ]
+		}
+	}));
+}
+function Test_Line_rVel_bounds_no_pos( app, settings ){
+
+	function reverse(o){ o.rVel *= -1 }
+
+	app.add(new iio.Line({
+		color: _color[settings.c].clone(),
+		width: _width,
+		rotation: Math.PI/2,
+		rVel: -.02,
+		origin: app.center,
+		vs:[
+			[ _padding, _padding ],
+			[ app.width-_padding, app.height-_padding ]
+		],
+		bounds: {
+			rightRotation: [ Math.PI/2, reverse ],
+			leftRotation: [ 0, reverse ]
+		}
 	}));
 }
 function Test_Line_hidden( app, settings ){

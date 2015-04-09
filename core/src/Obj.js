@@ -38,17 +38,21 @@ iio.Obj.prototype.convert_props = function(){
   this.convert_v("vel");
   this.convert_v("acc");
   this.convert_v("shadowOffset");
-  if(this.vs)
-    for(var i=0; i<this.vs.length; i++)
-      if(this.vs[i] instanceof Array)
-        this.vs[i] = new iio.V(this.vs[i]);
+  this.convert_vs("vs");
+  this.convert_vs("vels");
 
   //set required properties
-  if(this.rVel) this.rot = 0;
+  if(this.rVel && !this.rotation) this.rotation = 0;
 }
 iio.Obj.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)
     this[p] = new iio.V(this[p]);
+}
+iio.Obj.prototype.convert_vs = function(vs){
+  if(this[vs])
+    for(var i=0; i<this[vs].length; i++)
+      if(this[vs][i] instanceof Array)
+        this[vs][i] = new iio.V(this[vs][i]);
 }
 iio.Obj.prototype.create = function(){
   var props = {};
@@ -87,7 +91,15 @@ iio.Obj.prototype.add = function() {
     var i = 0;
     while (i < this.objs.length && typeof(this.objs[i].z) != 'undefined' && arguments[0].z >= this.objs[i].z) i++;
     this.objs.insert(i, arguments[0]);
-    if (arguments[0].app && ((arguments[0].vel && (arguments[0].vel.x != 0 || arguments[0].vel.y != 0 )) || arguments[0].rVel || arguments[0].onUpdate || arguments[0].shrink || arguments[0].fade || (arguments[0].acc && (arguments[0].acc.x != 0 || arguments[0].acc.y != 0 || arguments[0].acc.r != 0))) && (typeof arguments[0].app.looping == 'undefined' || arguments[0].app.looping === false))
+    if ( arguments[0].app && 
+        (  arguments[0].vel 
+        || arguments[0].vels 
+        || arguments[0].rVel 
+        || arguments[0].onUpdate 
+        || arguments[0].shrink 
+        || arguments[0].fade 
+        || arguments[0].acc
+        ) && (typeof arguments[0].app.looping == 'undefined' || arguments[0].app.looping === false))
       arguments[0].app.loop();
   }
   if (arguments[arguments.length-1] === true);

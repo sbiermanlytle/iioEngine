@@ -40,3 +40,8 @@ iio.V.div = function(v1, v2) {
 iio.V.dist = function(v1, v2) {
 	return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2))
 }
+
+//OBJECT FUNCTIONS
+iio.V.prototype.clone = function(){
+	return new iio.V(this.x,this.y)
+}

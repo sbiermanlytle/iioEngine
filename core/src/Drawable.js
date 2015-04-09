@@ -37,7 +37,8 @@ iio.Drawable.prototype.update = function() {
   // update position
   if (this.acc) this.update_acc();
   if (this.vel) this.update_vel();
-  if (this.rVel) this.update_rot();
+  if (this.rVel) this.update_rotation();
+  if (this.vels) this.update_vels();
 
   if (this.onUpdate) this.onUpdate();
 
@@ -58,8 +59,17 @@ iio.Drawable.prototype.update_vel = function(){
     }
   }
 }
-iio.Drawable.prototype.update_rot = function(){
-  this.rot += this.rVel;
+iio.Drawable.prototype.update_vels = function(){
+  if(this.vs){
+    for(var i=0; i<this.vels.length; i++){
+      if (this.vels[i].x) this.vs[i].x += this.vels[i].x;
+      if (this.vels[i].y) this.vs[i].y += this.vels[i].y;
+    }
+  }
+}
+iio.Drawable.prototype.update_rotation = function(){
+  this.rotation += this.rVel;
+  if(this.rotation > 6283 || this.rotation < -6283) this.rotation = 0;
 }
 iio.Drawable.prototype.update_acc = function(){
   this.vel.x += this.acc.x;
@@ -80,6 +90,8 @@ iio.Drawable.prototype.past_bounds = function(){
   if (this.bounds.left && this.below_lower_limit(this.bounds.left, this.pos.x, this)) return true;
   if (this.bounds.top && this.below_lower_limit(this.bounds.top, this.pos.y, this)) return true;
   if (this.bounds.bottom && this.over_upper_limit(this.bounds.bottom, this.pos.y, this)) return true;
+  if (this.bounds.rightRotation && this.over_upper_limit(this.bounds.rightRotation, this.rotation, this)) return true;
+  if (this.bounds.leftRotation && this.below_lower_limit(this.bounds.leftRotation, this.rotation, this)) return true;
   return false;
 }
 iio.Drawable.prototype.update_properties_deprecated = function(){
@@ -197,9 +209,9 @@ iio.Drawable.prototype.prep_ctx = function(ctx){
 
   //translate & rotate
   if (this.pos) ctx.translate(this.pos.x, this.pos.y);
-  if(this.rot){
+  if(this.rotation){
     if (this.origin) ctx.translate(this.origin.x, this.origin.y);
-    ctx.rotate(this.rot);
+    ctx.rotate(this.rotation);
     if (this.origin) ctx.translate(-this.origin.x, -this.origin.y);
   }
   return ctx;

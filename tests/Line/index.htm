@@ -61,6 +61,18 @@
 	<canvas id="c34" width="100px" height="100px"></canvas>
 	<canvas id="c35" width="100px" height="100px"></canvas>
 
+	<div class="clear"></div>
+
+	<canvas id="c41" width="100px" height="100px"></canvas>
+	<canvas id="c42" width="100px" height="100px"></canvas>
+	<canvas id="c43" width="100px" height="100px"></canvas>
+	<canvas id="c44" width="100px" height="100px"></canvas>
+	<canvas id="c45" width="100px" height="100px"></canvas>
+
+	<div class="clear"></div>
+
+	<canvas id="c51" width="100px" height="100px"></canvas>
+
 	<script type="text/javascript" src="../../core/iioEngine.js"></script>
 	<script type="text/javascript" src="Line_tests.js"></script>
 	<script type="text/javascript">	
@@ -86,17 +98,24 @@
 		iio.start([Test_Line_rotation_no_pos, { c:1 }], 'c04');
 		iio.start([Test_Line_origin, { c:0 }], 'c05');
 
-		iio.start([Test_Line_hidden, { c:1 }], 'c11');
-		iio.start([Test_Line_alpha, { c:0 }], 'c12');
-		iio.start([Test_Line_color, { c:1 }], 'c13');
-		iio.start([Test_Line_width, { c:0 }], 'c14');
+		iio.start([Test_Line_vel_bounds, { c:1 }], 'c11');
+		iio.start([Test_Line_acc_bounds, { c:0 }], 'c12');
+		iio.start([Test_Line_vels, { c:1 }], 'c13');
 
-		iio.start([Test_Line_lineCap, { c:0 }], 'c21');
-		iio.start([Test_Line_dash, { c:1 }], 'c22');
-		iio.start([Test_Line_bezier, { c:0 }], 'c23');
-		iio.start([Test_Line_shadow, { c:1 }], 'c24');
+		iio.start([Test_Line_rVel_bounds, { c:0 }], 'c21');
+		iio.start([Test_Line_rVel_bounds_no_pos, { c:1 }], 'c22');
 
-		iio.start([Test_Line_child, { c:1 }], 'c31');
+		iio.start([Test_Line_hidden, { c:1 }], 'c31');
+		iio.start([Test_Line_alpha, { c:0 }], 'c32');
+		iio.start([Test_Line_color, { c:1 }], 'c33');
+		iio.start([Test_Line_width, { c:0 }], 'c34');
+
+		iio.start([Test_Line_lineCap, { c:0 }], 'c41');
+		iio.start([Test_Line_dash, { c:1 }], 'c42');
+		iio.start([Test_Line_bezier, { c:0 }], 'c43');
+		iio.start([Test_Line_shadow, { c:1 }], 'c44');
+
+		iio.start([Test_Line_child, { c:1 }], 'c51');
 	});
 
 	</script>
