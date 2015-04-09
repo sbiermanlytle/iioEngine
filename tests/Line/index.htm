@@ -45,6 +45,22 @@
 	<canvas id="c14" width="100px" height="100px"></canvas>
 	<canvas id="c15" width="100px" height="100px"></canvas>
 
+	<div class="clear"></div>
+
+	<canvas id="c21" width="100px" height="100px"></canvas>
+	<canvas id="c22" width="100px" height="100px"></canvas>
+	<canvas id="c23" width="100px" height="100px"></canvas>
+	<canvas id="c24" width="100px" height="100px"></canvas>
+	<canvas id="c25" width="100px" height="100px"></canvas>
+
+	<div class="clear"></div>
+
+	<canvas id="c31" width="100px" height="100px"></canvas>
+	<canvas id="c32" width="100px" height="100px"></canvas>
+	<canvas id="c33" width="100px" height="100px"></canvas>
+	<canvas id="c34" width="100px" height="100px"></canvas>
+	<canvas id="c35" width="100px" height="100px"></canvas>
+
 	<script type="text/javascript" src="../../core/iioEngine.js"></script>
 	<script type="text/javascript" src="Line_tests.js"></script>
 	<script type="text/javascript">	
@@ -70,9 +86,15 @@
 		iio.start([Test_Line_rotation_no_pos, { c:1 }], 'c04');
 		iio.start([Test_Line_origin, { c:0 }], 'c05');
 
-		iio.start([Test_Line_alpha, { c:0 }], 'c11');
-		iio.start([Test_Line_color, { c:1 }], 'c12');
-		iio.start([Test_Line_width, { c:0 }], 'c13');
+		iio.start([Test_Line_hidden, { c:1 }], 'c11');
+		iio.start([Test_Line_alpha, { c:0 }], 'c12');
+		iio.start([Test_Line_color, { c:1 }], 'c13');
+		iio.start([Test_Line_width, { c:0 }], 'c14');
+
+		iio.start([Test_Line_lineCap, { c:0 }], 'c21');
+		iio.start([Test_Line_dash, { c:1 }], 'c22');
+		iio.start([Test_Line_bezier, { c:0 }], 'c23');
+		iio.start([Test_Line_shadow, { c:1 }], 'c24');
 	});
 
 	</script>

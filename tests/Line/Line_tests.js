@@ -14,7 +14,7 @@ function Test_Line_Constructor( app, settings ){
 
 	app.add(new iio.Line({
 		pos: app.center,
-		color: _color[settings.c],
+		color: _color[settings.c].clone(),
 		width: _width,
 		vs:[
 			[ -_height, -_height ],
@@ -25,7 +25,7 @@ function Test_Line_Constructor( app, settings ){
 function Test_Line_Constructor_no_pos( app, settings ){
 
 	app.add(new iio.Line({
-		color: _color[settings.c],
+		color: _color[settings.c].clone(),
 		width: _width,
 		vs:[
 			[ _padding, _padding ],
@@ -37,7 +37,7 @@ function Test_Line_rotation( app, settings ){
 
 	app.add(new iio.Line({
 		pos: app.center,
-		color: _color[settings.c],
+		color: _color[settings.c].clone(),
 		width: _width,
 		rVel: .02,
 		vs:[
@@ -49,7 +49,7 @@ function Test_Line_rotation( app, settings ){
 function Test_Line_rotation_no_pos( app, settings ){
 
 	app.add(new iio.Line({
-		color: _color[settings.c],
+		color: _color[settings.c].clone(),
 		width: _width,
 		rVel: -.02,
 		origin: app.center,
@@ -64,7 +64,7 @@ function Test_Line_origin( app, settings ){
 	app.add(new iio.Line({
 		pos: [ _height,_height ],
 		origin: [ _height/2, _height/2 ],
-		color: _color[settings.c],
+		color: _color[settings.c].clone(),
 		width: _width,
 		rVel: .02,
 		vs:[
@@ -73,11 +73,29 @@ function Test_Line_origin( app, settings ){
 		]
 	}));
 }
+function Test_Line_hidden( app, settings ){
+
+	app.loop(1);
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: _color[settings.c].clone(),
+		width: _width,
+		hidden: true,
+		vs:[
+			[ -_height, -_height ],
+			[ _height, _height ]
+		],
+		onUpdate: function(){
+			this.hidden = !this.hidden;
+		}
+	}));
+}
 function Test_Line_alpha( app, settings ){
 
 	app.add(new iio.Line({
 		pos: app.center,
-		color: _color[settings.c],
+		color: _color[settings.c].clone(),
 		width: _width,
 		alpha: 1,
 		vs:[
@@ -103,7 +121,7 @@ function Test_Line_color( app, settings ){
 
 	app.add(new iio.Line({
 		pos: app.center,
-		color: _color[settings.c],
+		color: _color[settings.c].clone(),
 		width: _width,
 		vs:[
 			[ -_height, -_height ],
@@ -149,7 +167,7 @@ function Test_Line_width( app, settings ){
 
 	app.add(new iio.Line({
 		pos: app.center,
-		color: _color[settings.c],
+		color: _color[settings.c].clone(),
 		width: 1,
 		vs:[
 			[ -_height, -_height ],
@@ -167,5 +185,89 @@ function Test_Line_width( app, settings ){
 					this.growing = true;
 			}
 		}
+	}));
+}
+function Test_Line_lineCap( app, settings ){
+
+	var line_props = {
+		width: 8,
+		color: _color[settings.c].clone(),
+		vs:[
+			[ 0, -_height ],
+			[ 0, _height ]
+		]
+	}
+
+	app.add(new iio.Line(line_props,{
+		pos: [ app.center.x - line_props.width*2, app.center.y ],
+		lineCap: 'butt',
+	}));
+
+	app.add(new iio.Line(line_props,{
+		pos: app.center,
+		lineCap: 'round'
+	}));
+
+	app.add(new iio.Line(line_props,{
+		pos: [ app.center.x + line_props.width*2, app.center.y ],
+		lineCap: 'square'
+	}));
+}
+function Test_Line_dash( app, settings ){
+
+	var line_props = {
+		width: _width,
+		color: _color[settings.c].clone(),
+		vs:[
+			[ 0, -_height ],
+			[ 0, _height ]
+		]
+	}
+
+	app.add(new iio.Line(line_props,{
+		pos: [ app.center.x - line_props.width*2, app.center.y ],
+		dash: _height/3
+	}));
+
+	app.add(new iio.Line(line_props,{
+		pos: app.center,
+		dash: [ .1, _width*1.5 ],
+		dashOffset: _width,
+		lineCap: 'round'
+	}));
+
+	app.add(new iio.Line(line_props,{
+		pos: [ app.center.x + line_props.width*2, app.center.y ],
+		dash: [ 1, _width*.3 ],
+	}));
+}
+function Test_Line_bezier( app, settings ){
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: _color[settings.c].clone(),
+		width: 10,
+		bezier: [app.width,0,-app.width,0],
+		vs:[
+			[ -_height, -_height ],
+			[ _height, _height ]
+		]
+	}));
+}
+function Test_Line_shadow( app, settings ){
+
+	app.set({color:'white'})
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: _color[settings.c].clone(),
+		width: 10,
+		shadow: new iio.Color( 0,0,0,.5 ),
+		shadowBlur: 5,
+		shadowOffset: [ 4,4 ],
+		vs:[
+			[ 0, -_height ],
+			[ 0, _height ]
+		]
 	}));
 }
