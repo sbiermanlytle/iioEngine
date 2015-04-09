@@ -203,7 +203,7 @@ iio.Drawable.prototype._fade = function(s, r) {
 
 
 //DRAW FUNCTIONS
-iio.Drawable.prototype.prep_ctx = function(ctx){
+iio.Drawable.prototype.orient_ctx = function(ctx){
   ctx = ctx || this.app.ctx;
   ctx.save();
 
@@ -272,7 +272,7 @@ iio.Drawable.prototype.draw_obj = function(ctx){
 iio.Drawable.prototype.draw = function(ctx){
 
   if (this.hidden) return;
-  ctx = this.prep_ctx(ctx);
+  ctx = this.orient_ctx(ctx);
   
   //draw objs in z index order
   if (this.objs&&this.objs.length > 0) {
