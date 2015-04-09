@@ -9,12 +9,12 @@ iio Engine 1.3.4 is the working copy of a push to finalize the upgrade. It will 
 
 The API and syntax are a lot different from 1.2. You may wish to use that version (available at iioEngine.com) if you would like a better documented and more stable platform to work with.
 
-## Building
+# Building
 iio uses Grunt as it's build system. Make sure you have node and npm installed
 in order to use Grunt.
 
-# Installing on Mac OS X
-If you have brew you can install node via
+## Installing on Mac OS X
+If you have brew you can install node easily
 
 	brew install node
 
