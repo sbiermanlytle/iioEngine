@@ -15,6 +15,11 @@ iio.Obj.prototype.set = function() {
   if (arguments[arguments.length-1] === true);
   else if(this.app) this.app.draw();
 }
+iio.Obj.prototype.setAlpha = function(a, noDraw){
+  this.alpha = a || 1;
+  if (noDraw); else if(this.app) this.app.draw();
+}
+
 iio.Obj.prototype.convert_props = function(){
   
   // string color to iio.Color
@@ -23,6 +28,7 @@ iio.Obj.prototype.convert_props = function(){
 
   // arrays to iio.V
   this.convert_v("pos");
+  this.convert_v("origin");
   this.convert_v("vel");
   this.convert_v("acc");
   if(this.vs)
@@ -31,7 +37,7 @@ iio.Obj.prototype.convert_props = function(){
         this.vs[i] = new iio.V(this.vs[i]);
 
   //set required properties
-  if(this.torque) this.rot = 0;
+  if(this.rVel) this.rot = 0;
 }
 iio.Obj.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)
@@ -74,7 +80,7 @@ iio.Obj.prototype.add = function() {
     var i = 0;
     while (i < this.objs.length && typeof(this.objs[i].z) != 'undefined' && arguments[0].z >= this.objs[i].z) i++;
     this.objs.insert(i, arguments[0]);
-    if (arguments[0].app && ((arguments[0].vel && (arguments[0].vel.x != 0 || arguments[0].vel.y != 0 )) || arguments[0].torque || arguments[0].shrink || arguments[0].fade || (arguments[0].acc && (arguments[0].acc.x != 0 || arguments[0].acc.y != 0 || arguments[0].acc.r != 0))) && (typeof arguments[0].app.looping == 'undefined' || arguments[0].app.looping === false))
+    if (arguments[0].app && ((arguments[0].vel && (arguments[0].vel.x != 0 || arguments[0].vel.y != 0 )) || arguments[0].rVel || arguments[0].onUpdate || arguments[0].shrink || arguments[0].fade || (arguments[0].acc && (arguments[0].acc.x != 0 || arguments[0].acc.y != 0 || arguments[0].acc.r != 0))) && (typeof arguments[0].app.looping == 'undefined' || arguments[0].app.looping === false))
       arguments[0].app.loop();
   }
   if (arguments[arguments.length-1] === true);

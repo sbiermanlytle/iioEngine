@@ -130,4 +130,5 @@ iio.App.prototype._update = function(o, dt) {
       this.cCollisions(collision[0], collision[1], collision[2]);
     }, this);
   }
+  this.draw();
 }

@@ -32,7 +32,7 @@ iio.Line.prototype.contains = function(v, y) {
   }
   return false;
 }
-iio.Drawable.prototype.prep_ctx_color = function(ctx){
+iio.Line.prototype.prep_ctx_color = function(ctx){
   //if (o.color.indexOf && o.color.indexOf('gradient') > -1)
     //o.color = o.createGradient(ctx, o.color);
   ctx.strokeStyle = this.color.toString();

@@ -27,12 +27,23 @@
 			margin:3px;
 			color:white;
 		}
+		.clear{clear:both}
 	</style>
 </head>
 <body>
-	<canvas id="c1" width="100px" height="100px"></canvas>
-	<canvas id="c2" width="100px" height="100px"></canvas>
-	<canvas id="c3" width="100px" height="100px"></canvas>
+	<canvas id="c01" width="100px" height="100px"></canvas>
+	<canvas id="c02" width="100px" height="100px"></canvas>
+	<canvas id="c03" width="100px" height="100px"></canvas>
+	<canvas id="c04" width="100px" height="100px"></canvas>
+	<canvas id="c05" width="100px" height="100px"></canvas>
+
+	<div class="clear"></div>
+
+	<canvas id="c11" width="100px" height="100px"></canvas>
+	<canvas id="c12" width="100px" height="100px"></canvas>
+	<canvas id="c13" width="100px" height="100px"></canvas>
+	<canvas id="c14" width="100px" height="100px"></canvas>
+	<canvas id="c15" width="100px" height="100px"></canvas>
 
 	<script type="text/javascript" src="../../core/iioEngine.js"></script>
 	<script type="text/javascript" src="Line_tests.js"></script>
@@ -50,12 +61,18 @@
 	  //'debugger.js'
 	]
 
-	load_iio(function(){
+	load_iio_remote(function(){
 		assign_globals();
 		//iio.show_logs();
-		iio.start([Test_Line_Constructor, { c:0 }], 'c1');
-		iio.start([Test_Line_Constructor_no_pos, { c:1 }], 'c2');
-		iio.start([Test_Line_rotation, { c:0 }], 'c3');
+		iio.start([Test_Line_Constructor, { c:0 }], 'c01');
+		iio.start([Test_Line_Constructor_no_pos, { c:1 }], 'c02');
+		iio.start([Test_Line_rotation, { c:0 }], 'c03');
+		iio.start([Test_Line_rotation_no_pos, { c:1 }], 'c04');
+		iio.start([Test_Line_origin, { c:0 }], 'c05');
+
+		iio.start([Test_Line_alpha, { c:0 }], 'c11');
+		iio.start([Test_Line_color, { c:1 }], 'c12');
+		iio.start([Test_Line_width, { c:0 }], 'c13');
 	});
 
 	</script>

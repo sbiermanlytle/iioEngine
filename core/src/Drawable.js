@@ -37,7 +37,9 @@ iio.Drawable.prototype.update = function() {
   // update position
   if (this.acc) this.update_acc();
   if (this.vel) this.update_vel();
-  if (this.torque) this.update_torque();
+  if (this.rVel) this.update_rot();
+
+  if (this.onUpdate) this.onUpdate();
 
   if (this.objs && this.objs.length > 0)
       this.objs.forEach(function(obj) {
@@ -56,8 +58,8 @@ iio.Drawable.prototype.update_vel = function(){
     }
   }
 }
-iio.Drawable.prototype.update_torque = function(){
-  this.rot += this.torque;
+iio.Drawable.prototype.update_rot = function(){
+  this.rot += this.rVel;
 }
 iio.Drawable.prototype.update_acc = function(){
   this.vel.x += this.acc.x;
@@ -194,9 +196,12 @@ iio.Drawable.prototype.prep_ctx = function(ctx){
   ctx.save();
 
   //translate & rotate
-  if (this.origin) ctx.translate(this.origin.x, this.origin.y);
-  else if(this.pos) ctx.translate(this.pos.x, this.pos.y);
-  if (this.rot) ctx.rotate(this.rot);
+  if (this.pos) ctx.translate(this.pos.x, this.pos.y);
+  if(this.rot){
+    if (this.origin) ctx.translate(this.origin.x, this.origin.y);
+    ctx.rotate(this.rot);
+    if (this.origin) ctx.translate(-this.origin.x, -this.origin.y);
+  }
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_color = function(ctx){
