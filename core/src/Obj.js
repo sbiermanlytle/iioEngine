@@ -22,15 +22,22 @@ iio.Obj.prototype.setAlpha = function(a, noDraw){
 
 iio.Obj.prototype.convert_props = function(){
   
-  // string color to iio.Color
+  // convert string colors to iio.Color
   if(iio.is.string(this.color)) 
     this.color = iio.convert.color(this.color);
+  if(iio.is.string(this.shadow)) 
+    this.shadow = iio.convert.color(this.shadow);
+
+  // convert values to arrays
+  if(this.dash && !(this.dash instanceof Array))
+    this.dash = [this.dash];
 
   // arrays to iio.V
   this.convert_v("pos");
   this.convert_v("origin");
   this.convert_v("vel");
   this.convert_v("acc");
+  this.convert_v("shadowOffset");
   if(this.vs)
     for(var i=0; i<this.vs.length; i++)
       if(this.vs[i] instanceof Array)
@@ -49,12 +56,12 @@ iio.Obj.prototype.create = function(){
     if(arguments[i] === null) break;
     if(arguments[i] instanceof iio.V)
       props.pos = arguments[i];
+    else if(arguments[i] instanceof iio.Color)
+      props.color = arguments[i];
     else if(typeof arguments[i] === 'object')
       props = iio.merge(props,arguments[i]);
-
     else if(iio.is.number(arguments[i]))
       props.width = arguments[i];
-
     else if(iio.is.string(arguments[i]))
       props.color = arguments[i];
   }

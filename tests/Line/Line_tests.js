@@ -271,3 +271,25 @@ function Test_Line_shadow( app, settings ){
 		]
 	}));
 }
+function Test_Line_child( app, settings ){
+
+	var line_props = {
+		color: _color[settings.c].clone(),
+		width: 10,
+		vs:[
+			[ 0, -_height ],
+			[ 0, _height ]
+		]
+	}
+
+	var parent = app.add( new iio.Line(line_props,{
+		pos: app.center,
+		rVel: .02
+	}) );
+	var child = parent.add(new iio.Line(line_props,{
+		vs:[
+			[ -_height, 0 ],
+			[ _height, 0 ]
+		]
+	}))
+}

@@ -88,7 +88,7 @@ iio.random = function(min, max) {
 iio.randomInt = function(min, max) {
   min = min || 0;
   max = max || 1;
-  return Math.floor(Math.random() * (max - min)) + min;
+  return Math.floor(Math.random() * (max+1 - min)) + min;
 }
 
 //IO

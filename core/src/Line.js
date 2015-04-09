@@ -6,7 +6,10 @@ iio.Line.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Line.prototype.Line = function() {
-  this._super.Drawable.call(this,arguments[0]);
+  var props = {};
+  for(var i=0; i<arguments.length; i++)
+    props = iio.merge(props,arguments[i]);
+  this._super.Drawable.call(this,props);
   //this.pos = this.pos || this.vs[0];
   //this.center.x = (this.pos.x + this.endPos.x) / 2;
   //this.center.y = (this.pos.y + this.endPos.y) / 2;

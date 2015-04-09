@@ -43,7 +43,7 @@ iio.Drawable.prototype.update = function() {
 
   if (this.objs && this.objs.length > 0)
       this.objs.forEach(function(obj) {
-        if (obj.update && obj.update(o, dt)) this.rmv(obj);
+        if (obj.update && obj.update()) this.rmv(obj);
       }, this);
 }
 iio.Drawable.prototype.update_vel = function(){
@@ -221,22 +221,19 @@ iio.Drawable.prototype.prep_ctx_lineWidth = function(ctx){
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_shadow = function(ctx){
-  var s = this.shadow.split(' ');
-  s.forEach(function(_s) {
-    if (iio.is.number(_s))
-      ctx.shadowBlur = _s;
-    else if (_s.indexOf(':') > -1) {
-      var _i = _s.indexOf(':');
-      ctx.shadowOffsetX = _s.substring(0, _i);
-      ctx.shadowOffsetY = _s.substring(_i + 1);
-    } else ctx.shadowColor = _s;
-  });
+  ctx.shadowColor = this.shadow.toString();
+  if(this.shadowBlur) ctx.shadowBlur = this.shadowBlur;
+  if(this.shadowOffset) {
+    ctx.shadowOffsetX = this.shadowOffset.x;
+    ctx.shadowOffsetY = this.shadowOffset.y;
+  } else {
+    ctx.shadowOffsetX = 5;
+    ctx.shadowOffsetY = 5;
+  }
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_dash = function(ctx){
-  if (this.dash.length > 1 && this.dash.length % 2 == 1)
-    ctx.lineDashOffset = this.dash[this.dash.length - 1];
-  //ctx.setLineDash(this.dash.slice().splice(0,this.dash.length-1));
+  if(this.dashOffset) ctx.lineDashOffset = this.dashOffset
   ctx.setLineDash(this.dash);
   return ctx;
 }
