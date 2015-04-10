@@ -122,7 +122,7 @@ function Test_Line_vels( app, settings ){
 
 	var speed = 0.5;
 
-	checkBound = function(o,v){
+	var checkBound = function(o,v){
 		if(o.vs[v].x > app.width/2 || o.vs[v].x < -app.width/2)
 			o.vels[v].x *= -1;
 	}
@@ -138,6 +138,39 @@ function Test_Line_vels( app, settings ){
 		vels:[
 			[ speed, 0 ],
 			[ -speed, 0 ]
+		],
+		onUpdate: function(){
+			checkBound(this,0);
+			checkBound(this,1);
+		}
+	}));
+}
+function Test_Line_accs( app, settings ){
+
+	var speed = 0.5;
+
+	var checkBound = function(o,v){
+		if(o.vs[v].x > app.width/2)
+			o.vels[v].x = -1;
+		 else if (o.vs[v].x < -app.width/2)
+			o.vels[v].x = 1;
+	}
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: _color[settings.c].clone(),
+		width: 10,
+		vs:[
+			[ 0, _height ],
+			[ 0, -_height ]
+		],
+		vels:[
+			[ speed, 0 ],
+			[ -speed, 0 ]
+		],
+		accs:[
+			[ .01, 0 ],
+			[ -.01, 0 ]
 		],
 		onUpdate: function(){
 			checkBound(this,0);
@@ -181,6 +214,29 @@ function Test_Line_rVel_bounds_no_pos( app, settings ){
 		bounds: {
 			rightRotation: [ Math.PI/2, reverse ],
 			leftRotation: [ 0, reverse ]
+		}
+	}));
+}
+function Test_Line_rAcc( app, settings ){
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: _color[settings.c].clone(),
+		width: _width,
+		rAcc: .0015,
+		vs:[
+			[ -_height, -_height ],
+			[ _height, _height ]
+		],
+		bounds: {
+			rightRotation: [ Math.PI/2, function(o){
+				o.rAcc *= -1; 
+				o.rVel = -.01;
+			} ],
+			leftRotation: [ -Math.PI/2, function(o){
+				o.rAcc *= -1; 
+				o.rVel = .01;
+			} ]
 		}
 	}));
 }
@@ -358,7 +414,10 @@ function Test_Line_bezier( app, settings ){
 		pos: app.center,
 		color: _color[settings.c].clone(),
 		width: 10,
-		bezier: [app.width,0,-app.width,0],
+		bezier: [
+			[ app.width,0 ],
+			[ -app.width,0 ]
+		],
 		vs:[
 			[ -_height, -_height ],
 			[ _height, _height ]
@@ -403,4 +462,72 @@ function Test_Line_child( app, settings ){
 			[ _height, 0 ]
 		]
 	}))
+}
+function Test_Line_bezierVels( app, settings ){
+
+	var speed = 1;
+
+	var checkBound = function(o,v){
+		if(o.bezier[v].x > app.width || o.bezier[v].x < -app.width)
+			o.bezierVels[v].x *= -1;
+	}
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: _color[settings.c].clone(),
+		width: 10,
+		vs:[
+			[ 0, -_height ],
+			[ 0, _height ]
+		],
+		bezier: [
+			[ app.width,0 ],
+			[ -app.width,0 ]
+		],
+		bezierVels: [
+			[ -speed, 0 ],
+			[ speed, 0]
+		],
+		onUpdate: function(){
+			checkBound(this,0);
+			checkBound(this,1);
+		}
+	}));
+}
+function Test_Line_bezierAccs( app, settings ){
+
+	var speed = 2;
+
+	var checkBound = function(o,v){
+		if(o.bezier[v].x > app.width)
+			o.bezierVels[v].x = -speed;
+		 else if (o.bezier[v].x < -app.width)
+			o.bezierVels[v].x = speed;
+	}
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: _color[settings.c].clone(),
+		width: 10,
+		vs:[
+			[ 0, -_height ],
+			[ 0, _height ]
+		],
+		bezier: [
+			[ -app.width,0 ],
+			[ app.width,0 ]
+		],
+		bezierVels: [
+			[ speed, 0 ],
+			[ -speed, 0]
+		],
+		bezierAccs:[
+			[ -.01, 0 ],
+			[ .01, 0 ]
+		],
+		onUpdate: function(){
+			checkBound(this,0);
+			checkBound(this,1);
+		}
+	}));
 }

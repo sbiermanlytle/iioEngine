@@ -37,8 +37,12 @@ iio.Drawable.prototype.update = function() {
   // update position
   if (this.acc) this.update_acc();
   if (this.vel) this.update_vel();
+  if (this.rAcc) this.rVel += this.rAcc;
   if (this.rVel) this.update_rotation();
+  if (this.accs) this.update_accs();
   if (this.vels) this.update_vels();
+  if (this.bezierAccs) this.update_bezier_accs();
+  if (this.bezierVels) this.update_bezier_vels();
 
   if (this.onUpdate) this.onUpdate();
 
@@ -67,6 +71,22 @@ iio.Drawable.prototype.update_vels = function(){
     }
   }
 }
+iio.Drawable.prototype.update_bezier_vels = function(){
+  if(this.bezier){
+    for(var i=0; i<this.bezierVels.length; i++){
+      if (this.bezierVels[i].x) this.bezier[i].x += this.bezierVels[i].x;
+      if (this.bezierVels[i].y) this.bezier[i].y += this.bezierVels[i].y;
+    }
+  }
+}
+iio.Drawable.prototype.update_bezier_accs = function(){
+  if(this.bezierVels){
+    for(var i=0; i<this.bezierAccs.length; i++){
+      if (this.bezierAccs[i].x) this.bezierVels[i].x += this.bezierAccs[i].x;
+      if (this.bezierAccs[i].y) this.bezierVels[i].y += this.bezierAccs[i].y;
+    }
+  }
+}
 iio.Drawable.prototype.update_rotation = function(){
   this.rotation += this.rVel;
   if(this.rotation > 6283 || this.rotation < -6283) this.rotation = 0;
@@ -74,6 +94,14 @@ iio.Drawable.prototype.update_rotation = function(){
 iio.Drawable.prototype.update_acc = function(){
   this.vel.x += this.acc.x;
   this.vel.y += this.acc.y;
+}
+iio.Drawable.prototype.update_accs = function(){
+  if(this.vels){
+    for(var i=0; i<this.accs.length; i++){
+      if (this.accs[i].x) this.vels[i].x += this.accs[i].x;
+      if (this.accs[i].y) this.vels[i].y += this.accs[i].y;
+    }
+  }
 }
 iio.Drawable.prototype.update_shrink = function(){
   if (this.shrink instanceof Array)

@@ -72,6 +72,8 @@
 	<div class="clear"></div>
 
 	<canvas id="c51" width="100px" height="100px"></canvas>
+	<canvas id="c52" width="100px" height="100px"></canvas>
+	<canvas id="c53" width="100px" height="100px"></canvas>
 
 	<script type="text/javascript" src="../../core/iioEngine.js"></script>
 	<script type="text/javascript" src="Line_tests.js"></script>
@@ -101,9 +103,11 @@
 		iio.start([Test_Line_vel_bounds, { c:1 }], 'c11');
 		iio.start([Test_Line_acc_bounds, { c:0 }], 'c12');
 		iio.start([Test_Line_vels, { c:1 }], 'c13');
+		iio.start([Test_Line_accs, { c:0 }], 'c14');
 
 		iio.start([Test_Line_rVel_bounds, { c:0 }], 'c21');
 		iio.start([Test_Line_rVel_bounds_no_pos, { c:1 }], 'c22');
+		iio.start([Test_Line_rAcc, { c:0 }], 'c23');
 
 		iio.start([Test_Line_hidden, { c:1 }], 'c31');
 		iio.start([Test_Line_alpha, { c:0 }], 'c32');
@@ -116,6 +120,8 @@
 		iio.start([Test_Line_shadow, { c:1 }], 'c44');
 
 		iio.start([Test_Line_child, { c:1 }], 'c51');
+		iio.start([Test_Line_bezierVels, { c:0 }], 'c52');
+		iio.start([Test_Line_bezierAccs, { c:1 }], 'c53');
 	});
 
 	</script>

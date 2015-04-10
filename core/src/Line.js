@@ -41,7 +41,7 @@ iio.Line.prototype.draw_shape = function(ctx) {
   ctx.beginPath();
   ctx.moveTo(this.vs[0].x, this.vs[0].y);
   if (this.bezier)
-    ctx.bezierCurveTo(this.bezier[0], this.bezier[1], this.bezier[2], this.bezier[3], this.vs[1].x, this.vs[1].y);
+    ctx.bezierCurveTo(this.bezier[0].x, this.bezier[0].y, this.bezier[1].x, this.bezier[1].y, this.vs[1].x, this.vs[1].y);
   else ctx.lineTo(this.vs[1].x, this.vs[1].y);
   ctx.stroke();
 }

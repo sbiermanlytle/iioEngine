@@ -40,9 +40,25 @@ iio.Obj.prototype.convert_props = function(){
   this.convert_v("shadowOffset");
   this.convert_vs("vs");
   this.convert_vs("vels");
+  this.convert_vs("accs");
+  this.convert_vs("bezier");
+  this.convert_vs("bezierVels");
+  this.convert_vs("bezierAccs");
 
   //set required properties
-  if(this.rVel && !this.rotation) this.rotation = 0;
+  if(typeof this.rAcc != 'undefined' && !this.rVel) this.rVel = 0;
+  if(typeof this.rVel != 'undefined' && !this.rotation) this.rotation = 0;
+  if(typeof this.bezierAccs != 'undefined' && !this.bezierVels){
+    this.bezierVels = [];
+    for(var i=0; i<this.bezierAccs.length; i++)
+      this.bezierVels.push(new iio.V);
+  }
+  if(typeof this.bezierVels != 'undefined' && !this.bezier){
+    this.bezier = [];
+    for(var i=0; i<this.bezierVels.length; i++)
+      this.bezier.push(new iio.V);
+  }
+
 }
 iio.Obj.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)
@@ -95,10 +111,14 @@ iio.Obj.prototype.add = function() {
         (  arguments[0].vel 
         || arguments[0].vels 
         || arguments[0].rVel 
+        || arguments[0].bezierVels 
+        || arguments[0].bezierAccs
+        || arguments[0].acc
+        || arguments[0].accs 
+        || arguments[0].rAcc 
         || arguments[0].onUpdate 
         || arguments[0].shrink 
         || arguments[0].fade 
-        || arguments[0].acc
         ) && (typeof arguments[0].app.looping == 'undefined' || arguments[0].app.looping === false))
       arguments[0].app.loop();
   }
