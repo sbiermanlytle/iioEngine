@@ -271,17 +271,7 @@ function Test_Line_alpha( app, settings ){
 		],
 		fading: true,
 		speed: .01,
-		onUpdate: function(){
-			if(this.fading){
-				this.alpha -= this.speed;
-				if(this.alpha <= .02)
-					this.fading = false;
-			} else {
-				this.alpha += this.speed;
-				if(this.alpha >= .98)
-					this.fading = true;
-			}
-		}
+		onUpdate: Test_alpha
 	}));
 }
 function Test_Line_color( app, settings ){
@@ -295,37 +285,7 @@ function Test_Line_color( app, settings ){
 			[ _height, _height ]
 		],
 		cycle: 0,
-		onUpdate: function(){
-			switch(this.cycle){
-				case 1: 
-					if(this.color.g>100)
-						this.color.g--;
-					else if(this.color.r>100)
-						this.color.r--;
-					else this.cycle = iio.randomInt(1,3);
-					break;
-				case 2: 
-					if(this.color.b<200)
-						this.color.b++;
-					else if(this.color.r<200)
-						this.color.r++;
-					else this.cycle = iio.randomInt(1,3);
-					break;
-				case 3: 
-					if(this.color.g>0)
-						this.color.g--;
-					else if(this.color.r>0)
-						this.color.r--;
-					else this.cycle = iio.randomInt(1,3);
-					break;
-				default: 
-					if(this.color.r<255)
-						this.color.r++;
-					else if(this.color.b<255)
-						this.color.b++;
-					else this.cycle = iio.randomInt(1,3);
-			}
-		}
+		onUpdate: Test_color
 	}));
 }
 function Test_Line_width( app, settings ){
@@ -341,17 +301,7 @@ function Test_Line_width( app, settings ){
 			[ _height, _height ]
 		],
 		growing: true,
-		onUpdate: function(){
-			if(this.growing){
-				this.width++;
-				if(this.width > _height)
-					this.growing = false;
-			} else {
-				this.width--;
-				if(this.width < 2)
-					this.growing = true;
-			}
-		}
+		onUpdate: Test_width
 	}));
 }
 function Test_Line_lineCap( app, settings ){
