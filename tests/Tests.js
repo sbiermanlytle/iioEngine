@@ -9,6 +9,32 @@
 	}
 }*/
 
+var _color, _width, _height, _padding;
+function assign_Test_globals(){
+	_color = [];
+	_color[0] = new iio.Color.random();
+	_color[1] = new iio.Color.random();
+	_padding = 20;
+	_width = 10;
+	_height = 30;
+}
+
+function create_test_canvas_grid( SIZE, COLS, ROWS ){
+	var canvas, clear;
+	for(var R=0; R<ROWS; R++){
+		for(var C=0; C<COLS; C++){
+			canvas = document.createElement('canvas');
+			canvas.id = "c"+R+""+C;
+			canvas.width = SIZE;
+			canvas.height = SIZE;
+			document.body.appendChild(canvas);
+		}
+		clear = document.createElement('div');
+		clear.className = "clear";
+		document.body.appendChild(clear);
+	}
+}
+
 function Test_color(){
 	switch(this.cycle){
 		case 1: 

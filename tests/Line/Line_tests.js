@@ -1,15 +1,3 @@
-
-var _color, _width, _padding;
-
-assign_globals = function(){
-	_color = [];
-	_color[0] = new iio.Color.random();
-	_color[1] = new iio.Color.random();
-	_padding = 20;
-	_width = 10;
-	_height = 30;
-}
-
 function Test_Line_Constructor( app, settings ){
 
 	app.add(new iio.Line({
