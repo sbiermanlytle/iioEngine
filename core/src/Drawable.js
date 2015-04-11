@@ -11,6 +11,10 @@ iio.Drawable.prototype.Drawable = function() {
 }
 
 //BOUNDS FUNCTIONS
+iio.Drawable.prototype.left = function(){ if(this.pos) return this.pos.x; else return 0 }
+iio.Drawable.prototype.right = function(){ if(this.pos) return this.pos.x; else return 0 }
+iio.Drawable.prototype.top = function(){ if(this.pos) return this.pos.y; else return 0 }
+iio.Drawable.prototype.bottom = function(){ if(this.pos) return this.pos.y; else return 0 }
 iio.Drawable.prototype.resolve = function(b, c) {
   if (b.length > 1) return b[1](c);
   return true;
@@ -114,10 +118,10 @@ iio.Drawable.prototype.update_fade = function(){
   else return this._fade(this.fade);
 }
 iio.Drawable.prototype.past_bounds = function(){
-  if (this.bounds.right && this.over_upper_limit(this.bounds.right, this.pos.x, this)) return true;
-  if (this.bounds.left && this.below_lower_limit(this.bounds.left, this.pos.x, this)) return true;
-  if (this.bounds.top && this.below_lower_limit(this.bounds.top, this.pos.y, this)) return true;
-  if (this.bounds.bottom && this.over_upper_limit(this.bounds.bottom, this.pos.y, this)) return true;
+  if (this.bounds.right && this.over_upper_limit(this.bounds.right, this.right(), this)) return true;
+  if (this.bounds.left && this.below_lower_limit(this.bounds.left, this.left(), this)) return true;
+  if (this.bounds.top && this.below_lower_limit(this.bounds.top, this.top(), this)) return true;
+  if (this.bounds.bottom && this.over_upper_limit(this.bounds.bottom, this.bottom(), this)) return true;
   if (this.bounds.rightRotation && this.over_upper_limit(this.bounds.rightRotation, this.rotation, this)) return true;
   if (this.bounds.leftRotation && this.below_lower_limit(this.bounds.leftRotation, this.rotation, this)) return true;
   return false;
@@ -253,11 +257,11 @@ iio.Drawable.prototype.prep_ctx_color = function(ctx){
 iio.Drawable.prototype.prep_ctx_outline = function(ctx){
   //if (o.outline.indexOf && o.outline.indexOf('gradient') > -1)
     //o.outline = o.createGradient(ctx, o.outline);
-  ctx.strokeStyle = o.outline.toString();
+  ctx.strokeStyle = this.outline.toString();
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_lineWidth = function(ctx){
-  ctx.lineWidth = o.lineWidth || 1;
+  ctx.lineWidth = this.lineWidth || 1;
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_shadow = function(ctx){

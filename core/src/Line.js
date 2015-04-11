@@ -6,10 +6,7 @@ iio.Line.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Line.prototype.Line = function() {
-  var props = {};
-  for(var i=0; i<arguments.length; i++)
-    props = iio.merge(props,arguments[i]);
-  this._super.Drawable.call(this,props);
+  this._super.Drawable.call(this,this.merge_props(arguments));
 }
 
 //FUNCTIONS

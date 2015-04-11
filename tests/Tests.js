@@ -9,14 +9,11 @@
 	}
 }*/
 
-var _color, _width, _height, _padding;
+var _color;
 function assign_Test_globals(){
 	_color = [];
 	_color[0] = new iio.Color.random();
 	_color[1] = new iio.Color.random();
-	_padding = 20;
-	_width = 10;
-	_height = 30;
 }
 
 function create_test_canvas_grid( SIZE, COLS, ROWS ){
@@ -86,5 +83,45 @@ function Test_width(){
 		this.width--;
 		if(this.width < 2)
 			this.growing = true;
+	}
+}
+function Test_outline(){
+	if(this.growing){
+		this.lineWidth++;
+		if(this.lineWidth > 20)
+			this.growing = false;
+	} else {
+		this.lineWidth--;
+		if(this.lineWidth < 1)
+			this.growing = true;
+	}
+	switch(this.cycle){
+		case 1: 
+			if(this.outline.g>100)
+				this.outline.g--;
+			else if(this.outline.r>100)
+				this.outline.r--;
+			else this.cycle = iio.randomInt(1,3);
+			break;
+		case 2: 
+			if(this.outline.b<200)
+				this.outline.b++;
+			else if(this.outline.r<200)
+				this.outline.r++;
+			else this.cycle = iio.randomInt(1,3);
+			break;
+		case 3: 
+			if(this.outline.g>0)
+				this.outline.g--;
+			else if(this.outline.r>0)
+				this.outline.r--;
+			else this.cycle = iio.randomInt(1,3);
+			break;
+		default: 
+			if(this.outline.r<255)
+				this.outline.r++;
+			else if(this.outline.b<255)
+				this.outline.b++;
+			else this.cycle = iio.randomInt(1,3);
 	}
 }

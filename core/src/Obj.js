@@ -9,6 +9,12 @@ iio.Obj.prototype.Obj = function() {
 }
 
 //FUNCTIONS
+iio.Obj.prototype.merge_props = function(args){
+  var props = {};
+  for(var i=0; i<args.length; i++)
+    props = iio.merge(props,args[i]);
+  return props;
+}
 iio.Obj.prototype.set = function() {
   for (var p in arguments[0]) this[p] = arguments[0][p];
   this.convert_props();
@@ -25,6 +31,8 @@ iio.Obj.prototype.convert_props = function(){
   // convert string colors to iio.Color
   if(iio.is.string(this.color)) 
     this.color = iio.convert.color(this.color);
+  if(iio.is.string(this.outline)) 
+    this.outline = iio.convert.outline(this.outline);
   if(iio.is.string(this.shadow)) 
     this.shadow = iio.convert.color(this.shadow);
 

@@ -1,0 +1,58 @@
+<!-- 
+	iio Engine v1.4
+	***************
+	URL: iioengine.com/tests/Line
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tests | Line</title>
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	<script type="text/javascript" src="../../core/iioEngine.js"></script>
+	<script type="text/javascript" src="../Tests.js"></script>
+	<script type="text/javascript" src="Circle_tests.js"></script>
+</head>
+<body>
+<script type="text/javascript">	
+
+	create_test_canvas_grid( 100, 5, 6 );
+
+	iio_dependencies = [
+	  'functions.js',
+	  'libs.js',
+	  'V.js',
+	  'Color.js',
+	  'Obj.js',
+	  'App.js',
+	  'Drawable.js',
+	  'Circle.js'
+	];
+
+	load_iio_remote(function(){
+
+		assign_Test_globals();
+
+		iio.start([Test_Circle.constructor, { c:0 }], 'c00');
+		iio.start([Test_Circle.rotation, { c:1 }], 'c01');
+		iio.start([Test_Circle.origin, { c:0 }], 'c02');
+
+		iio.start([Test_Circle.vel_bounds, { c:1 }], 'c10');
+		iio.start([Test_Circle.acc_bounds, { c:0 }], 'c11');
+
+		iio.start([Test_Circle.rVel_bounds, { c:0 }], 'c20');
+		iio.start([Test_Circle.rAcc_bounds, { c:1 }], 'c21');
+
+		iio.start([Test_Circle.hidden, { c:1 }], 'c30');
+		iio.start([Test_Circle.alpha, { c:0 }], 'c31');
+		iio.start([Test_Circle.color, { c:1 }], 'c32');
+		iio.start([Test_Circle.outline, { c:0 }], 'c33');
+
+		iio.start([Test_Circle.dash, { c:1 }], 'c40');
+		iio.start([Test_Circle.dash_rounded, { c:0 }], 'c41');
+		iio.start([Test_Circle.shadow, { c:0 }], 'c42');
+
+		iio.start([Test_Circle.child, { c:1 }], 'c50');
+	});
+</script>
+</body>
+</html>

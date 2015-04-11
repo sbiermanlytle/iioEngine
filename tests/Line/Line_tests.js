@@ -1,3 +1,7 @@
+var	_padding = 20;
+var	_width = 10;
+var	_height = 30;
+
 function Test_Line_Constructor( app, settings ){
 
 	app.add(new iio.Line({

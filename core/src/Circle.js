@@ -6,7 +6,7 @@ iio.Circle.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Circle.prototype.Circle = function() {
-  this._super.Drawable.call(this,arguments[0]);
+  this._super.Drawable.call(this,this.merge_props(arguments));
 }
 
 //FUNCTIONS
@@ -39,10 +39,10 @@ iio.Circle.prototype.contains = function(v, y) {
   }
   return false;
 }
-iio.Circle.prototype.left = function(){ return pos.x - this.radius }
-iio.Circle.prototype.right = function(){ return pos.x + this.radius }
-iio.Circle.prototype.top = function(){ return pos.y - this.radius }
-iio.Circle.prototype.bottom = function(){ return pos.y + this.radius }
+iio.Circle.prototype.left = function(){ return this.pos.x - this.radius }
+iio.Circle.prototype.right = function(){ return this.pos.x + this.radius }
+iio.Circle.prototype.top = function(){ return this.pos.y - this.radius }
+iio.Circle.prototype.bottom = function(){ return this.pos.y + this.radius }
 iio.Circle.prototype.draw_shape = function(ctx){
   ctx.beginPath();
   ctx.arc(0, 0, this.radius, 0, 2 * Math.PI, false);
