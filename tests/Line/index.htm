@@ -32,34 +32,34 @@
 
 		assign_Test_globals();
 
-		iio.start([Test_Line_Constructor, { c:0 }], 'c00');
-		iio.start([Test_Line_Constructor_no_pos, { c:1 }], 'c01');
-		iio.start([Test_Line_rotation, { c:0 }], 'c02');
-		iio.start([Test_Line_rotation_no_pos, { c:1 }], 'c03');
-		iio.start([Test_Line_origin, { c:0 }], 'c04');
+		iio.start([iio_Test.Line.constructor, { c:0 }], 'c00');
+		iio.start([iio_Test.Line.constructor_no_pos, { c:1 }], 'c01');
+		iio.start([iio_Test.Line.rotation, { c:0 }], 'c02');
+		iio.start([iio_Test.Line.rotation_no_pos, { c:1 }], 'c03');
+		iio.start([iio_Test.Line.origin, { c:0 }], 'c04');
 
-		iio.start([Test_Line_vel_bounds, { c:1 }], 'c10');
-		iio.start([Test_Line_acc_bounds, { c:0 }], 'c11');
-		iio.start([Test_Line_vels, { c:1 }], 'c12');
-		iio.start([Test_Line_accs, { c:0 }], 'c13');
+		iio.start([iio_Test.Line.vel_bounds, { c:1 }], 'c10');
+		iio.start([iio_Test.Line.acc_bounds, { c:0 }], 'c11');
+		iio.start([iio_Test.Line.vels, { c:1 }], 'c12');
+		iio.start([iio_Test.Line.accs, { c:0 }], 'c13');
 
-		iio.start([Test_Line_rVel_bounds, { c:0 }], 'c20');
-		iio.start([Test_Line_rVel_bounds_no_pos, { c:1 }], 'c21');
-		iio.start([Test_Line_rAcc, { c:0 }], 'c22');
+		iio.start([iio_Test.Line.rVel_bounds, { c:0 }], 'c20');
+		iio.start([iio_Test.Line.rVel_bounds_no_pos, { c:1 }], 'c21');
+		iio.start([iio_Test.Line.rAcc, { c:0 }], 'c22');
 
-		iio.start([Test_Line_hidden, { c:1 }], 'c30');
-		iio.start([Test_Line_alpha, { c:0 }], 'c31');
-		iio.start([Test_Line_color, { c:1 }], 'c32');
-		iio.start([Test_Line_width, { c:0 }], 'c33');
+		iio.start([iio_Test.Line.hidden, { c:1 }], 'c30');
+		iio.start([iio_Test.Line.alpha, { c:0 }], 'c31');
+		iio.start([iio_Test.Line.color, { c:1 }], 'c32');
+		iio.start([iio_Test.Line.width, { c:0 }], 'c33');
 
-		iio.start([Test_Line_lineCap, { c:0 }], 'c40');
-		iio.start([Test_Line_dash, { c:1 }], 'c41');
-		iio.start([Test_Line_bezier, { c:0 }], 'c42');
-		iio.start([Test_Line_shadow, { c:1 }], 'c43');
+		iio.start([iio_Test.Line.lineCap, { c:0 }], 'c40');
+		iio.start([iio_Test.Line.dash, { c:1 }], 'c41');
+		iio.start([iio_Test.Line.bezier, { c:0 }], 'c42');
+		iio.start([iio_Test.Line.shadow, { c:1 }], 'c43');
 
-		iio.start([Test_Line_child, { c:1 }], 'c50');
-		iio.start([Test_Line_bezierVels, { c:0 }], 'c51');
-		iio.start([Test_Line_bezierAccs, { c:1 }], 'c52');
+		iio.start([iio_Test.Line.child, { c:1 }], 'c50');
+		iio.start([iio_Test.Line.bezierVels, { c:0 }], 'c51');
+		iio.start([iio_Test.Line.bezierAccs, { c:1 }], 'c52');
 	});
 </script>
 </body>

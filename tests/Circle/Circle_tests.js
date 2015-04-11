@@ -1,6 +1,6 @@
 var	_radius = 25;
 
-var Test_Circle = {
+iio_Test.Circle = {
 	constructor : function(app, settings){
 		app.add(new iio.Circle({
 			pos: app.center,
@@ -183,18 +183,19 @@ var Test_Circle = {
 	child : function( app, settings ){
 
 		var props = {
-			color: _color[settings.c].clone()
+			outline: _color[settings.c].clone(),
+			lineWidth: 5
 		}
 
 		var parent = app.add( new iio.Circle(props,{
 			pos: app.center,
-			origin: [ _radius/2, -_radius/2 ],
+			origin: [ _radius/3, -_radius/3 ],
 			radius: _radius,
 			rVel: .02
-		}) );
+		}));
 
-		var child = parent.add(new iio.Circle(props),{
+		var child = parent.add( new iio.Circle(props,{
 			radius: _radius/2
-		})
+		}));
 	}
 }

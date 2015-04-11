@@ -9,6 +9,8 @@
 	}
 }*/
 
+iio_Test = {};
+
 var _color;
 function assign_Test_globals(){
 	_color = [];
