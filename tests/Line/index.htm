@@ -22,6 +22,7 @@
 	  'libs.js',
 	  'V.js',
 	  'Color.js',
+	  'Gradient.js',
 	  'Obj.js',
 	  'App.js',
 	  'Drawable.js',
@@ -50,16 +51,18 @@
 		iio.start([iio_Test.Line.hidden, { c:1 }], 'c30');
 		iio.start([iio_Test.Line.alpha, { c:0 }], 'c31');
 		iio.start([iio_Test.Line.color, { c:1 }], 'c32');
-		iio.start([iio_Test.Line.width, { c:0 }], 'c33');
+		iio.start([iio_Test.Line.width, { c:1 }], 'c33');
 
 		iio.start([iio_Test.Line.lineCap, { c:0 }], 'c40');
 		iio.start([iio_Test.Line.dash, { c:1 }], 'c41');
-		iio.start([iio_Test.Line.bezier, { c:0 }], 'c42');
-		iio.start([iio_Test.Line.shadow, { c:1 }], 'c43');
+		iio.start([iio_Test.Line.gradient, { c:0 }], 'c42');
+		iio.start([iio_Test.Line.radial_gradient, { c:1 }], 'c43');
+		iio.start([iio_Test.Line.shadow, { c:0 }], 'c44');
 
 		iio.start([iio_Test.Line.child, { c:1 }], 'c50');
-		iio.start([iio_Test.Line.bezierVels, { c:0 }], 'c51');
-		iio.start([iio_Test.Line.bezierAccs, { c:1 }], 'c52');
+		iio.start([iio_Test.Line.bezier, { c:0 }], 'c51');
+		iio.start([iio_Test.Line.bezierVels, { c:1 }], 'c52');
+		iio.start([iio_Test.Line.bezierAccs, { c:0 }], 'c53');
 	});
 </script>
 </body>

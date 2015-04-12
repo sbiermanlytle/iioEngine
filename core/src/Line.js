@@ -24,10 +24,11 @@ iio.Line.prototype.contains = function(v, y) {
   return false;
 }
 iio.Line.prototype.prep_ctx_color = function(ctx){
-  //if (o.color.indexOf && o.color.indexOf('gradient') > -1)
-    //o.color = o.createGradient(ctx, o.color);
-  ctx.strokeStyle = this.color.toString();
-  return this.prep_ctx_lineWidth(ctx);
+  if(this.color instanceof iio.Gradient)
+    ctx.strokeStyle = this.color.canvasGradient(ctx);
+  else ctx.strokeStyle = this.color.toString();
+  ctx = this.prep_ctx_lineWidth(ctx);
+  return ctx;
 }
 iio.Line.prototype.prep_ctx_lineWidth = function(ctx){
   ctx.lineWidth = this.width || 1;

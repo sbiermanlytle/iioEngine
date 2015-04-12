@@ -342,19 +342,43 @@ iio_Test.Line = {
 			dash: [ 1, _width*.3 ],
 		}));
 	},
-	bezier : function( app, settings ){
+	gradient : function( app, settings ){
 		app.add(new iio.Line({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			width: 10,
-			bezier: [
-				[ app.width,0 ],
-				[ -app.width,0 ]
-			],
+			width: 30,
 			vs:[
-				[ -_height, -_height ],
-				[ _height, _height ]
-			]
+				[ 0, -_height ],
+				[ 0, _height ]
+			],
+			color: new iio.Gradient({
+				start: [ 0, -_height ],
+				end: [ 0, _height ],
+				stops: [
+					[ 0, _color[settings.c].clone() ],
+					[ 1, 'transparent' ]
+				]
+			})
+		}));
+	},
+	radial_gradient : function( app, settings ){
+		app.add(new iio.Line({
+			pos: app.center,
+			width: 30,
+			vs:[
+				[ 0, -_height ],
+				[ 0, _height ]
+			],
+			color: new iio.Gradient({
+				start: [ 0,0 ],
+				startRadius: 1,
+				end: [ 0,0 ],
+				endRadius: 40,
+				stops: [
+					[ 0, 'transparent' ],
+					[ 0.4, _color[settings.c].clone() ],
+					[ 1, _color[settings.c].clone() ]
+				]
+			})
 		}));
 	},
 	shadow : function( app, settings ){
@@ -393,6 +417,21 @@ iio_Test.Line = {
 			vs:[
 				[ -_height, 0 ],
 				[ _height, 0 ]
+			]
+		}));
+	},
+	bezier : function( app, settings ){
+		app.add(new iio.Line({
+			pos: app.center,
+			color: _color[settings.c].clone(),
+			width: 10,
+			bezier: [
+				[ app.width,0 ],
+				[ -app.width,0 ]
+			],
+			vs:[
+				[ -_height, -_height ],
+				[ _height, _height ]
 			]
 		}));
 	},

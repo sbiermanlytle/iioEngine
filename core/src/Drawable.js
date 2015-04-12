@@ -249,15 +249,15 @@ iio.Drawable.prototype.orient_ctx = function(ctx){
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_color = function(ctx){
-  //if (o.color.indexOf && o.color.indexOf('gradient') > -1)
-    //o.color = o.createGradient(ctx, o.color);
-  ctx.fillStyle = this.color.toString();
+  if(this.color instanceof iio.Gradient)
+    ctx.fillStyle = this.color.canvasGradient(ctx);
+  else ctx.fillStyle = this.color.toString();
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_outline = function(ctx){
-  //if (o.outline.indexOf && o.outline.indexOf('gradient') > -1)
-    //o.outline = o.createGradient(ctx, o.outline);
-  ctx.strokeStyle = this.outline.toString();
+  if(this.outline instanceof iio.Gradient)
+    ctx.strokeStyle = this.outline.canvasGradient(ctx);
+  else ctx.strokeStyle = this.outline.toString();
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_lineWidth = function(ctx){

@@ -22,6 +22,7 @@
 	  'libs.js',
 	  'V.js',
 	  'Color.js',
+	  'Gradient.js',
 	  'Obj.js',
 	  'App.js',
 	  'Drawable.js',
@@ -49,7 +50,9 @@
 
 		iio.start([iio_Test.Circle.dash, { c:1 }], 'c40');
 		iio.start([iio_Test.Circle.dash_rounded, { c:0 }], 'c41');
-		iio.start([iio_Test.Circle.shadow, { c:0 }], 'c42');
+		iio.start([iio_Test.Circle.gradient, { c:1 }], 'c42');
+		iio.start([iio_Test.Circle.radial_gradient, { c:0 }], 'c43');
+		iio.start([iio_Test.Circle.shadow, { c:1 }], 'c44');
 
 		iio.start([iio_Test.Circle.child, { c:1 }], 'c50');
 	});

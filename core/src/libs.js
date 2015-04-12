@@ -28,6 +28,7 @@ iio.is = {
 
 iio.convert = {
   color: function(c){
+    if(c.toLowerCase()=='transparent') return new iio.Color(0,0,0,0);
     if(c.toLowerCase()=='white') return new iio.Color(255,255,255);
     if(c.toLowerCase()=='black') return new iio.Color();
     if(c.toLowerCase()=='red') return new iio.Color(255);

@@ -154,6 +154,37 @@ iio_Test.Circle = {
 			dash: [ 10, 5 ]
 		}));
 	},
+	gradient : function( app, settings ){
+		app.add(new iio.Circle({
+			pos: app.center,
+			radius: _radius,
+			color: new iio.Gradient({
+				start: [ 0, -_radius ],
+				end: [ 0, _radius ],
+				stops: [
+					[ 0, _color[settings.c].clone() ],
+					[ 1, 'transparent' ]
+				]
+			})
+		}));
+	},
+	radial_gradient : function( app, settings ){
+		app.add(new iio.Circle({
+			pos: app.center,
+			radius: _radius,
+			color: new iio.Gradient({
+				start: [ 0,0 ],
+				startRadius: 1,
+				end: [ 0,0 ],
+				endRadius: 40,
+				stops: [
+					[ 0, 'transparent' ],
+					[ 0.4, _color[settings.c].clone() ],
+					[ 1, _color[settings.c].clone() ]
+				]
+			})
+		}));
+	},
 	dash_rounded : function ( app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
