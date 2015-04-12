@@ -248,16 +248,18 @@ iio_Test.Line = {
 	alpha : function( app, settings ){
 		app.add(new iio.Line({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			width: _width,
-			alpha: 1,
 			vs:[
 				[ -_height, -_height ],
 				[ _height, _height ]
 			],
-			fading: true,
-			speed: .01,
-			onUpdate: Test_alpha
+			color: _color[settings.c].clone(),
+			width: _width,
+			fade: {
+				speed: .03,
+				onFinish: function(o){
+					o.fade.speed *= -1;
+				}
+			}
 		}));
 	},
 	color : function( app, settings ){
@@ -409,11 +411,10 @@ iio_Test.Line = {
 			]
 		}
 
-		var parent = app.add( new iio.Line(line_props,{
+		app.add(new iio.Line(line_props,{
 			pos: app.center,
 			rVel: .02
-		}) );
-		var child = parent.add(new iio.Line(line_props,{
+		})).add(new iio.Line(line_props,{
 			vs:[
 				[ -_height, 0 ],
 				[ _height, 0 ]

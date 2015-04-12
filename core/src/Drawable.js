@@ -113,8 +113,8 @@ iio.Drawable.prototype.update_shrink = function(){
   else return this._shrink(this.shrink);
 }
 iio.Drawable.prototype.update_fade = function(){
-  if (this.fade instanceof Array)
-    return this._fade(this.fade[0], this.fade[1]);
+  if (this.fade.speed)
+    return this._fade(this.fade.speed, this.fade.onFinish);
   else return this._fade(this.fade);
 }
 iio.Drawable.prototype.past_bounds = function(){
@@ -227,7 +227,9 @@ iio.Drawable.prototype._shrink = function(s, r) {
 },
 iio.Drawable.prototype._fade = function(s, r) {
   this.alpha *= 1 - s;
-  if (this.alpha < .002) {
+  if (this.alpha < s || this.alpha > 1-s) {
+    if(this.alpha > 1) this.alpha = 1;
+    else if(this.alpha < 0) this.alpha = 0;
     if (r) return r(this);
     else return true;
   }

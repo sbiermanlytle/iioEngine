@@ -53,7 +53,9 @@ iio.Obj.prototype.convert_props = function(){
   this.convert_vs("bezierVels");
   this.convert_vs("bezierAccs");
 
-  //set required properties
+  // set required properties
+  if(typeof this.fade != 'undefined' && typeof this.alpha == 'undefined')
+    this.alpha = 1;
   if(typeof this.rAcc != 'undefined' && !this.rVel) this.rVel = 0;
   if(typeof this.rVel != 'undefined' && !this.rotation) this.rotation = 0;
   if(typeof this.bezierAccs != 'undefined' && !this.bezierVels){
@@ -66,7 +68,6 @@ iio.Obj.prototype.convert_props = function(){
     for(var i=0; i<this.bezierVels.length; i++)
       this.bezier.push(new iio.V);
   }
-
 }
 iio.Obj.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)

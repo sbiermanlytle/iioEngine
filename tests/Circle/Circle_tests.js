@@ -117,10 +117,12 @@ iio_Test.Circle = {
 			pos: app.center,
 			color: _color[settings.c].clone(),
 			radius: _radius,
-			alpha: 1,
-			fading: true,
-			speed: .01,
-			onUpdate: Test_alpha
+			fade: {
+				speed: .03,
+				onFinish: function(o){
+					o.fade.speed *= -1;
+				}
+			}
 		}));
 	},
 	color : function( app, settings ){
@@ -218,15 +220,21 @@ iio_Test.Circle = {
 			lineWidth: 5
 		}
 
-		var parent = app.add( new iio.Circle(props,{
+		app.add( new iio.Circle(props,{
 			pos: app.center,
 			origin: [ _radius/3, -_radius/3 ],
 			radius: _radius,
 			rVel: .02
-		}));
-
-		var child = parent.add( new iio.Circle(props,{
+		})).add( new iio.Circle(props,{
 			radius: _radius/2
+		}))
+	},
+	img : function( app, settings ){
+		app.add(new iio.Circle({
+			pos: app.center,
+			radius: app.width/2.5,
+			clip: true,
+			img: 'http://iioengine.com/img/staryNight.jpg'
 		}));
 	}
 }
