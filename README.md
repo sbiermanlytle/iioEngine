@@ -22,9 +22,11 @@ Then install the Grunt CLI.
 
 	npm install -g grunt-cli
 
-Install the actual Grunt files locally by
+Install dependencies with npm
 
-	npm install grunt grunt-contrib --save-dev
+  npm install
+
+Which will install all necessary dependencies locally in node_modules.
 
 You can now run Grunt to build, minify iio.js
 
