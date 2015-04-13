@@ -11,13 +11,10 @@ iio.start = function(app, id, d) {
   if (app instanceof Array)
     return new iio.App(c, app[0], app[1]);
 
-  //run iio file
-  /*else if (iio.is.string(app) && app.substring(app.length - 4) == '.iio')
-    return iio.read(app, iio.start);*/
-
   //initialize application without settings
   return new iio.App(c, app);
 }
+
 iio.runScripts = function() {
   var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
   var iioScripts = scripts.filter(function(s) {
@@ -28,7 +25,7 @@ iio.runScripts = function() {
     xhr.open("GET", script.src, true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
-        iio.scripts[script.src] = eval("(function() {\nreturn function(settings) {\n" + 
+        iio.scripts[script.src] = eval("(function() {\nreturn function(app, settings) {\n" + 
 									   CoffeeScript.compile(xhr.responseText, {bare: true}) + 
 									   "}\n})()");
         iio.start(iio.scripts[script.src]);
@@ -37,6 +34,12 @@ iio.runScripts = function() {
     xhr.send(null);
   });
 }
+
+// Listen for window load, both in decent browsers and in IE
+if (window.addEventListener)
+  window.addEventListener('DOMContentLoaded', iio.runScripts, false);
+else
+  window.attachEvent('onload', iio.runScripts);
 
 //JS ADDITIONS
 Array.prototype.insert = function(index, item) {
@@ -243,11 +246,6 @@ iio.createGradient = function(ctx, g) {
   return gradient;
 }
 
-// Listen for window load, both in decent browsers and in IE
-if (window.addEventListener)
-  window.addEventListener('DOMContentLoaded', iio.runScripts, false);
-else
-  window.attachEvent('onload', iio.runScripts);
 ;
 //UTIL LIBRARIES
 iio.is = {
@@ -324,210 +322,111 @@ iio.point = {
   }
 }
 
+iio.keys = {
+      8: 'backspace',
+      9: 'tab',
+      13: 'enter',
+      16: 'shift',
+      17: 'ctrl',
+      18: 'alt',
+      19: 'pause',
+      20: 'caps lock',
+      27: 'escape',
+      32: 'space',
+      33: 'page up',
+      34: 'page down',
+      35: 'end',
+      36: 'home',
+      37: 'left arrow',
+      38: 'up arrow',
+      39: 'right arrow',
+      40: 'down arrow',
+      45: 'insert',
+      46: 'delete',
+      48: '0',
+      49: '1',
+      50: '2',
+      51: '3',
+      52: '4',
+      53: '5',
+      54: '6',
+      55: '7',
+      56: '8',
+      57: '9',
+      65: 'a',
+      66: 'b',
+      67: 'c',
+      68: 'd',
+      69: 'e',
+      70: 'f',
+      71: 'g',
+      72: 'h',
+      73: 'i',
+      74: 'j',
+      75: 'k',
+      76: 'l',
+      77: 'm',
+      78: 'n',
+      79: 'o',
+      80: 'p',
+      81: 'q',
+      82: 'r',
+      83: 's',
+      84: 't',
+      85: 'u',
+      86: 'v',
+      87: 'w',
+      88: 'x',
+      89: 'y',
+      90: 'z',
+      91: 'left window',
+      92: 'right window',
+      93: 'select key',
+      96: 'n0',
+      97: 'n1',
+      98: 'n2',
+      99: 'n3',
+      100: 'n4',
+      101: 'n5',
+      102: 'n6',
+      103: 'n7',
+      104: 'n8',
+      105: 'n9',
+      106: 'multiply',
+      107: 'add',
+      109: 'subtract',
+      110: 'dec',
+      111: 'divide',
+      112: 'f1',
+      113: 'f2',
+      114: 'f3',
+      115: 'f4',
+      116: 'f5',
+      117: 'f6',
+      118: 'f7',
+      119: 'f8',
+      120: 'f9',
+      121: 'f10',
+      122: 'f11',
+      123: 'f12',
+      144: 'num lock',
+      156: 'scroll lock',
+      186: 'semi-colon',
+      187: 'equal',
+      188: 'comma',
+      189: 'dash',
+      190: 'period',
+      191: 'forward slash',
+      192: 'grave accent',
+      219: 'open bracket',
+      220: 'back slash',
+      221: 'close bracket',
+      222: 'single quote'
+}
+
 iio.key = {
   string: function(e) {
-    switch (e.keyCode) {
-      case 8:
-        return 'backspace';
-      case 9:
-        return 'tab';
-      case 13:
-        return 'enter';
-      case 16:
-        return 'shift';
-      case 17:
-        return 'ctrl';
-      case 18:
-        return 'alt';
-      case 19:
-        return 'pause';
-      case 20:
-        return 'caps lock';
-      case 27:
-        return 'escape';
-      case 32:
-        return 'space';
-      case 33:
-        return 'page up';
-      case 34:
-        return 'page down';
-      case 35:
-        return 'end';
-      case 36:
-        return 'home';
-      case 37:
-        return 'left arrow';
-      case 38:
-        return 'up arrow';
-      case 39:
-        return 'right arrow';
-      case 40:
-        return 'down arrow';
-      case 45:
-        return 'insert';
-      case 46:
-        return 'delete';
-      case 48:
-        return '0';
-      case 49:
-        return '1';
-      case 50:
-        return '2';
-      case 51:
-        return '3';
-      case 52:
-        return '4';
-      case 53:
-        return '5';
-      case 54:
-        return '6';
-      case 55:
-        return '7';
-      case 56:
-        return '8';
-      case 57:
-        return '9';
-      case 65:
-        return 'a';
-      case 66:
-        return 'b';
-      case 67:
-        return 'c';
-      case 68:
-        return 'd';
-      case 69:
-        return 'e';
-      case 70:
-        return 'f';
-      case 71:
-        return 'g';
-      case 72:
-        return 'h';
-      case 73:
-        return 'i';
-      case 74:
-        return 'j';
-      case 75:
-        return 'k';
-      case 76:
-        return 'l';
-      case 77:
-        return 'm';
-      case 78:
-        return 'n';
-      case 79:
-        return 'o';
-      case 80:
-        return 'p';
-      case 81:
-        return 'q';
-      case 82:
-        return 'r';
-      case 83:
-        return 's';
-      case 84:
-        return 't';
-      case 85:
-        return 'u';
-      case 86:
-        return 'v';
-      case 87:
-        return 'w';
-      case 88:
-        return 'x';
-      case 89:
-        return 'y';
-      case 90:
-        return 'z';
-      case 91:
-        return 'left window';
-      case 92:
-        return 'right window';
-      case 93:
-        return 'select key';
-      case 96:
-        return 'n0';
-      case 97:
-        return 'n1';
-      case 98:
-        return 'n2';
-      case 99:
-        return 'n3';
-      case 100:
-        return 'n4';
-      case 101:
-        return 'n5';
-      case 102:
-        return 'n6';
-      case 103:
-        return 'n7';
-      case 104:
-        return 'n8';
-      case 105:
-        return 'n9';
-      case 106:
-        return 'multiply';
-      case 107:
-        return 'add';
-      case 109:
-        return 'subtract';
-      case 110:
-        return 'dec';
-      case 111:
-        return 'divide';
-      case 112:
-        return 'f1';
-      case 113:
-        return 'f2';
-      case 114:
-        return 'f3';
-      case 115:
-        return 'f4';
-      case 116:
-        return 'f5';
-      case 117:
-        return 'f6';
-      case 118:
-        return 'f7';
-      case 119:
-        return 'f8';
-      case 120:
-        return 'f9';
-      case 121:
-        return 'f10';
-      case 122:
-        return 'f11';
-      case 123:
-        return 'f12';
-      case 144:
-        return 'num lock';
-      case 156:
-        return 'scroll lock';
-      case 186:
-        return 'semi-colon';
-      case 187:
-        return 'equal';
-      case 188:
-        return 'comma';
-      case 189:
-        return 'dash';
-      case 190:
-        return 'period';
-      case 191:
-        return 'forward slash';
-      case 192:
-        return 'grave accent';
-      case 219:
-        return 'open bracket';
-      case 220:
-        return 'back slash';
-      case 221:
-        return 'close bracket';
-      case 222:
-        return 'single quote';
-      default:
-        return 'undefined';
-    }
+    return iio.keys[e.keyCode];
   },
   code_is: function(keys, event) {
     if (!(keys instanceof Array)) keys = [keys];
@@ -633,7 +532,8 @@ iio.collision = {
     if (r1L < r2R && r1R > r2L && r1T < r2B && r1B > r2T) return true;
     return false;
   }
-};
+}
+;
 
 //DEFINITION
 iio.V = function(){ this.V.apply(this, arguments) };
@@ -719,6 +619,36 @@ iio.Color.prototype.randomize = function(alpha){
 	if(alpha) this.a = iio.random();
 	return this;
 };
+//DEFINITION
+iio.Gradient = function(){ this.Gradient.apply(this, arguments) };
+
+//CONSTRUCTOR
+iio.Gradient.prototype.Gradient = function() {
+	for (var p in arguments[0]) this[p] = arguments[0][p];
+  	this.convert_v("start");
+  	this.convert_v("end");
+  	for(var i=0; i<this.stops.length; i++)
+  		if(iio.is.string(this.stops[i][1]))
+  			this.stops[i][1] = iio.convert.color(this.stops[i][1]);
+}
+
+//FUNCTIONS
+iio.Gradient.prototype.canvasGradient = function(ctx){
+	var gradient;
+	if(this.startRadius)
+		gradient = ctx.createRadialGradient(this.start.x,this.start.y,this.startRadius,
+											 this.end.x,this.end.y,this.endRadius);
+	else gradient = ctx.createLinearGradient(this.start.x,this.start.y,this.end.x,this.end.y);
+	for(var i=0; i<this.stops.length; i++)
+		gradient.addColorStop(this.stops[i][0],this.stops[i][1].toString());
+	return gradient;
+}
+iio.Gradient.prototype.convert_v = function(p){
+  if(this[p] && this[p] instanceof Array)
+    this[p] = new iio.V(this[p]);
+}
+
+;
 
 //DEFINITION
 iio.Obj = function(){ this.Obj.apply(this, arguments) }
@@ -962,140 +892,6 @@ iio.Obj.prototype.pause = function(c) {
   }
 }
 ;
-
-//DEFINITION
-iio.App =  function() { this.App.apply(this, arguments) }
-iio.inherit(iio.App, iio.Obj);
-iio.App.prototype._super = iio.Obj.prototype;
-
-//CONSTRUCTOR
-iio.App.prototype.App = function(view, app, s) {
-
-  this._super.Obj.call(this,arguments);
-
-  //set app reference for shared functions
-  this.app = this;
-
-  //set canvas & context
-  this.canvas = view;
-  this.ctx = view.getContext('2d');
-
-  //prep canvas
-  this.canvas.parent = this;
-  iio.canvas.prep_input(this.canvas);
-
-  //get width & height from canvas
-  this.width = view.clientWidth || view.width;
-  this.height = view.clientHeight || view.height;
-
-  //set center
-  this.center = new iio.V(
-    this.width / 2,
-    this.height / 2
-  );
-
-  //get DOM offset of canvas
-  var offset = view.getBoundingClientRect();
-
-  //set canvas DOM position
-  this.pos = new iio.V(
-    offset.left,
-    offset.top
-  );
-
-  //initialize app properties
-  this.collisions = [];
-  this.objs = [];
-  this.loops = [];
-
-  //add app to global app array
-  iio.apps.push(this);
-
-  //run js script
-  this.runScript = new app(this, s);
-}
-
-//FUNCTIONS
-iio.App.prototype.convertEventPos = function(e) {
-  return new iio.V( 
-    e.clientX - this.pos.x, 
-    e.clientY - this.pos.y
-  )
-}
-iio.App.prototype.stop = function() {
-  this.objs.forEach(function(obj) {
-    iio.cancelLoops(obj);
-  });
-  iio.cancelLoops(this);
-  if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
-  this.clear();
-}
-iio.App.prototype.draw = function(noClear) {
-  if (!noClear) this.ctx.clearRect(0, 0, this.width, this.height);
-  if (this.color) {
-    this.ctx.fillStyle = this.color.toString();
-    this.ctx.fillRect(0, 0, this.width, this.height);
-  }
-  if (this.round && this.canvas.style.borderRadius != this.round) {
-    this.canvas.style.borderRadius = this.round;
-    //this.canvas.style.MozBorderRadius=this.round;
-    //this.canvas.style.WebkitBorderRadius=this.round;
-  }
-  if (this.outline)
-    this.canvas.style.border = (this.lineWidth || 1) + 'px solid ' + this.outline;
-  if (this.alpha)
-    this.canvas.style.opacity = this.alpha;
-  if (this.objs.length > 0)
-    for(var i=0; i<this.objs.length; i++)
-      if (this.objs[i].draw) this.objs[i].draw(this.ctx);
-}
-iio.App.prototype.clear = function() {
-  this.ctx.clearRect(0, 0, this.width, this.height);
-  /*if(this.color){
-     this.ctx.fillStyle=this.color;
-     this.ctx.fillRect(0,0,this.width,this.height);
-  }*/
-}
-iio.App.prototype.collision = function(o1, o2, fn) {
-  this.collisions.push(
-    [o1, o2, fn]
-  );
-}
-iio.App.prototype.cCollisions = function(o1, o2, fn) {
-  if (o1 instanceof Array) {
-    if (o2 instanceof Array) {
-      if (o2.length == 0) return;
-      o1.forEach(function(_o1) {
-        o2.forEach(function(_o2) {
-          if (iio.collision.check(_o1, _o2)) fn(_o1, _o2);
-        });
-      });
-    } else {
-      o1.forEach(function(_o1) {
-        if (iio.collision.check(_o1, o2)) fn(_o1, o2);
-      });
-    }
-  } else {
-    if (o2 instanceof Array) {
-      o2.forEach(function(_o2) {
-        if (iio.collision.check(o1, _o2)) fn(o1, _o2);
-      });
-    } else if (iio.collision.check(o1, o2)) fn(o1, o2);
-  }
-}
-iio.App.prototype._update = function(o, dt) {
-  if (this.update) this.update(dt);
-  if (this.objs && this.objs.length > 0)
-    this.objs.forEach(function(obj) {
-      if (obj.update && obj.update(o, dt)) this.rmv(obj);
-    }, this);
-  if (this.collisions && this.collisions.length > 0) {
-    this.collisions.forEach(function(collision) {
-      this.cCollisions(collision[0], collision[1], collision[2]);
-    }, this);
-  }
-  this.draw();
-};
 
 //DEFINITION
 iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
@@ -1744,6 +1540,77 @@ iio.Grid.prototype.foreachCell = function(fn, p) {
 };
 
 //DEFINITION
+iio.Circle = function(){ this.Circle.apply(this, arguments) };
+iio.inherit(iio.Circle, iio.Drawable);
+iio.Circle.prototype._super = iio.Drawable.prototype;
+
+//CONSTRUCTOR
+iio.Circle.prototype.Circle = function() {
+  this._super.Drawable.call(this,this.merge_props(arguments));
+}
+
+//FUNCTIONS
+iio.Circle.prototype.convert_props = function(){
+  this._super.convert_props.call(this);
+
+  // handle image attachment
+  if (this.img){
+    if(iio.is.string(this.img)) {
+      var src = this.img;
+      this.img = new Image();
+      this.img.src = src;
+      this.img.parent = this;
+      var o = this;
+      if (!this.radius){
+        this.img.onload = function(e) {
+          o.radius = o.img.width/2 || 0;
+          if(o.app) o.app.draw()
+        }
+      } else this.img.onload = function(e) {
+        if(o.app) o.app.draw()
+      }
+    } else {
+      if (!this.radius) {
+        if (o.radius == 0) o.radius = this.img.width/2 || 0;
+        if(o.app) o.app.draw()
+      }
+    }
+  } 
+}
+iio.Circle.prototype.draw_shape = function(ctx) {
+  ctx.beginPath();
+  ctx.arc(0, 0, this.radius, 0, 2 * Math.PI, false);
+  if (this.color) ctx.fill();
+  if (this.outline) ctx.stroke();
+  if (this.clip) ctx.clip();
+  if (this.img) ctx.drawImage(this.img, -this.radius, -this.radius, this.radius*2, this.radius*2);
+}
+iio.Circle.prototype.contains = function(v, y) {
+  if (typeof(y) != 'undefined') v = {
+    x: v,
+    y: y
+  }
+  if (this.radius == this.radius && iio.v.dist(v, this.pos) < this.radius)
+    return true;
+  else {
+    if (this.rot) {
+      v.x -= this.pos.x;
+      v.y -= this.pos.y;
+      v = iio.rotatePoint(v.x, v.y, -this.rot);
+      v.x += this.pos.x;
+      v.y += this.pos.y;
+    }
+    if (Math.pow(v.x - this.pos.x, 2) / Math.pow(this.radius, 2) + Math.pow(v.y - this.pos.y, 2) / Math.pow(this.radius, 2) <= 1)
+      return true;
+  }
+  return false;
+}
+iio.Circle.prototype.left = function(){ return this.pos.x - this.radius }
+iio.Circle.prototype.right = function(){ return this.pos.x + this.radius }
+iio.Circle.prototype.top = function(){ return this.pos.y - this.radius }
+iio.Circle.prototype.bottom = function(){ return this.pos.y + this.radius };
+
+//DEFINITION
 iio.Text = function(){ this.Text.apply(this, arguments) };
 iio.inherit(iio.Text, iio.Drawable);
 iio.Text.prototype._super = iio.Drawable.prototype;
@@ -1901,4 +1768,156 @@ iio.Text.prototype.keyDown = function(key, cI, shift, fn) {
   this.cursor.index = cI;
   this.app.draw();
   return cI;
+};
+
+//DEFINITION
+iio.App =  function() { this.App.apply(this, arguments) }
+iio.inherit(iio.App, iio.Obj);
+iio.App.prototype._super = iio.Obj.prototype;
+
+// Make iio's elements available to app scope
+[
+  'V',
+  'Color',
+  'Gradient',
+  'SpriteMap',
+  'Line',
+  'Polygon',
+  'Rectangle',
+  'Square',
+  'Grid',
+  'Circle',
+  'Text'
+].forEach(function(element) {
+  if (iio[element])
+    iio.App.prototype[element] = iio[element];
+});
+
+//CONSTRUCTOR
+iio.App.prototype.App = function(view, app, s) {
+
+  this._super.Obj.call(this,arguments);
+
+  //set app reference for shared functions
+  this.app = this;
+
+  //set canvas & context
+  this.canvas = view;
+  this.ctx = view.getContext('2d');
+
+  //prep canvas
+  this.canvas.parent = this;
+  iio.canvas.prep_input(this.canvas);
+
+  //get width & height from canvas
+  this.width = view.clientWidth || view.width;
+  this.height = view.clientHeight || view.height;
+
+  //set center
+  this.center = new iio.V(
+    this.width / 2,
+    this.height / 2
+  );
+
+  //get DOM offset of canvas
+  var offset = view.getBoundingClientRect();
+
+  //set canvas DOM position
+  this.pos = new iio.V(
+    offset.left,
+    offset.top
+  );
+
+  //initialize app properties
+  this.collisions = [];
+  this.objs = [];
+  this.loops = [];
+
+  //add app to global app array
+  iio.apps.push(this);
+
+  //run js script
+  app.call(this, this, s);
+}
+
+//FUNCTIONS
+iio.App.prototype.convertEventPos = function(e) {
+  return new iio.V( 
+    e.clientX - this.pos.x, 
+    e.clientY - this.pos.y
+  )
+}
+iio.App.prototype.stop = function() {
+  this.objs.forEach(function(obj) {
+    iio.cancelLoops(obj);
+  });
+  iio.cancelLoops(this);
+  if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
+  this.clear();
+}
+iio.App.prototype.draw = function(noClear) {
+  if (!noClear) this.ctx.clearRect(0, 0, this.width, this.height);
+  if (this.color) {
+    this.ctx.fillStyle = this.color.toString();
+    this.ctx.fillRect(0, 0, this.width, this.height);
+  }
+  if (this.round && this.canvas.style.borderRadius != this.round) {
+    this.canvas.style.borderRadius = this.round;
+    //this.canvas.style.MozBorderRadius=this.round;
+    //this.canvas.style.WebkitBorderRadius=this.round;
+  }
+  if (this.outline)
+    this.canvas.style.border = (this.lineWidth || 1) + 'px solid ' + this.outline;
+  if (this.alpha)
+    this.canvas.style.opacity = this.alpha;
+  if (this.objs.length > 0)
+    for(var i=0; i<this.objs.length; i++)
+      if (this.objs[i].draw) this.objs[i].draw(this.ctx);
+}
+iio.App.prototype.clear = function() {
+  this.ctx.clearRect(0, 0, this.width, this.height);
+  /*if(this.color){
+     this.ctx.fillStyle=this.color;
+     this.ctx.fillRect(0,0,this.width,this.height);
+  }*/
+}
+iio.App.prototype.collision = function(o1, o2, fn) {
+  this.collisions.push(
+    [o1, o2, fn]
+  );
+}
+iio.App.prototype.cCollisions = function(o1, o2, fn) {
+  if (o1 instanceof Array) {
+    if (o2 instanceof Array) {
+      if (o2.length == 0) return;
+      o1.forEach(function(_o1) {
+        o2.forEach(function(_o2) {
+          if (iio.collision.check(_o1, _o2)) fn(_o1, _o2);
+        });
+      });
+    } else {
+      o1.forEach(function(_o1) {
+        if (iio.collision.check(_o1, o2)) fn(_o1, o2);
+      });
+    }
+  } else {
+    if (o2 instanceof Array) {
+      o2.forEach(function(_o2) {
+        if (iio.collision.check(o1, _o2)) fn(o1, _o2);
+      });
+    } else if (iio.collision.check(o1, o2)) fn(o1, o2);
+  }
+}
+iio.App.prototype._update = function(o, dt) {
+  if (this.update) this.update(dt);
+  if (this.objs && this.objs.length > 0)
+    this.objs.forEach(function(obj) {
+      if (obj.update && obj.update(o, dt)) this.rmv(obj);
+    }, this);
+  if (this.collisions && this.collisions.length > 0) {
+    this.collisions.forEach(function(collision) {
+      this.cCollisions(collision[0], collision[1], collision[2]);
+    }, this);
+  }
+  this.draw();
 }

@@ -1,11 +1,13 @@
 srcPath = 'src/core';
+
+// Files will be concatenated in the following order
 coreSrc = [
   'core.js',
   'libs.js',
   'V.js',
   'Color.js',
+  'Gradient.js',
   'Obj.js',
-  'App.js',
   'SpriteMap.js',
   'Drawable.js',
   'Line.js',
@@ -13,8 +15,9 @@ coreSrc = [
   'Rectangle.js',
   'Square.js',
   'Grid.js',
-  'Ellipse.js',
+  'Circle.js',
   'Text.js',
+  'App.js',
 ].map(function(filename) { return srcPath + '/' + filename });
 
 module.exports = function(grunt) {

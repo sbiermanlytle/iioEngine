@@ -6,12 +6,10 @@
 <!DOCTYPE html>
 <html>
 	<body>
-		<script type="text/javascript" src="../../core/iioEngine.js"></script>
+		<script type="text/javascript" src="../../build/iio.js"></script>
 		<script type="text/javascript" src="ColorLines.js"></script>
 		<script type="text/javascript">
-		load_iio_remote(function(){
-			iio.start([ColorLines, { w:60, c:iio.Color.random() }]);
-		});
+	  	iio.start([ColorLines, { w:60, c:iio.Color.random() }]);
 		</script>
 	</body>
 </html>

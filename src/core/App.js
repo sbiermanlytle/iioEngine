@@ -4,6 +4,24 @@ iio.App =  function() { this.App.apply(this, arguments) }
 iio.inherit(iio.App, iio.Obj);
 iio.App.prototype._super = iio.Obj.prototype;
 
+// Make iio's elements available to app scope
+[
+  'V',
+  'Color',
+  'Gradient',
+  'SpriteMap',
+  'Line',
+  'Polygon',
+  'Rectangle',
+  'Square',
+  'Grid',
+  'Circle',
+  'Text'
+].forEach(function(element) {
+  if (iio[element])
+    iio.App.prototype[element] = iio[element];
+});
+
 //CONSTRUCTOR
 iio.App.prototype.App = function(view, app, s) {
 
@@ -48,7 +66,7 @@ iio.App.prototype.App = function(view, app, s) {
   iio.apps.push(this);
 
   //run js script
-  this.runScript = new app(this, s);
+  app.call(this, this, s);
 }
 
 //FUNCTIONS

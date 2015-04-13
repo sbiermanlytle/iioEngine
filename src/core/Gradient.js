@@ -1,4 +1,3 @@
-
 //DEFINITION
 iio.Gradient = function(){ this.Gradient.apply(this, arguments) };
 
@@ -27,3 +26,4 @@ iio.Gradient.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)
     this[p] = new iio.V(this[p]);
 }
+

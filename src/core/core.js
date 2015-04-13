@@ -11,13 +11,10 @@ iio.start = function(app, id, d) {
   if (app instanceof Array)
     return new iio.App(c, app[0], app[1]);
 
-  //run iio file
-  /*else if (iio.is.string(app) && app.substring(app.length - 4) == '.iio')
-    return iio.read(app, iio.start);*/
-
   //initialize application without settings
   return new iio.App(c, app);
 }
+
 iio.runScripts = function() {
   var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
   var iioScripts = scripts.filter(function(s) {
@@ -28,7 +25,7 @@ iio.runScripts = function() {
     xhr.open("GET", script.src, true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
-        iio.scripts[script.src] = eval("(function() {\nreturn function(settings) {\n" + 
+        iio.scripts[script.src] = eval("(function() {\nreturn function(app, settings) {\n" + 
 									   CoffeeScript.compile(xhr.responseText, {bare: true}) + 
 									   "}\n})()");
         iio.start(iio.scripts[script.src]);
@@ -37,6 +34,12 @@ iio.runScripts = function() {
     xhr.send(null);
   });
 }
+
+// Listen for window load, both in decent browsers and in IE
+if (window.addEventListener)
+  window.addEventListener('DOMContentLoaded', iio.runScripts, false);
+else
+  window.attachEvent('onload', iio.runScripts);
 
 //JS ADDITIONS
 Array.prototype.insert = function(index, item) {
@@ -243,8 +246,3 @@ iio.createGradient = function(ctx, g) {
   return gradient;
 }
 
-// Listen for window load, both in decent browsers and in IE
-if (window.addEventListener)
-  window.addEventListener('DOMContentLoaded', iio.runScripts, false);
-else
-  window.attachEvent('onload', iio.runScripts);
