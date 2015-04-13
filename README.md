@@ -16,21 +16,20 @@ in order to use Grunt.
 ## Installing on Mac OS X
 If you have brew you can install node easily
 
-	brew install node
+    brew install node
 
 Then install the Grunt CLI.
 
-	npm install -g grunt-cli
+    npm install -g grunt-cli
 
-Install dependencies with npm
+Install dependencies with npm.
 
-  npm install
+    npm install
 
 Which will install all necessary dependencies locally in node_modules.
-
 You can now run Grunt to build, minify iio.js
 
-	grunt
+    grunt
 
 ---
 
