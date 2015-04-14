@@ -7,12 +7,12 @@ iio Engine 1.4.0 is the working copy of a push to finalize the upgrade. It will 
 
 iio Engine 1.2.2 was the last stable deployment. You may wish to use that version (available at iioEngine.com) if you would like a better documented and more stable platform to work with.
 
-## Links
+## links
 Homepage: http://iioEngine.com
 
 Twitter: @iioEngine
 
-## Loading iio Engine
+## loading iio Engine
 You can load the minified engine from a local folder or the iio Engine URL:
 
 	<script type="text/javascript" src="http://iioengine.com/iioEngine.min.js"></script>
@@ -21,10 +21,10 @@ iio Engine has a debugging version with extra features:
 
 	<script type="text/javascript" src="http://iioengine.com/iioEngine-debug.js"></script>
 
-## Building Source Files
-iio uses Grunt as it's build system. Grunt depends on nodejs and npm.
+## building Source Files
+To edit source files, use Grunt to re-build the engine. Grunt depends on nodejs and npm.
 
-### Installing nodejs and grunt
+### installing nodejs and grunt
 If you have brew you can install node easily
 
     brew install node
@@ -45,7 +45,7 @@ Include the debug flag to build the debugging versions
 
     grunt debug
 
-## License
+## license
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 
