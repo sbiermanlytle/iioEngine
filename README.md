@@ -1,19 +1,30 @@
 iioengine
 ========= 
 
-iio Engine is a JavaScript framework that streamlines the development HTML5 Canvas applications. The whole package is open source, and free to use and extend for any purpose. This repo contains all published copies and working editions of iio Engine.
+iio Engine is an open source JavaScript framework that streamlines the development HTML5 Canvas applications. This repo contains all published copies and working editions of iio Engine.
 
-All applications created with the iio Engine may be uploaded and hosted for free at iioApps.com.
+iio Engine 1.4.0 is the working copy of a push to finalize the upgrade. It will be modified frequently as it is tested and extended.
 
-iio Engine 1.3.4 is the working copy of a push to finalize the upgrade. It will be modified frequently as it is tested and extended. The minified version will not be available until the new version is published.
+iio Engine 1.2.2 was the last stable deployment. You may wish to use that version (available at iioEngine.com) if you would like a better documented and more stable platform to work with.
 
-The API and syntax are a lot different from 1.2. You may wish to use that version (available at iioEngine.com) if you would like a better documented and more stable platform to work with.
+## links
+Homepage: http://iioEngine.com
 
-# Building
-iio uses Grunt as it's build system. Make sure you have node and npm installed
-in order to use Grunt.
+Twitter: @iioEngine
 
-## Installing on Mac OS X
+## loading iio Engine
+You can load the minified engine from a local folder or the iio Engine URL:
+
+	<script type="text/javascript" src="http://iioengine.com/iioEngine.min.js"></script>
+
+iio Engine has a debugging version with extra features:
+
+	<script type="text/javascript" src="http://iioengine.com/iioEngine-debug.js"></script>
+
+## building Source Files
+To edit source files, use Grunt to re-build the engine. Grunt depends on nodejs and npm.
+
+### installing nodejs and grunt
 If you have brew you can install node easily
 
     brew install node
@@ -26,22 +37,15 @@ Install dependencies with npm.
 
     npm install
 
-Which will install all necessary dependencies locally in node_modules.
-You can now run Grunt to build, minify iio.js
+You can now run Grunt to build and minify iio.js
 
     grunt
 
----
+Include the debug flag to build the debugging versions
 
-API: http://iioEngine.com/api
+    grunt debug
 
-Demos & Hosting: http://iioApps.com
-
-Sandbox: http://iioEngine.com/sandbox
-
-Twitter: @iioEngine
-
----
+## license
 
 The iio Engine is licensed under the BSD 2-clause Open Source license
 

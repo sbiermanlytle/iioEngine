@@ -69,3 +69,12 @@ iio.Circle.prototype.left = function(){ return this.pos.x - this.radius }
 iio.Circle.prototype.right = function(){ return this.pos.x + this.radius }
 iio.Circle.prototype.top = function(){ return this.pos.y - this.radius }
 iio.Circle.prototype.bottom = function(){ return this.pos.y + this.radius }
+iio.Circle.prototype._shrink = function(s, r) {
+  this.radius *= 1 - s;
+  if (this.radius < .02 
+    || this.radius < this.shrink.lowerBound 
+    || this.radius > this.shrink.upperBound) {
+    if (r) return r(this);
+    else return true;
+  }
+}

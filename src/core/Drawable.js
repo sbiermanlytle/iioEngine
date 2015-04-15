@@ -108,8 +108,8 @@ iio.Drawable.prototype.update_accs = function(){
   }
 }
 iio.Drawable.prototype.update_shrink = function(){
-  if (this.shrink instanceof Array)
-    return this._shrink(this.shrink[0], this.shrink[1]);
+  if (this.shrink.speed)
+    return this._shrink(this.shrink.speed, this.shrink.onFinish);
   else return this._shrink(this.shrink);
 }
 iio.Drawable.prototype.update_fade = function(){
@@ -227,7 +227,9 @@ iio.Drawable.prototype._shrink = function(s, r) {
 },
 iio.Drawable.prototype._fade = function(s, r) {
   this.alpha *= 1 - s;
-  if (this.alpha < s || this.alpha > 1-s) {
+  if (this.alpha < s || this.alpha > 1-s
+    ||this.alpha > this.fade.upperBound
+    ||this.alpha < this.fade.lowerBound) {
     if(this.alpha > 1) this.alpha = 1;
     else if(this.alpha < 0) this.alpha = 0;
     if (r) return r(this);
@@ -247,6 +249,12 @@ iio.Drawable.prototype.orient_ctx = function(ctx){
     if (this.origin) ctx.translate(this.origin.x, this.origin.y);
     ctx.rotate(this.rotation);
     if (this.origin) ctx.translate(-this.origin.x, -this.origin.y);
+  }
+  if(this.flip){
+    if(this.flip.indexOf('x') > -1)
+      ctx.scale(-1, 1);
+    if(this.flip.indexOf('y') > -1)
+      ctx.scale(1, -1);
   }
   return ctx;
 }
