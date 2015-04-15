@@ -1,24 +1,22 @@
-set black end
-var s = 20
+size = 20
+app.set 'black'
 
-var reset = fn()
-	clear
-	for var c = s/2 to width by s
-		for var r = s/2 to height by s
-			add
-				pos c:r
-				size s
-				color white
-				shrink random 0.05 to 0.2 then
-					obj.width s
-					obj.height s
-					obj.color random color
-				end
-			end
-		end
-	end
-	draw
-end
+getShrinkRate = ->
+  if settings and settings.preview then iio.random(.05, .09) else iio.random(.05, .2)
+
+reset = ->
+  app.objs = []
+  for c in [size/2...app.width] by size
+    for r in [size/2...app.height] by size
+      app.add
+        pos: {x:c, y:r}
+        width: size
+        simple: true
+        color: 'white'
+
+  app.draw()
 
 reset()
-onresize reset
+
+app.runScript = { resize: reset }
+

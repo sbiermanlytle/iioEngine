@@ -66,6 +66,9 @@ iio.App.prototype.App = function(view, app, s) {
   iio.apps.push(this);
 
   //run js script
+  if (typeof(app) === "string") {
+    app = iio.scripts[app];
+  }
   app.call(this, this, s);
 }
 
