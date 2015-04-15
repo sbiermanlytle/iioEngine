@@ -119,6 +119,7 @@ iio_Test.Circle = {
 			radius: _radius,
 			fade: {
 				speed: .03,
+				lowerBound: .2,
 				onFinish: function(o){
 					o.fade.speed *= -1;
 				}
@@ -145,6 +146,21 @@ iio_Test.Circle = {
 			lineWidth: 1,
 			growing: true,
 			onUpdate: Test_outline
+		}));
+	},
+	shrink : function( app, settings ){
+		app.add(new iio.Circle({
+			pos: app.center,
+			color: _color[settings.c].clone(),
+			radius: _radius,
+			shrink: {
+				speed: .03,
+				upperBound: _radius,
+				lowerBound: 4,
+				onFinish: function(o){
+					o.shrink.speed *= -1;
+				}
+			}
 		}));
 	},
 	dash : function ( app, settings ){
@@ -235,6 +251,23 @@ iio_Test.Circle = {
 			radius: app.width/2.5,
 			clip: true,
 			img: 'http://iioengine.com/img/staryNight.jpg'
+		}));
+	},
+	flip : function( app, settings ){
+
+		app.loop(1);
+
+		app.add(new iio.Circle({
+			pos: app.center,
+			radius: app.width/2.5,
+			clip: true,
+			img: 'http://iioengine.com/img/flip.png',
+			flip: 'x',
+			onUpdate: function(){
+				if(this.flip == 'x')
+					this.flip = false;
+				else this.flip = 'x';
+			}
 		}));
 	}
 }

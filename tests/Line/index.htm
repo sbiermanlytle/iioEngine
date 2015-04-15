@@ -18,7 +18,7 @@
 	create_test_canvas_grid( 100, 5, 6 );
 
 	iio_dependencies = [
-	  'functions.js',
+	  'core.js',
 	  'libs.js',
 	  'V.js',
 	  'Color.js',
@@ -51,7 +51,7 @@
 		iio.start([iio_Test.Line.hidden, { c:1 }], 'c30');
 		iio.start([iio_Test.Line.alpha, { c:0 }], 'c31');
 		iio.start([iio_Test.Line.color, { c:1 }], 'c32');
-		iio.start([iio_Test.Line.width, { c:1 }], 'c33');
+		iio.start([iio_Test.Line.width, { c:0 }], 'c33');
 
 		iio.start([iio_Test.Line.lineCap, { c:0 }], 'c40');
 		iio.start([iio_Test.Line.dash, { c:1 }], 'c41');

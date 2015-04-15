@@ -6,7 +6,7 @@ iio.Rectangle.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Rectangle.prototype.Rectangle = function() {
-  this._super.Drawable.call(this,arguments[0]);
+  this._super.Drawable.call(this,this.merge_props(arguments));
   this.height = this.height || this.width;
 }
 
@@ -42,10 +42,10 @@ iio.Rectangle.prototype.real_vertices = function() {
     return v;
   }, this);
 }
-iio.Rectangle.prototype.left = function(){ return pos.x - this.width }
-iio.Rectangle.prototype.right = function(){ return pos.x + this.width }
-iio.Rectangle.prototype.top = function(){ return pos.y - this.height }
-iio.Rectangle.prototype.bottom = function(){ return pos.y + this.height }
+iio.Rectangle.prototype.left = function(){ return this.pos.x - this.width }
+iio.Rectangle.prototype.right = function(){ return this.pos.x + this.width }
+iio.Rectangle.prototype.top = function(){ return this.pos.y - this.height }
+iio.Rectangle.prototype.bottom = function(){ return this.pos.y + this.height }
 iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.beginPath();
   ctx.moveTo(this.round[0], 0);
@@ -63,7 +63,7 @@ iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.clip();
 }
 iio.Rectangle.prototype.draw_shape = function(ctx){
-  ctx.translate(-this.width / 2, -this.width / 2);
+  ctx.translate(-this.width / 2, -this.height / 2);
   if (this.bezier) {
     iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
     this.finish_path_shape(ctx);
@@ -77,14 +77,14 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
   else if(this.round)
     this.draw_rounded(ctx);
   else{
-    if (this.color) ctx.fillRect(0, 0, this.width, this.width)
-    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.width);
+    if (this.color) ctx.fillRect(0, 0, this.width, this.height)
+    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
     if (this.anims) ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
       this.anims[this.animKey].frames[this.animFrame].x,
       this.anims[this.animKey].frames[this.animFrame].y,
       this.anims[this.animKey].frames[this.animFrame].w,
       this.anims[this.animKey].frames[this.animFrame].h,
-      0, 0, this.width, this.width);
-    if (this.outline) ctx.strokeRect(0, 0, this.width, this.width);
+      0, 0, this.width, this.height);
+    if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
   }
 }

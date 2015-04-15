@@ -18,7 +18,7 @@
 	create_test_canvas_grid( 100, 5, 6 );
 
 	iio_dependencies = [
-	  'functions.js',
+	  'core.js',
 	  'libs.js',
 	  'V.js',
 	  'Color.js',
@@ -47,6 +47,7 @@
 		iio.start([iio_Test.Circle.alpha, { c:0 }], 'c31');
 		iio.start([iio_Test.Circle.color, { c:1 }], 'c32');
 		iio.start([iio_Test.Circle.outline, { c:0 }], 'c33');
+		iio.start([iio_Test.Circle.shrink, { c:1 }], 'c34');
 
 		iio.start([iio_Test.Circle.dash, { c:1 }], 'c40');
 		iio.start([iio_Test.Circle.dash_rounded, { c:0 }], 'c41');
@@ -56,6 +57,7 @@
 
 		iio.start([iio_Test.Circle.child, { c:1 }], 'c50');
 		iio.start([iio_Test.Circle.img, { c:0 }], 'c51');
+		iio.start([iio_Test.Circle.flip, { c:1 }], 'c52');
 	});
 </script>
 </body>
