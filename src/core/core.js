@@ -4,15 +4,30 @@ iio.scripts = iio.scripts || {};
 
 //INITIALIZATION
 iio.start = function(app, id, d) {
+  preppedApp = function() {
+    var c = iio.canvas.prep(id, d);
 
-  var c = iio.canvas.prep(id, d);
+    //initialize application with settings
+    if (app instanceof Array)
+      return new iio.App(c, app[0], app[1]);
 
-  //initialize application with settings
+    //initialize application without settings
+    return new iio.App(c, app);
+  }
+
+  var event;
   if (app instanceof Array)
-    return new iio.App(c, app[0], app[1]);
+    app = app[0];
+  if (typeof(app) === "string")
+    event = "iioscript:" + app;
 
-  //initialize application without settings
-  return new iio.App(c, app);
+  if (window.addEventListener) {
+    event = event || 'DOMContentLoaded';
+    window.addEventListener(event, preppedApp, false);
+  } else {
+    event = event || 'onload';
+    window.attachEvent(event, preppedApp);
+  }
 }
 
 iio.runScripts = function() {
@@ -25,10 +40,11 @@ iio.runScripts = function() {
     xhr.open("GET", script.src, true);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
-        iio.scripts[script.src] = eval("(function() {\nreturn function(app, settings) {\n" + 
+        var appName = script.src.split("/").pop().replace(/\.[^/.]+$/, "");
+        iio.scripts[appName] = eval("(function() {\nreturn function(app, settings) {\n" + 
 									   CoffeeScript.compile(xhr.responseText, {bare: true}) + 
 									   "}\n})()");
-        iio.start(iio.scripts[script.src]);
+        window.dispatchEvent(new Event("iioscript:" + appName));
       }
     }
     xhr.send(null);
@@ -89,9 +105,7 @@ iio.random = function(min, max) {
   return Math.random() * (max - min) + min;
 }
 iio.randomInt = function(min, max) {
-  min = min || 0;
-  max = max || 1;
-  return Math.floor(Math.random() * (max+1 - min)) + min;
+  return Math.floor(iio.random(min, max));
 }
 
 //IO
