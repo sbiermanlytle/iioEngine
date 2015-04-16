@@ -1,13 +1,15 @@
 <!--
-  iio Engine v1.3
+  iio Engine v1.4
   ***************
-  Live Demo: iioapps.com/color-grid
+  Live Demo: iioapps.com/colorgrid
  -->
 <!DOCTYPE html>
 <html>
   <body>
-    <script type="text/javascript" src="../../build/iio.js"></script>
-    <script type="text/javascript" src="http://coffeescript.org/extras/coffee-script.js"></script>
-    <script type="text/iioscript" src="ColorGrid.iio"></script>
+		<script type="text/javascript" src="../../build/iio.js"></script>
+		<script type="text/javascript" src="ColorGrid.js"></script>
+		<script type="text/javascript">
+	  	iio.start([ColorGrid, { w:20, c:iio.Color.random() }]);
+		</script>
   </body>
 </html>

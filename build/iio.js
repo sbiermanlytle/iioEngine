@@ -4,7 +4,21 @@ iio.scripts = iio.scripts || {};
 
 //INITIALIZATION
 iio.start = function(app, id, d) {
-  preppedApp = function() {
+  
+  var c = iio.canvas.prep(id, d);
+
+  //initialize application with settings
+  if (app instanceof Array)
+    return new iio.App(c, app[0], app[1]);
+
+  //run iio file
+  /*else if (iio.is.string(app) && app.substring(app.length - 4) == '.iio')
+    return iio.read(app, iio.start);*/
+
+  //initialize application without settings
+  return new iio.App(c, app);
+
+  /*preppedApp = function() {
     var c = iio.canvas.prep(id, d);
 
     //initialize application with settings
@@ -27,7 +41,7 @@ iio.start = function(app, id, d) {
   } else {
     event = event || 'onload';
     window.attachEvent(event, preppedApp);
-  }
+  }*/
 }
 
 iio.runScripts = function() {
@@ -1058,8 +1072,8 @@ iio.Drawable.prototype.update_accs = function(){
   }
 }
 iio.Drawable.prototype.update_shrink = function(){
-  if (this.shrink instanceof Array)
-    return this._shrink(this.shrink[0], this.shrink[1]);
+  if (this.shrink.speed)
+    return this._shrink(this.shrink.speed, this.shrink.onFinish);
   else return this._shrink(this.shrink);
 }
 iio.Drawable.prototype.update_fade = function(){
@@ -1170,14 +1184,18 @@ iio.Drawable.prototype.prevFrame = function(o) {
 iio.Drawable.prototype._shrink = function(s, r) {
   this.width *= 1 - s;
   this.height *= 1 - s;
-  if (this.width < .02) {
+  if (this.width < .02 
+    || this.width < this.shrink.lowerBound 
+    || this.width > this.shrink.upperBound) {
     if (r) return r(this);
     else return true;
   }
-},
+}
 iio.Drawable.prototype._fade = function(s, r) {
   this.alpha *= 1 - s;
-  if (this.alpha < s || this.alpha > 1-s) {
+  if (this.alpha < s || this.alpha > 1-s
+    ||this.alpha > this.fade.upperBound
+    ||this.alpha < this.fade.lowerBound) {
     if(this.alpha > 1) this.alpha = 1;
     else if(this.alpha < 0) this.alpha = 0;
     if (r) return r(this);
@@ -1197,6 +1215,12 @@ iio.Drawable.prototype.orient_ctx = function(ctx){
     if (this.origin) ctx.translate(this.origin.x, this.origin.y);
     ctx.rotate(this.rotation);
     if (this.origin) ctx.translate(-this.origin.x, -this.origin.y);
+  }
+  if(this.flip){
+    if(this.flip.indexOf('x') > -1)
+      ctx.scale(-1, 1);
+    if(this.flip.indexOf('y') > -1)
+      ctx.scale(1, -1);
   }
   return ctx;
 }
@@ -1383,7 +1407,7 @@ iio.Rectangle.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Rectangle.prototype.Rectangle = function() {
-  this._super.Drawable.call(this,arguments[0]);
+  this._super.Drawable.call(this,this.merge_props(arguments));
   this.height = this.height || this.width;
 }
 
@@ -1419,10 +1443,10 @@ iio.Rectangle.prototype.real_vertices = function() {
     return v;
   }, this);
 }
-iio.Rectangle.prototype.left = function(){ return pos.x - this.width }
-iio.Rectangle.prototype.right = function(){ return pos.x + this.width }
-iio.Rectangle.prototype.top = function(){ return pos.y - this.height }
-iio.Rectangle.prototype.bottom = function(){ return pos.y + this.height }
+iio.Rectangle.prototype.left = function(){ return this.pos.x - this.width }
+iio.Rectangle.prototype.right = function(){ return this.pos.x + this.width }
+iio.Rectangle.prototype.top = function(){ return this.pos.y - this.height }
+iio.Rectangle.prototype.bottom = function(){ return this.pos.y + this.height }
 iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.beginPath();
   ctx.moveTo(this.round[0], 0);
@@ -1440,7 +1464,7 @@ iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.clip();
 }
 iio.Rectangle.prototype.draw_shape = function(ctx){
-  ctx.translate(-this.width / 2, -this.width / 2);
+  ctx.translate(-this.width / 2, -this.height / 2);
   if (this.bezier) {
     iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
     this.finish_path_shape(ctx);
@@ -1454,15 +1478,15 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
   else if(this.round)
     this.draw_rounded(ctx);
   else{
-    if (this.color) ctx.fillRect(0, 0, this.width, this.width)
-    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.width);
+    if (this.color) ctx.fillRect(0, 0, this.width, this.height)
+    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
     if (this.anims) ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
       this.anims[this.animKey].frames[this.animFrame].x,
       this.anims[this.animKey].frames[this.animFrame].y,
       this.anims[this.animKey].frames[this.animFrame].w,
       this.anims[this.animKey].frames[this.animFrame].h,
-      0, 0, this.width, this.width);
-    if (this.outline) ctx.strokeRect(0, 0, this.width, this.width);
+      0, 0, this.width, this.height);
+    if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
   }
 };
 
@@ -1622,7 +1646,16 @@ iio.Circle.prototype.contains = function(v, y) {
 iio.Circle.prototype.left = function(){ return this.pos.x - this.radius }
 iio.Circle.prototype.right = function(){ return this.pos.x + this.radius }
 iio.Circle.prototype.top = function(){ return this.pos.y - this.radius }
-iio.Circle.prototype.bottom = function(){ return this.pos.y + this.radius };
+iio.Circle.prototype.bottom = function(){ return this.pos.y + this.radius }
+iio.Circle.prototype._shrink = function(s, r) {
+  this.radius *= 1 - s;
+  if (this.radius < .02 
+    || this.radius < this.shrink.lowerBound 
+    || this.radius > this.shrink.upperBound) {
+    if (r) return r(this);
+    else return true;
+  }
+};
 
 //DEFINITION
 iio.Text = function(){ this.Text.apply(this, arguments) };

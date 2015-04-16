@@ -1,0 +1,46 @@
+<!-- 
+	iio Engine v1.3
+	***************
+	Live Demo: iioapps.com/tic-tac-toe
+ -->
+<!DOCTYPE html>
+<html>
+	<body>
+		<script type="text/javascript" src="../core/iioEngine.js"></script>
+		<script type="text/javascript">
+
+			Test = function(app){
+
+				//app.set({ color: 'black' });
+
+				/*var s = app.add(new iio.Line({
+					color:'blue',
+					lineWidth:10,
+					vs:[
+						[10,10],
+						[app.width-10,app.height-10]
+					]
+				}));
+
+				s.set({color:'red'})*/
+
+				var color = new iio.Color.random();
+
+				var s = app.create(color, 200, app.center);
+
+				var s2 = app.create(color.clone().invert(), 100, app.center);
+
+				var c1 = s.color;
+				var c2 = s2.color;
+
+				//s.set({color:'red'})
+
+			}
+
+			load_iio_remote(function(){
+				iio.start(Test)
+			});
+
+		</script>
+	</body>
+</html>
