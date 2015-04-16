@@ -1,19 +1,6 @@
 /*
    iio engine
    Version 1.4.0 Working Version
-
-   1.4 is a work in progress, but already useful for many apps
-   1.2 has more features, less bugs, and is available on github
-
-   API: docs/
-   Demos: iioapps.com
-   Sandbox: iioengine.com/sandbox
-
----------------------------------------------------------------------
-The iio Engine is licensed under the BSD 2-clause Open Source license
-
-Copyright (c) 2014, Sebastian Bierman-Lytle
-All rights reserved.
 */
 iio_dependency_path = "http://iioengine.com/src/core/"
 iio_dependencies = [
