@@ -16,8 +16,7 @@
     <link rel="icon" type="image/png" href="res/favicon.png">
     <link href="res/sandbox.css" rel="stylesheet">
     <script type="text/javascript" src="ace/ace.js"></script>
-    <script type="text/javascript" src="../core/iioEngine.js"></script>
-    <script type="text/javascript" src="../core/iioParser.js"></script>
+    <script type="text/javascript" src="http://iioengine.com/iioEngine.js"></script>
 </head>
 <body>
     <div id='left'>
@@ -303,7 +302,7 @@ square.click=function(){
    var _run=false;
    iio.addEvent(window,'keydown',function(e){
         _run=false;
-        var k=iio.key.string(e);
+        var k=iio.getKeyString(e);
         for(var i=0;i<iio.apps.length;i++)
             if(iio.apps[i].runScript.onKeyDown)
                 iio.apps[i].runScript.onKeyDown(e,k);
@@ -314,7 +313,7 @@ square.click=function(){
             if(_run) updateApp();
             _run=false;
         },500);
-        var k=iio.key.string(e);
+        var k=iio.getKeyString(e);
         for(var i=0;i<iio.apps.length;i++)
             if(iio.apps[i].runScript.onKeyUp)
                 iio.apps[i].runScript.onKeyUp(e,k);
