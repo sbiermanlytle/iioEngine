@@ -1,0 +1,43 @@
+/*-----------------[RESET]------------------------*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+* { margin:0; padding:0; }
+html, body { width:100%;} 
+/*-----------------[Global]-----------------------*/
+html{
+	font-family: monospace;
+	background: black;
+	color:white;
+	/*word-wrap: break-word;*/
+	font-size: 16px;
+	overflow: hidden;
+	line-height: 1.2;
+}
+#matrix p{white-space: pre;}
+form{position: absolute; display: none;}
+input{float:left; clear:both; background: black; color: white;}
+input[type="submit"]{font-family: monospace; padding: 5px; margin-top: 10px;}
+input{
+    outline:blue;
+    border:1px solid white;
+}
+input[type=text], input[type=password], textarea {
+  -webkit-transition: all 0.30s ease-in-out;
+  -moz-transition: all 0.30s ease-in-out;
+  -ms-transition: all 0.30s ease-in-out;
+  -o-transition: all 0.30s ease-in-out;
+  outline: none;
+  border: 1px solid #DDDDDD;
+  padding-bottom: 2px;
+}
+ 
+input[type=text]:focus,input[type=password]:focus,textarea:focus {
+  box-shadow: 0 0 5px rgba(50, 205, 50, 1);
+  border: 1px solid rgba(50, 205, 50, 1);
+}
