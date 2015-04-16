@@ -1,15 +1,15 @@
 <!--
-	iio Engine v1.3
-	***************
-	Live Demo: iioapps.com/squares
+  iio Engine v1.4
+  ***************
+  Live Demo: iioengine.com/demos/squares
  -->
 <!DOCTYPE html>
 <html>
-<body>
-	<script type="text/javascript" src="../../core/iioEngine.js"></script>
-	<script type="text/javascript" src="Squares.js"></script>
-	<script type="text/javascript">
-		iio.start(Squares)
-	</script>
-</body>
+  <body>
+		<script type="text/javascript" src="../../build/iio.js"></script>
+		<script type="text/javascript" src="Squares.js"></script>
+		<script type="text/javascript">
+			iio.start([Squares, { c:iio.Color.random() }]);
+		</script>
+	</body>
 </html>

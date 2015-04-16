@@ -42,10 +42,10 @@ iio.Rectangle.prototype.real_vertices = function() {
     return v;
   }, this);
 }
-iio.Rectangle.prototype.left = function(){ return this.pos.x - this.width }
-iio.Rectangle.prototype.right = function(){ return this.pos.x + this.width }
-iio.Rectangle.prototype.top = function(){ return this.pos.y - this.height }
-iio.Rectangle.prototype.bottom = function(){ return this.pos.y + this.height }
+iio.Rectangle.prototype.left = function(){ return this.pos.x - this.width/2 }
+iio.Rectangle.prototype.right = function(){ return this.pos.x + this.width/2 }
+iio.Rectangle.prototype.top = function(){ return this.pos.y - this.height/2 }
+iio.Rectangle.prototype.bottom = function(){ return this.pos.y + this.height/2 }
 iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.beginPath();
   ctx.moveTo(this.round[0], 0);
