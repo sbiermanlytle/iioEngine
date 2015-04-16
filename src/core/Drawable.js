@@ -220,11 +220,13 @@ iio.Drawable.prototype.prevFrame = function(o) {
 iio.Drawable.prototype._shrink = function(s, r) {
   this.width *= 1 - s;
   this.height *= 1 - s;
-  if (this.width < .02) {
+  if (this.width < .02 
+    || this.width < this.shrink.lowerBound 
+    || this.width > this.shrink.upperBound) {
     if (r) return r(this);
     else return true;
   }
-},
+}
 iio.Drawable.prototype._fade = function(s, r) {
   this.alpha *= 1 - s;
   if (this.alpha < s || this.alpha > 1-s
