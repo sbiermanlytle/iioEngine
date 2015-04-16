@@ -1,17 +1,15 @@
-<!-- 
-	iio Engine v1.3
-	***************
-	Live Demo: iioapps.com/snow
+<!--
+  iio Engine v1.4
+  ***************
+  Live Demo: iioengine.com/demos/snow
  -->
 <!DOCTYPE html>
 <html>
-	<body>
-		<script type="text/javascript" src="../../core/iioEngine.js"></script>
+  <body>
+		<script type="text/javascript" src="../../build/iio.js"></script>
 		<script type="text/javascript" src="Snow.js"></script>
 		<script type="text/javascript">
-
-			iio.start([Snow,{color:'white'}]);
-
+			iio.start([Snow, { w:20, c:iio.Color.random() }]);
 		</script>
 	</body>
 </html>

@@ -1,38 +1,36 @@
 function Snow(app,s){
 
-	app.set('black');
+	app.set({ color:'black' });
 
 	var num = 400
 	if(s&&s.preview) num = 50;
 
 	for(var i=0; i<num; i++)
-		app.add({
+		app.add(new iio.Circle({
 			pos:{
-				x:iio.random.num(0,app.width),
-				y:iio.random.num(-app.height,0)
+				x:iio.random(0,app.width),
+				y:iio.random(-app.height,0)
 			},
-			width:iio.random.num(30,140),
-			type:iio.CIRC,
-			simple:true,
-			color:(s.color||'white'),
-			vel:{
-				x:iio.random.num(-.1,.1),
-				y:iio.random.num(.3,1)
+			radius:iio.random(15,70),
+			color:'white',
+			vel: [ iio.random(-.1,.1), iio.random(.1,.5) ],
+			fade: {
+				speed: iio.random(.0001,.001),
+				onFinish: function(o){
+					return false;
+				}
 			},
-			fade:[iio.random.num(.0001,.001),function(o){
-				return false;
-			}],
-			update:function(){
-				this.vel.x+=iio.random.num(-.01,.01);
+			onUpdate:function(){
+				this.vel.x += iio.random(-.01,.01);
 			}
-		});
+		}), true);
 
 	this.resize=function(){
 		for(var i=0; i<app.objs.length; i++)
 			app.objs[i].bounds={
 				bottom:[app.height+140,function(o){
-					o.pos.x=iio.random.num(0,app.width);
-					o.pos.y=iio.random.num(-app.height,-100);
+					o.pos.x=iio.random(0,app.width);
+					o.pos.y=iio.random(-app.height,-100);
 				}],
 				left:[0,function(o){o.vel.x*=-1}],
 				right:[app.width,function(o){o.vel.x*=-1}]
