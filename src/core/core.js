@@ -4,7 +4,21 @@ iio.scripts = iio.scripts || {};
 
 //INITIALIZATION
 iio.start = function(app, id, d) {
-  preppedApp = function() {
+  
+  var c = iio.canvas.prep(id, d);
+
+  //initialize application with settings
+  if (app instanceof Array)
+    return new iio.App(c, app[0], app[1]);
+
+  //run iio file
+  /*else if (iio.is.string(app) && app.substring(app.length - 4) == '.iio')
+    return iio.read(app, iio.start);*/
+
+  //initialize application without settings
+  return new iio.App(c, app);
+
+  /*preppedApp = function() {
     var c = iio.canvas.prep(id, d);
 
     //initialize application with settings
@@ -27,7 +41,7 @@ iio.start = function(app, id, d) {
   } else {
     event = event || 'onload';
     window.attachEvent(event, preppedApp);
-  }
+  }*/
 }
 
 iio.runScripts = function() {
