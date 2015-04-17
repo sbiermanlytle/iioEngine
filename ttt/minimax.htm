@@ -1,0 +1,270 @@
+<!doctype html>
+  <html>
+    <head>
+      <style>
+        html{background-color:black}
+      </style>
+   	</head>
+    <body>
+      <script type="text/javascript" src="../js/iioEngine+.js"></script>
+      <script type="text/javascript">
+        TicTacToe = function(io){
+
+        var COMPUTER_PLAYING=true;
+        var WIN_SCORE=1000000;
+
+        var cellSize=0;
+        var grid = io.addObj(new iio.Grid(0,0,3,3));
+        grid.setStrokeStyle('white');
+
+        this.onResize=function(){
+          var w = io.canvas.width/3;
+          var h = io.canvas.height/3;
+          var pos=new iio.Vec();
+          if (w>h) {
+            cellSize=h;
+            pos.x=io.canvas.center.x-cellSize*1.5;
+          } else {
+            cellSize=w;
+            pos.y=io.canvas.center.y-cellSize*1.5;
+          } grid.set(pos.x,pos.y,3,3,cellSize);
+          grid.forEachCell(function(cell,c,r){
+            if (typeof cell.obj != 'undefined'){
+              cell.obj.setPos(grid.getCellCenter(c,r));
+              if (typeof cell.obj.radius != 'undefined')
+                cell.obj.radius=cellSize/2.4;
+              else cell.obj.setSize(cellSize/1.2,cellSize/1.2);
+            }
+            if (typeof cell.eval != 'undefined'){
+              cell.eval.setPos(grid.getCellCenter(c,r));
+            }
+          });
+          io.draw();
+        }; this.onResize();
+
+        var xTurn=true;
+        io.canvas.addEventListener('mousedown', function(event){
+          var c = grid.getCellAt(io.getEventPosition(event),true);
+          if (typeof grid.cells[c.x][c.y].obj == 'undefined'){
+            if (!makeMove(c.x,c.y,iio.XShape)){
+              if(COMPUTER_PLAYING)
+                //iio.delayCall(600,randomComputerMove,iio.Circle);
+                //randomComputerMove(iio.Circle);
+                smartComputerMove(iio.Circle);
+              //printBestMoveEvaluations(iio.XShape)
+            } else alert('X Wins!');
+          }
+        });
+
+        function printBestMoveEvaluations(type){
+          grid.forEachCell(function(cell,c,r){
+            if (typeof cell.eval!='undefined')
+              io.rmv(cell.eval);
+            if (typeof cell.obj=='undefined')
+              cell.eval = io.addObj(
+                new iio.Text(evalMove([c,r],compressCurrentBoard(),4,iio.maxInt,-iio.maxInt,false), grid.getCellCenter(c,r))
+                        .setFont('30px Consolas')
+                        .setTextAlign('center')
+                        .setFillStyle('white')
+                        .translate(-2,8));
+          });
+          io.draw();
+        }
+
+        var ratio,color,_type;
+        function makeMove(c,r,type){
+          if (type==iio.XShape){
+            ratio=1.2;
+            color='red';
+            _type="X";
+          } else {
+            ratio=2.4;
+            color='#00baff';
+            _type="O"
+          }
+          grid.cells[c][r].obj = io.addObj(
+                new type(grid.getCellCenter(c,r),cellSize/ratio)
+                                .setStrokeStyle(color,2));
+          return checkForWinner(_type);
+        }
+
+        function evaluateRow(board,cIs,type){
+          var emptys=0;
+          var types=0;
+          var nonTypes=0;
+          for (j=0;j<cIs.length;j+=2)
+            if (typeof board[cIs[j]][cIs[j+1]]=='_')
+              emptys++;
+            else if (board[cIs[j]][cIs[j+1]]==type)
+              types++;
+            else nonTypes++;
+          if (types>0&&nonTypes>0||emptys==3)
+            return 0;
+          if (types==3)
+            return WIN_SCORE;
+          if (types==2&&emptys==1)
+            return 10;
+          if (types==1&&emptys==2)
+            return 1;
+          if (nonTypes==3)
+            return -WIN_SCORE;
+          if (nonTypes==2&&emptys==1)
+            return -10;
+          if (nonTypes==1&&emptys==2)
+            return -1;
+        }
+        function printBestMoveEvaluations(type){
+          grid.forEachCell(function(cell,c,r){
+            if (typeof cell.eval!='undefined')
+              io.rmv(cell.eval);
+            if (typeof cell.obj=='undefined')
+              cell.eval = io.addObj(
+                new iio.Text(evalMove([c,r],compressCurrentBoard(),4,iio.maxInt,-iio.maxInt,false), grid.getCellCenter(c,r))
+                        .setFont('30px Consolas')
+                        .setTextAlign('center')
+                        .setFillStyle('white')
+                        .translate(-2,8));
+          });
+          io.draw();
+        }
+
+        function Move(pos,score) {
+            this.score = score;
+            this.pos = pos;
+        }
+
+        function getTypeChar(x){
+          if (x) return 'X';
+          return 'O';
+        }
+        function bestMove(board,depth,low,high,opponent){
+          var best=new Move(null,-iio.maxInt);
+          var p;
+          for (var c=0;c<grid.C;c++)
+            for(var r=0;r<grid.R;r++){
+              if (board[c][r]=='_'){
+                var nuBoard=board.clone();
+                nuBoard[c][r]=getTypeChar(opponent);
+                if(checkWin(nuBoard,getTypeChar(opponent)))
+                  p=new Move([c,r],-evaluateBoard(board,getTypeChar(opponent))*10000);
+                else if (checkScratch(nuBoard))
+                  p=new Move([c,r],0);
+                else if (depth==0)
+                  p=new Move([c,r],-evaluateBoard(board,getTypeChar(opponent)));
+                else {
+                  p=bestMove(nuBoard,depth-1,-high,-low,!opponent);
+                }
+                if (p.score>best.score){
+                  best=p;
+                  if (best.score > low)
+                    low=best.score;
+                  if (best.score >= high) return best;
+                }
+              }
+            }
+          return best;
+        }
+        function evalMove(move,board,depth,low,high,opponent){
+          var best=new Move(null,-iio.maxInt);
+          var p;
+          var nuBoard=board.clone();
+          nuBoard[move[0]][move[1]]=getTypeChar(opponent);
+          if(checkWin(nuBoard,getTypeChar(opponent)))
+            p=new Move([move[0]][move[1]],-evaluateBoard(board,getTypeChar(opponent))*10000);
+          else if (checkScratch(nuBoard))
+            p=new Move([move[0]][move[1]],0);
+          else if (depth==0)
+            p=new Move([move[0]][move[1]],-evaluateBoard(board,getTypeChar(opponent)));
+          else {
+            p=bestMove(nuBoard,depth-1,-high,-low,opponent);
+          }
+          if (p.score>best.score){
+            best=p;
+            if (best.score > low)
+              low=best.score;
+            if (best.score >= high) return best.score;
+          }
+          return best.score;
+        }
+        function evaluateBoard(board,type){
+          var moveTotal=0;
+          for (var i=0;i<3;i++){
+            moveTotal+=evaluateRow(board,[i,0,i,1,i,2],type);
+            moveTotal+=evaluateRow(board,[0,i,1,i,2,i],type);
+          }
+          moveTotal+=evaluateRow(board,[0,0,1,1,2,2],type);
+          moveTotal+=evaluateRow(board,[2,0,1,1,0,2],type);
+          return moveTotal;
+        }
+
+        function compressCurrentBoard(){
+          var board=new Array();
+          board[0]=[0,0,0];
+          board[1]=[0,0,0];
+          board[2]=[0,0,0];
+          grid.forEachCell(function(cell,c,r){
+            if(typeof cell.obj=='undefined')
+              board[c][r]='_';
+            else if(cell.obj instanceof iio.XShape)
+              board[c][r]='X';
+            else board[c][r]='O';
+          });
+          return board;
+        }
+
+        function smartComputerMove(type){
+          var b=bestMove(compressCurrentBoard(),2,-iio.maxInt,iio.maxInt,false);
+          if (makeMove(b.pos[0],b.pos[1],type))
+            alert('Computer Wins!')
+        }
+
+        function randomComputerMove(type){
+          var rC=rR=count=0;
+          while (typeof grid.cells[rC][rR].obj != 'undefined'){
+            rC = iio.getRandomInt(0,3);
+            rR = iio.getRandomInt(0,3);
+            count++;
+            if(count>2)
+              grid.forEachCell(function(cell,c,r){
+                if (typeof cell.obj=='undefined'){
+                  rC=c; rR=r;
+                  return false; 
+                }
+              });
+          }
+          makeMove(rC,rR,type);
+        }
+
+        function checkForWinner(type){
+          var b = compressCurrentBoard();
+          for (var i=0;i<3;i++)
+            if (evaluateRow(b,[i,0,i,1,i,2],type) >= WIN_SCORE
+              ||evaluateRow(b,[0,i,1,i,2,i],type) >= WIN_SCORE)
+              return true;
+          if(evaluateRow(b,[0,0,1,1,2,2],type) >= WIN_SCORE
+           ||evaluateRow(b,[2,0,1,1,0,2],type) >= WIN_SCORE)
+            return true;
+          return false;
+        }
+
+        function checkScratch(board){
+          for (var r=0;r<3;r++)
+            for (var c=0;c<3;c++)
+              if (board[r][c]=="_")
+                return false;
+          return true;
+        }
+        function checkWin(board,type){
+          for (var i=0;i<3;i++)
+            if (evaluateRow(board,[i,0,i,1,i,2],type) >= WIN_SCORE
+              ||evaluateRow(board,[0,i,1,i,2,i],type) >= WIN_SCORE)
+              return true;
+          if(evaluateRow(board,[0,0,1,1,2,2],type) >= WIN_SCORE
+           ||evaluateRow(board,[2,0,1,1,0,2],type) >= WIN_SCORE)
+            return true;
+          return false;
+        }
+      };iio.start(TicTacToe);
+      </script>
+    </body>
+</html>

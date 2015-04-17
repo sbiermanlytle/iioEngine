@@ -1,0 +1,53 @@
+<!-- 
+	iio Engine v1.3.2 preview
+	*************************
+	the source code for 1.3.2 is not yet available for download
+	this document previews the new syntax and tests object attachment
+	
+	Live Demo: http://iioengine.com/1.3/demos/test_obj_add.htm
+ -->
+<!DOCTYPE html>
+<html>
+	<body style='background-color:black'>
+		<script type="text/javascript" src="../../core/iioEngine.js"></script>
+		<script type="text/javascript">
+
+			OBJADDTEST=function(app){
+
+				addObjs=function(o){
+					o.add('30: red');
+					o.add([60,0],'40: outline #00baff 1');
+					o.add([-60,0],'20: o outline #00baff 1');
+					o.add([0,60],'20: o outline red 1');
+					o.add([0,-60],'40: x red 1');
+					o.add([-60,-60],'40: x red 1 outline #00baff');
+					o.add([60,60],'20: outline red 1');
+				}
+
+				var grid = app.add([200,200],'180: 2 grid 3 white vel ::.02');
+				addObjs(grid);
+
+				var grid2 = app.add([500,200],'180: 2 grid 3 white vel ::.02');
+				grid2.foreachCell(function(c){
+					c.add('40: outline red');
+				});
+
+				var rect = app.add([200,500],'180: outline 2 white vel ::-.02');
+				addObjs(rect)
+
+				var circ = app.add([500,500],'120: o outline 2 white vel ::.02');
+				addObjs(circ);
+
+				app.onmousedown=function(event,pos){
+					//alert(pos.x+' '+pos.y)
+				}
+
+				this.onresize=function(){
+					iio.set([grid,grid2,rect,circ],'vel .5:1:.1');
+				}
+
+			}; iio.start(OBJADDTEST);
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,190 @@
+@font-face {
+  font-family: Agency;
+  src: url('fonts/AgencyFB.woff');
+}
+/* RESET */
+html,body,ul,li,ol,header,div,p,a,h1,h2,h3,h4,h5,h6,footer,img,canvas{
+	margin:0;
+	padding:0;
+}
+/* Global */
+html{
+	background-image: url('img/bg.jpg');
+	background-repeat: repeat;
+	color:white;
+	font-family:'Century Gothic',verdana,arial,helvetica,sans-serif;
+}
+a{
+	text-decoration:none;
+}
+h2{
+	border-bottom: 2px solid white;
+	text-align: center;
+	padding:10px;
+	font-size: 30px;
+}
+/* TRANSITIONS */
+a{
+	-webkit-transition: 0.5s ease;
+	   -moz-transition: 0.5s ease;
+	    -ms-transition: 0.5s ease;
+	     -o-transition: 0.5s ease;
+	        transition: 0.5s ease;
+}
+/* HEADER */
+header{
+	background: white;
+	width:100%;
+	height:50px;
+	-webkit-box-shadow: 0 2px 10px rgba(0,0,0,.25);
+	-moz-box-shadow: 0 2px 10px rgba(0,0,0,.25);
+	box-shadow: 0 2px 10px rgba(0,0,0,.25);
+	font-size: 40px;
+	position: fixed;
+	top:0;
+	color:black;
+	font-family: 'Agency';
+}
+header ul{
+	list-style: none;
+	height:50px;
+}
+header li{
+	float:left;
+	padding-left: 20px;
+}
+#home{
+	padding-left: 0px;
+}
+#home a{
+	font-size: 47px;
+	font-weight: normal;
+	text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+	background-color: #00baff;
+	color: white;
+	line-height: .6;
+	padding: 0 25px;
+}
+#home a:hover,header li a:hover{
+	background-color: black;
+	color:#00baff;
+}
+/* PRIMARY */
+#main, header ul{
+	width:1080px;
+	margin:0 auto;
+}
+#main{
+	margin-top: 70px;
+}
+
+/* DEMOS */
+.demos{
+	width: 948px;
+	margin: 0 auto;
+}
+.demos canvas{
+	border: 1px solid white;
+	margin:5px;
+}
+.demos canvas:hover{
+	border:3px solid #00baff;
+	margin-left: 1px;
+	margin-top: 1px;
+}
+.note{
+	text-align: center;
+	font-size: 16px;
+	padding:5px;
+	margin-bottom: 10px;
+}
+
+/* PRETTIFY */
+pre .str, code .str { color: #65B042; } /* string  - green */
+pre .kwd, code .kwd { color: #65B042; } /* keyword - dark pink */
+pre .com, code .com { color: #AEAEAE; font-style: italic; } /* comment - gray */
+pre .typ, code .typ { color: #F00000; font-weight: bold; } /* type - light blue */
+pre .lit, code .lit { color: #00baff; } /* literal - blue */
+pre .pun, code .pun { color: #E8E8E8; } /* punctuation - white */
+pre .pln, code .pln { color: #E8E8E8; } /* plaintext - white */
+pre .tag, code .tag { color: #89bdff; } /* html/xml tag    - light blue */
+pre .atn, code .atn { color: #e0c589; } /* html/xml attribute name  - khaki */
+pre .atv, code .atv { color: #65B042; } /* html/xml attribute value - green */
+pre .dec, code .dec { color: #89bdff; } /* decimal - blue */
+pre.prettyprint, code.prettyprint {
+      background-color: transparent;
+}
+pre.prettyprint {
+  width: 95%;
+  margin: 1em auto;
+  padding: 1em;
+  border:none;
+  overflow: auto;
+}
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums { margin-top: 0; margin-bottom: 0; color: #AEAEAE; } /* IE indents via margin-left */
+li.L0,li.L1,li.L2,li.L3,li.L4,li.L5,li.L6,li.L7,li.L8,li.L9 { list-style-type: inherit; background-color: black;}
+/* Alternate shading for lines */
+li.L1,li.L3,li.L5,li.L7,li.L9 { }
+@media print {
+  pre .str, code .str { color: #060; }
+  pre .kwd, code .kwd { color: #006; font-weight: bold; }
+  pre .com, code .com { color: #600; font-style: italic; }
+  pre .typ, code .typ { color: #404; font-weight: bold; }
+  pre .lit, code .lit { color: #044; }
+  pre .pun, code .pun { color: #440; }
+  pre .pln, code .pln { color: #000; }
+  pre .tag, code .tag { color: #006; font-weight: bold; }
+  pre .atn, code .atn { color: #404; }
+  pre .atv, code .atv { color: #060; }
+}
+.prettyprint ol.linenums li {
+  padding-left: 10px;
+  border-left: 3px #00baff solid;
+  background:transparent;
+}
+pre{
+  background-color: black;
+  font-family: Consolas,'Bitstream Vera Sans Mono','Courier New',Courier,monospace;
+  font-size: 14px;
+}
+.prettyprint ol.linenums {
+  list-style: decimal outside;
+  margin-left: -6px;
+}
+
+/* Code Viewer */
+.code_opts{
+	list-style: none;
+	margin-top:8px;
+}
+.code_opts li{
+	float:left;
+	padding:5px;
+	border:2px solid white;
+	margin:5px;
+	cursor: pointer;
+}
+.code_opts li:hover{
+	background:#00baff;
+}
+#opt_iio{
+	background:#00baff;
+	cursor: default;
+}
+
+@media (max-width: 1079px) {
+	#main,header ul{
+		width:100%;
+	}
+}
+@media (max-width: 950px) {
+	.demos,header ul{
+		width:632px;
+	}
+}
+@media (max-width: 650px) {
+	.demos,header ul{
+		width:306px;
+	}
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<script type="text/javascript" src="js/iioEngine.min.js"></script>
+	<script type="text/javascript">
+		
+		rainbow = function(app){
+
+			/*var skyBlue = '#87CEEB';
+		 	var lightSkyBlue = '#87CEFA';
+		  	var deepSkyBlue = '#00BFFF';
+
+			 var grad = app.cnvs[0].ctx.createLinearGradient(0,0,1,app.height);
+			 grad.addColorStop(0, deepSkyBlue);
+			 grad.addColorStop(.33, skyBlue);
+			 grad.addColorStop(.66, lightSkyBlue);
+			 grad.addColorStop(1, 'white');*/
+
+			app.color('#00baff')
+
+			r = app.width/2-40
+			h = app.width*.1
+			app.add([app.center.x,app.height],[r,
+				 	,'gradient:0,0,'+r+',0,0,'+(r-100)
+				 	+':0,00baff'
+				 	+':.1,red'
+				 	+':.22,orange'
+				 	+':.33,yellow'
+				 	+':.5,green'
+				 	+':.66,aqua'
+				 	+':.83,blue'
+				 	+':.9,purple'
+				 	+':1,00baff']);
+
+			/*n = 40
+			x = app.center.x
+			y = app.height
+			r = app.center.x-n/2
+			h = app.height-app.width*.61
+
+			app.add([n,app.height-10,app.width-n,app.height-10],[{
+				  		bezier:[n/2,h,app.width-n/2,h],
+				 	},'gradient:'+x+','+y+','+r+','+x+','+y+','+(r-n)
+				 	+':0,red'
+				 	+':.16,orange'
+				 	+':.33,yellow'
+				 	+':.5,green'
+				 	+':.66,aqua'
+				 	+':.83,blue'
+				 	+':1,purple '+n]);*/
+
+
+			app.draw();
+		}
+
+		iio.start(rainbow)
+	</script>
+</body>
+</html>

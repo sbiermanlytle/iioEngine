@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<script type="text/javascript" src="../../core/iioEngine.js"></script>
+		<script type="text/javascript" src="../../extensions/iioDebugger-1.3.3.js"></script>
+		<script type="text/javascript">
+
+			function TEST(app){
+				app.set('black').debug();
+				var text = app.add(app.center,"'HELLO IIO' red font Consolas 50 center");
+
+				var cI=text.text.length;
+				var tX=text.getX(cI);
+				var cursor = text.add([tX,10,tX,-40],'red 2');
+				
+				var shift=false;
+				this.onKeyDown=function(e,k){
+					if (k=='shift'){
+				      shift=true; return;
+				    }
+					cI = text.keyboardEdit(k,cI,shift);
+				    tX=text.getX(cI)+2;
+				    cursor.pos.x=cursor.endPos.x=tX;
+				    cursor.hidden=false;
+				    app.draw();
+				}
+				this.onKeyUp=function(e,k){
+					if (k=='shift'){
+				      shift=false; return;
+				    }
+				}
+
+				app.loop(2,function(){
+					cursor.hidden=!cursor.hidden;
+				})
+
+
+			}; iio.start(TEST);
+		</script>
+	</body>
+</html>

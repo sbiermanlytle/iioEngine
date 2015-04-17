@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<script type="text/javascript" src="../../core/iioEngine.js"></script>
+		<script type="text/javascript" src="../../extensions/iioDebugger-1.3.3.js"></script>
+		<script type="text/javascript">
+
+			function TEST(app){
+				app.set('black');
+
+				var size = Math.floor(app.height/1.5);
+
+				var main = app.add(app.center, size+' z 10 outline 5 red x vel ::.005 '
+					+'add center o 100 outline 5 red x #00baff z 30 vel ::.01');
+
+				var secondary = main.add((size-200)+' black z 20');
+				secondary.add((size-200)+' outline #00baff 5 grid 3 #00baff z 30')
+
+				reverseX=function(o){ o.vel.x*=-1 }
+				var bndsX = {
+					left:[-size/2+3,reverseX],
+					right:[size/2-3,reverseX]
+				}
+				main.add({x:100,y:size/2-50}, 'red 50 x black 5 vel 4 z -10', {bounds:bndsX});
+				main.add({x:-100,y:size/2-50}, '#00baff 50 x black 5 vel -4 z -10', {bounds:bndsX});
+				main.add({x:100,y:-size/2+50}, '#00baff 50 x black 5 vel 4 z -10', {bounds:bndsX});
+				main.add({x:-100,y:-size/2+50}, 'red 50 x black 5 vel -4 z -10', {bounds:bndsX});
+
+				reverseY=function(o){ o.vel.y*=-1 }
+				var bndsY = {
+					top:[-size/2+3,reverseY],
+					bottom:[size/2-3,reverseY]
+				}
+				main.add({x:size/2-50,y:100}, 'red 50 x black 5 vel :4', {bounds:bndsY});
+				main.add({x:size/2-50,y:-100}, '#00baff 50 x black 5 vel :-4', {bounds:bndsY});
+				main.add({x:-size/2+50,y:100}, '#00baff 50 x black 5 vel :4', {bounds:bndsY});
+				main.add({x:-size/2+50,y:-100}, 'red 50 x black 5 vel :-4', {bounds:bndsY});
+
+			}; iio.start(TEST);
+		</script>
+	</body>
+</html>

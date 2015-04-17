@@ -1,0 +1,56 @@
+<!-- 
+	iio Engine v1.3.2 preview
+	*************************
+	the source code for 1.3.2 is not yet available for download
+	this document previews the new syntax and gives examples of different
+		ways to use iio
+
+	Live Demo: http://iioengine.com/1.3/demos/hello_iio.htm
+ -->
+<!DOCTYPE html>
+<html>
+<script type="text/javascript" src="../js/iioEngine.min.pre1.3.2.js"></script>
+<body>  
+	<script type="text/javascript">
+
+	var size=100;
+	var width=10;
+
+	redraw=function(){
+
+		//add two vertical lines to the center of the app
+		iio.start('black add width/2-'+(size/2+width)+':height/2-'+(size/2)
+			        +' width/2-'+(size/2+width)+':height/2+'+(size/2)
+			    	+' #00baff '+width
+			  +' | add width/2-'+(width/2.1)+':height/2-'+(size/2)
+			  		+' width/2-'+(width/2.1)+':height/2+'+(size/2)
+			  		+' #00baff '+width);
+
+		//add another canvas element in the shape of a circle
+		var c=document.createElement('canvas');
+		c.width=size-width; c.height=size-width;
+		c.style.position='absolute';
+		c.style.top=window.innerHeight/2-size/2-(width-1)/2+'px';
+		c.style.left=window.innerWidth/2+size/2-(width-1)/2+'px';
+		document.body.appendChild(c);
+		iio.start('outline '+(width-1)+' #00baff round 50%',c);
+
+	}; redraw();
+
+	window.onresize=redraw;
+
+	var grow=true;
+	iio.loop(this,function(){
+		var b = document.body;
+		while (b.firstChild)
+		    b.removeChild(b.firstChild);
+		if(grow) width++;
+		else width--;
+		if(width>80) grow=false;
+		else if(width<6)grow=true;
+		redraw();
+	});
+
+	</script>
+</body>
+</html>

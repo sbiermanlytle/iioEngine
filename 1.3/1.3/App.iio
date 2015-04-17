@@ -1,0 +1,1 @@
+add width/2:height/2-100 width/2:height/2+100 60 #00baff loop 1 !hidden if hidden app randomColor else app black then app draw

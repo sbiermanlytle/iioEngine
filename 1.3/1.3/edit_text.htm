@@ -1,0 +1,34 @@
+<!-- 
+	iio Engine v1.3 preview
+	*************************
+	the source code for 1.3 is not yet available for download
+	this document previews the new syntax 
+	
+	Live Demo: http://iioengine.com/1.3/demos/edit_text.htm
+ -->
+<!DOCTYPE html>
+<html>
+<body>
+<script type="text/javascript" src="iioEngine-1.3.js"></script>
+<script type="text/javascript">
+
+function EditTextDemo(app){
+
+	app.set('black');
+
+	var text = app.add(app.center,
+		"'hello iio engine' #00baff font Consolas 60 center cursor");
+	
+	this.onKeyDown=function(e,k){
+		text.keyDown(k);
+	}
+
+	this.onKeyUp=function(e,k){
+		text.keyUp(k);
+	}
+
+}; iio.start(EditTextDemo);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!doctype html>
+  <html>
+    <head>
+      <style>
+        html{background-color:black}
+      </style>
+   	</head>
+    <body>
+      <script type="text/javascript" src="../js/iioEngine+.js"></script>
+      <script type="text/javascript">
+        TicTacToe = function(io){
+          var COMPUTER_PLAYING=true;
+          var WIN_SCORE=1000000;
+
+          var cellSize=0;
+          var grid = io.addObj(new iio.Grid(0,0,3,3));
+          grid.setStrokeStyle('white');
+
+          this.onResize=function(){
+            var w = io.canvas.width/3;
+            var h = io.canvas.height/3;
+            var pos=new iio.Vec();
+            if (w>h) {
+              cellSize=h;
+              pos.x=io.canvas.center.x-cellSize*1.5;
+            } else {
+              cellSize=w;
+              pos.y=io.canvas.center.y-cellSize*1.5;
+            } grid.set(pos.x,pos.y,3,3,cellSize);
+            grid.forEachCell(function(cell,c,r){
+              if (typeof cell.obj != 'undefined'){
+                cell.obj.setPos(grid.getCellCenter(c,r));
+                if (typeof cell.obj.radius != 'undefined')
+                  cell.obj.radius=cellSize/2.4;
+                else cell.obj.setSize(cellSize/1.2,cellSize/1.2);
+              }
+              if (typeof cell.eval != 'undefined'){
+                cell.eval.setPos(grid.getCellCenter(c,r));
+              }
+            });
+            io.draw();
+          }; this.onResize();
+
+          var xTurn=true;
+          io.canvas.addEventListener('mousedown', function(event){
+            var c = grid.getCellAt(io.getEventPosition(event),true);
+            if (typeof grid.cells[c.x][c.y].obj == 'undefined'){
+              B.move(c.x+c.y*3,B.X)
+              if(COMPUTER_PLAYING)
+                  //iio.delayCall(600,randomComputerMove,iio.Circle);
+                  //randomComputerMove(iio.Circle);
+                  smartComputerMove(iio.Circle);
+                //printMoveEvaluations(iio.XShape)
+              printBoard();
+            }
+          });
+
+          var ratio,color;
+          function makeMove(c,r,type){
+            if (type==iio.XShape){
+              ratio=1.2;
+              color='red';
+            } else {
+              ratio=2.4;
+              color='#00baff';
+            }
+            grid.cells[c][r].obj = io.addObj(
+                  new type(grid.getCellCenter(c,r),cellSize/ratio)
+                                  .setStrokeStyle(color,2));
+            //return checkForWinner(type);
+            return false;
+          }
+
+          function evaluateRow(board,cIs,type){
+            var emptys=0;
+            var types=0;
+            var nonTypes=0;
+            for (j=0;j<cIs.length;j+=2)
+              if (typeof board[cIs[j]][cIs[j+1]]=='_')
+                emptys++;
+              else if (board[cIs[j]][cIs[j+1]]==type)
+                types++;
+              else nonTypes++;
+            if (types>0&&nonTypes>0||emptys==3)
+              return 0;
+            if (types==3)
+              return WIN_SCORE;
+            if (types==2&&emptys==1)
+              return 10;
+            if (types==1&&emptys==2)
+              return 1;
+            if (nonTypes==3)
+              return -WIN_SCORE;
+            if (nonTypes==2&&emptys==1)
+              return -10;
+            if (nonTypes==1&&emptys==2)
+              return -1;
+          }
+
+          function printBestMoveEvaluations(type){
+            grid.forEachCell(function(cell,c,r){
+              if (typeof cell.eval!='undefined')
+                io.rmv(cell.eval);
+              if (typeof cell.obj=='undefined')
+                cell.eval = io.addObj(
+                  new iio.Text(evalMove([c,r],compressCurrentBoard(),4,iio.maxInt,-iio.maxInt,false), grid.getCellCenter(c,r))
+                          .setFont('30px Consolas')
+                          .setTextAlign('center')
+                          .setFillStyle('white')
+                          .translate(-2,8));
+            });
+            io.draw();
+          }
+
+          var Negamax = function(maxDepth) {
+            this.INFINITY = 999,
+            this.maxDepth = maxDepth,
+            this.bestmove = -1;
+          }
+          Negamax.prototype = {
+
+            _solve: function(board, player, depth) {
+
+              if (depth > this.maxDepth) {
+                return 0;
+              }
+            
+              var opponent = (player == board.X) ?  board.O : board.X,
+                winner = board.getWinner();
+
+              if (winner === player) {
+                return this.INFINITY;
+              }
+              else if (winner === opponent)
+                return -1 * this.INFINITY;
+
+              else if (board.isFull()) {
+                return 0;
+              }
+                     
+                var moves = board.getPossibleMoves(),
+                alpha = -1 * this.INFINITY, 
+
+                bestmoves = [];
+                
+              for (var i = 0, len = moves.length; i < len; i++) {
+                newboard = board.copy();
+                newboard.move(moves[i], player);
+
+                var subalpha = -1 * this._solve(newboard, opponent, depth + 1);
+                if (alpha < subalpha) {
+                  alpha = subalpha;
+                }
+              
+                if (depth === 0) {
+                  bestmoves.push(subalpha);
+                }
+              }
+
+              if (depth === 0) {
+                var candidates = [];
+                for (var i = 0, len = bestmoves.length; i < len; i++) {
+                  if (bestmoves[i] === alpha) {
+                    candidates.push(moves[i]);
+                  }
+                }
+
+                var randIndex = iio.getRandomInt(0,candidates.length);
+                this.bestmove = candidates[randIndex];
+              }
+           
+              return alpha;
+            },
+
+            solve: function(board, player) {
+              this.bestmove = -1;
+              var alpha = this._solve(board, player, 0);
+              return this.bestmove;
+            }
+          }
+          var Board = function() {
+
+            this.board = [0,0,0,0,0,0,0,0,0];
+          
+
+            this.wins = [
+              [0,1,2],[3,4,5],[6,7,8],
+              [0,3,6],[1,4,7],[2,5,8],
+              [0,4,8],[2,4,6]];
+                    
+
+            this.EMPTY = 0;
+            this.X = 1;
+            this.O = 2;
+
+            if (arguments.length > 0) {
+              for (var i = 0; i < 9; i++) {
+                this.board[i] = arguments[0][i];
+              }   
+            }
+          }
+          Board.prototype = {
+
+            getPossibleMoves: function() {
+              var moves = [];
+              for (var i = 0; i < 9; i++) {
+                if (this.board[i] === this.EMPTY) {
+                  moves.push(i);
+                }
+              }
+              return moves;
+            },
+            
+
+            isFull: function() {
+              for(var i = 0; i < 9; i++) {
+                if (this.board[i] === this.EMPTY) {
+                  return false;
+                }
+              }
+              return true;
+            },
+
+            getSquare: function(index) {
+              return this.board[index];
+            },
+
+            move: function(index, player) {
+              if (index < 0 || index > 8)
+                throw ("opps index is not valid: " +  index);
+              this.board[index] = player;
+            },
+
+            copy: function() {
+              return new Board(this.board);
+            },
+
+            getWinner: function() {
+              this.w = this.wins;
+              this.s = this.getSquare;
+              for (var i = 0; i < 8; i++) {
+                if (this.s(this.w[i][0]) === this.s(this.w[i][1]) 
+                  && this.s(this.w[i][0]) === this.s(this.w[i][2]) 
+                  && this.s(this.w[i][0]) != this.EMPTY) {
+                  return this.s(this.w[i][0]);
+                }
+              }
+              return -1;
+            }
+          }
+
+          var solver=new Negamax(4);
+          var B=new Board();
+          players = [B.X, B.O];
+
+          function printBoard(){
+            for (var z=0;z<B.board.length;z++){
+              var c=returnCoordinates(z);
+              if(B.board[z]==B.X)
+                io.addObj(
+                  new iio.XShape(grid.getCellCenter(c[0],c[1]),cellSize/1.2)
+                                  .setStrokeStyle('red',2));
+              else if (B.board[z]==B.O)
+                io.addObj(
+                  new iio.Circle(grid.getCellCenter(c[0],c[1]),cellSize/2.4)
+                                  .setStrokeStyle('#00baff',2));
+            }
+          }
+
+          function evaluateBoard(board,type){
+            var moveTotal=0;
+            for (var i=0;i<3;i++){
+              moveTotal+=evaluateRow(board,[i,0,i,1,i,2],type);
+              moveTotal+=evaluateRow(board,[0,i,1,i,2,i],type);
+            }
+            moveTotal+=evaluateRow(board,[0,0,1,1,2,2],type);
+            moveTotal+=evaluateRow(board,[2,0,1,1,0,2],type);
+            return moveTotal;
+          }
+
+          function returnCoordinates(i){
+            switch(i){
+              case 0:return [0,0];
+              case 1:return [1,0];
+              case 2:return [2,0];
+              case 3:return [0,1];
+              case 4:return [1,1];
+              case 5:return [2,1];
+              case 6:return [0,2];
+              case 7:return [1,2];
+              case 8:return [2,2];
+            }
+          }
+
+          function smartComputerMove(type){
+            var m=solver.solve(B.clone(),B.O);
+            B.move(m,B.O);
+          }
+        };iio.start(TicTacToe);
+      </script>
+    </body>
+</html>

@@ -1,0 +1,92 @@
+Graphics
+	prepStyledContext
+	applyContextStyles
+	prepTransformContext
+	transformContext
+
+Canvas
+	attributes
+	pos
+	center
+	objs
+	 group
+	 obj
+	
+	 -styles
+	border
+	-clone
+	-setBackground
+	-set
+	 	-background
+	 	-attributes
+	 	-definition object
+	Framerate
+	Kinematics
+	Draw
+
+V
+	x
+	y
+	z
+	set
+
+O
+	pos
+	vertices
+	center
+	tag
+	objs
+	 group
+	grid
+	set
+	get
+	add
+	rmv
+	contains
+	colliding
+	left
+	right
+	top
+	bottom
+	Framerate
+	Kinematics
+	Draw
+	Image
+
+	styles
+	applyStyles
+	transformCtx
+
+T
+	text styles
+	text
+
+Graphics
+	-always redraw canvas to clear objects (!NO SELF CLEAR!!)
+	-draw objects and self with zIndex algorithm
+
+
+	-save
+	-move to obj.pos
+	-rotate obj.rotation
+	-move to obj.origin
+	-flip ctx
+	-apply styles
+	for all obj.objs and Obj
+	{
+		next smallest zIndex
+		if !Obj{
+			-save
+			-move to obj.pos
+			-rotate obj.rotation
+			-move to obj.origin
+			-flip ctx
+			-apply styles
+			-draw Obj shadow
+			-draw Obj,imgs,grid
+			-restore
+		}
+		-draw Obj shadow
+		-draw Obj,imgs
+	}
+	-restore

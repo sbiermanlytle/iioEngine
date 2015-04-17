@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<header>
+		<script type="text/javascript" src="iioEngine.js"></script>
+		<script type="text/iioscript" src="App.iio"></script>
+		<style>
+			html,body,div{
+				margin:0;padding:0;
+			}
+		</style>
+	</header>
+	<body>  
+	  <canvas id="c1" width="400px" height="200"></canvas>
+	  <!--<canvas id="c2" width="400px" height="200"></canvas>-->
+		<script type="text/javascript">
+			var App;
+			iio.read('http://iioengine.com/1.3/App.iio',function(t){
+				App=t;
+				alert(App);
+			});
+			//var App = 'red';
+			//iio.start(App,'c1');
+		</script>
+	</body>
+</html>

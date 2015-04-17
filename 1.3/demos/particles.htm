@@ -1,0 +1,47 @@
+<!-- 
+	iio Engine v1.3 preview
+	*************************
+	the source code for 1.3 is not yet available for download
+	this document demos the new syntax and demos functionality
+	
+	Live Demo: http://iioengine.com/1.3/demos/particles.htm
+ -->
+<!DOCTYPE html>
+<html>
+	<body>
+		<script type="text/javascript" src="../js/iioEngine.min.pre1.3.js"></script>
+		<script type="text/javascript">
+
+function TEST(app){
+
+	app.set('black');
+
+	var num = 400;
+	for(var i=0; i<num; i++)
+		app.add([iio.random(0,app.width),iio.random(0,app.height)]
+			,iio.random(60,140)+' white simple',{
+				vel:{
+					x:iio.random(-.5,.5),
+					y:iio.random(-.5,.5)
+				},
+				bounds:{
+					bottom:[app.height,function(o){o.vel.y=-1}],
+					top:[0,function(o){o.vel.y=1}],
+					left:[0,function(o){o.vel.x=1}],
+					right:[app.width,function(o){o.vel.x=-1}]
+				},
+				alpha:iio.random(.3,.6),
+				fade:[iio.random(.0001,.0006),function(o){
+					o.alpha=1;
+				}],
+				update:function(){
+					this.vel.x+=iio.random(-.01,.01);
+					this.vel.y+=iio.random(-.01,.01);
+				}
+			})
+
+}; iio.start(TEST);
+
+		</script>
+	</body>
+</html>
