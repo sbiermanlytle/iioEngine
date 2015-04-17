@@ -40,7 +40,7 @@ iio.Obj.prototype.convert_props = function(){
   if(this.dash && !(this.dash instanceof Array))
     this.dash = [this.dash];
 
-  // arrays to iio.V
+  // arrays to iio.Vector
   this.convert_v("pos");
   this.convert_v("origin");
   this.convert_v("vel");
@@ -61,29 +61,29 @@ iio.Obj.prototype.convert_props = function(){
   if(typeof this.bezierAccs != 'undefined' && !this.bezierVels){
     this.bezierVels = [];
     for(var i=0; i<this.bezierAccs.length; i++)
-      this.bezierVels.push(new iio.V);
+      this.bezierVels.push(new iio.Vector);
   }
   if(typeof this.bezierVels != 'undefined' && !this.bezier){
     this.bezier = [];
     for(var i=0; i<this.bezierVels.length; i++)
-      this.bezier.push(new iio.V);
+      this.bezier.push(new iio.Vector);
   }
 }
 iio.Obj.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)
-    this[p] = new iio.V(this[p]);
+    this[p] = new iio.Vector(this[p]);
 }
 iio.Obj.prototype.convert_vs = function(vs){
   if(this[vs])
     for(var i=0; i<this[vs].length; i++)
       if(this[vs][i] instanceof Array)
-        this[vs][i] = new iio.V(this[vs][i]);
+        this[vs][i] = new iio.Vector(this[vs][i]);
 }
 iio.Obj.prototype.create = function(){
   var props = {};
   for(var i=0; i<arguments.length; i++){
     if(arguments[i] === null) break;
-    if(arguments[i] instanceof iio.V)
+    if(arguments[i] instanceof iio.Vector)
       props.pos = arguments[i];
     else if(arguments[i] instanceof iio.Color)
       props.color = arguments[i];

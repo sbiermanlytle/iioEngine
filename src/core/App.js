@@ -6,7 +6,7 @@ iio.App.prototype._super = iio.Obj.prototype;
 
 // Make iio's elements available to app scope
 [
-  'V',
+  'Vector',
   'Color',
   'Gradient',
   'SpriteMap',
@@ -43,7 +43,7 @@ iio.App.prototype.App = function(view, app, s) {
   this.height = view.clientHeight || view.height;
 
   //set center
-  this.center = new iio.V(
+  this.center = new iio.Vector(
     this.width / 2,
     this.height / 2
   );
@@ -52,7 +52,7 @@ iio.App.prototype.App = function(view, app, s) {
   var offset = view.getBoundingClientRect();
 
   //set canvas DOM position
-  this.pos = new iio.V(
+  this.pos = new iio.Vector(
     offset.left,
     offset.top
   );
@@ -74,7 +74,7 @@ iio.App.prototype.App = function(view, app, s) {
 
 //FUNCTIONS
 iio.App.prototype.convertEventPos = function(e) {
-  return new iio.V( 
+  return new iio.Vector( 
     e.clientX - this.pos.x, 
     e.clientY - this.pos.y
   )

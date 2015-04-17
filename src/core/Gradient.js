@@ -24,6 +24,6 @@ iio.Gradient.prototype.canvasGradient = function(ctx){
 }
 iio.Gradient.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)
-    this[p] = new iio.V(this[p]);
+    this[p] = new iio.Vector(this[p]);
 }
 

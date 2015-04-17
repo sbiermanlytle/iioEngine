@@ -4,7 +4,7 @@ srcPath = 'src/core';
 coreSrc = [
   'core.js',
   'libs.js',
-  'V.js',
+  'Vector.js',
   'Color.js',
   'Gradient.js',
   'Obj.js',
