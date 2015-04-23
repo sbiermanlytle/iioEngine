@@ -16,7 +16,6 @@
     }
     #bg-gradient{
       position: absolute;
-      top:50px;
       width:1024px;
       left:50%;
       margin-left: -512px;
@@ -29,7 +28,14 @@
     }
     canvas{
       margin: 0 auto;
-      display: block;
+    }
+    #home_feature canvas{
+      float:left;
+      padding:20px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
+    #home_feature{
     }
     .center{
       text-align: center;
