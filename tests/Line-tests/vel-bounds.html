@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; Test &middot; Line</title>
+  <meta name="description" content="iio.Line unit tests">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">TestVelBounds = function( app, settings ){
+
+	var speed = 0.4;
+
+	function reverse(o){ o.vel.x *= -1 }
+
+	app.add(new iio.Line({
+		pos: app.center.clone(),
+		color: 'blue',
+		width: 10,
+		vel: [ speed, 0 ],
+		vs:[
+			[ 0,-30 ],
+			[ 0, 30 ]
+		],
+		bounds: {
+			right: {
+				bound: app.center.x+15, 
+				callback: reverse
+			},
+			left: {
+				bound: app.center.x-15, 
+				callback: reverse
+			}
+		}
+	}));
+}
+
+iio.start( TestVelBounds, 'canvasId' );</pre>
+<script type="text/javascript" src="../../js/prettify.js"></script>
+</body>
+</html>

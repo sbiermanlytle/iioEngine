@@ -1,0 +1,41 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; Test &middot; Line</title>
+  <meta name="description" content="iio.Line unit tests">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">TestWidth = function( app, settings ){
+
+	app.loop(15);
+
+	app.add(new iio.Line({
+		pos: app.center.clone(),
+		color: 'green',
+		width: 1,
+		vs:[
+			[ -30,-30 ],
+			[  30, 30 ]
+		],
+		growing: true,
+		onUpdate: function(){
+			if( this.growing ){
+			this.width++;
+			if(this.width &gt; 30)
+				this.growing = false;
+		} else {
+			this.width--;
+			if( this.width &lt; 2 )
+				this.growing = true;
+		}
+	}
+	}));
+}
+
+iio.start( TestWidth, 'canvasId' );</pre>
+<script type="text/javascript" src="../../js/prettify.js"></script>
+</body>
+</html>

@@ -30,6 +30,13 @@ h4{
 h1,h2,h3,h4{
   color:#EFEFEF;
 }
+canvas{
+  border:1px solid transparent;
+  cursor: pointer
+}
+canvas:hover{
+  border:1px solid #00baff;
+}
 
 /*BACKGROUND*/
 #bg_glow{
@@ -147,6 +154,70 @@ h1,h2,h3,h4{
   padding: 10px 20px;
   list-style: square;
 }
+
+/* PRETTIFY CSS
+    -------------------------------------------------- */
+  /* Pretty printing styles. Used with prettify.js. */
+  /* Vim sunburst theme by David Leibovic */
+
+  pre .str, code .str { color: #00baff; } /* string  - green */
+  pre .kwd, code .kwd { color: #65B042; } /* keyword - dark pink */
+  pre .com, code .com { color: #AEAEAE; font-style: italic; } /* comment - gray */
+  pre .typ, code .typ { color: #F00000; font-weight: bold; } /* type - light blue */
+  pre .lit, code .lit { color: #00baff; } /* literal - blue */
+  pre .pun, code .pun { color: #E8E8E8; } /* punctuation - white */
+  pre .pln, code .pln { color: #E8E8E8; } /* plaintext - white */
+  pre .tag, code .tag { color: #89bdff; } /* html/xml tag    - light blue */
+  pre .atn, code .atn { color: #e0c589; } /* html/xml attribute name  - khaki */
+  pre .atv, code .atv { color: #65B042; } /* html/xml attribute value - green */
+  pre .dec, code .dec { color: #89bdff; } /* decimal - blue */
+
+  pre.prettyprint, code.prettyprint {
+        background-color: transparent;
+  }
+
+  pre.prettyprint {
+    width: 95%;
+    margin: 1em auto;
+    padding: 1em;
+    border:none;
+    overflow: auto;
+  }
+
+
+  /* Specify class=linenums on a pre to get line numbering */
+  ol.linenums { margin-top: 0; margin-bottom: 0; color: #AEAEAE; } /* IE indents via margin-left */
+  li.L0,li.L1,li.L2,li.L3,li.L4,li.L5,li.L6,li.L7,li.L8,li.L9 { list-style-type: inherit; background-color: black;}
+  /* Alternate shading for lines */
+  li.L1,li.L3,li.L5,li.L7,li.L9 { }
+
+  @media print {
+    pre .str, code .str { color: #060; }
+    pre .kwd, code .kwd { color: #006; font-weight: bold; }
+    pre .com, code .com { color: #600; font-style: italic; }
+    pre .typ, code .typ { color: #404; font-weight: bold; }
+    pre .lit, code .lit { color: #044; }
+    pre .pun, code .pun { color: #440; }
+    pre .pln, code .pln { color: #000; }
+    pre .tag, code .tag { color: #006; font-weight: bold; }
+    pre .atn, code .atn { color: #404; }
+    pre .atv, code .atv { color: #060; }
+  }
+  .prettyprint ol.linenums li {
+    padding-left: 10px;
+    border-left: 3px #00baff solid;
+    background:transparent;
+  }
+  pre{
+    background-color: black;
+    font-family: Consolas,'Bitstream Vera Sans Mono','Courier New',Courier,monospace;
+    font-size: 14px;
+    tab-size: 4;
+  }
+  .prettyprint ol.linenums {
+    list-style: decimal outside;
+    margin-left: -6px;
+  }
 
 /*BUTTON*/
 .big-btn {
