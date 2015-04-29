@@ -77,8 +77,14 @@ iio_Test.Line = {
 				[ 0, _height ]
 			],
 			bounds: {
-				right: [ app.center.x+15, reverse ],
-				left: [ app.center.x-15, reverse ]
+				right: {
+					bound: app.center.x+15, 
+					callback: reverse 
+				},
+				left: {
+					bound: app.center.x-15, 
+					callback: reverse
+				}
 			}
 		}));
 	},
@@ -97,12 +103,18 @@ iio_Test.Line = {
 				[ 0, _height ]
 			],
 			bounds: {
-				right: [ app.center.x+15, function(o){
-					o.vel.x = -.5;
-				} ],
-				left: [ app.center.x-15, function(o){
-					o.vel.x = .5;
-				} ]
+				right: {
+					bound: app.center.x+15, 
+					callback: function(o){
+						o.vel.x = -.5;
+					} 
+				},
+				left: {
+					bound: app.center.x-15, 
+					callback: function(o){
+						o.vel.x = .5;
+					} 
+				}
 			}
 		}));
 	},
@@ -180,8 +192,14 @@ iio_Test.Line = {
 				[ _height, _height ]
 			],
 			bounds: {
-				rightRotation: [ Math.PI/2, reverse ],
-				leftRotation: [ 0, reverse ]
+				rightRotation: {
+					bound: Math.PI/2,
+					callback: reverse
+				},
+				leftRotation: {
+					bound: 0,
+					callback: reverse
+				}
 			}
 		}));
 	},
@@ -200,12 +218,18 @@ iio_Test.Line = {
 				[ app.width-_padding, app.height-_padding ]
 			],
 			bounds: {
-				rightRotation: [ Math.PI/2, reverse ],
-				leftRotation: [ 0, reverse ]
+				rightRotation: {
+					bound: Math.PI/2,
+					callback: reverse
+				},
+				leftRotation: {
+					bound: 0,
+					callback: reverse
+				}
 			}
 		}));
 	},
-	rAcc : function( app, settings ){
+	rAcc_bounds : function( app, settings ){
 		app.add(new iio.Line({
 			pos: app.center,
 			color: _color[settings.c].clone(),
@@ -216,14 +240,20 @@ iio_Test.Line = {
 				[ _height, _height ]
 			],
 			bounds: {
-				rightRotation: [ Math.PI/2, function(o){
-					o.rAcc *= -1; 
-					o.rVel = -.01;
-				} ],
-				leftRotation: [ -Math.PI/2, function(o){
-					o.rAcc *= -1; 
-					o.rVel = .01;
-				} ]
+				rightRotation: {
+					bound: Math.PI/2,
+					callback: function(o){
+						o.rAcc *= -1; 
+						o.rVel = -.01;
+					}
+				},
+				leftRotation: {
+					bound: -Math.PI/2, 
+					callback: function(o){
+						o.rAcc *= -1; 
+						o.rVel = .01;
+					}
+				}
 			}
 		}));
 	},
@@ -256,7 +286,7 @@ iio_Test.Line = {
 			width: _width,
 			fade: {
 				speed: .03,
-				onFinish: function(o){
+				callback: function(o){
 					o.fade.speed *= -1;
 				}
 			}

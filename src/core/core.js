@@ -121,6 +121,20 @@ iio.random = function(min, max) {
 iio.randomInt = function(min, max) {
   return Math.floor(iio.random(min, max));
 }
+iio.centroid = function(vs){
+  var cX,cY;
+  for (var i=0;i<vs.length;i++){
+     cX+=vs[i].x;
+     cY+=vs[i].y;
+  } return new iio.Vector(cX/vs.length,cY/vs.length);
+}
+iio.specVec = function(vs,comparator){
+  var v = vs[0];
+  for (var i=0;i<vs.length;i++)
+     if (comparator(v,vs[i]))
+        v=vs[i];
+  return v;
+}
 
 //IO
 iio.load = function(src, onload) {

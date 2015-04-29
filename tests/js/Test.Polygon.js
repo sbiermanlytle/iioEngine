@@ -1,48 +1,67 @@
-var	_radius = 25;
+var _size = 30;
+var	_vs = [
+	[ 0, -_size ],
+	[ _size, _size ],
+	[ -_size, _size ]
+]
 
-iio_Test.Circle = {
+iio_Test.Polygon = {
 	constructor : function(app, settings){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius
+			color: _color[settings.c],
+			vs: _vs
+		}));
+	},
+	constructor_no_pos : function( app, settings ){
+		app.add(new iio.Polygon({
+			color: _color[settings.c],
+			vs:[
+				[ app.center.x, app.center.y - _size ],
+				[ app.center.x + _size, app.center.y + _size ],
+				[ app.center.x - _size, app.center.y + _size ]
+			]
 		}));
 	},
 	rotation : function(app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: _color[settings.c],
+			vs: _vs,
 			rotation: Math.PI/2
 		}));
 	},
 	origin : function(app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			origin: [ _radius/3, -_radius/3 ],
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			origin: [ _size/3, -_size/3 ],
+			color: _color[settings.c],
+			vs: [
+				[ 0, -_size/2 ],
+				[ _size/2, _size/2 ],
+				[ -_size/2, _size/2 ]
+			],
 			rVel: .02
 		}));
 	},
 	vel_bounds : function( app, settings ){
 
-		var speed = 1;
+		var speed = 1; 
 
 		function reverse(o){ o.vel.x *= -1 }
 
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center.clone(),
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: _color[settings.c],
+			vs: _vs,
 			vel: [ speed,0 ],
 			bounds: {
 				right: {
-					bound: app.width,
+					bound: app.width*2,
 					callback: reverse
 				},
 				left: {
-					bound: 0,
+					bound: -200,
 					callback: reverse
 				}
 			}
@@ -52,7 +71,7 @@ iio_Test.Circle = {
 
 		var speed = 1;
 
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center.clone(),
 			color: _color[settings.c].clone(),
 			radius: _radius,
@@ -78,12 +97,37 @@ iio_Test.Circle = {
 
 		function reverse(o){ o.rVel *= -1 }
 
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center.clone(),
-			origin: [ _radius/2, -_radius/2 ],
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: _color[settings.c],
+			vs: _vs,
 			rVel: .02,
+			bounds: {
+				rightRotation: {
+					bound: Math.PI/2, 
+					callback: reverse
+				},
+				leftRotation: {
+					bound: 0, 
+					callback: reverse
+				}
+			}
+		}));
+	},
+	rVel_bounds_no_pos : function( app, settings ){
+
+		function reverse(o){ o.rVel *= -1 }
+
+		app.add(new iio.Polygon({
+			color: _color[settings.c],
+			rVel: -.02,
+			rotation: Math.PI/2,
+			origin: app.center.clone(),
+			vs: [
+				[ app.center.x, app.center.y - _size ],
+				[ app.center.x + _size, app.center.y + _size ],
+				[ app.center.x - _size, app.center.y + _size ]
+			],
 			bounds: {
 				rightRotation: {
 					bound: Math.PI/2, 
@@ -98,12 +142,41 @@ iio_Test.Circle = {
 	},
 	rAcc_bounds : function( app, settings ){
 
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center.clone(),
-			origin: [ _radius/2, -_radius/2 ],
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: _color[settings.c],
+			vs: _vs,
 			rAcc: .0015,
+			bounds: {
+				rightRotation: {
+					bound: Math.PI/2, 
+					callback: function(o){
+						o.rAcc *= -1; 
+						o.rVel = -.01;
+					}
+				},
+				leftRotation: {
+					bound: -Math.PI/2,
+					callback: function(o){
+						o.rAcc *= -1; 
+						o.rVel = .01;
+					}
+				}
+			}
+		}));
+	},
+	rAcc_bounds_no_pos : function( app, settings ){
+
+		app.add(new iio.Polygon({
+			color: _color[settings.c],
+			rotation: Math.PI/2,
+			rAcc: -.0015,
+			origin: app.center.clone(),
+			vs: [
+				[ app.center.x, app.center.y - _size ],
+				[ app.center.x + _size, app.center.y + _size ],
+				[ app.center.x - _size, app.center.y + _size ]
+			],
 			bounds: {
 				rightRotation: {
 					bound: Math.PI/2, 
@@ -126,10 +199,10 @@ iio_Test.Circle = {
 
 		app.loop(1);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: _color[settings.c],
+			vs: _vs,
 			hidden: false,
 			onUpdate: function(){
 				this.hidden = !this.hidden;
@@ -137,10 +210,10 @@ iio_Test.Circle = {
 		}));
 	},
 	alpha : function( app, settings ){
-		app.add(new iio.Circle({
-			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius,
+		app.add(new iio.Polygon({
+			pos: app.center.clone(),
+			color: _color[settings.c],
+			vs: _vs,
 			fade: {
 				speed: .03,
 				lowerBound: .2,
@@ -151,10 +224,10 @@ iio_Test.Circle = {
 		}));
 	},
 	color : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
 			color: _color[settings.c].clone(),
-			radius: _radius,
+			vs: _vs,
 			cycle: 0,
 			onUpdate: Test_color
 		}));
@@ -163,9 +236,9 @@ iio_Test.Circle = {
 
 		app.loop(10);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			radius: _radius,
+			vs: _vs,
 			outline: _color[settings.c].clone(),
 			lineWidth: 1,
 			growing: true,
@@ -173,10 +246,10 @@ iio_Test.Circle = {
 		}));
 	},
 	shrink : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
 			color: _color[settings.c].clone(),
-			radius: _radius,
+			vs: _vs,
 			shrink: {
 				speed: .03,
 				upperBound: _radius,
@@ -188,43 +261,43 @@ iio_Test.Circle = {
 		}));
 	},
 	dash : function ( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			radius: _radius,
-			outline: _color[settings.c].clone(),
+			vs: _vs,
+			outline: _color[settings.c],
 			lineWidth: 10,
-			dash: [ 10, 3 ]
+			dash: [ 10, 17 ]
 		}));
 	},
 	dash_rounded : function ( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			radius: _radius,
-			outline: _color[settings.c].clone(),
+			vs: _vs,
+			outline: _color[settings.c],
 			lineWidth: 10,
-			dash: [ .1, 17.2 ],
+			dash: [ .1, 14 ],
 			dashOffset: 10,
 			lineCap: 'round'
 		}));
 	},
 	gradient : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			radius: _radius,
+			vs: _vs,
 			color: new iio.Gradient({
-				start: [ 0, -_radius ],
-				end: [ 0, _radius ],
+				start: [ 0, -_size ],
+				end: [ 0, _size ],
 				stops: [
-					[ 0, _color[settings.c].clone() ],
+					[ 0, _color[settings.c] ],
 					[ 1, 'transparent' ]
 				]
 			})
 		}));
 	},
 	radial_gradient : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			radius: _radius,
+			vs: _vs,
 			color: new iio.Gradient({
 				start: [ 0,0 ],
 				startRadius: 1,
@@ -232,8 +305,8 @@ iio_Test.Circle = {
 				endRadius: 40,
 				stops: [
 					[ 0, 'transparent' ],
-					[ 0.4, _color[settings.c].clone() ],
-					[ 1, _color[settings.c].clone() ]
+					[ 0.4, _color[settings.c] ],
+					[ 1, _color[settings.c] ]
 				]
 			})
 		}));
@@ -242,12 +315,12 @@ iio_Test.Circle = {
 
 		app.set({color:'white'})
 
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
-			outline: _color[settings.c].clone(),
+			outline: _color[settings.c],
 			lineWidth: 5,
 			dash: 20,
-			radius: _radius,
+			vs: _vs,
 			shadow: new iio.Color( 0,0,0,.5 ),
 			shadowBlur: 5,
 			shadowOffset: [ 4,4 ],
@@ -260,17 +333,17 @@ iio_Test.Circle = {
 			lineWidth: 5
 		}
 
-		app.add( new iio.Circle(props,{
+		app.add( new iio.Polygon(props,{
 			pos: app.center,
 			origin: [ _radius/3, -_radius/3 ],
 			radius: _radius,
 			rVel: .02
-		})).add( new iio.Circle(props,{
+		})).add( new iio.Polygon(props,{
 			radius: _radius/2
 		}))
 	},
 	img : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
 			radius: app.width/2.5,
 			clip: true,
@@ -281,7 +354,7 @@ iio_Test.Circle = {
 
 		app.loop(1);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Polygon({
 			pos: app.center,
 			radius: app.width/2.5,
 			clip: true,

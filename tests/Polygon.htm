@@ -1,0 +1,81 @@
+<!-- 
+	iio Engine v1.4
+	***************
+	URL: iioengine.com/tests/Polygon.htm
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test | Polygon</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script type="text/javascript" src="../build/iio.js"></script>
+	<script type="text/javascript" src="js/test-functions.js"></script>
+	<script type="text/javascript" src="js/Test.Polygon.js"></script>
+	<script type="text/javascript" src="js/Test.Circle.js"></script>
+</head>
+<body>
+<script type="text/javascript">	
+
+	
+
+	create_test_canvas_grid( 100, 5, 6 );
+
+	assign_Test_globals();
+
+/*	iio.start(function(app){
+		app.add(new iio.Polygon({
+			pos: app.center,
+			color: 'red',
+			vel: [1,0],
+			vs: [
+				[ 0, -_size ],
+				[ _size, _size ],
+				[ -_size, _size ]
+			]
+		}));
+	}, 'c00');
+
+	iio.start(function(app){
+		app.add(new iio.Polygon({
+			pos: app.center,
+			color: 'red',
+			vs: [
+				[ 0, -_size ],
+				[ _size, _size ],
+				[ -_size, _size ]
+			]
+		}));
+	}, 'c01');*/
+
+	/*iio.start([iio_Test.Polygon.constructor, { c:0 }], 'c00');
+	iio.start([iio_Test.Polygon.constructor_no_pos, { c:1 }], 'c01');
+	iio.start([iio_Test.Polygon.rotation, { c:0 }], 'c02');
+	iio.start([iio_Test.Polygon.origin, { c:1 }], 'c03');*/
+
+	iio.start([iio_Test.Polygon.vel_bounds, { c:1 }], 'c10');
+	//iio.start([iio_Test.Polygon.acc_bounds, { c:0 }], 'c11');
+
+	/*iio.start([iio_Test.Polygon.rVel_bounds, { c:0 }], 'c20');
+	iio.start([iio_Test.Polygon.rVel_bounds_no_pos, { c:1 }], 'c21');
+	iio.start([iio_Test.Polygon.rAcc_bounds, { c:0 }], 'c22');
+	iio.start([iio_Test.Polygon.rAcc_bounds_no_pos, { c:1 }], 'c23');*/
+
+	//iio.start([iio_Test.Polygon.hidden, { c:1 }], 'c30');
+	//iio.start([iio_Test.Polygon.alpha, { c:0 }], 'c31');
+	iio.start([iio_Test.Polygon.color, { c:1 }], 'c32');
+	//iio.start([iio_Test.Polygon.outline, { c:0 }], 'c33');
+	/*iio.start([iio_Test.Polygon.shrink, { c:1 }], 'c34');
+
+	iio.start([iio_Test.Polygon.dash, { c:1 }], 'c40');
+	iio.start([iio_Test.Polygon.dash_rounded, { c:0 }], 'c41');
+	iio.start([iio_Test.Polygon.gradient, { c:1 }], 'c42');
+	iio.start([iio_Test.Polygon.radial_gradient, { c:0 }], 'c43');
+	iio.start([iio_Test.Polygon.shadow, { c:1 }], 'c44');*/
+
+	//iio.start([iio_Test.Polygon.child, { c:1 }], 'c50');*/
+	//iio.start([iio_Test.Polygon.img, { c:0 }], 'c51');
+	//iio.start([iio_Test.Polygon.flip, { c:1 }], 'c52');
+
+</script>
+</body>
+</html>

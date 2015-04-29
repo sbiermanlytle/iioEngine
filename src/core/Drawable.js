@@ -16,15 +16,17 @@ iio.Drawable.prototype.right = function(){ if(this.pos) return this.pos.x; else 
 iio.Drawable.prototype.top = function(){ if(this.pos) return this.pos.y; else return 0 }
 iio.Drawable.prototype.bottom = function(){ if(this.pos) return this.pos.y; else return 0 }
 iio.Drawable.prototype.resolve = function(b, c) {
-  if (b.length > 1) return b[1](c);
+  if (b.callback) return b.callback(c);
   return true;
 }
-iio.Drawable.prototype.over_upper_limit = function(bnd, lim, c) {
-  if (lim > bnd[0]) return this.resolve(bnd, c);
+iio.Drawable.prototype.over_upper_limit = function(bnd, val, c) {
+  if (iio.is.number(bnd) && val > bnd || typeof bnd.bound != 'undefined' && val > bnd.bound ) 
+    return this.resolve(bnd, c);
   return false;
 }
-iio.Drawable.prototype.below_lower_limit = function(bnd, lim, c) {
-  if (lim < bnd[0]) return this.resolve(bnd, c);
+iio.Drawable.prototype.below_lower_limit = function(bnd, val, c) {
+  if (iio.is.number(bnd) && val < bnd || typeof bnd.bound != 'undefined' && val < bnd.bound ) 
+    return this.resolve(bnd, c);
   return false;
 }
 
@@ -109,12 +111,12 @@ iio.Drawable.prototype.update_accs = function(){
 }
 iio.Drawable.prototype.update_shrink = function(){
   if (this.shrink.speed)
-    return this._shrink(this.shrink.speed, this.shrink.onFinish);
+    return this._shrink(this.shrink.speed, this.shrink.callback);
   else return this._shrink(this.shrink);
 }
 iio.Drawable.prototype.update_fade = function(){
   if (this.fade.speed)
-    return this._fade(this.fade.speed, this.fade.onFinish);
+    return this._fade(this.fade.speed, this.fade.callback);
   else return this._fade(this.fade);
 }
 iio.Drawable.prototype.past_bounds = function(){

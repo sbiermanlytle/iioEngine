@@ -10,33 +10,6 @@ iio.Circle.prototype.Circle = function() {
 }
 
 //FUNCTIONS
-iio.Circle.prototype.convert_props = function(){
-  this._super.convert_props.call(this);
-
-  // handle image attachment
-  if (this.img){
-    if(iio.is.string(this.img)) {
-      var src = this.img;
-      this.img = new Image();
-      this.img.src = src;
-      this.img.parent = this;
-      var o = this;
-      if (!this.radius){
-        this.img.onload = function(e) {
-          o.radius = o.img.width/2 || 0;
-          if(o.app) o.app.draw()
-        }
-      } else this.img.onload = function(e) {
-        if(o.app) o.app.draw()
-      }
-    } else {
-      if (!this.radius) {
-        if (o.radius == 0) o.radius = this.img.width/2 || 0;
-        if(o.app) o.app.draw()
-      }
-    }
-  } 
-}
 iio.Circle.prototype.draw_shape = function(ctx) {
   ctx.beginPath();
   ctx.arc(0, 0, this.radius, 0, 2 * Math.PI, false);
@@ -65,6 +38,8 @@ iio.Circle.prototype.contains = function(v, y) {
   }
   return false;
 }
+iio.Circle.prototype.size = function(){ return this.radius }
+iio.Circle.prototype.setSize = function(s){ this.radius = s/2 }
 iio.Circle.prototype.left = function(){ return this.pos.x - this.radius }
 iio.Circle.prototype.right = function(){ return this.pos.x + this.radius }
 iio.Circle.prototype.top = function(){ return this.pos.y - this.radius }

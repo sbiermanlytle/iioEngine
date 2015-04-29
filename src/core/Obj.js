@@ -68,6 +68,30 @@ iio.Obj.prototype.convert_props = function(){
     for(var i=0; i<this.bezierVels.length; i++)
       this.bezier.push(new iio.Vector);
   }
+
+  // handle image attachment
+  if (this.img){
+    if(iio.is.string(this.img)) {
+      var src = this.img;
+      this.img = new Image();
+      this.img.src = src;
+      this.img.parent = this;
+      var o = this;
+      if (!this.size()){
+        this.img.onload = function(e) {
+          o.setSize(o.img.width || 0);
+          if(o.app) o.app.draw()
+        }
+      } else this.img.onload = function(e) {
+        if(o.app) o.app.draw()
+      }
+    } else {
+      if (!this.size()) {
+        o.setSize(this.img.width || 0);
+        if(o.app) o.app.draw()
+      }
+    }
+  } 
 }
 iio.Obj.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)

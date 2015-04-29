@@ -121,6 +121,20 @@ iio.random = function(min, max) {
 iio.randomInt = function(min, max) {
   return Math.floor(iio.random(min, max));
 }
+iio.centroid = function(vs){
+  var cX,cY;
+  for (var i=0;i<vs.length;i++){
+     cX+=vs[i].x;
+     cY+=vs[i].y;
+  } return new iio.Vector(cX/vs.length,cY/vs.length);
+}
+iio.specVec = function(vs,comparator){
+  var v = vs[0];
+  for (var i=0;i<vs.length;i++)
+     if (comparator(v,vs[i]))
+        v=vs[i];
+  return v;
+}
 
 //IO
 iio.load = function(src, onload) {
@@ -564,10 +578,10 @@ iio.collision = {
 ;
 
 //DEFINITION
-iio.V = function(){ this.V.apply(this, arguments) };
+iio.Vector = function(){ this.Vector.apply(this, arguments) };
 
 //CONSTRUCTOR
-iio.V.prototype.V = function(v,y) {
+iio.Vector.prototype.Vector = function(v,y) {
 	if(v instanceof Array){
 		this.x = v[0] || 0;
 		this.y = v[1] || 0;
@@ -581,34 +595,35 @@ iio.V.prototype.V = function(v,y) {
 }
 
 //STATIC FUNCTIONS
-iio.V.add = function(v1, v2) {
+iio.Vector.add = function(v1, v2) {
 	for (var p in v2)
 	  if (v1[p]) v1[p] += v2[p];
 	return v1
 }
-iio.V.sub = function(v1, v2) {
+iio.Vector.sub = function(v1, v2) {
 	for (var p in v2)
 	  if (v1[p]) v1[p] -= v2[p];
 	return v1
 }
-iio.V.mult = function(v1, v2) {
+iio.Vector.mult = function(v1, v2) {
 	for (var p in v2)
 	  if (v1[p]) v1[p] *= v2[p];
 	return v1
 }
-iio.V.div = function(v1, v2) {
+iio.Vector.div = function(v1, v2) {
 	for (var p in v2)
 	  if (v1[p]) v1[p] /= v2[p];
 	return v1
 }
-iio.V.dist = function(v1, v2) {
+iio.Vector.dist = function(v1, v2) {
 	return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2))
 }
 
 //OBJECT FUNCTIONS
-iio.V.prototype.clone = function(){
-	return new iio.V(this.x,this.y)
-};
+iio.Vector.prototype.clone = function(){
+	return new iio.Vector(this.x,this.y)
+}
+;
 
 //DEFINITION
 iio.Color = function(){ this.Color.apply(this, arguments) };
@@ -673,7 +688,7 @@ iio.Gradient.prototype.canvasGradient = function(ctx){
 }
 iio.Gradient.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)
-    this[p] = new iio.V(this[p]);
+    this[p] = new iio.Vector(this[p]);
 }
 
 ;
@@ -719,7 +734,7 @@ iio.Obj.prototype.convert_props = function(){
   if(this.dash && !(this.dash instanceof Array))
     this.dash = [this.dash];
 
-  // arrays to iio.V
+  // arrays to iio.Vector
   this.convert_v("pos");
   this.convert_v("origin");
   this.convert_v("vel");
@@ -740,29 +755,53 @@ iio.Obj.prototype.convert_props = function(){
   if(typeof this.bezierAccs != 'undefined' && !this.bezierVels){
     this.bezierVels = [];
     for(var i=0; i<this.bezierAccs.length; i++)
-      this.bezierVels.push(new iio.V);
+      this.bezierVels.push(new iio.Vector);
   }
   if(typeof this.bezierVels != 'undefined' && !this.bezier){
     this.bezier = [];
     for(var i=0; i<this.bezierVels.length; i++)
-      this.bezier.push(new iio.V);
+      this.bezier.push(new iio.Vector);
   }
+
+  // handle image attachment
+  if (this.img){
+    if(iio.is.string(this.img)) {
+      var src = this.img;
+      this.img = new Image();
+      this.img.src = src;
+      this.img.parent = this;
+      var o = this;
+      if (!this.size()){
+        this.img.onload = function(e) {
+          o.setSize(o.img.width || 0);
+          if(o.app) o.app.draw()
+        }
+      } else this.img.onload = function(e) {
+        if(o.app) o.app.draw()
+      }
+    } else {
+      if (!this.size()) {
+        o.setSize(this.img.width || 0);
+        if(o.app) o.app.draw()
+      }
+    }
+  } 
 }
 iio.Obj.prototype.convert_v = function(p){
   if(this[p] && this[p] instanceof Array)
-    this[p] = new iio.V(this[p]);
+    this[p] = new iio.Vector(this[p]);
 }
 iio.Obj.prototype.convert_vs = function(vs){
   if(this[vs])
     for(var i=0; i<this[vs].length; i++)
       if(this[vs][i] instanceof Array)
-        this[vs][i] = new iio.V(this[vs][i]);
+        this[vs][i] = new iio.Vector(this[vs][i]);
 }
 iio.Obj.prototype.create = function(){
   var props = {};
   for(var i=0; i<arguments.length; i++){
     if(arguments[i] === null) break;
-    if(arguments[i] instanceof iio.V)
+    if(arguments[i] instanceof iio.Vector)
       props.pos = arguments[i];
     else if(arguments[i] instanceof iio.Color)
       props.color = arguments[i];
@@ -980,15 +1019,17 @@ iio.Drawable.prototype.right = function(){ if(this.pos) return this.pos.x; else 
 iio.Drawable.prototype.top = function(){ if(this.pos) return this.pos.y; else return 0 }
 iio.Drawable.prototype.bottom = function(){ if(this.pos) return this.pos.y; else return 0 }
 iio.Drawable.prototype.resolve = function(b, c) {
-  if (b.length > 1) return b[1](c);
+  if (b.callback) return b.callback(c);
   return true;
 }
-iio.Drawable.prototype.over_upper_limit = function(bnd, lim, c) {
-  if (lim > bnd[0]) return this.resolve(bnd, c);
+iio.Drawable.prototype.over_upper_limit = function(bnd, val, c) {
+  if (iio.is.number(bnd) && val > bnd || typeof bnd.bound != 'undefined' && val > bnd.bound ) 
+    return this.resolve(bnd, c);
   return false;
 }
-iio.Drawable.prototype.below_lower_limit = function(bnd, lim, c) {
-  if (lim < bnd[0]) return this.resolve(bnd, c);
+iio.Drawable.prototype.below_lower_limit = function(bnd, val, c) {
+  if (iio.is.number(bnd) && val < bnd || typeof bnd.bound != 'undefined' && val < bnd.bound ) 
+    return this.resolve(bnd, c);
   return false;
 }
 
@@ -1073,12 +1114,12 @@ iio.Drawable.prototype.update_accs = function(){
 }
 iio.Drawable.prototype.update_shrink = function(){
   if (this.shrink.speed)
-    return this._shrink(this.shrink.speed, this.shrink.onFinish);
+    return this._shrink(this.shrink.speed, this.shrink.callback);
   else return this._shrink(this.shrink);
 }
 iio.Drawable.prototype.update_fade = function(){
   if (this.fade.speed)
-    return this._fade(this.fade.speed, this.fade.onFinish);
+    return this._fade(this.fade.speed, this.fade.callback);
   else return this._fade(this.fade);
 }
 iio.Drawable.prototype.past_bounds = function(){
@@ -1363,17 +1404,25 @@ iio.Polygon.prototype.Polygon = function() {
 //FUNCTIONS
 iio.Polygon.prototype.draw_shape = function(ctx) {
   ctx.beginPath();
-  ctx.moveTo(0, 0);
+  ctx.moveTo(this.vs[0].x, this.vs[0].y);
   if (this.bezier) {
     var _i = 0;
     for (var i = 1; i < this.vs.length; i++)
-      ctx.this.bezierCurveTo((this.bezier[_i++] || this.vs[i - 1].x - this.vs[0].x), (this.bezier[_i++] || this.vs[i - 1].y - this.vs[0].y), (this.bezier[_i++] || this.vs[i].x - this.vs[0].x), (this.bezier[_i++] || this.vs[i].y - this.vs[0].y), this.vs[i].x - this.vs[0].x, this.vs[i].y - this.vs[0].y);
-    if (typeof(this.open) == 'undefined' || !this.open) {
+      ctx.this.bezierCurveTo(this.bezier[_i++] || this.vs[i - 1].x, 
+        this.bezier[_i++] || this.vs[i - 1].y, 
+        this.bezier[_i++] || this.vs[i].x, 
+        this.bezier[_i++] || this.vs[i].y,
+         this.vs[i].x, this.vs[i].y);
+    if (!this.open) {
       i--;
-      ctx.this.bezierCurveTo((this.bezier[_i++] || this.vs[i].x - this.vs[0].x), (this.bezier[_i++] || this.vs[i].y - this.vs[0].y), (this.bezier[_i++] || 0), (this.bezier[_i++] || 0), 0, 0);
+      ctx.this.bezierCurveTo(this.bezier[_i++] || this.vs[i].x,
+       this.bezier[_i++] || this.vs[i].y,
+       this.bezier[_i++] || 0,
+       this.bezier[_i++] || 0,
+       0, 0);
     }
   } else for(var i=1; i<this.vs.length; i++)
-    ctx.lineTo(this.vs[i].x - this.vs[0].x, this.vs[i].y - this.vs[0].y);
+    ctx.lineTo(this.vs[i].x, this.vs[i].y);
   if (typeof(this.open) == 'undefined' || !this.open)
     ctx.closePath();
   this.finish_path_shape(ctx);
@@ -1383,7 +1432,7 @@ iio.Polygon.prototype.contains = function(v, y) {
   v = (v.x || v);
   var i = j = c = 0;
   var vs = this.vs;
-  if (this.rot) vs = this.getTrueVertices();
+  if (this.rotation) vs = this.globalVs();
   for (i = 0, j = vs.length - 1; i < vs.length; j = i++) {
     if (((vs[i].y > y) != (vs[j].y > y)) &&
       (v < (vs[j].x - vs[i].x) * (y - vs[i].y) / (vs[j].y - vs[i].y) + vs[i].x))
@@ -1391,13 +1440,43 @@ iio.Polygon.prototype.contains = function(v, y) {
   }
   return c;
 }
-iio.Polygon.prototype.getTrueVertices = function() {
+iio.Polygon.prototype.globalVs = function() {
   return this.vs.map(function(_v) {
-    var v = iio.point.rotate(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
+    var v = iio.point.rotate(_v.x - this.pos.x, _v.y - this.pos.y, this.rotation);
     v.x += this.pos.x;
     v.y += this.pos.y;
     return v;
   }, this);
+}
+iio.Polygon.prototype.left = function(){ 
+  return iio.specVec( this.globalVs(),
+    function(v1,v2){
+      if(v1.x>v2.x)
+        return true;
+      return false
+    }).x 
+}
+iio.Polygon.prototype.right = function(){ 
+  return iio.specVec( this.globalVs(),
+    function(v1,v2){
+      if(v1.x<v2.x)
+        return true;
+      return false
+    }).x 
+}
+iio.Polygon.prototype.top = function(){ 
+  return iio.specVec( this.globalVs(),
+    function(v1,v2){
+      if(v1.y>v2.y)
+        return true;
+      return false}).y
+}
+iio.Polygon.prototype.bottom = function(){ 
+  return iio.specVec( this.globalVs(),
+    function(v1,v2){
+      if(v1.y<v2.y)
+        return true;
+      return false}).y
 };
 
 //DEFINITION
@@ -1588,33 +1667,6 @@ iio.Circle.prototype.Circle = function() {
 }
 
 //FUNCTIONS
-iio.Circle.prototype.convert_props = function(){
-  this._super.convert_props.call(this);
-
-  // handle image attachment
-  if (this.img){
-    if(iio.is.string(this.img)) {
-      var src = this.img;
-      this.img = new Image();
-      this.img.src = src;
-      this.img.parent = this;
-      var o = this;
-      if (!this.radius){
-        this.img.onload = function(e) {
-          o.radius = o.img.width/2 || 0;
-          if(o.app) o.app.draw()
-        }
-      } else this.img.onload = function(e) {
-        if(o.app) o.app.draw()
-      }
-    } else {
-      if (!this.radius) {
-        if (o.radius == 0) o.radius = this.img.width/2 || 0;
-        if(o.app) o.app.draw()
-      }
-    }
-  } 
-}
 iio.Circle.prototype.draw_shape = function(ctx) {
   ctx.beginPath();
   ctx.arc(0, 0, this.radius, 0, 2 * Math.PI, false);
@@ -1643,6 +1695,8 @@ iio.Circle.prototype.contains = function(v, y) {
   }
   return false;
 }
+iio.Circle.prototype.size = function(){ return this.radius }
+iio.Circle.prototype.setSize = function(s){ this.radius = s/2 }
 iio.Circle.prototype.left = function(){ return this.pos.x - this.radius }
 iio.Circle.prototype.right = function(){ return this.pos.x + this.radius }
 iio.Circle.prototype.top = function(){ return this.pos.y - this.radius }
@@ -1824,7 +1878,7 @@ iio.App.prototype._super = iio.Obj.prototype;
 
 // Make iio's elements available to app scope
 [
-  'V',
+  'Vector',
   'Color',
   'Gradient',
   'SpriteMap',
@@ -1861,7 +1915,7 @@ iio.App.prototype.App = function(view, app, s) {
   this.height = view.clientHeight || view.height;
 
   //set center
-  this.center = new iio.V(
+  this.center = new iio.Vector(
     this.width / 2,
     this.height / 2
   );
@@ -1870,7 +1924,7 @@ iio.App.prototype.App = function(view, app, s) {
   var offset = view.getBoundingClientRect();
 
   //set canvas DOM position
-  this.pos = new iio.V(
+  this.pos = new iio.Vector(
     offset.left,
     offset.top
   );
@@ -1892,7 +1946,7 @@ iio.App.prototype.App = function(view, app, s) {
 
 //FUNCTIONS
 iio.App.prototype.convertEventPos = function(e) {
-  return new iio.V( 
+  return new iio.Vector( 
     e.clientX - this.pos.x, 
     e.clientY - this.pos.y
   )
