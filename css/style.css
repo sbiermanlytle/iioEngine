@@ -88,14 +88,10 @@ h1,h2,h3,h4{
   background-color: white;
 }
 #header ul{
-  margin-top: 15px;
-}
-#header li{
   margin-top: 10px;
 }
 #header p{
   border-bottom: 1px solid gainsboro;
-  display: inline;
   font-size: 26px;
   color:white;
   padding:5px 15px 5px 16px;
@@ -109,8 +105,8 @@ h1,h2,h3,h4{
 #footer{
   position: fixed;
   left:0;
-  bottom:0;
-  width:100%;
+  bottom:5px;
+  width:110px;
   font-size: 14px;
   font-family: Agency;
   background-color: white;
@@ -119,7 +115,11 @@ h1,h2,h3,h4{
 }
 #footer a{
   color:black;
-  padding:0 5px;
+}
+#footer p{
+  text-align: center;
+  padding:3px;
+  padding-bottom:0;
 }
 #footer a:hover{
   color:#00baff;
@@ -270,4 +270,14 @@ a,h2,canvas,input[type='submit'],.btn,#drag_overlay{
 }
 .big-arrow{
   display: none;
+}
+
+@media only screen and (min-width:900px) {
+  #header,#footer{
+    left:inherit;
+    margin-left: -130px;
+  }
+  #content{
+    position: relative;
+  }
 }
