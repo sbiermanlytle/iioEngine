@@ -8,21 +8,25 @@
   <link rel="stylesheet" type="text/css" href="../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">TestRotationNoPos = function( app, settings ){
+	<pre class="prettyprint linenums:1">TestShadow = function( app, settings ){
+
+	app.set({color:'white'})
 
 	app.add(new iio.Line({
-		origin: app.center.clone(),
-		color: 'blue',
+		pos: app.center.clone(),
+		color: 'green',
 		width: 10,
-		rotation: Math.PI/2,
+		shadow: new iio.Color( 0,0,0,.5 ),
+		shadowBlur: 5,
+		shadowOffset: [ 4,4 ],
 		vs:[
-			[ 20, 20 ],
-			[ app.width-20, app.height-20 ]
+			[ 0,-30 ],
+			[ 0, 30 ]
 		]
 	}));
 }
 
-iio.start( TestRotationNoPos, 'canvasId' );</pre>
+iio.start( TestShadow, 'canvasId' );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>

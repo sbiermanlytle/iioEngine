@@ -59,8 +59,9 @@ function testcode_url(R,C){
 	if(R==3&&C==3) return 'Line-tests/width.html';
 	if(R==4&&C==0) return 'Line-tests/lineCap.html';
 	if(R==4&&C==1) return 'Line-tests/dash.html';
-	if(R==4&&C==2) return 'Line-tests/radial-gradient.html';
-	if(R==4&&C==3) return 'Line-tests/shadow.html';
+	if(R==4&&C==2) return 'Line-tests/gradient.html';
+	if(R==4&&C==3) return 'Line-tests/radial-gradient.html';
+	if(R==4&&C==4) return 'Line-tests/shadow.html';
 	if(R==5&&C==0) return 'Line-tests/child.html';
 	if(R==5&&C==1) return 'Line-tests/bezier.html';
 	if(R==5&&C==2) return 'Line-tests/bezierVels.html';

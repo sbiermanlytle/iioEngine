@@ -8,21 +8,40 @@
   <link rel="stylesheet" type="text/css" href="../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">TestRotationNoPos = function( app, settings ){
+	<pre class="prettyprint linenums:1">TestBezierAccs = function( app, settings ){
+
+	var speed = 1;
+
+	var checkBound = function( o, v ){
+		if(o.bezier[v].x &gt; app.width 
+		 || o.bezier[v].x &lt; -app.width)
+			o.bezierVels[v].x *= -1;
+	}
 
 	app.add(new iio.Line({
-		origin: app.center.clone(),
-		color: 'blue',
+		pos: app.center,
+		color: 'green',
 		width: 10,
-		rotation: Math.PI/2,
 		vs:[
-			[ 20, 20 ],
-			[ app.width-20, app.height-20 ]
-		]
+			[ 0,-30 ],
+			[ 0, 30 ]
+		],
+		bezier: [
+			[  app.width, 0 ],
+			[ -app.width, 0 ]
+		],
+		bezierVels: [
+			[ -speed, 0 ],
+			[  speed, 0 ]
+		],
+		onUpdate: function(){
+			checkBound( this, 0 );
+			checkBound( this, 1 );
+		}
 	}));
 }
 
-iio.start( TestRotationNoPos, 'canvasId' );</pre>
+iio.start( TestBezierAccs, 'canvasId' );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>

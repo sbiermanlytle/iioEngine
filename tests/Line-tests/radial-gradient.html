@@ -8,21 +8,30 @@
   <link rel="stylesheet" type="text/css" href="../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">TestRotationNoPos = function( app, settings ){
+	<pre class="prettyprint linenums:1">TestRadialGradient = function( app, settings ){
 
 	app.add(new iio.Line({
-		origin: app.center.clone(),
-		color: 'blue',
-		width: 10,
-		rotation: Math.PI/2,
+		pos: app.center.clone(),
+		width: 30,
 		vs:[
-			[ 20, 20 ],
-			[ app.width-20, app.height-20 ]
-		]
+			[ 0,-30 ],
+			[ 0, 30 ]
+		],
+		color: new iio.Gradient({
+			start: [ 0,0 ],
+			startRadius: 1,
+			end: [ 0,0 ],
+			endRadius: 40,
+			stops: [
+				[ 0, 'black' ],
+				[ 0.4, 'blue' ],
+				[ 1, 'blue']
+			]
+		})
 	}));
 }
 
-iio.start( TestRotationNoPos, 'canvasId' );</pre>
+iio.start( TestRadialGradient, 'canvasId' );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>

@@ -387,7 +387,7 @@ iio_Test.Line = {
 				end: [ 0, _height ],
 				stops: [
 					[ 0, _color[settings.c].clone() ],
-					[ 1, 'transparent' ]
+					[ 1, new iio.Color(0,186,255) ]
 				]
 			})
 		}));

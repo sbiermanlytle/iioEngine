@@ -8,21 +8,29 @@
   <link rel="stylesheet" type="text/css" href="../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">TestRotationNoPos = function( app, settings ){
+	<pre class="prettyprint linenums:1">TestChild = function( app, settings ){
 
-	app.add(new iio.Line({
-		origin: app.center.clone(),
+	var line_props = {
 		color: 'blue',
 		width: 10,
-		rotation: Math.PI/2,
 		vs:[
-			[ 20, 20 ],
-			[ app.width-20, app.height-20 ]
+			[ 0,-30 ],
+			[ 0, 30 ]
+		]
+	}
+
+	app.add(new iio.Line( line_props, {
+		pos: app.center.clone(),
+		rVel: .02
+	})).add(new iio.Line( line_props, {
+		vs:[
+			[ -30, 0 ],
+			[  30, 0 ]
 		]
 	}));
 }
 
-iio.start( TestRotationNoPos, 'canvasId' );</pre>
+iio.start( TestChild, 'canvasId' );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>
