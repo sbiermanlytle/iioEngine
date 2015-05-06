@@ -103,7 +103,7 @@ canvas:hover{
   color:white;
   padding:5px 15px 5px 16px;
 }
-#header p:hover, #header #active{
+#header p:hover, #header .active{
   background-color:white;
   color:#00baff;
 }

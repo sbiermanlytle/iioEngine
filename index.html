@@ -1,14 +1,14 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-  <title>iio.js &middot; Home</title>
+  <title>iio.js</title>
   <meta name="description" content="iio.js is a framework for HTML5 Canvas">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="favicon/png" href="img/favicon.ico">
   <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
-<body onload="prettyPrint()">
+<body>
 
   <div class="colorbar top"></div>
 
@@ -24,40 +24,17 @@
       </div>
       <nav id="nav">
         <ul>
-          <li><a href=""><p id="active">Download</p></a></li>
-          <li><a href="docs"><p>Docs</p></a></li>
-          <li><a href="demos"><p>Demos</p></a></li>
-          <li><a href="tests"><p>Tests</p></a></li>
-          <li><a href="https://github.com/sbiermanlytle/iioengine"><p>Github</p></a></li>
-          <li><a href="https://twitter.com/iioEngine"><p>Twitter</p></a></li>
+          <li><a id="download" href=""><p class="active">Download</p></a></li>
+          <li><a id="docs" href="docs"><p>Docs</p></a></li>
+          <li><a id="demos" href="demos"><p>Demos</p></a></li>
+          <li><a id="tests" href="tests"><p>Tests</p></a></li>
+          <li><a target="_blank" href="https://github.com/sbiermanlytle/iioengine"><p>Github</p></a></li>
+          <li><a target="_blank" href="https://twitter.com/iioEngine"><p>Twitter</p></a></li>
         </ul>
       </nav>
     </header>
 
-    <h1>iio.JS is a Framework for HTML5 Canvas</h1>
-    <h3>lightweight, efficient, with zero dependencies</h3>
-    <p>iio.js is a javascript library that speeds the <span class="kwd">creation and deployment</span> of HTML5 Canvas applications. The download includes production and development <span class="kwd">full source code</span> for all versions of the framework.</p>
-
-    <h2>Free &amp; Open Source</h2>
-    <p>The core platform is <span class="kwd">open source and free</span> to use for any purpose.</p>
-    <p>Submit additions, questions, and bugs on <a href="https://github.com/sbiermanlytle/iioengine">Github</a>. General inquires may be sent to <a href="http://iiointeractive.com/contact">iio interactive</a>.</p>
-
-    <h4>Setup is easy, just download then follow the quick start guide.</h4>
-
-    <div class="arrows_btns">
-      <div class="btn_wrap">
-
-        <img class="big-arrow left-arrow" src="img/arrow-grey.png"/>
-
-        <p style="min-width:190px" class="big-btn"><a id="download" style="padding:15px 26px" class="btn-iio grey" href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">Download v1.4</a></p>
-
-        <img class="big-arrow" src="img/arrow.png"/>
-
-        <p id="quickstart-btn" style="min-width:181px" class="big-btn"><a class="btn-iio" href="tutorials/quick-start.php">Quick Start Guide</a></p>
-
-      </div>
-    </div>
-
+    <div id="page_content"></div>
 
     <footer id="footer">
         <p>&copy; 2015 <a href="http://iiointeractive.com/"><span class="blue">iio</span> inc</a></p>
@@ -70,6 +47,49 @@
 
   <script type="text/javascript" src="js/iio.min.js"></script>
   <script type="text/javascript" src="js/prettify.js"></script>
+  <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="tests.js"></script>
+  <script type="text/javascript" src="js/tests/test-functions.js"></script>
+  <script type="text/javascript" src="js/tests/Test.Line.js"></script>
+  <script type="text/javascript">
+
+  var HOME = 'download';
+  var DOCS = 'docs';
+  var TESTS = 'tests';
+
+  var current = HOME;
+  var page = $('#page_content');
+
+  link_click = function(next, display_fn){
+    if(current != next) {
+      $('#'+current).children().first().removeClass("active");
+      current = next;
+      $('#'+current).children().first().addClass("active");
+    }
+    page.empty();
+    display_fn();
+    return false;
+  }
+
+  $('#download').click(function(){
+    return link_click( HOME, show_home );
+  });
+  $('#tests').click(function(){
+    return link_click( TESTS, show_test_index );
+  });
+
+  var show_home = function(){
+    page.append('<h1>iio.JS is a Framework for HTML5 Canvas</h1>');
+    page.append('<h3>lightweight, efficient, with zero dependencies</h3>');
+    page.append('<p>iio.js is a javascript library that speeds the <span class="kwd">creation and deployment</span> of HTML5 Canvas applications. The download includes production and development <span class="kwd">full source code</span> for all versions of the framework.</p>');
+    page.append('<h2>Free &amp; Open Source</h2>');
+    page.append('<p>The core platform is <span class="kwd">open source and free</span> to use for any purpose.</p>');
+    page.append('<p>Submit additions, questions, and bugs on <a href="https://github.com/sbiermanlytle/iioengine">Github</a>. General inquires may be sent to <a href="http://iiointeractive.com/contact">iio interactive</a>.</p>');
+    page.append('<h4>Setup is easy, just download then follow the quick start guide.</h4>');
+    page.append('<div class="arrows_btns"><div class="btn_wrap"><img class="big-arrow left-arrow" src="img/arrow-grey.png"/><p style="min-width:190px" class="big-btn"><a id="download-iio" style="padding:15px 26px" class="btn-iio grey" href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">Download v1.4</a></p><img class="big-arrow" src="img/arrow.png"/><p id="quickstart-btn" style="min-width:181px" class="big-btn"><a class="btn-iio" href="tutorials/quick-start.php">Quick Start Guide</a></p></div></div>');
+  }; show_home();
+
+  </script>
 
 </body>
 </html>
