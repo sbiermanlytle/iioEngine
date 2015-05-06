@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; Test &middot; Line</title>
+  <meta name="description" content="iio.Line unit tests">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">TestBezierAccs = function( app, settings ){
+
+	var speed = 1;
+
+	var checkBound = function( o, v ){
+		if(o.bezier[v].x &gt; app.width 
+		 || o.bezier[v].x &lt; -app.width)
+			o.bezierVels[v].x *= -1;
+	}
+
+	app.add(new iio.Line({
+		pos: app.center,
+		color: 'green',
+		width: 10,
+		vs:[
+			[ 0,-30 ],
+			[ 0, 30 ]
+		],
+		bezier: [
+			[  app.width, 0 ],
+			[ -app.width, 0 ]
+		],
+		bezierVels: [
+			[ -speed, 0 ],
+			[  speed, 0 ]
+		],
+		onUpdate: function(){
+			checkBound( this, 0 );
+			checkBound( this, 1 );
+		}
+	}));
+}
+
+iio.start( TestBezierAccs, 'canvasId' );</pre>
+<script type="text/javascript" src="../../js/prettify.js"></script>
+</body>
+</html>

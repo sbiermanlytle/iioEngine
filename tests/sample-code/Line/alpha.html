@@ -1,0 +1,33 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; Test &middot; Line</title>
+  <meta name="description" content="iio.Line unit tests">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">TestAlpha = function( app, settings ){
+
+	app.add(new iio.Line({
+		pos: app.center.clone(),
+		vs:[
+			[ -30,-30 ],
+			[  30, 30 ]
+		],
+		color: 'green',
+		width: 10,
+		fade: {
+			speed: .03,
+			callback: function(o){
+				o.fade.speed *= -1;
+			}
+		}
+	}));
+}
+
+iio.start( TestAlpha, 'canvasId' );</pre>
+<script type="text/javascript" src="../../js/prettify.js"></script>
+</body>
+</html>

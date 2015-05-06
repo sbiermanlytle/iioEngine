@@ -1,3 +1,44 @@
+iio.test = {};
+var iioapps;
+
+var _color = [];
+_color[1] = new iio.Color(0,186,255);
+_color[0] = new iio.Color(101,176,66);
+
+show_tests = function(test_class){
+
+	iio.start([test_class.constructor, { color:0 }], 'c00');
+	iio.start([test_class.constructor_no_pos, { color:1 }], 'c01');
+	iio.start([test_class.rotation, { color:0 }], 'c02');
+	iio.start([test_class.rotation_no_pos, { color:1 }], 'c03');
+	iio.start([test_class.origin, { color:0 }], 'c04');
+
+	iio.start([test_class.vel_bounds, { color:1 }], 'c10');
+	iio.start([test_class.acc_bounds, { color:0 }], 'c11');
+	iio.start([test_class.vels, { color:1 }], 'c12');
+	iio.start([test_class.accs, { color:0 }], 'c13');
+
+	iio.start([test_class.rVel_bounds, { color:0 }], 'c20');
+	iio.start([test_class.rVel_bounds_no_pos, { color:1 }], 'c21');
+	iio.start([test_class.rAcc_bounds, { color:0 }], 'c22');
+
+	iio.start([test_class.hidden, { color:1 }], 'c30');
+	iio.start([test_class.alpha, { color:0 }], 'c31');
+	iio.start([test_class.color, { color:1 }], 'c32');
+	iio.start([test_class.width, { color:0 }], 'c33');
+
+	iio.start([test_class.lineCap, { color:0 }], 'c40');
+	iio.start([test_class.dash, { color:1 }], 'c41');
+	iio.start([test_class.gradient, { color:0 }], 'c42');
+	iio.start([test_class.radial_gradient, { color:1 }], 'c43');
+	iio.start([test_class.shadow, { color:0 }], 'c44');
+
+	iio.start([test_class.child, { color:1 }], 'c50');
+	iio.start([test_class.bezier, { color:0 }], 'c51');
+	iio.start([test_class.bezierVels, { color:1 }], 'c52');
+	iio.start([test_class.bezierAccs, { color:0 }], 'c53');
+}
+
 var show_test_index = function(){
 	page.append('<h1>iio.js Unit Tests</h1>');
 	page.append('<h3>click a category to see tests and source code</h3>');
@@ -14,39 +55,6 @@ var show_test_line = function(){
 	page.append('<div id="iioapps"></div>');
 
 	iioapps = document.getElementById('iioapps');
-
 	create_test_canvas_grid( 100, 5, 6 );
-
-	  assign_Test_globals();
-
-	  iio.start([iio_Test.Line.constructor, { c:0 }], 'c00');
-	  iio.start([iio_Test.Line.constructor_no_pos, { c:1 }], 'c01');
-	  iio.start([iio_Test.Line.rotation, { c:0 }], 'c02');
-	  iio.start([iio_Test.Line.rotation_no_pos, { c:1 }], 'c03');
-	  iio.start([iio_Test.Line.origin, { c:0 }], 'c04');
-
-	  iio.start([iio_Test.Line.vel_bounds, { c:1 }], 'c10');
-	  iio.start([iio_Test.Line.acc_bounds, { c:0 }], 'c11');
-	  iio.start([iio_Test.Line.vels, { c:1 }], 'c12');
-	  iio.start([iio_Test.Line.accs, { c:0 }], 'c13');
-
-	  iio.start([iio_Test.Line.rVel_bounds, { c:0 }], 'c20');
-	  iio.start([iio_Test.Line.rVel_bounds_no_pos, { c:1 }], 'c21');
-	  iio.start([iio_Test.Line.rAcc_bounds, { c:0 }], 'c22');
-
-	  iio.start([iio_Test.Line.hidden, { c:1 }], 'c30');
-	  iio.start([iio_Test.Line.alpha, { c:0 }], 'c31');
-	  iio.start([iio_Test.Line.color, { c:1 }], 'c32');
-	  iio.start([iio_Test.Line.width, { c:0 }], 'c33');
-
-	  iio.start([iio_Test.Line.lineCap, { c:0 }], 'c40');
-	  iio.start([iio_Test.Line.dash, { c:1 }], 'c41');
-	  iio.start([iio_Test.Line.gradient, { c:0 }], 'c42');
-	  iio.start([iio_Test.Line.radial_gradient, { c:1 }], 'c43');
-	  iio.start([iio_Test.Line.shadow, { c:0 }], 'c44');
-
-	  iio.start([iio_Test.Line.child, { c:1 }], 'c50');
-	  iio.start([iio_Test.Line.bezier, { c:0 }], 'c51');
-	  iio.start([iio_Test.Line.bezierVels, { c:1 }], 'c52');
-	  iio.start([iio_Test.Line.bezierAccs, { c:0 }], 'c53');
+	show_tests(iio.test.Line);
 }
