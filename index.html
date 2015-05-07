@@ -19,6 +19,8 @@
   <div id="content">
 
     <header id="header">
+
+      <div id="column">
       <div id="iio">
         <a href="">iio</a>
       </div>
@@ -27,11 +29,12 @@
           <li><a id="download" href=""><p class="active">Download</p></a></li>
           <li><a id="docs" href="docs"><p>Docs</p></a></li>
           <li><a id="demos" href="demos"><p>Demos</p></a></li>
-          <li><a id="tests" href="tests"><p>Tests</p></a></li>
+          <li><a id="tests" href="#tests"><p>Tests</p></a></li>
           <li><a target="_blank" href="https://github.com/sbiermanlytle/iioengine"><p>Github</p></a></li>
           <li><a target="_blank" href="https://twitter.com/iioEngine"><p>Twitter</p></a></li>
         </ul>
       </nav>
+      </div>
     </header>
 
     <div id="page_content"></div>
@@ -45,17 +48,38 @@
 
   <div class="colorbar bottom"></div>
 
+  <!-- JS LIBRARIES -->
   <script type="text/javascript" src="js/iio.min.js"></script>
   <script type="text/javascript" src="js/prettify.js"></script>
   <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+
+  <!-- HOME -->
+  <script type="text/javascript" src="home.js"></script>
+
+  <!-- DEMOS -->
+  <script type="text/javascript" src="demos.js"></script>
+  <script type="text/javascript" src="demos/demo-functions.js"></script>
+  <script type="text/javascript" src="demos/ColorGrid.js"></script>
+  <script type="text/javascript" src="demos/Squares.js"></script>
+  <script type="text/javascript" src="demos/Snow.js"></script>
+
+  <!-- TESTS -->
   <script type="text/javascript" src="tests.js"></script>
   <script type="text/javascript" src="tests/test-functions.js"></script>
   <script type="text/javascript" src="tests/test-Line.js"></script>
+
+  <!-- WEB PAGE CONTROLLER -->
   <script type="text/javascript">
 
   var HOME = 'download';
   var DOCS = 'docs';
+  var DEMOS = 'demos';
   var TESTS = 'tests';
+
+  var iioapps;
+  var _color = [];
+  _color[1] = new iio.Color(0,186,255);
+  _color[0] = new iio.Color(101,176,66);
 
   var current = HOME;
   var page = $('#page_content');
@@ -67,6 +91,9 @@
       $('#'+current).children().first().addClass("active");
     }
     page.empty();
+    $('canvas').remove();
+    $('#fullscreen_header').remove();
+    $('#column').show();
     display_fn();
     return false;
   }
@@ -74,20 +101,14 @@
   $('#download').click(function(){
     return link_click( HOME, show_home );
   });
+  $('#demos').click(function(){
+    return link_click( DEMOS, show_demo_index );
+  });
   $('#tests').click(function(){
     return link_click( TESTS, show_test_index );
   });
 
-  var show_home = function(){
-    page.append('<h1>iio.JS is a Framework for HTML5 Canvas</h1>');
-    page.append('<h3>lightweight, efficient, with zero dependencies</h3>');
-    page.append('<p>iio.js is a javascript library that speeds the <span class="kwd">creation and deployment</span> of HTML5 Canvas applications. The download includes production and development <span class="kwd">full source code</span> for all versions of the framework.</p>');
-    page.append('<h2>Free &amp; Open Source</h2>');
-    page.append('<p>The core platform is <span class="kwd">open source and free</span> to use for any purpose.</p>');
-    page.append('<p>Submit additions, questions, and bugs on <a href="https://github.com/sbiermanlytle/iioengine">Github</a>. General inquires may be sent to <a href="http://iiointeractive.com/contact">iio interactive</a>.</p>');
-    page.append('<h4>Setup is easy, just download then follow the quick start guide.</h4>');
-    page.append('<div class="arrows_btns"><div class="btn_wrap"><img class="big-arrow left-arrow" src="img/arrow-grey.png"/><p style="min-width:190px" class="big-btn"><a id="download-iio" style="padding:15px 26px" class="btn-iio grey" href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">Download v1.4</a></p><img class="big-arrow" src="img/arrow.png"/><p id="quickstart-btn" style="min-width:181px" class="big-btn"><a class="btn-iio" href="tutorials/quick-start.php">Quick Start Guide</a></p></div></div>');
-  }; show_home();
+  show_home();
 
   </script>
 

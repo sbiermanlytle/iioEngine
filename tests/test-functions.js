@@ -8,6 +8,9 @@
 		}, { c: color || iio.Color.random() } ], canvas )
 	}
 }*/
+
+iio.test = {};
+
 function create_test_canvas_grid( SIZE, COLS, ROWS ){
 	var canvas, clear;
 	for(var R=0; R<ROWS; R++){
@@ -30,31 +33,31 @@ function create_test_canvas_grid( SIZE, COLS, ROWS ){
 }
 
 function testcode_url(R,C){
-	if(R==0&&C==0) return 'tests/sample-code/Line/constructor.html';
-	if(R==0&&C==1) return 'tests/sample-code/Line/constructor-no-pos.html';
-	if(R==0&&C==2) return 'tests/sample-code/Line/rotation.html';
-	if(R==0&&C==3) return 'tests/sample-code/Line/rotation-no-pos.html';
-	if(R==0&&C==4) return 'tests/sample-code/Line/origin.html';
-	if(R==1&&C==0) return 'tests/sample-code/Line/vel-bounds.html';
-	if(R==1&&C==1) return 'tests/sample-code/Line/acc-bounds.html';
-	if(R==1&&C==2) return 'tests/sample-code/Line/vels.html';
-	if(R==1&&C==3) return 'tests/sample-code/Line/accs.html';
-	if(R==2&&C==0) return 'tests/sample-code/Line/rVel-bounds.html';
-	if(R==2&&C==1) return 'tests/sample-code/Line/rVel-bounds-no-pos.html';
-	if(R==2&&C==2) return 'tests/sample-code/Line/rAcc-bounds.html';
-	if(R==3&&C==0) return 'tests/sample-code/Line/hidden.html';
-	if(R==3&&C==1) return 'tests/sample-code/Line/alpha.html';
-	if(R==3&&C==2) return 'tests/sample-code/Line/color.html';
-	if(R==3&&C==3) return 'tests/sample-code/Line/width.html';
-	if(R==4&&C==0) return 'tests/sample-code/Line/lineCap.html';
-	if(R==4&&C==1) return 'tests/sample-code/Line/dash.html';
-	if(R==4&&C==2) return 'tests/sample-code/Line/gradient.html';
-	if(R==4&&C==3) return 'tests/sample-code/Line/radial-gradient.html';
-	if(R==4&&C==4) return 'tests/sample-code/Line/shadow.html';
-	if(R==5&&C==0) return 'tests/sample-code/Line/child.html';
-	if(R==5&&C==1) return 'tests/sample-code/Line/bezier.html';
-	if(R==5&&C==2) return 'tests/sample-code/Line/bezierVels.html';
-	if(R==5&&C==3) return 'tests/sample-code/Line/bezierAccs.html';
+	if(R==0&&C==0) return 'tests/source-code/Line/constructor.html';
+	if(R==0&&C==1) return 'tests/source-code/Line/constructor-no-pos.html';
+	if(R==0&&C==2) return 'tests/source-code/Line/rotation.html';
+	if(R==0&&C==3) return 'tests/source-code/Line/rotation-no-pos.html';
+	if(R==0&&C==4) return 'tests/source-code/Line/origin.html';
+	if(R==1&&C==0) return 'tests/source-code/Line/vel-bounds.html';
+	if(R==1&&C==1) return 'tests/source-code/Line/acc-bounds.html';
+	if(R==1&&C==2) return 'tests/source-code/Line/vels.html';
+	if(R==1&&C==3) return 'tests/source-code/Line/accs.html';
+	if(R==2&&C==0) return 'tests/source-code/Line/rVel-bounds.html';
+	if(R==2&&C==1) return 'tests/source-code/Line/rVel-bounds-no-pos.html';
+	if(R==2&&C==2) return 'tests/source-code/Line/rAcc-bounds.html';
+	if(R==3&&C==0) return 'tests/source-code/Line/hidden.html';
+	if(R==3&&C==1) return 'tests/source-code/Line/alpha.html';
+	if(R==3&&C==2) return 'tests/source-code/Line/color.html';
+	if(R==3&&C==3) return 'tests/source-code/Line/width.html';
+	if(R==4&&C==0) return 'tests/source-code/Line/lineCap.html';
+	if(R==4&&C==1) return 'tests/source-code/Line/dash.html';
+	if(R==4&&C==2) return 'tests/source-code/Line/gradient.html';
+	if(R==4&&C==3) return 'tests/source-code/Line/radial-gradient.html';
+	if(R==4&&C==4) return 'tests/source-code/Line/shadow.html';
+	if(R==5&&C==0) return 'tests/source-code/Line/child.html';
+	if(R==5&&C==1) return 'tests/source-code/Line/bezier.html';
+	if(R==5&&C==2) return 'tests/source-code/Line/bezierVels.html';
+	if(R==5&&C==3) return 'tests/source-code/Line/bezierAccs.html';
 }
 
 function Test_color(){

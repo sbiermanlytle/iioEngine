@@ -30,11 +30,11 @@ h4{
 h1,h2,h3,h4{
   color:#EFEFEF;
 }
-canvas{
+#iioapps canvas{
   border:1px solid transparent;
   cursor: pointer
 }
-canvas:hover{
+#iioapps canvas:hover{
   border:1px solid #00baff;
 }
 
@@ -68,6 +68,9 @@ canvas:hover{
 #content p{
   padding-top: 5px;
 }
+#iioapps{
+  margin-top: 15px;
+}
 
 /*HEADER*/
 #header{
@@ -75,6 +78,7 @@ canvas:hover{
   top:6px;
   left:0;
   font-family: Agency;
+  z-index: 100
 }
 #header ul{
   list-style: none;
@@ -111,6 +115,7 @@ canvas:hover{
 /*FOOTER*/
 #footer{
   position: fixed;
+  z-index: 100;
   left:0;
   bottom:5px;
   width:110px;
@@ -153,6 +158,50 @@ canvas:hover{
 #categories{
   padding: 10px 20px;
   list-style: square;
+}
+
+/*DEMOS*/
+.demo_wrap{
+  float:left;
+  margin-right: 20px;
+}
+.demo{
+  border:1px solid white;
+}
+.demo_title{
+  padding-top: 10px
+}
+
+/* FULLSCREEN APP */
+#iioapp_fullscreen{
+  position: absolute;
+  top:0;
+  bottom: 0;
+  width: 100%;
+  height:100%;
+  z-index: 10;
+  margin:0;
+  padding:0;
+  border: none;
+  cursor: default;
+}
+#iioapp_fullscreen:hover{
+  border: none;
+}
+#fullscreen_header{
+  background-color:white;
+  margin-top: -1px
+}
+#fullscreen_header h1{
+  color:black;
+  display: inline-block;
+  font-size:16px;
+  font-weight: normal;
+  padding: 0 10px 5px;
+}
+#fullscreen_header a{
+  padding: 0 10px 5px;
+
 }
 
 /* PRETTIFY CSS
@@ -346,7 +395,7 @@ a,h2,canvas,input[type='submit'],.btn,#drag_overlay{
 @media only screen and (min-width:900px) {
   #header,#footer{
     left:inherit;
-    margin-left: -130px;
+    margin-left: -140px;
   }
   #content{
     position: relative;

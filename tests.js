@@ -1,10 +1,3 @@
-iio.test = {};
-var iioapps;
-
-var _color = [];
-_color[1] = new iio.Color(0,186,255);
-_color[0] = new iio.Color(101,176,66);
-
 show_tests = function(test_class){
 
 	iio.start([test_class.constructor, { color:0 }], 'c00');
