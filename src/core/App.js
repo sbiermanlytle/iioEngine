@@ -34,6 +34,9 @@ iio.App.prototype.App = function(view, app, s) {
   this.canvas = view;
   this.ctx = view.getContext('2d');
 
+  //set AudioContext
+  this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
   //prep canvas
   this.canvas.parent = this;
   iio.canvas.prep_input(this.canvas);

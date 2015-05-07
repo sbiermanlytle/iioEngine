@@ -1441,12 +1441,16 @@ iio.Polygon.prototype.contains = function(v, y) {
   return c;
 }
 iio.Polygon.prototype.globalVs = function() {
-  return this.vs.map(function(_v) {
-    var v = iio.point.rotate(_v.x - this.pos.x, _v.y - this.pos.y, this.rotation);
-    v.x += this.pos.x;
-    v.y += this.pos.y;
-    return v;
-  }, this);
+  var vList=[]; var x,y;
+  for(var i=0;i<this.vs.length;i++){
+     x=this.vs[i].x;
+     y=this.vs[i].y;
+     var v = iio.point.rotate(x,y,this.rotation);
+     v.x+=this.pos.x;
+     v.y+=this.pos.y;
+     vList[i]=v;
+  }
+  return vList;
 }
 iio.Polygon.prototype.left = function(){ 
   return iio.specVec( this.globalVs(),
@@ -1906,6 +1910,9 @@ iio.App.prototype.App = function(view, app, s) {
   this.canvas = view;
   this.ctx = view.getContext('2d');
 
+  //set AudioContext
+  this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
   //prep canvas
   this.canvas.parent = this;
   iio.canvas.prep_input(this.canvas);
@@ -2025,3 +2032,43 @@ iio.App.prototype._update = function(o, dt) {
   }
   this.draw();
 }
+;
+iio.App.prototype.loadAudio = function(url, callback, onError) {
+  return new iio.Sound(this.audioCtx, url, callback, onError);
+}
+
+iio.Sound = function(audioCtx, url, callback, onError) {
+  // Set up a GainNode for volume control
+  this.gainNode = audioCtx.createGain();
+  this.gainNode.connect(audioCtx.destination);
+
+  // Save this AudioContext for later use
+  this.audioCtx = audioCtx;
+
+  // For scoping in xhr.onload
+  var sound = this;
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.responseType = 'arraybuffer';
+
+  xhr.onload = function() {
+    audioCtx.decodeAudioData(xhr.response, callback || function(buffer) {
+      sound.buffer = buffer;
+    }, onError); 
+  };
+
+  xhr.send();
+}
+
+iio.Sound.prototype.play = function(gain) {
+  if (this.buffer === undefined) return;
+  if (gain !== undefined) {
+    this.gainNode.gain.value = gain;
+  }
+  var source = this.audioCtx.createBufferSource();
+  source.buffer = this.buffer;
+  source.connect(this.gainNode);
+  source.start(0);
+}
+

@@ -16,10 +16,9 @@ Snake = function(app,s){
 	var head, body, direction, snake_speed, snake_color, inverted;
 	function reset(){
 		app.rmv();
-		if(s && s.preview) snake_color = 'rgb(240,240,240)';
-		else snake_color = iio.random.color();
-		inverted = iio.color.invert(snake_color);
-		app.set(inverted);
+		if(s && s.preview) snake_color = new iio.Color(240,240,240);
+		else snake_color = iio.Color.random();
+		app.set(snake_color.invert());
 		head = app.add({
 			pos:{
 				x:startPos.x,
@@ -54,8 +53,8 @@ Snake = function(app,s){
 	var food;
 	function makeFood(){
 		var randomPos = {
-			x:snake_size*iio.random.integer(0,res)+snake_size/2,
-			y:snake_size*iio.random.integer(0,app.height/snake_size)
+			x:snake_size*iio.randomInt(0,res)+snake_size/2,
+			y:snake_size*iio.randomInt(0,app.height/snake_size)
 				+snake_size/2
 		}
 		food = app.add({
@@ -106,8 +105,8 @@ Snake = function(app,s){
 					&& head.pos.y==body[i].pos.y)
 					reset();
 
-		if(s && s.preview && iio.random.num()<.4)
-			direction = iio.random.integer(0,4);
+		if(s && s.preview && iio.random()<.4)
+			direction = iio.randomInt(0,4);
 		switch(direction){
 			case UP: 
 				head.pos.y -= snake_size;

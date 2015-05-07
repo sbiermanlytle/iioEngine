@@ -18,6 +18,7 @@ coreSrc = [
   'Circle.js',
   'Text.js',
   'App.js',
+  'Sound.js'
 ].map(function(filename) { return srcPath + '/' + filename });
 
 module.exports = function(grunt) {

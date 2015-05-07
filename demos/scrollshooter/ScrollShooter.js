@@ -1,14 +1,3 @@
-<!-- 
-	iio Engine v1.3
-	***************
-	Live Demo: iioapps.com/scroll-shooter
- -->
-<!DOCTYPE html>
-<html>
-	<body>
-		<script type="text/javascript" src="../../core/iioEngine.min.js"></script>
-		<script type="text/javascript">
-
 ScrollShooter = function(app,s){
 
 	app.set('black');
@@ -163,8 +152,4 @@ ScrollShooter = function(app,s){
 		app.rmv(l);
 	});
 
-}; iio.start(ScrollShooter);
-
-		</script>
-	</body>
-</html>
+}; 
