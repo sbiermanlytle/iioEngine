@@ -4,8 +4,8 @@
   <title>iio.js &middot; Test &middot; Line</title>
   <meta name="description" content="iio.Line unit tests">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
-  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
 	<pre class="prettyprint linenums:1">// define a new iio app
@@ -13,15 +13,15 @@ TestConstructorNoPos = function( app, settings ){
 
 	// add a new line to the app
 	app.add(new iio.Line({
-		// set line color to blue
+		// set color to blue
 		color: 'blue',
-		// set line width to 10px
+		// set width to 10px
 		width: 10,
-		// set line vertices relative to app 0,0
+		// set vertices relative to app 0,0
 		vs:[
-			// start vertex
+			// start vertex position
 			[ 20, 20 ],
-			// end vertex
+			// end vertex position
 			[ app.width-20, app.height-20 ]
 		]
 	}));
@@ -29,6 +29,6 @@ TestConstructorNoPos = function( app, settings ){
 
 // start the app on an existing canvas
 iio.start( TestConstructorNoPos, 'canvasId' );</pre>
-<script type="text/javascript" src="../../js/prettify.js"></script>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
 </body>
 </html>

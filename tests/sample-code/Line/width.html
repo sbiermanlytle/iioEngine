@@ -4,38 +4,55 @@
   <title>iio.js &middot; Test &middot; Line</title>
   <meta name="description" content="iio.Line unit tests">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
-  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">TestWidth = function( app, settings ){
+	<pre class="prettyprint linenums:1">// define a new iio app
+TestWidth = function( app, settings ){
 
+	// set appupdate speed to 15 fps
 	app.loop(15);
 
+	// add a new line to the app
 	app.add(new iio.Line({
+		// set position to app center
 		pos: app.center.clone(),
+		// set color to green
 		color: 'green',
+		// set width to 1px
 		width: 1,
+		// set vertices relative to pos
 		vs:[
+			// start vertex position
 			[ -30,-30 ],
+			// end vertex position
 			[  30, 30 ]
 		],
+		// define new boolean property
 		growing: true,
+		// define update function
 		onUpdate: function(){
+
 			if( this.growing ){
-			this.width++;
-			if(this.width &gt; 30)
-				this.growing = false;
-		} else {
-			this.width--;
-			if( this.width &lt; 2 )
-				this.growing = true;
+				// add 1px to width
+				this.width++;
+				// reverse growing if width &gt; 30px
+				if(this.width &gt; 30)
+					this.growing = false;
+			} else {
+				// subtract 1px from width
+				this.width--;
+				// reverse growing if width &lt; 30px
+				if( this.width &lt; 2 )
+					this.growing = true;
+			}
 		}
-	}
 	}));
 }
 
+// start the app on an existing canvas
 iio.start( TestWidth, 'canvasId' );</pre>
-<script type="text/javascript" src="../../js/prettify.js"></script>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
 </body>
 </html>

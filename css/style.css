@@ -212,7 +212,7 @@ canvas:hover{
     background-color: black;
     font-family: Consolas,'Bitstream Vera Sans Mono','Courier New',Courier,monospace;
     font-size: 14px;
-    tab-size: 4;
+    tab-size: 2;
   }
   .prettyprint ol.linenums {
     list-style: decimal outside;
