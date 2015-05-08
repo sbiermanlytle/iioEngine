@@ -65,8 +65,9 @@
 
   <!-- TESTS -->
   <script type="text/javascript" src="tests.js"></script>
-  <script type="text/javascript" src="tests/test-functions.js"></script>
-  <script type="text/javascript" src="tests/test-Line.js"></script>
+  <script type="text/javascript" src="tests/iio.test.functions.js"></script>
+  <script type="text/javascript" src="tests/iio.test.Line.js"></script>
+  <script type="text/javascript" src="tests/iio.test.Circle.js"></script>
 
   <!-- WEB PAGE CONTROLLER -->
   <script type="text/javascript">
@@ -77,9 +78,9 @@
   var TESTS = 'tests';
 
   var iioapps;
-  var _color = [];
-  _color[1] = new iio.Color(0,186,255);
-  _color[0] = new iio.Color(101,176,66);
+  var app_colors = [];
+  app_colors[1] = new iio.Color(0,186,255);
+  app_colors[0] = new iio.Color(101,176,66);
 
   var current = HOME;
   var page = $('#page_content');

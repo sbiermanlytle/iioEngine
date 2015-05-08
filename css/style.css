@@ -370,7 +370,7 @@ a,h2,canvas,input[type='submit'],.btn,#drag_overlay{
   transition:.3s;
 }
 .top,.bottom{
-  position: absolute;
+  position: fixed;
 }
 .top{
   top:0

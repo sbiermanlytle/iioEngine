@@ -1,0 +1,75 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">// define a new iio app
+TestColor = function( app, settings ){
+
+	// add a new circle to the app
+	app.add(new iio.Circle({
+		// set position to app center
+		pos: app.center.clone(),
+		// set color to blue
+		color: 'blue',
+		// set radius to 25px
+		radius: 25,
+		// define new cycle property
+		cycle: 0,
+		// update the color or cycle on each update
+		onUpdate: function(){
+			switch( this.cycle ){
+				case 1: 
+					// subtract green if over limit
+					if( this.color.g &gt; 100 )
+						this.color.g--;
+					// subtract red if over limit
+					else if( this.color.r &gt; 100 )
+						this.color.r--;
+					// randomize cycle
+					else this.cycle = iio.randomInt( 1,3 );
+					break;
+				case 2: 
+					// add blue if under limit
+					if( this.color.b &lt; 200 )
+						this.color.b++;
+					// add red if under limit
+					else if( this.color.r &lt; 200 )
+						this.color.r++;
+					// randomize cycle
+					else this.cycle = iio.randomInt( 1,3 );
+					break;
+				case 3: 
+					// subtract green if over limit
+					if( this.color.g &gt; 0 )
+						this.color.g--;
+					// subtract red if over limit
+					else if( this.color.r &gt; 0 )
+						this.color.r--;
+					// randomize cycle
+					else this.cycle = iio.randomInt( 1,3 );
+					break;
+				default: 
+					// add red if under limit
+					if( this.color.r &lt; 255 )
+						this.color.r++;
+					// add blue if under limit
+					else if( this.color.b &lt; 255 )
+						this.color.b++;
+					// randomize cycle
+					else this.cycle = iio.randomInt( 1,3 );
+			}
+		}
+	}));
+}
+
+// start the app on an existing canvas
+iio.start( TestColor, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

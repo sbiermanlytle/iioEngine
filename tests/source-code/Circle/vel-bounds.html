@@ -1,8 +1,8 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-  <title>iio.js &middot; Test &middot; Line</title>
-  <meta name="description" content="iio.Line unit tests">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
@@ -12,38 +12,31 @@
 TestVelBounds = function( app, settings ){
 	
 	// define a speed variable
-	var speed = 0.6;
+	var speed = 1;
 
 	// reverse the given objects x velocity
 	function reverse(o){ o.vel.x *= -1 }
 
-	// add a new line to the app
-	app.add(new iio.Line({
+	// add a new circle to the app
+	app.add(new iio.Circle({
 		// set position to app center
 		pos: app.center.clone(),
 		// set color to blue
 		color: 'blue',
-		// set width to 10px
-		width: 10,
+		// set radius to 25px
+		radius: 25,
 		// set x velocity
 		vel: [ speed, 0 ],
-		// set vertices relative to pos
-		vs:[
-			// start vertex position
-			[ 0,-30 ],
-			// end vertex position
-			[ 0, 30 ]
-		],
 		// set bounds for movement
 		bounds: {
 			// define pos.x upper limit and callback
 			right: {
-				bound: app.width - 5,
+				bound: app.width,
 				callback: reverse
 			},
 			// define pos.x lower limit and callback
 			left: {
-				bound: 5, 
+				bound: 0, 
 				callback: reverse
 			}
 		}
