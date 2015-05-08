@@ -14,18 +14,22 @@ TestAccBounds = function( app, settings ){
 	// define a speed variable
 	var speed = 1;
 
-	// add a new circle to the app
-	app.add(new iio.Circle({
+	// add a new triangle to the app
+	app.add(new iio.Polygon({
 		// set position to app center
 		pos: app.center.clone(),
 		// set color to green
 		color: 'green',
-		// set radius to 25px
-		radius: 25,
 		// set x velocity
 		vel: [ speed, 0 ],
 		// set x acceleration
 		acc: [ .01, 0 ],
+		// set vertices relative to pos
+		vs: [
+			[   0,-20 ],
+			[  20, 20 ],
+			[ -20, 20 ]
+		],
 		// set bounds for movement
 		bounds: {
 			// define pos.x upper limit and callback

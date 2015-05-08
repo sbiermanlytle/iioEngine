@@ -9,39 +9,29 @@
 </head>
 <body onload="prettyPrint()">
 	<pre class="prettyprint linenums:1">// define a new iio app
-TestAccBounds = function( app, settings ){
+TestDash = function( app, settings ){
 
-	// define a speed variable
-	var speed = 1;
-
-	// add a new circle to the app
-	app.add(new iio.Circle({
+	// define shared triangle properties
+	app.add(new iio.Polygon({
 		// set position to app center
 		pos: app.center.clone(),
-		// set color to green
-		color: 'green',
-		// set radius to 25px
-		radius: 25,
-		// set x velocity
-		vel: [ speed, 0 ],
-		// set x acceleration
-		acc: [ .01, 0 ],
-		// set bounds for movement
-		bounds: {
-			// define pos.x upper limit and callback
-			right: {
-				bound: app.width, 
-				callback: function(o){
-					// set the x velocity
-					o.vel.x = -speed;
-				} 
-			}
-		}
+		// set outline color to green
+		outline: 'green',
+		// set line width to 10px
+		lineWidth: 10,
+		// set dash with 10px length and spacing
+		dash: 10,
+		// set vertices relative to pos
+		vs: [
+			[   0,-20 ],
+			[  20, 20 ],
+			[ -20, 20 ]
+		]
 	}));
 }
 
 // start the app on an existing canvas
-iio.start( TestAccBounds, 'canvasId' );</pre>
+iio.start( TestDash, 'canvasId' );</pre>
 <script type="text/javascript" src="../../../js/prettify.js"></script>
 </body>
 </html>

@@ -19,24 +19,37 @@ TestChild = function( app, settings ){
 		lineWidth: 5
 	}
 
-	// add a new circle to the app
+	// add a new triangle to the app
 	// with the shared properties
-	app.add(new iio.Circle( props, {
-		// set position to app center
-		pos: app.center.clone(),
+	app.add(new iio.Polygon( props, {
+		// set position
+		pos: [
+			// pos.x
+			app.center.x,
+			// pos.y
+			app.center.y-10
+		],
 		// set origin relative to pos
-		origin: [ 8, -8 ],
-		// set radius to 25px
-		radius: 25,
+		origin: [ 0, 10 ],
 		// set rotational velocity
 		// to .02 radians / update
 		rVel: .02
+		// set vertices relative to pos
+		vs: [
+			[   0,-24 ],
+			[  30, 30 ],
+			[ -30, 30 ]
+		],
 
-		// add a new circle to the circle
+		// add a new triangle to the triangle
 		// with the shared properties
-	})).add(new iio.Circle( props, {
-		// set radius to 12px
-		radius: 12
+	})).add(new iio.Polygon( props, {
+		// set vertices relative to parent pos
+		vs: [
+			[   0,-4 ],
+			[  15, 20 ],
+			[ -15, 20 ]
+		]
 	}));
 }
 

@@ -9,39 +9,51 @@
 </head>
 <body onload="prettyPrint()">
 	<pre class="prettyprint linenums:1">// define a new iio app
-TestAccBounds = function( app, settings ){
+TestrAccBounds = function( app, settings ){
 
-	// define a speed variable
-	var speed = 1;
-
-	// add a new circle to the app
-	app.add(new iio.Circle({
+	// add a new triangle to the app
+	app.add(new iio.Polygon({
 		// set position to app center
 		pos: app.center.clone(),
 		// set color to green
 		color: 'green',
-		// set radius to 25px
-		radius: 25,
-		// set x velocity
-		vel: [ speed, 0 ],
-		// set x acceleration
-		acc: [ .01, 0 ],
+		// set rotational acceleration
+		// to .0015 radians / update
+		rAcc: .0015,
+		// set vertices relative to pos
+		vs: [
+			[   0,-20 ],
+			[  20, 20 ],
+			[ -20, 20 ]
+		],
 		// set bounds for movement
 		bounds: {
-			// define pos.x upper limit and callback
-			right: {
-				bound: app.width, 
+			// define rotation upper limit and callback
+			rightRotation: {
+				bound: Math.PI/2,
 				callback: function(o){
-					// set the x velocity
-					o.vel.x = -speed;
-				} 
+					// reverse rotational acceleration
+					o.rAcc *= -1; 
+					// set rotational velocity
+					o.rVel = -.01;
+				}
+			},
+			// define rotation lower limit and callback
+			leftRotation: {
+				bound: -Math.PI/2, 
+				callback: function(o){
+					// reverse rotational acceleration
+					o.rAcc *= -1; 
+					// set rotational velocity
+					o.rVel = .01;
+				}
 			}
 		}
 	}));
 }
 
 // start the app on an existing canvas
-iio.start( TestAccBounds, 'canvasId' );</pre>
+iio.start( TestrAccBounds, 'canvasId' );</pre>
 <script type="text/javascript" src="../../../js/prettify.js"></script>
 </body>
 </html>
