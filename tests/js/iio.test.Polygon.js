@@ -4,9 +4,9 @@ iio.test.Polygon = {
 			pos: app.center,
 			color: settings.color,
 			vs: [
-				[   0,-30 ],
-				[  30, 30 ],
-				[ -30, 30 ]
+				[   0,-20 ],
+				[  20, 20 ],
+				[ -20, 20 ]
 			]
 		}));
 	},
@@ -14,9 +14,9 @@ iio.test.Polygon = {
 		app.add(new iio.Polygon({
 			color: settings.color,
 			vs:[
-				[ app.center.x, app.center.y - 30 ],
-				[ app.center.x + 30, app.center.y + 30 ],
-				[ app.center.x - 30, app.center.y + 30 ]
+				[ app.center.x, app.center.y - 20 ],
+				[ app.center.x + 20, app.center.y + 20 ],
+				[ app.center.x - 20, app.center.y + 20 ]
 			]
 		}));
 	},
@@ -26,9 +26,9 @@ iio.test.Polygon = {
 			color: settings.color,
 			rotation: Math.PI/2,
 			vs: [
-				[   0,-30 ],
-				[  30, 30 ],
-				[ -30, 30 ]
+				[   0,-20 ],
+				[  20, 20 ],
+				[ -20, 20 ]
 			]
 		}));
 	},
@@ -302,16 +302,16 @@ iio.test.Polygon = {
 		app.add(new iio.Polygon({
 			pos: app.center,
 			vs: [
-				[   0,-30 ],
-				[  30, 30 ],
-				[ -30, 30 ]
+				[   0,-20 ],
+				[  20, 20 ],
+				[ -20, 20 ]
 			],
 			color: new iio.Gradient({
-				start: [ 0, -30 ],
-				end: [ 0, 30 ],
+				start: [ 0, -20 ],
+				end: [ 0, 20 ],
 				stops: [
 					[ 0, settings.color ],
-					[ 1, 'transparent' ]
+					[ 1, 'black' ]
 				]
 			})
 		}));
