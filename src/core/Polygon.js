@@ -6,7 +6,7 @@ iio.Polygon.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Polygon.prototype.Polygon = function() {
-  this._super.Drawable.call(this,arguments[0]);
+  this._super.Drawable.call(this,this.merge_props(arguments));
 }
 
 //FUNCTIONS
@@ -59,6 +59,9 @@ iio.Polygon.prototype.globalVs = function() {
      vList[i]=v;
   }
   return vList;
+}
+iio.Polygon.prototype.size = function(){ 
+  return this.right() - this.left() 
 }
 iio.Polygon.prototype.left = function(){ 
   return iio.specVec( this.globalVs(),

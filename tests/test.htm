@@ -1,28 +1,32 @@
 <!-- 
 	iio Engine v1.4
 	***************
-	URL: iioengine.com/tests/Polygon.htm
+	URL: iioengine.com/tests/Line
  -->
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Test | Polygon</title>
+	<title>Test</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<style type="text/css">
+		canvas{
+			border:1px solid white;
+		}
+	</style>
 	<script type="text/javascript" src="../build/iio.js"></script>
 	<script type="text/javascript" src="js/iio.test.functions.js"></script>
 	<script type="text/javascript" src="js/iio.test.Polygon.js"></script>
 </head>
 <body>
+	<canvas id="c" width="100px" height="100px"></canvas>
 <script type="text/javascript">	
 
 	var iioapps = document.body;
 	var app_colors = [];
-	app_colors[0] = new iio.Color.random();
-	app_colors[1] = app_colors[0].clone().invert();
+	app_colors[1] = new iio.Color(0,186,255);
+	app_colors[0] = new iio.Color(101,176,66);
 
-	iio.test.create_canvas_grid( 100, 5, 6 );
-
-	iio.test.show_tests(iio.test.Polygon);
+	iio.start([iio.test.Polygon.img, { color:app_colors[0] }], 'c');
 
 </script>
 </body>

@@ -85,6 +85,8 @@ iio.test.show_tests = function( test_class, class_name ){
 		'tests/source-code/'+class_name+'/rVel-bounds-no-pos.html' );
 	run_test( test_class.rAcc_bounds,
 		'tests/source-code/'+class_name+'/rAcc-bounds.html' );
+	run_test( test_class.rAcc_bounds_no_pos,
+		'tests/source-code/'+class_name+'/rAcc-bounds.html' );
 
 	next_row();
 
