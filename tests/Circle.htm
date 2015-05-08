@@ -3,47 +3,26 @@
 	***************
 	URL: iioengine.com/tests/Circle.htm
  -->
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
 	<title>Test | Circle</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<script type="text/javascript" src="../build/iio.js"></script>
-	<script type="text/javascript" src="js/test-functions.js"></script>
-	<script type="text/javascript" src="js/Test.Circle.js"></script>
+	<script type="text/javascript" src="js/iio.test.functions.js"></script>
+	<script type="text/javascript" src="js/iio.test.Circle.js"></script>
 </head>
 <body>
 <script type="text/javascript">	
 
-	create_test_canvas_grid( 100, 5, 6 );
+	var iioapps = document.body;
+	var app_colors = [];
+	app_colors[0] = new iio.Color.random();
+	app_colors[1] = app_colors[0].clone().invert();
 
-	assign_Test_globals();
+	iio.test.create_canvas_grid( 100, 5, 6 );
 
-	iio.start([iio_Test.Circle.constructor, { c:0 }], 'c00');
-	iio.start([iio_Test.Circle.rotation, { c:1 }], 'c01');
-	iio.start([iio_Test.Circle.origin, { c:0 }], 'c02');
-
-	iio.start([iio_Test.Circle.vel_bounds, { c:1 }], 'c10');
-	iio.start([iio_Test.Circle.acc_bounds, { c:0 }], 'c11');
-
-	iio.start([iio_Test.Circle.rVel_bounds, { c:0 }], 'c20');
-	iio.start([iio_Test.Circle.rAcc_bounds, { c:1 }], 'c21');
-
-	iio.start([iio_Test.Circle.hidden, { c:1 }], 'c30');
-	iio.start([iio_Test.Circle.alpha, { c:0 }], 'c31');
-	iio.start([iio_Test.Circle.color, { c:1 }], 'c32');
-	iio.start([iio_Test.Circle.outline, { c:0 }], 'c33');
-	iio.start([iio_Test.Circle.shrink, { c:1 }], 'c34');
-
-	iio.start([iio_Test.Circle.dash, { c:1 }], 'c40');
-	iio.start([iio_Test.Circle.dash_rounded, { c:0 }], 'c41');
-	iio.start([iio_Test.Circle.gradient, { c:1 }], 'c42');
-	iio.start([iio_Test.Circle.radial_gradient, { c:0 }], 'c43');
-	iio.start([iio_Test.Circle.shadow, { c:1 }], 'c44');
-
-	iio.start([iio_Test.Circle.child, { c:1 }], 'c50');
-	//iio.start([iio_Test.Circle.img, { c:0 }], 'c51');
-	//iio.start([iio_Test.Circle.flip, { c:1 }], 'c52');
+	iio.test.show_tests(iio.test.Circle);
 
 </script>
 </body>

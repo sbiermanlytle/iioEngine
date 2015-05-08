@@ -1,27 +1,25 @@
-var	_radius = 25;
-
-iio_Test.Circle = {
+iio.test.Circle = {
 	constructor : function(app, settings){
 		app.add(new iio.Circle({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius
+			color: settings.color,
+			radius: 25
 		}));
 	},
 	rotation : function(app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: settings.color,
+			radius: 25,
 			rotation: Math.PI/2
 		}));
 	},
 	origin : function(app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
-			origin: [ _radius/3, -_radius/3 ],
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			origin: [ 8, -8 ],
+			color: settings.color,
+			radius: 25,
 			rVel: .02
 		}));
 	},
@@ -33,8 +31,8 @@ iio_Test.Circle = {
 
 		app.add(new iio.Circle({
 			pos: app.center.clone(),
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: settings.color,
+			radius: 25,
 			vel: [ speed,0 ],
 			bounds: {
 				right: {
@@ -54,21 +52,15 @@ iio_Test.Circle = {
 
 		app.add(new iio.Circle({
 			pos: app.center.clone(),
-			color: _color[settings.c].clone(),
-			radius: _radius,
-			vel: [ speed,0 ],
+			color: settings.color,
+			radius: 25,
+			vel: [ speed, 0 ],
 			acc: [ .01, 0 ],
 			bounds: {
 				right: {
 					bound: app.width, 
 					callback: function(o){
 						o.vel.x = -speed;
-					}
-				},
-				left: {
-					bound: 0, 
-					callback: function(o){
-						o.vel.x = speed;
 					}
 				}
 			}
@@ -80,9 +72,9 @@ iio_Test.Circle = {
 
 		app.add(new iio.Circle({
 			pos: app.center.clone(),
-			origin: [ _radius/2, -_radius/2 ],
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			origin: [ 12, -12 ],
+			color: settings.color,
+			radius: 25,
 			rVel: .02,
 			bounds: {
 				rightRotation: {
@@ -100,9 +92,9 @@ iio_Test.Circle = {
 
 		app.add(new iio.Circle({
 			pos: app.center.clone(),
-			origin: [ _radius/2, -_radius/2 ],
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			origin: [ 12, -12 ],
+			color: settings.color,
+			radius: 25,
 			rAcc: .0015,
 			bounds: {
 				rightRotation: {
@@ -128,8 +120,8 @@ iio_Test.Circle = {
 
 		app.add(new iio.Circle({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: settings.color,
+			radius: 25,
 			hidden: false,
 			onUpdate: function(){
 				this.hidden = !this.hidden;
@@ -139,8 +131,8 @@ iio_Test.Circle = {
 	alpha : function( app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: settings.color,
+			radius: 25,
 			fade: {
 				speed: .03,
 				lowerBound: .2,
@@ -153,10 +145,10 @@ iio_Test.Circle = {
 	color : function( app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: settings.color.clone(),
+			radius: 25,
 			cycle: 0,
-			onUpdate: Test_color
+			onUpdate: iio.test.color
 		}));
 	},
 	outline : function( app, settings ){
@@ -165,24 +157,26 @@ iio_Test.Circle = {
 
 		app.add(new iio.Circle({
 			pos: app.center,
-			radius: _radius,
-			outline: _color[settings.c].clone(),
+			radius: 25,
+			outline: settings.color.clone(),
 			lineWidth: 1,
 			growing: true,
-			onUpdate: Test_outline
+			onUpdate: iio.test.outline
 		}));
 	},
 	shrink : function( app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
-			color: _color[settings.c].clone(),
-			radius: _radius,
+			color: settings.color,
+			radius: 25,
 			shrink: {
 				speed: .03,
-				upperBound: _radius,
+				upperBound: 25,
 				lowerBound: 4,
 				callback: function(o){
-					o.shrink.speed *= -1;
+					if(o.radius < o.shrink.lowerBound)
+						o.shrink.speed = -.03;
+					else o.shrink.speed = .03;
 				}
 			}
 		}));
@@ -190,8 +184,8 @@ iio_Test.Circle = {
 	dash : function ( app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
-			radius: _radius,
-			outline: _color[settings.c].clone(),
+			radius: 25,
+			outline: settings.color,
 			lineWidth: 10,
 			dash: [ 10, 3 ]
 		}));
@@ -199,8 +193,8 @@ iio_Test.Circle = {
 	dash_rounded : function ( app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
-			radius: _radius,
-			outline: _color[settings.c].clone(),
+			radius: 25,
+			outline: settings.color,
 			lineWidth: 10,
 			dash: [ .1, 17.2 ],
 			dashOffset: 10,
@@ -210,13 +204,13 @@ iio_Test.Circle = {
 	gradient : function( app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
-			radius: _radius,
+			radius: 25,
 			color: new iio.Gradient({
-				start: [ 0, -_radius ],
-				end: [ 0, _radius ],
+				start: [ 0, -25 ],
+				end: [ 0, 25 ],
 				stops: [
-					[ 0, _color[settings.c].clone() ],
-					[ 1, 'transparent' ]
+					[ 0, settings.color ],
+					[ 1, 'black' ]
 				]
 			})
 		}));
@@ -224,7 +218,7 @@ iio_Test.Circle = {
 	radial_gradient : function( app, settings ){
 		app.add(new iio.Circle({
 			pos: app.center,
-			radius: _radius,
+			radius: 25,
 			color: new iio.Gradient({
 				start: [ 0,0 ],
 				startRadius: 1,
@@ -232,8 +226,8 @@ iio_Test.Circle = {
 				endRadius: 40,
 				stops: [
 					[ 0, 'transparent' ],
-					[ 0.4, _color[settings.c].clone() ],
-					[ 1, _color[settings.c].clone() ]
+					[ 0.4, settings.color ],
+					[ 1, settings.color ]
 				]
 			})
 		}));
@@ -244,10 +238,10 @@ iio_Test.Circle = {
 
 		app.add(new iio.Circle({
 			pos: app.center,
-			outline: _color[settings.c].clone(),
+			outline: settings.color,
 			lineWidth: 5,
 			dash: 20,
-			radius: _radius,
+			radius: 25,
 			shadow: new iio.Color( 0,0,0,.5 ),
 			shadowBlur: 5,
 			shadowOffset: [ 4,4 ],
@@ -256,17 +250,17 @@ iio_Test.Circle = {
 	child : function( app, settings ){
 
 		var props = {
-			outline: _color[settings.c].clone(),
+			outline: settings.color,
 			lineWidth: 5
 		}
 
 		app.add( new iio.Circle(props,{
 			pos: app.center,
-			origin: [ _radius/3, -_radius/3 ],
-			radius: _radius,
+			origin: [ 8, -8 ],
+			radius: 25,
 			rVel: .02
 		})).add( new iio.Circle(props,{
-			radius: _radius/2
+			radius: 12
 		}))
 	},
 	img : function( app, settings ){

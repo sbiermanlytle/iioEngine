@@ -1064,8 +1064,7 @@ iio.Drawable.prototype.update_vel = function(){
   if(this.pos){
     if (this.vel.x) this.pos.x += this.vel.x;
     if (this.vel.y) this.pos.y += this.vel.y;
-  }
-  if(this.vs){
+  } else if(this.vs) {
     for(var i=0; i<this.vs.length; i++){
       if (this.vel.x) this.vs[i].x += this.vel.x;
       if (this.vel.y) this.vs[i].y += this.vel.y;
@@ -1911,7 +1910,7 @@ iio.App.prototype.App = function(view, app, s) {
   this.ctx = view.getContext('2d');
 
   //set AudioContext
-  this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  //this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
   //prep canvas
   this.canvas.parent = this;

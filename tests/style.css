@@ -8,6 +8,7 @@ html{
 canvas{
 	margin: 5px;
 	float: left;
+	border: 1px solid gainsboro;
 }
 #iio_log{
 	margin:10px;
