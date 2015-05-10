@@ -773,7 +773,7 @@ iio.Obj.prototype.convert_props = function(){
       var o = this;
       if (!this.size()){
         this.img.onload = function(e) {
-          o.setSize(o.img.width || 0);
+          o.setSize(o.img.width || 0, o.img.height || 0);
           if(o.app) o.app.draw()
         }
       } else this.img.onload = function(e) {
@@ -781,7 +781,7 @@ iio.Obj.prototype.convert_props = function(){
       }
     } else {
       if (!this.size()) {
-        o.setSize(this.img.width || 0);
+        o.setSize(this.img.width || 0, o.img.height || 0);
         if(o.app) o.app.draw()
       }
     }
@@ -1528,6 +1528,8 @@ iio.Rectangle.prototype.real_vertices = function() {
     return v;
   }, this);
 }
+iio.Rectangle.prototype.size = function(){ return this.width }
+iio.Rectangle.prototype.setSize = function(w,h){ this.width = w; this.height = h; }
 iio.Rectangle.prototype.left = function(){ return this.pos.x - this.width/2 }
 iio.Rectangle.prototype.right = function(){ return this.pos.x + this.width/2 }
 iio.Rectangle.prototype.top = function(){ return this.pos.y - this.height/2 }

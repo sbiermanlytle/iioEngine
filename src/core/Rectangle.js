@@ -42,6 +42,8 @@ iio.Rectangle.prototype.real_vertices = function() {
     return v;
   }, this);
 }
+iio.Rectangle.prototype.size = function(){ return this.width }
+iio.Rectangle.prototype.setSize = function(w,h){ this.width = w; this.height = h; }
 iio.Rectangle.prototype.left = function(){ return this.pos.x - this.width/2 }
 iio.Rectangle.prototype.right = function(){ return this.pos.x + this.width/2 }
 iio.Rectangle.prototype.top = function(){ return this.pos.y - this.height/2 }

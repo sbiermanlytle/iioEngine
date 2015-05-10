@@ -79,7 +79,7 @@ iio.Obj.prototype.convert_props = function(){
       var o = this;
       if (!this.size()){
         this.img.onload = function(e) {
-          o.setSize(o.img.width || 0);
+          o.setSize(o.img.width || 0, o.img.height || 0);
           if(o.app) o.app.draw()
         }
       } else this.img.onload = function(e) {
@@ -87,7 +87,7 @@ iio.Obj.prototype.convert_props = function(){
       }
     } else {
       if (!this.size()) {
-        o.setSize(this.img.width || 0);
+        o.setSize(this.img.width || 0, o.img.height || 0);
         if(o.app) o.app.draw()
       }
     }
