@@ -66,6 +66,9 @@ iio.test.show_tests = function( test_class, class_name ){
 	run_test( test_class.origin, 
 		'tests/source-code/'+class_name+'/origin.html' );
 
+	run_test( test_class.rectXrect, 
+		'tests/source-code/'+class_name+'/rectXrect.html' );
+
 	next_row();
 
 	run_test( test_class.vel_bounds,

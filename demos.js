@@ -4,6 +4,12 @@ var show_demo_index = function(){
 	page.append('<div id="iioapps"></div>');
 	iioapps = document.getElementById('iioapps');
 
+	create_demo_canvas( 200, 'ColorGrid', 'ColorGrid' )
+	$('#ColorGrid').click(function(){
+		return link_click( DEMOS, show_demo_ColorGrid );
+	});
+	iio.start([ColorGrid, { preview:true, w:20 }], 'ColorGrid' );
+
 	create_demo_canvas( 200, 'Squares', 'squares' )
 	$('#squares').click(function(){
 		return link_click( DEMOS, show_demo_Squares );
@@ -15,12 +21,6 @@ var show_demo_index = function(){
 		return link_click( DEMOS, show_demo_Snow );
 	});
 	iio.start([Snow, { preview:true }], 'snow' );
-
-	create_demo_canvas( 200, 'ColorGrid', 'ColorGrid' )
-	$('#ColorGrid').click(function(){
-		return link_click( DEMOS, show_demo_ColorGrid );
-	});
-	iio.start([ColorGrid, { preview:true, w:20 }], 'ColorGrid' );
 }
 
 show_demo_Snow = function(){
