@@ -15,6 +15,12 @@ var show_demo_index = function(){
 		return link_click( DEMOS, show_demo_Snow );
 	});
 	iio.start([Snow, { preview:true }], 'snow' );
+
+	create_demo_canvas( 200, 'ColorGrid', 'ColorGrid' )
+	$('#ColorGrid').click(function(){
+		return link_click( DEMOS, show_demo_ColorGrid );
+	});
+	iio.start([ColorGrid, { preview:true, w:20 }], 'ColorGrid' );
 }
 
 show_demo_Snow = function(){
@@ -43,4 +49,18 @@ show_demo_Squares = function(){
 		return false;
 	});
 	iio.start(Squares);
+}
+
+show_demo_ColorGrid = function(){
+	$('#column').hide();
+	$('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt;&lt; back</a> | <h1>Color Grid</h1> | <a id="source" href="">source code</a> </div>');
+	$('#back').click(function(){
+		return link_click( DEMOS, show_demo_index );
+	});
+	$('#source').click(function(e){
+		codeWindow = window.open("demos/source-code/ColorGrid.html", "littleWindow", "location=no,menubar=no,toolbar=no,width=700,height=800,left=0"); 
+		codeWindow.moveTo(0,0);
+		return false;
+	});
+	iio.start([ColorGrid,{ w:20 }]);
 }

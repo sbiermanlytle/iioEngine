@@ -1,13 +1,8 @@
 Squares = function(app,s){
 
-	var speed = 0.5;
-	var avg_width = 100;
-	var num = app.width/5;
-	if(s&&s.preview){
-		num = 20;
-		speed = .03;
-		avg_width = 50;
-	}
+	var speed = 0.2;
+	var num = 80;
+	if(s&&s.preview) num = 40;
 
 	for(var i=0; i<num; i++)
 		app.add( new iio.Rectangle({
@@ -15,7 +10,7 @@ Squares = function(app,s){
 				iio.random(0,app.width),
 				iio.random(0,app.height)
 			],
-			width: iio.random(avg_width-40,avg_width+40),
+			width: iio.random(num-20,num+20),
 			color: 'white',
 			vel: [
 				iio.random(-speed,speed),
@@ -34,24 +29,32 @@ Squares = function(app,s){
 			}
 		}), true);
 
-	this.resize=function(){
+	this.resize = function(){
 		for(var i=0; i<app.objs.length; i++)
 			app.objs[i].bounds = {
-				bottom:{
-					limit: app.height-app.objs[i].height/2, 
-					callback: function(o){ o.vel.y = -speed }
+				bottom: {
+					bound: app.height, 
+					callback: function(o){ 
+						o.vel.y = -speed 
+					}
 				},
-				top:{
-					limit: app.objs[i].height/2, 
-					callback: function(o){ o.vel.y = speed }
+				top: {
+					bound: 0, 
+					callback: function(o){ 
+						o.vel.y = speed 
+					}
 				},
-				left:{
-					limit: app.objs[i].width/2, 
-					callback: function(o){ o.vel.x = speed }
+				left: {
+					bound: 0, 
+					callback: function(o){ 
+						o.vel.x = speed 
+					}
 				},
-				right:{
-					limit: app.width-app.objs[i].width/2, 
-					callback: function(o){ o.vel.x = -speed }
+				right: {
+					bound: app.width, 
+					callback: function(o){ 
+						o.vel.x = -speed
+					}
 				}
 			}
 	}; this.resize();
