@@ -8,8 +8,21 @@
 		}, { c: color || iio.Color.random() } ], canvas )
 	}
 }*/
-
+var iioapps;
+var app_colors;
 iio.test = {};
+iio.test.setup_master = function(){
+
+	// DOM container for iio apps
+	iioapps = document.body;
+
+	// color array
+	app_colors = [];
+	app_colors[0] = new iio.Color.random();
+	app_colors[1] = app_colors[0].clone().invert();
+
+	iio.test.create_canvas_grid( 100, 5, 6 );
+}
 iio.test.create_canvas_grid = function( SIZE, COLS, ROWS ){
 	var canvas, clear;
 	for(var R=0; R<ROWS; R++){
@@ -65,6 +78,9 @@ iio.test.show_tests = function( test_class, class_name ){
 		'tests/source-code/'+class_name+'/rotation-no-pos.html' );
 	run_test( test_class.origin, 
 		'tests/source-code/'+class_name+'/origin.html' );
+	
+	run_test( test_class.rectXrect, 
+		'tests/source-code/'+class_name+'/rectXrect.html' );
 
 	next_row();
 

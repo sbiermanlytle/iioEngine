@@ -15,13 +15,7 @@
 <body>
 <script type="text/javascript">	
 	
-	var iioapps = document.body;
-	var app_colors = [];
-	app_colors[0] = new iio.Color.random();
-	app_colors[1] = app_colors[0].clone().invert();
-
-	iio.test.create_canvas_grid( 100, 5, 6 );
-
+	iio.test.setup_master();
 	iio.test.show_tests( iio.test.Rectangle );
 
 </script>

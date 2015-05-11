@@ -7,7 +7,7 @@ iio.Text.prototype._super = iio.Drawable.prototype;
 //CONSTRUCTOR
 iio.Text.prototype.Text = function() {
   this._super.Drawable.call(this,arguments[0]);
-  this.size = this.size || 20;
+  this.size = this.size || 40;
   this.color = this.color || 'black';
   this.font = this.font || 'Arial';
   this.align = this.align || 'center';

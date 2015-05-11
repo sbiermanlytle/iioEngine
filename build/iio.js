@@ -493,7 +493,9 @@ iio.canvas = {
     else {
       c.margin = 0;
       c.padding = 0;
-      c.style.position = 'absolute';
+      c.style.position = 'fixed';
+      c.style.left = 0;
+      c.style.top = 0;
       c.fullscreen = true;
       if (window.jQuery) {
         c.width = $(document).width();
@@ -557,8 +559,9 @@ iio.canvas = {
 iio.collision = {
   check: function(o1, o2) {
     if (typeof(o1) == 'undefined' || typeof(o2) == 'undefined') return false;
-    if (o1.type == iio.RECT && o2.type == iio.RECT) {
-      if (o1.simple) {
+    if ( o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle ) {
+      
+      /*if (o1.simple) {
         if (o2.simple) return iio.collision.rectXrect(
           o1.pos.x - o1.bbx[0], o1.pos.x + o1.bbx[0], o1.pos.y - (o1.bbx[1] || o1.bbx[0]), o1.pos.y + (o1.bbx[1] || o1.bbx[0]),
           o2.pos.x - o2.bbx[0], o2.pos.x + o2.bbx[0], o2.pos.y - (o2.bbx[1] || o2.bbx[0]), o2.pos.y + (o2.bbx[1] || o2.bbx[0]));
@@ -567,7 +570,7 @@ iio.collision = {
           o2.left, o2.right, o2.top, o2.bottom);
       } else if (o2.simple) return iio.collision.rectXrect(o1.left, o1.right, o1.top, o1.bottom,
         o2.pos.x - o2.bbx[0], o2.pos.x + o2.bbx[0], o2.pos.y - (o2.bbx[1] || o2.bbx[0]), o2.pos.y + (o2.bbx[1] || o2.bbx[0]));
-      else return iio.collision.rectXrect(o1.left, o1.right, o1.top, o1.bottom, o2.left, o2.right, o2.top, o2.bottom)
+      else */return iio.collision.rectXrect(o1.left(), o1.right(), o1.top(), o1.bottom(), o2.left(), o2.right(), o2.top(), o2.bottom())
     }
   },
   rectXrect: function(r1L, r1R, r1T, r1B, r2L, r2R, r2T, r2B) {
@@ -726,7 +729,7 @@ iio.Obj.prototype.convert_props = function(){
   if(iio.is.string(this.color)) 
     this.color = iio.convert.color(this.color);
   if(iio.is.string(this.outline)) 
-    this.outline = iio.convert.outline(this.outline);
+    this.outline = iio.convert.color(this.outline);
   if(iio.is.string(this.shadow)) 
     this.shadow = iio.convert.color(this.shadow);
 
@@ -1727,7 +1730,7 @@ iio.Text.prototype._super = iio.Drawable.prototype;
 //CONSTRUCTOR
 iio.Text.prototype.Text = function() {
   this._super.Drawable.call(this,arguments[0]);
-  this.size = this.size || 20;
+  this.size = this.size || 40;
   this.color = this.color || 'black';
   this.font = this.font || 'Arial';
   this.align = this.align || 'center';

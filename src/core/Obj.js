@@ -32,7 +32,7 @@ iio.Obj.prototype.convert_props = function(){
   if(iio.is.string(this.color)) 
     this.color = iio.convert.color(this.color);
   if(iio.is.string(this.outline)) 
-    this.outline = iio.convert.outline(this.outline);
+    this.outline = iio.convert.color(this.outline);
   if(iio.is.string(this.shadow)) 
     this.shadow = iio.convert.color(this.shadow);
 
