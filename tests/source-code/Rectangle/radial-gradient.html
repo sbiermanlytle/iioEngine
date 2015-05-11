@@ -1,0 +1,48 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">// define a new iio app
+TestRadialGradient = function( app, settings ){
+
+	// add a new rectangle to the app
+	app.add(new iio.Rectangle({
+		// set position to app center
+		pos: app.center.clone(),
+		// set dimensions to 30x60px
+		width: 30,
+		height: 60,
+		// set color to a new radial gradient
+		color: new iio.Gradient({
+			// set gradient start position
+			start: [ 15, 30 ],
+			// set gradient start radius
+			startRadius: 1,
+			// set gradient end position
+			end: [ 15, 30 ],
+			// set gradient end radius
+			endRadius: 40,
+			// define color stops from [0,1]
+			stops: [
+				// at 0% length, show black
+				[ 0, 'black' ],
+				// at 40% length, show blue
+				[ 0.4, 'blue' ],
+				// at 100% length, show blue
+				[ 1, 'blue']
+			]
+		})
+	}));
+}
+
+// start the app on an existing canvas
+iio.start( TestRadialGradient, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>
