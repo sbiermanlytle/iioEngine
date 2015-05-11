@@ -1,16 +1,19 @@
 Snake = function(app,s){
 
+	app.set({color:'black'});
+
 	//set size of the game grid
 	var res = 20;
 	//reduce the size if this is a preview
 	if(s&&s.preview) res = 10;
 
-	var snake_size = Math.floor(app.width/res);
-	var startPos = {
-		x:snake_size*res/2+snake_size/2,
-		y:snake_size*4+snake_size/2
-	}
 
+	var snake_size = Math.floor(app.width/res);
+	var startPos = new iio.Vector(
+		snake_size * res/2 + snake_size/2,
+		snake_size * 4 + snake_size/2
+	)
+	
 	var starting_body = 4;
 	var starting_speed = 4;
 	var head, body, direction, snake_speed, snake_color, inverted;
@@ -18,33 +21,33 @@ Snake = function(app,s){
 		app.rmv();
 		if(s && s.preview) snake_color = new iio.Color(240,240,240);
 		else snake_color = iio.Color.random();
-		app.set(snake_color.invert());
-		head = app.add({
-			pos:{
-				x:startPos.x,
-				y:startPos.y
-			}, 
+		app.set({ color: snake_color.clone().invert() });
+		head = app.add( new iio.Rectangle({
+			pos:[
+				startPos.x,
+				startPos.y
+			], 
 			color: snake_color,
-			simple: true,
 			outline: 'white',
 			lineWidth: 1,
-			shadow: '0:0 20 black',
+			shadow: 'black',
+			shadowBlur: 20,
 			width:snake_size
-		});
+		}));
 		body = [];
 		for(var i=0; i<starting_body-1; i++)
-			body[i] = app.add({
-				pos:{
-					x:startPos.x-snake_size*(i+1),
-					y:startPos.y
-				}, 
+			body[i] = app.add( new iio.Rectangle({
+				pos:[
+					startPos.x - snake_size * (i+1),
+					startPos.y
+				], 
 				color: snake_color,
-				simple: true,
 				outline: 'white',
 				lineWidth: 1,
-				shadow: '0:0 20 black',
+				shadow: 'black',
+				shadowBlur: 20,
 				width: snake_size
-			});
+			}));
 		direction = RIGHT;
 		snake_speed=starting_speed;
 		makeFood();
@@ -52,22 +55,19 @@ Snake = function(app,s){
 
 	var food;
 	function makeFood(){
-		var randomPos = {
-			x:snake_size*iio.randomInt(0,res)+snake_size/2,
-			y:snake_size*iio.randomInt(0,app.height/snake_size)
+		var randomPos = new iio.Vector(
+			snake_size*iio.randomInt(0,res)+snake_size/2,
+			snake_size*iio.randomInt(0,app.height/snake_size)
 				+snake_size/2
-		}
-		food = app.add({
-			pos:{
-				x:randomPos.x,
-				y:randomPos.y
-			},
+		);
+		food = app.add( new iio.Rectangle({
+			pos: randomPos,
 			color:snake_color,
-			simple: true,
 			outline: 'white',
-			shadow: '0:0 20 black',
+			shadow: 'black',
+			shadowBlur: 20,
 			width: snake_size
-		});
+		}));
 	}; makeFood();
 	
 	var UP = 0;
