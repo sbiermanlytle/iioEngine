@@ -87,8 +87,8 @@ iio.Obj.prototype.convert_props = function(){
       }
     } else {
       if (!this.size()) {
-        o.setSize(this.img.width || 0, o.img.height || 0);
-        if(o.app) o.app.draw()
+        this.setSize(this.img.width || 0, this.img.height || 0);
+        if(this.app) this.app.draw()
       }
     }
   } 
