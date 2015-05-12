@@ -44,7 +44,7 @@ iio.start = function(app, id, d) {
   }*/
 }
 
-iio.runScripts = function() {
+iio.script = function() {
   var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
   var iioScripts = scripts.filter(function(s) {
     return s.type === 'text/iioscript';
@@ -67,9 +67,9 @@ iio.runScripts = function() {
 
 // Listen for window load, both in decent browsers and in IE
 if (window.addEventListener)
-  window.addEventListener('DOMContentLoaded', iio.runScripts, false);
+  window.addEventListener('DOMContentLoaded', iio.script, false);
 else
-  window.attachEvent('onload', iio.runScripts);
+  window.attachEvent('onload', iio.script);
 
 //JS ADDITIONS
 Array.prototype.insert = function(index, item) {
@@ -238,7 +238,7 @@ iio.resize = function() {
     app.height = app.canvas.height;
     app.center.x = app.canvas.width / 2;
     app.center.y = app.canvas.height / 2;
-    if (app.runScript && app.runScript.resize) app.runScript.resize();
+    if (app.script && app.script.resize) app.script.resize();
     app.draw();
   });
 }
@@ -247,15 +247,15 @@ iio.prep_input = function() {
   iio.addEvent(window, 'keydown', function(e) {
     var k = iio.key.string(e);
     iio.apps.forEach(function(app) {
-      if (app.runScript && app.runScript.onKeyDown)
-        app.runScript.onKeyDown(e, k);
+      if (app.script && app.script.keyDown)
+        app.script.keyDown(e, k);
     });
   });
   iio.addEvent(window, 'keyup', function(e) {
     var k = iio.key.string(e);
     iio.apps.forEach(function(app) {
-      if (app.runScript && app.runScript.onKeyUp)
-        app.runScript.onKeyUp(e, k);
+      if (app.script&& app.script.keyUp)
+        app.script.keyUp(e, k);
     });
   });
   iio.addEvent(window, 'scroll', function(event) {
@@ -1883,7 +1883,9 @@ iio.Text.prototype.keyDown = function(key, cI, shift, fn) {
 };
 
 //DEFINITION
-iio.App =  function() { this.App.apply(this, arguments) }
+iio.App =  function() { 
+  this.App.apply(this, arguments) 
+}
 iio.inherit(iio.App, iio.Obj);
 iio.App.prototype._super = iio.Obj.prototype;
 
@@ -1906,9 +1908,9 @@ iio.App.prototype._super = iio.Obj.prototype;
 });
 
 //CONSTRUCTOR
-iio.App.prototype.App = function(view, app, s) {
+iio.App.prototype.App = function(view, script, s) {
 
-  this._super.Obj.call(this,arguments);
+  this._super.Obj.call(this);
 
   //set app reference for shared functions
   this.app = this;
@@ -1952,10 +1954,11 @@ iio.App.prototype.App = function(view, app, s) {
   iio.apps.push(this);
 
   //run js script
-  if (typeof(app) === "string") {
+  /*if (typeof(app) === "string") {
     app = iio.scripts[app];
-  }
-  app.call(this, this, s);
+  }*/
+  //app.call(this, this, s);
+  this.script = new script(this);
 }
 
 //FUNCTIONS

@@ -1,6 +1,8 @@
 
 //DEFINITION
-iio.App =  function() { this.App.apply(this, arguments) }
+iio.App =  function() { 
+  this.App.apply(this, arguments) 
+}
 iio.inherit(iio.App, iio.Obj);
 iio.App.prototype._super = iio.Obj.prototype;
 
@@ -23,9 +25,9 @@ iio.App.prototype._super = iio.Obj.prototype;
 });
 
 //CONSTRUCTOR
-iio.App.prototype.App = function(view, app, s) {
+iio.App.prototype.App = function(view, script, s) {
 
-  this._super.Obj.call(this,arguments);
+  this._super.Obj.call(this);
 
   //set app reference for shared functions
   this.app = this;
@@ -69,10 +71,11 @@ iio.App.prototype.App = function(view, app, s) {
   iio.apps.push(this);
 
   //run js script
-  if (typeof(app) === "string") {
+  /*if (typeof(app) === "string") {
     app = iio.scripts[app];
-  }
-  app.call(this, this, s);
+  }*/
+  //app.call(this, this, s);
+  this.script = new script(this);
 }
 
 //FUNCTIONS

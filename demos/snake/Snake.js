@@ -74,7 +74,7 @@ Snake = function(app,s){
 	var RIGHT = 1;
 	var DOWN = 2;
 	var LEFT = 3;
-	this.onKeyDown=function(e,k){ 
+	this.keyDown=function(e,k){ 
 		if(direction!=DOWN && k=='up arrow' || k=='w')
 			direction = UP;
 		else if(direction!=LEFT && k=='right arrow' || k=='d') 
