@@ -1,8 +1,8 @@
 HelloWorld = function(app,s){
 
-	app.add({
-		pos:app.center,
-		text:"Hello World"
-	});
+	app.add( new iio.Text({
+		pos: app.center.clone(),
+		text: "Hello World"
+	}));
 
 }
