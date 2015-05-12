@@ -626,6 +626,13 @@ iio.Vector.dist = function(v1, v2) {
 iio.Vector.prototype.clone = function(){
 	return new iio.Vector(this.x,this.y)
 }
+iio.Vector.prototype.sub = function( x, y ){
+	y = y || x.y;
+	x = x.x || x;
+	this.x -= x;
+	this.y -= y;
+	return this;
+}
 ;
 
 //DEFINITION
@@ -1784,13 +1791,38 @@ iio.Text.getFontHeight = function(font) {
 iio.Text.prototype.inferSize = function(ctx){
   this.ctx = ctx || this.ctx;
 
-  this.app.ctx.font = this.size + 'pt ' + this.font;
+  this.app.ctx.font = this.size + 'px ' + this.font;
   this.width = this.app.ctx.measureText(this.text).width;
-  this.height = this.app.ctx.measureText("o").width;
+  this.height = this.app.ctx.measureText("H").width;
+}
+iio.Text.prototype.left = function(){
+  return this.pos.x - this.width / 2;
+}
+iio.Text.prototype.right = function(){
+  return this.pos.x + this.width / 2;
+}
+iio.Text.prototype.top = function(){
+  return this.pos.y - this.height / 2;
+}
+iio.Text.prototype.bottom = function(){
+  return this.pos.y + this.height / 2;
+}
+iio.Drawable.prototype._shrink = function(s, r) {
+  this.size *= 1 - s;
+  this.inferSize();
+  if (this.size < .02 
+    || this.size < this.shrink.lowerBound 
+    || this.size > this.shrink.upperBound) {
+    if (r) return r(this);
+    else return true;
+  }
 }
 iio.Text.prototype.draw_shape = function(ctx) {
 
   ctx.translate(0,this.height/2);
+
+ /* ctx.strokeStyle = 'red';
+  ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );*/
 
   ctx.font = this.size + 'px ' + this.font;
   ctx.textAlign = this.align;

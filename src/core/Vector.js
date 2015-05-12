@@ -45,3 +45,10 @@ iio.Vector.dist = function(v1, v2) {
 iio.Vector.prototype.clone = function(){
 	return new iio.Vector(this.x,this.y)
 }
+iio.Vector.prototype.sub = function( x, y ){
+	y = y || x.y;
+	x = x.x || x;
+	this.x -= x;
+	this.y -= y;
+	return this;
+}

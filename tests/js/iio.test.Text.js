@@ -1,25 +1,25 @@
 iio.test.Text = {
 	constructor : function(app, settings){
 		app.add(new iio.Text({
-			pos: app.center.clone(),
+			pos: app.center,
 			color: settings.color,
 			text: "iio"
 		}));
 	},
-	/*rotation : function(app, settings ){
-		app.add(new iio.Circle({
+	rotation : function(app, settings ){
+		app.add(new iio.Text({
 			pos: app.center,
 			color: settings.color,
-			radius: 25,
+			text: "iio",
 			rotation: Math.PI/2
 		}));
 	},
 	origin : function(app, settings ){
-		app.add(new iio.Circle({
-			pos: app.center,
-			origin: [ 8, -8 ],
+		app.add(new iio.Text({
+			pos: app.center.clone().sub(18,18),
+			origin: [18,18],
 			color: settings.color,
-			radius: 25,
+			text: "iio",
 			rVel: .02
 		}));
 	},
@@ -29,10 +29,10 @@ iio.test.Text = {
 
 		function reverse(o){ o.vel.x *= -1 }
 
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center.clone(),
 			color: settings.color,
-			radius: 25,
+			text: 'iio', 
 			vel: [ speed,0 ],
 			bounds: {
 				right: {
@@ -50,10 +50,10 @@ iio.test.Text = {
 
 		var speed = 1;
 
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center.clone(),
 			color: settings.color,
-			radius: 25,
+			text: 'iio',
 			vel: [ speed, 0 ],
 			acc: [ .01, 0 ],
 			bounds: {
@@ -70,11 +70,10 @@ iio.test.Text = {
 
 		function reverse(o){ o.rVel *= -1 }
 
-		app.add(new iio.Circle({
-			pos: app.center.clone(),
-			origin: [ 12, -12 ],
+		app.add(new iio.Text({
+			pos: app.center,
 			color: settings.color,
-			radius: 25,
+			text: 'iio',
 			rVel: .02,
 			bounds: {
 				rightRotation: {
@@ -90,11 +89,10 @@ iio.test.Text = {
 	},
 	rAcc_bounds : function( app, settings ){
 
-		app.add(new iio.Circle({
-			pos: app.center.clone(),
-			origin: [ 12, -12 ],
+		app.add(new iio.Text({
+			pos: app.center,
 			color: settings.color,
-			radius: 25,
+			text: 'iio',
 			rAcc: .0015,
 			bounds: {
 				rightRotation: {
@@ -118,10 +116,10 @@ iio.test.Text = {
 
 		app.loop(1);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
 			color: settings.color,
-			radius: 25,
+			text: 'iio',
 			hidden: false,
 			onUpdate: function(){
 				this.hidden = !this.hidden;
@@ -129,10 +127,10 @@ iio.test.Text = {
 		}));
 	},
 	alpha : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
 			color: settings.color,
-			radius: 25,
+			text: 'iio',
 			fade: {
 				speed: .03,
 				lowerBound: .2,
@@ -143,38 +141,78 @@ iio.test.Text = {
 		}));
 	},
 	color : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
 			color: settings.color.clone(),
-			radius: 25,
+			text: 'iio',
 			cycle: 0,
 			onUpdate: iio.test.color
 		}));
 	},
 	outline : function( app, settings ){
 
-		app.loop(10);
+		app.loop(5);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
-			radius: 25,
+			text: 'iio',
 			outline: settings.color.clone(),
 			lineWidth: 1,
 			growing: true,
-			onUpdate: iio.test.outline
+			onUpdate: function(){
+				if(this.growing){
+					this.lineWidth++;
+					if(this.lineWidth > 3)
+						this.growing = false;
+				} else {
+					this.lineWidth--;
+					if(this.lineWidth < 1)
+						this.growing = true;
+				}
+				switch(this.cycle){
+					case 1: 
+						if(this.outline.g>100)
+							this.outline.g--;
+						else if(this.outline.r>100)
+							this.outline.r--;
+						else this.cycle = iio.randomInt(1,3);
+						break;
+					case 2: 
+						if(this.outline.b<200)
+							this.outline.b++;
+						else if(this.outline.r<200)
+							this.outline.r++;
+						else this.cycle = iio.randomInt(1,3);
+						break;
+					case 3: 
+						if(this.outline.g>0)
+							this.outline.g--;
+						else if(this.outline.r>0)
+							this.outline.r--;
+						else this.cycle = iio.randomInt(1,3);
+						break;
+					default: 
+						if(this.outline.r<255)
+							this.outline.r++;
+						else if(this.outline.b<255)
+							this.outline.b++;
+						else this.cycle = iio.randomInt(1,3);
+				}
+			}
 		}));
 	},
 	shrink : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
 			color: settings.color,
-			radius: 25,
+			text: 'iio',
+			size: 60,
 			shrink: {
 				speed: .03,
-				upperBound: 25,
+				upperBound: 60,
 				lowerBound: 4,
 				callback: function(o){
-					if(o.radius < o.shrink.lowerBound)
+					if(o.size < o.shrink.lowerBound)
 						o.shrink.speed = -.03;
 					else o.shrink.speed = .03;
 				}
@@ -182,32 +220,22 @@ iio.test.Text = {
 		}));
 	},
 	dash : function ( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
-			radius: 25,
+			text: 'iio',
+			size: 40,
 			outline: settings.color,
-			lineWidth: 10,
-			dash: [ 10, 3 ]
-		}));
-	},
-	dash_rounded : function ( app, settings ){
-		app.add(new iio.Circle({
-			pos: app.center,
-			radius: 25,
-			outline: settings.color,
-			lineWidth: 10,
-			dash: [ .1, 17.2 ],
-			dashOffset: 10,
-			lineCap: 'round'
+			lineWidth: 1,
+			dash: [ 2, 2 ]
 		}));
 	},
 	gradient : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
-			radius: 25,
+			text: 'iio',
 			color: new iio.Gradient({
-				start: [ 0, -25 ],
-				end: [ 0, 25 ],
+				start: [ 0, -100 ],
+				end: [ 0, 10 ],
 				stops: [
 					[ 0, settings.color ],
 					[ 1, 'black' ]
@@ -216,18 +244,18 @@ iio.test.Text = {
 		}));
 	},
 	radial_gradient : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
-			radius: 25,
+			text: 'iio',
 			color: new iio.Gradient({
-				start: [ 0,0 ],
+				start: [ 0,-10 ],
 				startRadius: 1,
-				end: [ 0,0 ],
+				end: [ 0,-10 ],
 				endRadius: 40,
 				stops: [
-					[ 0, 'transparent' ],
-					[ 0.4, settings.color ],
-					[ 1, settings.color ]
+					[ 0, settings.color ],
+					[ 0.7, 'black' ],
+					[ 1, 'black' ]
 				]
 			})
 		}));
@@ -236,50 +264,37 @@ iio.test.Text = {
 
 		app.set({color:'white'})
 
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
-			outline: settings.color,
-			lineWidth: 5,
-			dash: 20,
-			radius: 25,
+			color: settings.color,
+			text: 'iio',
 			shadow: new iio.Color( 0,0,0,.5 ),
 			shadowBlur: 5,
-			shadowOffset: [ 4,4 ],
+			shadowOffset: [ 4,4 ]
 		}));
 	},
 	child : function( app, settings ){
 
-		var props = {
-			outline: settings.color,
-			lineWidth: 5
-		}
-
-		app.add( new iio.Circle(props,{
-			pos: app.center,
-			origin: [ 8, -8 ],
-			radius: 25,
-			rVel: .02
-		})).add( new iio.Circle(props,{
-			radius: 12
+		app.add( new iio.Text({
+			color: settings.color,
+			pos: app.center.clone().sub(0,18),
+			origin: [ 0, 18 ],
+			text: 'iio',
+			rVel: .01
+		})).add( new iio.Text({
+			pos: [0, 36],
+			color: settings.color.clone().invert(),
+			text: 'iio'
 		}))
-	},
-	img : function( app, settings ){
-		app.add(new iio.Circle({
-			pos: app.center,
-			radius: app.width/2.5,
-			clip: true,
-			img: 'http://iioengine.com/img/staryNight.jpg'
-		}));
 	},
 	flip : function( app, settings ){
 
 		app.loop(1);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Text({
 			pos: app.center,
-			radius: app.width/2.5,
-			clip: true,
-			img: 'http://iioengine.com/img/flip.png',
+			color: settings.color,
+			text: 'iio',
 			flip: 'x',
 			onUpdate: function(){
 				if(this.flip == 'x')
@@ -287,5 +302,5 @@ iio.test.Text = {
 				else this.flip = 'x';
 			}
 		}));
-	}*/
+	}
 }
