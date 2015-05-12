@@ -1,4 +1,4 @@
-function create_demo_canvas( SIZE, title, id ){
+function create_demo_canvas( SIZE, id ){
 	
 	var canvas, container, h, p;
 	
@@ -6,7 +6,7 @@ function create_demo_canvas( SIZE, title, id ){
 	container.className += "demo_wrap";
 
 	h = document.createElement('h4');
-	h.innerHTML = title;
+	h.innerHTML = id;
 	h.className += "demo_title";
 
 	canvas = document.createElement('canvas');

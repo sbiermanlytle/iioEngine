@@ -4,63 +4,33 @@ var show_demo_index = function(){
 	page.append('<div id="iioapps"></div>');
 	iioapps = document.getElementById('iioapps');
 
-	create_demo_canvas( 200, 'ColorGrid', 'ColorGrid' )
-	$('#ColorGrid').click(function(){
-		return link_click( DEMOS, show_demo_ColorGrid );
-	});
-	iio.start([ColorGrid, { preview:true, w:20 }], 'ColorGrid' );
-
-	create_demo_canvas( 200, 'Squares', 'squares' )
-	$('#squares').click(function(){
-		return link_click( DEMOS, show_demo_Squares );
-	});
-	iio.start([Squares, { preview:true }], 'squares' );
-
-	create_demo_canvas( 200, 'Snow', 'snow' )
-	$('#snow').click(function(){
-		return link_click( DEMOS, show_demo_Snow );
-	});
-	iio.start([Snow, { preview:true }], 'snow' );
+	prep_demo( ScrollShooter, "ScrollShooter" );
+	prep_demo( Snake, "Snake" );
+	prep_demo( ColorGrid, "ColorGrid", {w:20} );
+	prep_demo( Squares, "Squares" );
+	prep_demo( Snow, "Snow" );
 }
 
-show_demo_Snow = function(){
-	$('#column').hide();
-	$('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt;&lt; back</a> | <h1>Snow</h1> | <a id="source" href="">source code</a> </div>');
-	$('#back').click(function(){
-		return link_click( DEMOS, show_demo_index );
+prep_demo = function( app, title, settings ){
+	create_demo_canvas( 200, title )
+	$( '#'+title ).click(function(){
+		return link_click( DEMOS, function(){
+			$('#column').hide();
+			$('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt;&lt; back</a> | <h1>'+title+'</h1> | <a id="source" href="">source code</a> </div>');
+			$('#back').click(function(){
+				return link_click( DEMOS, show_demo_index );
+			});
+			$('#source').click(function(e){
+				codeWindow = window.open("demos/source-code/"+title+".html", "littleWindow", "location=no,menubar=no,toolbar=no,width=700,height=800,left=0"); 
+				codeWindow.moveTo(0,0);
+				return false;
+			});
+			if( settings )
+				iio.start( [ app, settings ] );
+			else iio.start( app )
+		});
 	});
-	$('#source').click(function(e){
-		codeWindow = window.open("demos/source-code/Snow.html", "littleWindow", "location=no,menubar=no,toolbar=no,width=700,height=800,left=0"); 
-		codeWindow.moveTo(0,0);
-		return false;
-	});
-	iio.start(Snow);
-}
-
-show_demo_Squares = function(){
-	$('#column').hide();
-	$('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt;&lt; back</a> | <h1>Squares</h1> | <a id="source" href="">source code</a> </div>');
-	$('#back').click(function(){
-		return link_click( DEMOS, show_demo_index );
-	});
-	$('#source').click(function(e){
-		codeWindow = window.open("demos/source-code/Squares.html", "littleWindow", "location=no,menubar=no,toolbar=no,width=700,height=800,left=0"); 
-		codeWindow.moveTo(0,0);
-		return false;
-	});
-	iio.start(Squares);
-}
-
-show_demo_ColorGrid = function(){
-	$('#column').hide();
-	$('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt;&lt; back</a> | <h1>Color Grid</h1> | <a id="source" href="">source code</a> </div>');
-	$('#back').click(function(){
-		return link_click( DEMOS, show_demo_index );
-	});
-	$('#source').click(function(e){
-		codeWindow = window.open("demos/source-code/ColorGrid.html", "littleWindow", "location=no,menubar=no,toolbar=no,width=700,height=800,left=0"); 
-		codeWindow.moveTo(0,0);
-		return false;
-	});
-	iio.start([ColorGrid,{ w:20 }]);
+	if( settings )
+		iio.start([ app, iio.merge( { preview:true }, settings) ], title );
+	else iio.start([ app, { preview:true }], title );
 }
