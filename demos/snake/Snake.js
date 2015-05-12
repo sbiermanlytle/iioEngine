@@ -1,7 +1,5 @@
 Snake = function(app,s){
 
-	app.set({color:'black'});
-
 	//set size of the game grid
 	var res = 20;
 	//reduce the size if this is a preview
@@ -20,8 +18,10 @@ Snake = function(app,s){
 	function reset(){
 		app.rmv();
 		if(s && s.preview) snake_color = new iio.Color(240,240,240);
-		else snake_color = iio.Color.random();
-		app.set({ color: snake_color.clone().invert() });
+		else {
+			snake_color = iio.Color.random();
+			app.set({ color: snake_color.clone().invert() });
+		}
 		head = app.add( new iio.Rectangle({
 			pos:[
 				startPos.x,

@@ -1,7 +1,5 @@
 ScrollShooter = function( app, s ){
 
-	app.set({ color:'black' });
-
 	var meteors = [];
 	var stars = [];
 	var lasers = [];
@@ -18,7 +16,7 @@ ScrollShooter = function( app, s ){
 		numBigStars /= 2;
 		numSmallMeteors /= 2;
 		numBigMeteors /= 2;
-	}
+	} else app.set({ color:'black' });
 
 	function bringToTop(o){ 
 		o.pos.y = -100; 

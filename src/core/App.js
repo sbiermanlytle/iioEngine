@@ -25,7 +25,7 @@ iio.App.prototype._super = iio.Obj.prototype;
 });
 
 //CONSTRUCTOR
-iio.App.prototype.App = function(view, script, s) {
+iio.App.prototype.App = function(view, script, settings) {
 
   this._super.Obj.call(this);
 
@@ -75,7 +75,7 @@ iio.App.prototype.App = function(view, script, s) {
     app = iio.scripts[app];
   }*/
   //app.call(this, this, s);
-  this.script = new script(this);
+  this.script = new script(this, settings);
 }
 
 //FUNCTIONS
