@@ -18,7 +18,8 @@ iio.App.prototype._super = iio.Obj.prototype;
   'Square',
   'Grid',
   'Circle',
-  'Text'
+  'Text',
+  'Loader'
 ].forEach(function(element) {
   if (iio[element])
     iio.App.prototype[element] = iio[element];
@@ -35,9 +36,6 @@ iio.App.prototype.App = function(view, script, settings) {
   //set canvas & context
   this.canvas = view;
   this.ctx = view.getContext('2d');
-
-  //set AudioContext
-  //this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
   //prep canvas
   this.canvas.parent = this;

@@ -45,6 +45,7 @@ iio.start = function(app, id, d) {
 }
 
 iio.script = function() {
+  if (typeof CoffeeScript == 'undefined') return;
   var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
   var iioScripts = scripts.filter(function(s) {
     return s.type === 'text/iioscript';
@@ -143,6 +144,7 @@ iio.load = function(src, onload) {
   img.onload = onload;
   return img;
 }
+
 iio.read = function(url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
