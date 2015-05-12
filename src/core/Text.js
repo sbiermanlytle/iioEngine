@@ -11,10 +11,6 @@ iio.Text.prototype.Text = function() {
   this.color = this.color || 'black';
   this.font = this.font || 'Arial';
   this.align = this.align || 'center';
-  
-  /*this.app.ctx.font = this.size + 'px ' + this.font;
-  this.width = this.app.ctx.measureText(this.text).width;
-  this.height = this.app.ctx.measureText('W').width;*/
 
   /*var tX = this.getX(this.text.length);
   this.cursor = this.add([tX, 10, tX, -this.size * .8], '2 ' + (this.color || this.outline), {
@@ -28,8 +24,48 @@ iio.Text.prototype.Text = function() {
   } else this.cursor.hidden = true;*/
 }
 
+iio.Text.getFontHeight = function(font) {
+
+  var text = $('<span>Hg</span>').css({ fontFamily: font });
+  var block = $('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
+
+  var div = $('<div></div>');
+  div.append(text, block);
+
+  var body = $('body');
+  body.append(div);
+
+  try {
+
+    var result = {};
+
+    block.css({ verticalAlign: 'baseline' });
+    result.ascent = block.offset().top - text.offset().top;
+
+    block.css({ verticalAlign: 'bottom' });
+    result.height = block.offset().top - text.offset().top;
+
+    result.descent = result.height - result.ascent;
+
+  } finally {
+    div.remove();
+  }
+
+  return result;
+};
+
 //FUNCTIONS
+iio.Text.prototype.inferSize = function(ctx){
+  this.ctx = ctx || this.ctx;
+
+  this.app.ctx.font = this.size + 'pt ' + this.font;
+  this.width = this.app.ctx.measureText(this.text).width;
+  this.height = this.app.ctx.measureText("o").width;
+}
 iio.Text.prototype.draw_shape = function(ctx) {
+
+  ctx.translate(0,this.height/2);
+
   ctx.font = this.size + 'px ' + this.font;
   ctx.textAlign = this.align;
   if (this.color) ctx.fillText(this.text, 0, 0);

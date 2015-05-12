@@ -134,6 +134,9 @@ iio.Obj.prototype.add = function() {
   else {
     arguments[0].parent = this;
     arguments[0].app = this.app;
+    arguments[0].ctx = this.ctx;
+    if (arguments[0] instanceof iio.Text)
+      arguments[0].inferSize();
     //if(!arguments[0].pos)
       //arguments[0].pos = {x:this.app.center.x,y:this.app.center.y};
     if (typeof(arguments[0].z) == 'undefined') arguments[0].z = 0;
