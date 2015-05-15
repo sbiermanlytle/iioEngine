@@ -303,11 +303,16 @@ iio.is = {
   string: function(s) {
     return typeof s == 'string' || s instanceof String
   },
-  image: function(img) {
-    return ['png', 'jpg', 'gif', 'tiff'].some(
-      function(ie) {
-        return (img.indexOf('.' + ie) != -1)
-      });
+  filetype: function(file, extensions) {
+    return extensions.some(function(ext) {
+      return (file.indexOf('.' + ext) != -1)
+    });
+  },
+  image: function(file) {
+    return this.filetype(file, ['png', 'jpg', 'gif', 'tiff']);
+  },
+  sound: function(file) {
+    return this.filetype(file, ['wav', 'mp3', 'aac', 'ogg']);
   },
   between: function(val, min, max) {
     if (max < min) {
@@ -2091,15 +2096,19 @@ iio.Sound = function(buffer) {
   this.buffer = buffer;
 }
 
-iio.Sound.prototype.play = function(gain, delay) {
+iio.Sound.prototype.play = function(options, delay) {
   if (this.buffer === undefined) return;
-  if (gain !== undefined) {
-    this.gainNode.gain.value = gain;
-  }
   var source = iio.audioCtx.createBufferSource();
   source.buffer = this.buffer;
+  if (options) {
+    if (options.loop) source.loop = true;
+  }
   source.connect(this.gainNode);
   source.start(delay || 0);
+}
+
+iio.Sound.prototype.setGain = function(value) {
+  this.gainNode.gain.value = value;
 }
 
 ;
@@ -2109,24 +2118,26 @@ iio.loadSound = function(url, onLoad, onError) {
   xhr.open('GET', url, true);
   xhr.responseType = 'arraybuffer';
   xhr.onload = function() {
-    audioCtx.decodeAudioData(xhr.response, function(buffer) {
+    iio.audioCtx.decodeAudioData(xhr.response, function(buffer) {
       sound.buffer = buffer;
+      if (onLoad) onLoad(sound, buffer);
     }, onError); 
   };
   xhr.onerror = onError;
   xhr.send();
+  return sound;
 }
 
 iio.loadImage = function(url, onLoad, onError) {
   var img = new Image();
   img.onload = onLoad;
   img.onerror = onError;
-  img.src = src;
+  img.src = url;
   return img;
 }
 
 iio.Loader = function(basePath) {
-  this.base_path = (basePath || '.') + '/';
+  this.basePath = (basePath || '.') + '/';
 };
 
 /*
@@ -2216,19 +2227,39 @@ iio.Loader = function(basePath) {
  * TODO szheng definitely need to write a test suite for this.
  *               
  */
-iio.Loader.prototype.load = function(assets, onProcessUpdate, onComplete) {
+iio.Loader.prototype.load = function(assets, onComplete) {
+  var total = assets.length || Object.keys(assets).length;
+  var loaded = 0;
   var _assets = {}
+  var postLoad = function() {
+    loaded++;
+    console.log(loaded);
+    if (loaded == total) onComplete(_assets);
+  };
 
   // Helper function to load asset into _assets.
   var load = function(assetName, postLoadProcess, id) {
-    name = id || assetName;
+    var name = id || assetName;
+    var url = this.basePath + assetName;
 
-    // asset = getAsset(this.basePath + assetName);
-    if (postLoadProcess) {
-      _assets[name] = postloadProcess(asset);
+    var loader; // Loader to use
+    if (iio.is.image(url)) {
+      loader = iio.loadImage;
+    } else if (iio.is.sound(url)) {
+      loader = iio.loadSound;
     } else {
-      _assets[name] = asset;
+      return;
     }
+
+    var asset = loader(url, function() {
+      if (postLoadProcess) {
+        _assets[name] = postloadProcess(asset);
+      } else {
+        _assets[name] = asset;
+      }
+      console.log('success');
+      postLoad();
+    }, postLoad);
   }.bind(this);
 
   if (iio.is.string(assets)) {
@@ -2246,7 +2277,7 @@ iio.Loader.prototype.load = function(assets, onProcessUpdate, onComplete) {
   } else {
     for (var key in assets) {
       if (assets.hasOwnProperty(key)) {
-        asset = assets[key];
+        var asset = assets[key];
         if (iio.is.string(asset)) {
           load(asset, null, key);
         } else if (asset.name) {

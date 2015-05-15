@@ -4,9 +4,9 @@ iio.loadSound = function(url, onLoad, onError) {
   xhr.open('GET', url, true);
   xhr.responseType = 'arraybuffer';
   xhr.onload = function() {
-    audioCtx.decodeAudioData(xhr.response, function(buffer) {
+    iio.audioCtx.decodeAudioData(xhr.response, function(buffer) {
       sound.buffer = buffer;
-      onLoad(sound, buffer);
+      if (onLoad) onLoad(sound, buffer);
     }, onError); 
   };
   xhr.onerror = onError;
@@ -18,12 +18,12 @@ iio.loadImage = function(url, onLoad, onError) {
   var img = new Image();
   img.onload = onLoad;
   img.onerror = onError;
-  img.src = src;
+  img.src = url;
   return img;
 }
 
 iio.Loader = function(basePath) {
-  this.base_path = (basePath || '.') + '/';
+  this.basePath = (basePath || '.') + '/';
 };
 
 /*
@@ -113,19 +113,39 @@ iio.Loader = function(basePath) {
  * TODO szheng definitely need to write a test suite for this.
  *               
  */
-iio.Loader.prototype.load = function(assets, onProcessUpdate, onComplete) {
+iio.Loader.prototype.load = function(assets, onComplete) {
+  var total = assets.length || Object.keys(assets).length;
+  var loaded = 0;
   var _assets = {}
+  var postLoad = function() {
+    loaded++;
+    console.log(loaded);
+    if (loaded == total) onComplete(_assets);
+  };
 
   // Helper function to load asset into _assets.
   var load = function(assetName, postLoadProcess, id) {
-    name = id || assetName;
+    var name = id || assetName;
+    var url = this.basePath + assetName;
 
-    // asset = getAsset(this.basePath + assetName);
-    if (postLoadProcess) {
-      _assets[name] = postloadProcess(asset);
+    var loader; // Loader to use
+    if (iio.is.image(url)) {
+      loader = iio.loadImage;
+    } else if (iio.is.sound(url)) {
+      loader = iio.loadSound;
     } else {
-      _assets[name] = asset;
+      return;
     }
+
+    var asset = loader(url, function() {
+      if (postLoadProcess) {
+        _assets[name] = postloadProcess(asset);
+      } else {
+        _assets[name] = asset;
+      }
+      console.log('success');
+      postLoad();
+    }, postLoad);
   }.bind(this);
 
   if (iio.is.string(assets)) {
@@ -143,7 +163,7 @@ iio.Loader.prototype.load = function(assets, onProcessUpdate, onComplete) {
   } else {
     for (var key in assets) {
       if (assets.hasOwnProperty(key)) {
-        asset = assets[key];
+        var asset = assets[key];
         if (iio.is.string(asset)) {
           load(asset, null, key);
         } else if (asset.name) {
