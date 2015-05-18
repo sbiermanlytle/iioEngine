@@ -1672,6 +1672,10 @@ iio.Grid.prototype.init_cells = function(){
     x += this.res.x;
   }
 }
+iio.Grid.prototype.infer_res = function(){
+  this.res.x = this.width/this.C;
+  this.res.y = this.height/this.R;
+}
 iio.Grid.prototype.clear = function(noDraw){
   this.objs = [];
   this.init_cells();
@@ -1694,10 +1698,28 @@ iio.Grid.prototype.foreachCell = function(fn, p) {
       if (fn(this.cells[c][r], p) === false)
         return [r, c];
 }
+iio.Grid.prototype.setSize = function(w,h){
+  this.width = w;
+  this.height = h;
+  this.infer_res();
+}
+iio.Grid.prototype._shrink = function(s, r) {
+  this.setSize( 
+    this.width * (1 - s),
+    this.height * (1 - s)
+  );
+  if (this.width < .02 
+    || this.width < this.shrink.lowerBound 
+    || this.width > this.shrink.upperBound) {
+    if (r) return r(this);
+    else return true;
+  }
+}
 
 //DRAW FUNCTIONS
+iio.Grid.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;
 iio.Grid.prototype.draw_shape = function(ctx) {
-  ctx.translate(-this.width / 2, -this.height / 2);
+  //ctx.translate(-this.width / 2, -this.height / 2);
   /*iio.draw.rect(ctx, this.width, this.height, {
     c: this.color,
     o: this.outline
@@ -1708,12 +1730,16 @@ iio.Grid.prototype.draw_shape = function(ctx) {
     round: this.round
   });*/
   if (this.color) {
-    if (this.color.indexOf && this.color.indexOf('gradient') > -1)
-      this.color = this.createGradient(ctx, this.color);
-    ctx.strokeStyle = this.color;
-    ctx.lineWidth = this.lineWidth;
-    for (var c = 1; c < this.C; c++) iio.draw.line(ctx, c * this.res.x, 0, c * this.res.x, this.height);
-    for (var r = 1; r < this.R; r++) iio.draw.line(ctx, 0, r * this.res.y, this.width, r * this.res.y);
+    for (var c = 1; c < this.C; c++) 
+      iio.draw.line(ctx, 
+        -this.width / 2 + c * this.res.x, -this.height / 2, 
+        -this.width / 2 + c * this.res.x, this.height / 2
+      );
+    for (var r = 1; r < this.R; r++) 
+      iio.draw.line(ctx, 
+        -this.width / 2, -this.height / 2 + r * this.res.y,
+        this.width / 2, -this.height / 2 + r * this.res.y
+      );
   }
 };
 
@@ -1847,7 +1873,7 @@ iio.Text.prototype.top = function(){
 iio.Text.prototype.bottom = function(){
   return this.pos.y + this.height / 2;
 }
-iio.Drawable.prototype._shrink = function(s, r) {
+iio.Text.prototype._shrink = function(s, r) {
   this.size *= 1 - s;
   this.inferSize();
   if (this.size < .02 

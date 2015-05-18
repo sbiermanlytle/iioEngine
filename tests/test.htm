@@ -15,7 +15,7 @@
 	</style>
 	<script type="text/javascript" src="../build/iio.js"></script>
 	<script type="text/javascript" src="js/iio.test.functions.js"></script>
-	<script type="text/javascript" src="js/iio.test.Text.js"></script>
+	<script type="text/javascript" src="js/iio.test.Grid.js"></script>
 </head>
 <body>
 	<canvas id="c" width="100px" height="100px"></canvas>
@@ -26,16 +26,7 @@
 	app_colors[1] = new iio.Color(0,186,255);
 	app_colors[0] = new iio.Color(101,176,66);
 
-	iio.start(function(app){
-
-		app.add(new iio.X({
-			pos: app.center,
-			color: 'red',
-			lineWidth: 10,
-			width: 50,
-			rVel: .01
-		}))
-	}, 'c');
+	iio.start([iio.test.Grid.shrink, { color:app_colors[0] }], 'c');
 
 </script>
 </body>

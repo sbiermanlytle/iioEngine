@@ -74,7 +74,7 @@ iio.Text.prototype.top = function(){
 iio.Text.prototype.bottom = function(){
   return this.pos.y + this.height / 2;
 }
-iio.Drawable.prototype._shrink = function(s, r) {
+iio.Text.prototype._shrink = function(s, r) {
   this.size *= 1 - s;
   this.inferSize();
   if (this.size < .02 

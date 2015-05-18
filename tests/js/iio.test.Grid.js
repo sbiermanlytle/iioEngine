@@ -197,9 +197,9 @@ iio.test.Grid = {
 			R: 3,
 			C: 3,
 			shrink: {
-				speed: .03,
-				upperBound: 30,
-				lowerBound: 4,
+				speed: .02,
+				upperBound: 80,
+				lowerBound: 20,
 				callback: function(o){
 					if(o.width < o.shrink.lowerBound)
 						o.shrink.speed = -.03;
@@ -208,24 +208,26 @@ iio.test.Grid = {
 			}
 		}));
 	},
-	/*dash : function ( app, settings ){
+	dash : function ( app, settings ){
 		app.add(new iio.Grid({
-			pos: app.center.clone(),
-			width: 30,
-			height: 60,
-			outline: settings.color.clone(),
-			lineWidth: 10,
-			dash: [ 5, 5 ]
+			pos: app.center,
+			color: settings.color,
+			width: 80,
+			R: 3,
+			C: 3,
+			lineWidth: 5,
+			dash: [ 2,5 ]
 		}));
 	},
 	dash_rounded : function ( app, settings ){
 		app.add(new iio.Grid({
 			pos: app.center,
-			width: 30,
-			height: 60,
-			outline: settings.color.clone(),
-			lineWidth: 10,
-			dash: [ .1, 15 ],
+			color: settings.color,
+			width: 80,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
+			dash: [ .1, 9 ],
 			dashOffset: 10,
 			lineCap: 'round'
 		}));
@@ -233,13 +235,15 @@ iio.test.Grid = {
 	gradient : function( app, settings ){
 		app.add(new iio.Grid({
 			pos: app.center,
-			width: 30,
-			height: 60,
+			width: 80,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			color: new iio.Gradient({
-				start: [ 0, 0 ],
-				end: [ 0, 60 ],
+				start: [ 0, -80 ],
+				end: [ 0, 80 ],
 				stops: [
-					[ 0, settings.color.clone() ],
+					[ 0, settings.color ],
 					[ 1, 'black' ]
 				]
 			})
@@ -248,17 +252,19 @@ iio.test.Grid = {
 	radial_gradient : function( app, settings ){
 		app.add(new iio.Grid({
 			pos: app.center,
-			width: 30,
-			height: 60,
+			width: 80,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			color: new iio.Gradient({
-				start: [ 15, 30 ],
+				start: [ 0, 0 ],
 				startRadius: 1,
-				end: [ 15, 30 ],
+				end: [ 0, 0 ],
 				endRadius: 40,
 				stops: [
-					[ 0, 'black' ],
-					[ 0.4, settings.color.clone() ],
-					[ 1, settings.color.clone() ]
+					[ 0, settings.color ],
+					[ 0.7, settings.color.clone() ],
+					[ 1, 'black' ]
 				]
 			})
 		}));
@@ -269,11 +275,12 @@ iio.test.Grid = {
 
 		app.add(new iio.Grid({
 			pos: app.center,
-			width: 30,
-			height: 60,
-			outline: settings.color.clone(),
+			color: settings.color,
+			width: 80,
 			lineWidth: 5,
-			dash: 20,
+			R: 3,
+			C: 3,
+			dash: [ 10, 4 ],
 			shadow: new iio.Color( 0,0,0,.5 ),
 			shadowBlur: 5,
 			shadowOffset: [ 4,4 ],
@@ -361,21 +368,24 @@ iio.test.Grid = {
 				checkBound(this,1);
 			}
 		}));
-	},
+	},*/
 	child : function( app, settings ){
 
 		var props = {
-			outline: settings.color.clone(),
-			lineWidth: 5
+			R: 3,
+			C: 3
 		}
 
-		app.add( new iio.Grid(props,{
+		app.add( new iio.Grid( props, {
 			pos: app.center,
-			origin: [ _radius/3, -_radius/3 ],
-			radius: _radius,
+			color: settings.color,
+			width: 80,
+			lineWidth: 5,
 			rVel: .02
-		})).add( new iio.Grid(props,{
-			radius: _radius/2
+		})).add( new iio.Grid( props, {
+			width: 70,
+			lineWidth: 3,
+			color: settings.color.clone().invert()
 		}))
-	},*/
+	}
 }
