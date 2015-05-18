@@ -5,11 +5,13 @@ var show_test_index = function(){
 	page.append('<ul id="categories"><li><a id="Circle" href="Circle">iio.<span class="kwd">Circle</span></a></li></ul>');
 	page.append('<ul id="categories"><li><a id="Polygon" href="Polygon">iio.<span class="kwd">Polygon</span></a></li></ul>');
 	page.append('<ul id="categories"><li><a id="Rectangle" href="Rectangle">iio.<span class="kwd">Rectangle</span></a></li></ul>');
+	page.append('<ul id="categories"><li><a id="Text" href="Text">iio.<span class="kwd">Text</span></a></li></ul>');
 
 	link_listener( iio.test.Line, 'Line' );
 	link_listener( iio.test.Circle, 'Circle' );
 	link_listener( iio.test.Polygon, 'Polygon' );
 	link_listener( iio.test.Rectangle, 'Rectangle' );
+	link_listener( iio.test.Text, 'Text' );
 }
 
 link_listener = function( test_function, test_class ){
