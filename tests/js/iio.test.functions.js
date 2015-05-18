@@ -72,6 +72,8 @@ iio.test.show_tests = function( test_class, class_name ){
 		'tests/source-code/'+class_name+'/constructor.html' );
 	run_test( test_class.constructor_no_pos, 
 		'tests/source-code/'+class_name+'/constructor-no-pos.html' );
+	run_test( test_class.constructor_res, 
+		'tests/source-code/'+class_name+'/constructor-res.html' );
 	run_test( test_class.rotation, 
 		'tests/source-code/'+class_name+'/rotation.html' );
 	run_test( test_class.rotation_no_pos, 

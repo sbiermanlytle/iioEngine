@@ -1,28 +1,44 @@
-iio.test.Rectangle = {
+iio.test.Grid = {
 	constructor : function( app, settings ){
-		app.add(new iio.Rectangle({
-			pos: app.center.clone(),
+		app.add(new iio.Grid({
+			pos: app.center,
 			color: settings.color,
-			width: 30,
-			height: 60
+			width: 80,
+			lineWidth: 5,
+			R: 3,
+			C: 3
+		}));
+	},
+	constructor_res : function( app, settings ){
+		app.add(new iio.Grid({
+			pos: app.center,
+			color: settings.color,
+			lineWidth: 5,
+			res: 25,
+			R: 3,
+			C: 3
 		}));
 	},
 	rotation : function( app, settings ){
-		app.add(new iio.Rectangle({
-			pos: app.center.clone(),
+		app.add(new iio.Grid({
+			pos: app.center,
 			color: settings.color,
-			width: 30,
-			height: 60,
+			width: 80,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			rotation: Math.PI/4
 		}));
 	},
 	origin : function( app, settings ){
-		app.add(new iio.Rectangle({
-			pos: app.center.clone(),
-			origin: [ 8, 8 ],
-			color: settings.color.clone(),
-			width: 20,
-			height: 30,
+		app.add(new iio.Grid({
+			pos: app.center.clone().sub(10,10),
+			origin: [10,10],
+			color: settings.color,
+			width: 60,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			rVel: .02
 		}));
 	},
@@ -32,11 +48,13 @@ iio.test.Rectangle = {
 
 		function reverse(o){ o.vel.x *= -1 }
 
-		app.add(new iio.Rectangle({
+		app.add(new iio.Grid({
 			pos: app.center.clone(),
 			color: settings.color,
-			width: 30,
-			height: 60,
+			width: 60,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			vel: [ speed,0 ],
 			bounds: {
 				right: {
@@ -52,13 +70,15 @@ iio.test.Rectangle = {
 	},
 	acc_bounds : function( app, settings ){
 
-		var speed = 0.5;
+		var speed = 0.4;
 
-		var Rectangle = app.add(new iio.Rectangle({
+		var Grid = app.add(new iio.Grid({
 			pos: app.center.clone(),
 			color: settings.color,
-			width: 30,
-			height: 60,
+			width: 60,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			vel: [ speed, 0 ],
 			acc: [ .01, 0 ],
 			bounds: {
@@ -71,75 +91,17 @@ iio.test.Rectangle = {
 			}
 		}));
 	},
-	/*vels : function( app, settings ){
-
-		var speed = 0.5;
-
-		var checkBound = function(o,v){
-			if(o.vs[v].x > app.width/2 || o.vs[v].x < -app.width/2)
-				o.vels[v].x *= -1;
-		}
-
-		app.add(new iio.Rectangle({
-			pos: app.center,
-			color: settings.color.clone(),
-			width: 10,
-			vs:[
-				[ 0, -60 ],
-				[ 0, 60 ]
-			],
-			vels:[
-				[ speed, 0 ],
-				[ -speed, 0 ]
-			],
-			onUpdate: function(){
-				checkBound(this,0);
-				checkBound(this,1);
-			}
-		}));
-	},
-	accs : function( app, settings ){
-
-		var speed = 0.5;
-
-		var checkBound = function(o,v){
-			if(o.vs[v].x > app.width/2)
-				o.vels[v].x = -1;
-			 else if (o.vs[v].x < -app.width/2)
-				o.vels[v].x = 1;
-		}
-
-		app.add(new iio.Rectangle({
-			pos: app.center,
-			color: settings.color.clone(),
-			width: 10,
-			vs:[
-				[ 0, 60 ],
-				[ 0, -60 ]
-			],
-			vels:[
-				[ speed, 0 ],
-				[ -speed, 0 ]
-			],
-			accs:[
-				[ .01, 0 ],
-				[ -.01, 0 ]
-			],
-			onUpdate: function(){
-				checkBound(this,0);
-				checkBound(this,1);
-			}
-		}));
-	},*/
 	rVel_bounds : function( app, settings ){
 
 		function reverse(o){ o.rVel *= -1 }
 
-		app.add(new iio.Rectangle({
-			pos: app.center.clone(),
+		app.add(new iio.Grid({
+			pos: app.center,
 			color: settings.color,
-			width: 30,
-			height: 60,
+			width: 60,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			rVel: .02,
 			bounds: {
 				rightRotation: {
@@ -153,32 +115,14 @@ iio.test.Rectangle = {
 			}
 		}));
 	},
-	/*rVel_bounds_no_pos : function( app, settings ){
-
-		function reverse(o){ o.rVel *= -1 }
-
-		app.add(new iio.Rectangle({
-			color: settings.color.clone(),
-			width: 30,
-			rotation: Math.PI/2,
-			rVel: -.02,
-			origin: app.center,
-			vs:[
-				[ 20, 20 ],
-				[ app.width-20, app.height-20 ]
-			],
-			bounds: {
-				rightRotation: [ Math.PI/2, reverse ],
-				leftRotation: [ 0, reverse ]
-			}
-		}));
-	},*/
 	rAcc_bounds : function( app, settings ){
-		app.add(new iio.Rectangle({
+		app.add(new iio.Grid({
 			pos: app.center.clone(),
 			color: settings.color,
-			width: 30,
-			height: 60,
+			width: 60,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			rAcc: .0015,
 			bounds: {
 				rightRotation: {
@@ -202,11 +146,13 @@ iio.test.Rectangle = {
 
 		app.loop(1);
 
-		app.add(new iio.Rectangle({
-			pos: app.center.clone(),
-			color: settings.color.clone(),
-			width: 30,
-			height: 60,
+		app.add(new iio.Grid({
+			pos: app.center,
+			color: settings.color,
+			width: 80,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			hidden: false,
 			onUpdate: function(){
 				this.hidden = !this.hidden;
@@ -214,11 +160,13 @@ iio.test.Rectangle = {
 		}));
 	},
 	alpha : function( app, settings ){
-		app.add(new iio.Rectangle({
-			pos: app.center.clone(),
+		app.add(new iio.Grid({
+			pos: app.center,
 			color: settings.color,
-			width: 30,
-			height: 60,
+			width: 80,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			fade: {
 				speed: .03,
 				lowerBound: .2,
@@ -229,35 +177,25 @@ iio.test.Rectangle = {
 		}));
 	},
 	color : function( app, settings ){
-		app.add(new iio.Rectangle({
-			pos: app.center.clone(),
+		app.add(new iio.Grid({
+			pos: app.center,
 			color: settings.color.clone(),
-			width: 30,
-			height: 60,
+			width: 80,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			cycle: 0,
 			onUpdate: iio.test.color
 		}));
 	},
-	outline : function( app, settings ){
-
-		app.loop(15);
-
-		app.add(new iio.Rectangle({
-			pos: app.center.clone(),
-			width: 30,
-			height: 60,
-			outline: settings.color.clone(),
-			lineWidth: 1,
-			growing: true,
-			onUpdate: iio.test.outline
-		}));
-	},
 	shrink : function( app, settings ){
-		app.add(new iio.Rectangle({
-			pos: app.center.clone(),
-			color: settings.color.clone(),
-			width: 30,
-			height: 60,
+		app.add(new iio.Grid({
+			pos: app.center,
+			color: settings.color,
+			width: 80,
+			lineWidth: 5,
+			R: 3,
+			C: 3,
 			shrink: {
 				speed: .03,
 				upperBound: 30,
@@ -270,8 +208,8 @@ iio.test.Rectangle = {
 			}
 		}));
 	},
-	dash : function ( app, settings ){
-		app.add(new iio.Rectangle({
+	/*dash : function ( app, settings ){
+		app.add(new iio.Grid({
 			pos: app.center.clone(),
 			width: 30,
 			height: 60,
@@ -281,7 +219,7 @@ iio.test.Rectangle = {
 		}));
 	},
 	dash_rounded : function ( app, settings ){
-		app.add(new iio.Rectangle({
+		app.add(new iio.Grid({
 			pos: app.center,
 			width: 30,
 			height: 60,
@@ -293,7 +231,7 @@ iio.test.Rectangle = {
 		}));
 	},
 	gradient : function( app, settings ){
-		app.add(new iio.Rectangle({
+		app.add(new iio.Grid({
 			pos: app.center,
 			width: 30,
 			height: 60,
@@ -308,7 +246,7 @@ iio.test.Rectangle = {
 		}));
 	},
 	radial_gradient : function( app, settings ){
-		app.add(new iio.Rectangle({
+		app.add(new iio.Grid({
 			pos: app.center,
 			width: 30,
 			height: 60,
@@ -329,7 +267,7 @@ iio.test.Rectangle = {
 
 		app.set({color:'white'})
 
-		app.add(new iio.Rectangle({
+		app.add(new iio.Grid({
 			pos: app.center,
 			width: 30,
 			height: 60,
@@ -342,7 +280,7 @@ iio.test.Rectangle = {
 		}));
 	},
 	/*bezier : function( app, settings ){
-		app.add(new iio.Rectangle({
+		app.add(new iio.Grid({
 			pos: app.center,
 			color: settings.color.clone(),
 			width: 10,
@@ -365,7 +303,7 @@ iio.test.Rectangle = {
 				o.bezierVels[v].x *= -1;
 		}
 
-		app.add(new iio.Rectangle({
+		app.add(new iio.Grid({
 			pos: app.center,
 			color: settings.color.clone(),
 			width: 10,
@@ -398,7 +336,7 @@ iio.test.Rectangle = {
 				o.bezierVels[v].x = speed;
 		}
 
-		app.add(new iio.Rectangle({
+		app.add(new iio.Grid({
 			pos: app.center,
 			color: settings.color.clone(),
 			width: 10,
@@ -431,36 +369,13 @@ iio.test.Rectangle = {
 			lineWidth: 5
 		}
 
-		app.add( new iio.Rectangle(props,{
+		app.add( new iio.Grid(props,{
 			pos: app.center,
 			origin: [ _radius/3, -_radius/3 ],
 			radius: _radius,
 			rVel: .02
-		})).add( new iio.Rectangle(props,{
+		})).add( new iio.Grid(props,{
 			radius: _radius/2
 		}))
 	},*/
-	img : function( app, settings ){
-		app.add(new iio.Rectangle({
-			pos: app.center,
-			img: 'img/bonus.png'
-		}));
-	},
-	/*flip : function( app, settings ){
-
-		app.loop(1);
-
-		app.add(new iio.Rectangle({
-			pos: app.center,
-			radius: app.width/2.5,
-			clip: true,
-			img: 'http://iioengine.com/img/flip.png',
-			flip: 'x',
-			onUpdate: function(){
-				if(this.flip == 'x')
-					this.flip = false;
-				else this.flip = 'x';
-			}
-		}));
-	}*/
 }

@@ -13,7 +13,7 @@ coreSrc = [
   'Line.js',
   'Polygon.js',
   'Rectangle.js',
-  'Square.js',
+  'X.js',
   'Grid.js',
   'Circle.js',
   'Text.js',

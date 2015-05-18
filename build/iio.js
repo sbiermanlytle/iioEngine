@@ -578,7 +578,15 @@ iio.collision = {
     return false;
   }
 }
-;
+
+iio.draw = {
+  line: function( ctx, x1, y1, x2, y2 ){
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+  }
+};
 
 //DEFINITION
 iio.Vector = function(){ this.Vector.apply(this, arguments) };
@@ -750,6 +758,7 @@ iio.Obj.prototype.convert_props = function(){
   this.convert_v("vel");
   this.convert_v("acc");
   this.convert_v("shadowOffset");
+  this.convert_v("res");
   this.convert_vs("vs");
   this.convert_vs("vels");
   this.convert_vs("accs");
@@ -798,8 +807,11 @@ iio.Obj.prototype.convert_props = function(){
   } 
 }
 iio.Obj.prototype.convert_v = function(p){
-  if(this[p] && this[p] instanceof Array)
-    this[p] = new iio.Vector(this[p]);
+  if(this[p]){
+    if(this[p] instanceof Array)
+      this[p] = new iio.Vector(this[p]);
+    else this[p] = new iio.Vector(this[p],this[p]);
+  }
 }
 iio.Obj.prototype.convert_vs = function(vs){
   if(this[vs])
@@ -1591,16 +1603,27 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
 };
 
 //DEFINITION
-iio.Square = function(){ this.Square.apply(this, arguments) };
-iio.inherit(iio.Square, iio.Rectangle);
-iio.Square.prototype._super = iio.Rectangle.prototype;
+iio.X = function(){ this.X.apply(this, arguments) };
+iio.inherit(iio.X, iio.Rectangle);
+iio.X.prototype._super = iio.Rectangle.prototype;
 
 //CONSTRUCTOR
-iio.Square.prototype.Square = function() {
-	this._super.Rectangle.call(this,arguments[0]);
-	this.height = this.width;
+iio.X.prototype.X = function() {
+  this._super.Rectangle.call(this,this.merge_props(arguments));
 }
-;
+
+//FUNCTIONS
+iio.X.prototype.draw_shape = function(ctx){
+  ctx.translate(-this.width / 2, -this.height / 2);
+  /*if (this.bezier) {
+    iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
+    this.finish_path_shape(ctx);
+  }*/
+  iio.draw.line(ctx, 0, 0, this.width, this.height);
+  iio.draw.line(ctx, this.width, 0, 0, this.height);
+  ctx.restore();
+}
+iio.X.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;;
 
 //DEFINITION
 iio.Grid = function(){ this.Grid.apply(this, arguments) };
@@ -1609,56 +1632,51 @@ iio.Grid.prototype._super = iio.Rectangle.prototype;
 
 //CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
-  this._super.Rectangle.call(this,arguments[0]);
-  this.res = { x:this.width/this.C, y:this.height/this.R };
-    this.cells = [];
-    var x = -this.res.x * (this.C - 1) / 2;
-    var y = -this.res.y * (this.R - 1) / 2;
-    for (var c = 0; c < this.C; c++) {
-      this.cells[c] = [];
-      for (var r = 0; r < this.R; r++) {
-        this.cells[c][r] = this.add({
-          pos:{
-            x:x,
-            y:y
-          },
-          c: c,
-          r: r,
-          width: this.res.x,
-          height: this.res.y
-        });
-        y += this.res.y;
-      }
-      y = -this.res.y * (this.R - 1) / 2;
-      x += this.res.x;
-    }
+  this._super.Rectangle.call(this,this.merge_props(arguments));
+
+  // set res if undefined
+  this.res = this.res || new iio.Vector(
+    this.width/this.C,
+    this.height/this.R
+  );
+
+  // set width/height if undefined
+  this.width = this.width || this.C * this.res.x;
+  this.height = this.height || this.R * this.res.y;
+
+  // initialize cells
+  this.init_cells();
 }
 
 //FUNCTIONS
-iio.Grid.prototype.draw_shape = function(ctx) {
-  ctx.translate(-this.width / 2, -this.height / 2);
-  /*iio.draw.rect(ctx, this.width, this.height, {
-    c: this.color,
-    o: this.outline
-  }, {
-    img: this.img,
-    anims: this.anims,
-    mov: this.mov,
-    round: this.round
-  });*/
-  if (this.color) {
-    if (this.color.indexOf && this.color.indexOf('gradient') > -1)
-      this.color = this.createGradient(ctx, this.color);
-    ctx.strokeStyle = this.color;
-    ctx.lineWidth = this.lineWidth;
-    for (var c = 1; c < this.C; c++) this.draw_line(ctx, c * this.res.x, 0, c * this.res.x, this.height);
-    for (var r = 1; r < this.R; r++) this.draw_line(ctx, 0, r * this.res.y, this.width, r * this.res.y);
+iio.Grid.prototype.init_cells = function(){
+  this.cells = [];
+  var x = -this.res.x * (this.C - 1) / 2;
+  var y = -this.res.y * (this.R - 1) / 2;
+  for (var c = 0; c < this.C; c++) {
+    this.cells[c] = [];
+    for (var r = 0; r < this.R; r++) {
+      this.cells[c][r] = this.add({
+        pos:{
+          x:x,
+          y:y
+        },
+        c: c,
+        r: r,
+        width: this.res.x,
+        height: this.res.y
+      });
+      y += this.res.y;
+    }
+    y = -this.res.y * (this.R - 1) / 2;
+    x += this.res.x;
   }
 }
-iio.Grid.prototype.clear = function() {
+iio.Grid.prototype.clear = function(noDraw){
   this.objs = [];
-  iio.initGrid(this);
-  this.app.draw();
+  this.init_cells();
+  if(noDraw);
+  else this.app.draw();
 }
 iio.Grid.prototype.cellCenter = function(c, r) {
   return {
@@ -1675,6 +1693,28 @@ iio.Grid.prototype.foreachCell = function(fn, p) {
     for (var r = 0; r < this.R; r++)
       if (fn(this.cells[c][r], p) === false)
         return [r, c];
+}
+
+//DRAW FUNCTIONS
+iio.Grid.prototype.draw_shape = function(ctx) {
+  ctx.translate(-this.width / 2, -this.height / 2);
+  /*iio.draw.rect(ctx, this.width, this.height, {
+    c: this.color,
+    o: this.outline
+  }, {
+    img: this.img,
+    anims: this.anims,
+    mov: this.mov,
+    round: this.round
+  });*/
+  if (this.color) {
+    if (this.color.indexOf && this.color.indexOf('gradient') > -1)
+      this.color = this.createGradient(ctx, this.color);
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = this.lineWidth;
+    for (var c = 1; c < this.C; c++) iio.draw.line(ctx, c * this.res.x, 0, c * this.res.x, this.height);
+    for (var r = 1; r < this.R; r++) iio.draw.line(ctx, 0, r * this.res.y, this.width, r * this.res.y);
+  }
 };
 
 //DEFINITION

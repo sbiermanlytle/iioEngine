@@ -26,7 +26,16 @@
 	app_colors[1] = new iio.Color(0,186,255);
 	app_colors[0] = new iio.Color(101,176,66);
 
-	iio.start([iio.test.Text.flip, { color:app_colors[0] }], 'c');
+	iio.start(function(app){
+
+		app.add(new iio.X({
+			pos: app.center,
+			color: 'red',
+			lineWidth: 10,
+			width: 50,
+			rVel: .01
+		}))
+	}, 'c');
 
 </script>
 </body>

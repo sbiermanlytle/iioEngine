@@ -46,6 +46,7 @@ iio.Obj.prototype.convert_props = function(){
   this.convert_v("vel");
   this.convert_v("acc");
   this.convert_v("shadowOffset");
+  this.convert_v("res");
   this.convert_vs("vs");
   this.convert_vs("vels");
   this.convert_vs("accs");
@@ -94,8 +95,11 @@ iio.Obj.prototype.convert_props = function(){
   } 
 }
 iio.Obj.prototype.convert_v = function(p){
-  if(this[p] && this[p] instanceof Array)
-    this[p] = new iio.Vector(this[p]);
+  if(this[p]){
+    if(this[p] instanceof Array)
+      this[p] = new iio.Vector(this[p]);
+    else this[p] = new iio.Vector(this[p],this[p]);
+  }
 }
 iio.Obj.prototype.convert_vs = function(vs){
   if(this[vs])
