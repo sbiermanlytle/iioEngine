@@ -373,7 +373,9 @@ iio.test.Grid = {
 
 		var props = {
 			R: 3,
-			C: 3
+			C: 3,
+			width: 80,
+			lineWidth: 5,
 		}
 
 		app.add( new iio.Grid( props, {
@@ -383,8 +385,7 @@ iio.test.Grid = {
 			lineWidth: 5,
 			rVel: .02
 		})).add( new iio.Grid( props, {
-			width: 70,
-			lineWidth: 3,
+			rotation: Math.PI/4,
 			color: settings.color.clone().invert()
 		}))
 	}
