@@ -5,6 +5,7 @@
 html,body,div,header,footer,a,p,h1,h2,h3,h4,h5,ul{
   padding:0;
   margin:0;
+  outline: none
 }
 body {
   padding-bottom: 40px;
@@ -316,7 +317,7 @@ h1,h2,h3,h4{
     tab-size: 2;
   }
   .prettyprint ol.linenums {
-    list-style: decimal outside;
+    list-style: decimal;
     margin-left: -6px;
   }
 

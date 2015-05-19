@@ -27,7 +27,7 @@
       <nav id="nav">
         <ul>
           <li><a id="download" href=""><p class="active">Download</p></a></li>
-          <li><a id="docs" href="docs"><p>Docs</p></a></li>
+          <li><a id="docs" href="docs"><p>API</p></a></li>
           <li><a id="demos" href="demos"><p>Demos</p></a></li>
           <li><a id="tests" href="#tests"><p>Tests</p></a></li>
           <li><a target="_blank" href="https://github.com/sbiermanlytle/iioengine"><p>Github</p></a></li>
@@ -94,34 +94,71 @@
   var current = HOME;
   var page = $('#page_content');
 
-  link_click = function(next, display_fn){
+  link_click = function(next){
     if(current != next) {
       $('#'+current).children().first().removeClass("active");
       current = next;
       $('#'+current).children().first().addClass("active");
     }
+   /* page.empty();
+    $('canvas').remove();
+    $('#fullscreen_header').remove();
+    $('#column').show();*/
+    //display_fn();
+    //return false;
+  }
+
+  $('#download').click(function(){
+    link_click( HOME );
+    window.location.hash = '#download';
+    return false;
+  });
+  $('#demos').click(function(){
+    link_click( DEMOS );
+    window.location.hash = '#demos';
+    return false;
+  });
+  $('#tests').click(function(){
+    link_click( TESTS );
+    window.location.hash = '#tests';
+    return false;
+  });
+  $('#docs').click(function(){
+    link_click( DOCS );
+    window.location.hash = '#overview';
+    return false;
+  });
+
+  // PAGE ROUTER
+  $(window).bind('hashchange', function() {
+
     page.empty();
     $('canvas').remove();
     $('#fullscreen_header').remove();
     $('#column').show();
-    display_fn();
-    return false;
+
+    display_current();
+  });
+
+  display_current = function(){
+    // MAIN MENU
+    if( window.location.hash == '#download' || window.location.hash == '' )
+      show_home();
+    else if( window.location.hash == '#demos' )
+      show_demo_index();
+    else if( window.location.hash == '#tests' )
+      show_test_index();
+
+    // API MENU
+    else if( window.location.hash == '#overview' )
+      show_api_basics();
+    else if( window.location.hash == '#app-control' )
+      show_api_app_control();
+
+    prettyPrint();
   }
 
-  $('#download').click(function(){
-    return link_click( HOME, show_home );
-  });
-  $('#demos').click(function(){
-    return link_click( DEMOS, show_demo_index );
-  });
-  $('#tests').click(function(){
-    return link_click( TESTS, show_test_index );
-  });
-  $('#docs').click(function(){
-    return link_click( DOCS, show_docs_index );
-  });
-
-  show_home();
+  display_current();
 
   </script>
 

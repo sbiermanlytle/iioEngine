@@ -5,6 +5,6 @@ show_home = function(){
 	page.append('<h2>Free &amp; Open Source</h2>');
 	page.append('<p>The core platform is <span class="kwd">open source and free</span> to use for any purpose.</p>');
 	page.append('<p>Submit additions, questions, and bugs on <a href="https://github.com/sbiermanlytle/iioengine">Github</a>. General inquires may be sent to <a href="http://iiointeractive.com/contact">iio interactive</a>.</p>');
-	page.append('<h4>Setup is easy, just download then follow the quick start guide.</h4>');
-	page.append('<div class="arrows_btns"><div class="btn_wrap"><img class="big-arrow left-arrow" src="img/arrow-grey.png"/><p style="min-width:190px" class="big-btn"><a id="download-iio" style="padding:15px 26px" class="btn-iio grey" href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">Download v1.4</a></p><img class="big-arrow" src="img/arrow.png"/><p id="quickstart-btn" style="min-width:181px" class="big-btn"><a class="btn-iio" href="tutorials/quick-start.php">Quick Start Guide</a></p></div></div>');
+	/*page.append('<h4>Setup is easy, just download then follow the documentation.</h4>');*/
+	page.append('<div class="arrows_btns"><div class="btn_wrap"><img class="big-arrow left-arrow" src="img/arrow-grey.png"/><p style="min-width:190px" class="big-btn"><a id="download-iio" style="padding:15px 26px" class="btn-iio grey" href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">Download v1.4</a></p><img class="big-arrow" src="img/arrow.png"/><p id="quickstart-btn" style="min-width:181px;" class="big-btn"><a class="btn-iio" href="#overview">Documentation</a></p></div></div>');
 };

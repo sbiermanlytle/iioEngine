@@ -1,14 +1,13 @@
 var top_menu_toggles = [];
 var headers = [];
+headers[0] = 'basics';
+//headers[1] = 'functions';
+headers[1] = 'data';
+headers[2] = 'objects';
 
-show_docs_index = function(){
+show_docs_menu = function(){
 	page.append('<div id="api_menu"></div>');
 	$('#api_menu').append('<ul id="api_items"></ul>');
-
-	headers[0] = 'basics';
-	//headers[1] = 'functions';
-	headers[1] = 'data';
-	headers[2] = 'objects';
 
 	for( var i=0; i<headers.length; i++ ){
 
@@ -59,11 +58,11 @@ show_docs_index = function(){
 		toggle_menu(headers[2],2);
 		return false;
 	});
-	page.append('<div id="api_content"></div>');
-	window.location.hash = '#overview';
 }
 
 show_api_basics = function(){
+	show_docs_menu();
+	page.append('<div id="api_content"></div>');
 
 	$('#api_content').append('<h1>iio.js Documentation</h1>');
 	$('#api_content').append('<h3><a href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">- Download iio.js 1.4</a></h3>');
@@ -76,6 +75,8 @@ show_api_basics = function(){
 }
 
 show_api_app_control = function(){
+	show_docs_menu();
+	page.append('<div id="api_content"></div>');
 
 	$('#api_content').append('<h1>iio app control</h1>');
 
@@ -100,15 +101,3 @@ append_api_item_sub = function( parent, href ){
 	href = href.replace(' ', '-');
 	$('#'+parent).append('<li class="api_item_sub"><a href="#'+href+'">'+title+'</a></li>');
 }
-
-$(window).bind('hashchange', function() {
-	$('#api_content').empty();
-
-	if( window.location.hash == '#overview' )
-		show_api_basics();
-	else if( window.location.hash == '#app-control' )
-		show_api_app_control();
-
-	prettyPrint();
-});
-
