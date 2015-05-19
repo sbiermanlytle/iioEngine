@@ -17,6 +17,9 @@ a{
   text-decoration: none;
   color:#00baff;
 }
+h1{
+  padding-bottom:5px;
+}
 h2{
   padding:20px 0 10px;
 }
@@ -68,6 +71,7 @@ h1,h2,h3,h4{
 }
 #content p{
   padding-top: 5px;
+  padding-bottom: 5px;
 }
 #iioapps{
   margin-top: 15px;
@@ -173,6 +177,53 @@ h1,h2,h3,h4{
   padding-top: 10px
 }
 
+/* API */
+#api_menu ul{
+  list-style: none;
+}
+#api_menu{
+  width: 160px;
+  color:black; 
+  height:100%;
+  float:left;
+  margin-left: -15px;
+  margin-top: -16px;
+  position: fixed;
+  overflow-y: auto;
+  /*background-color: white;*/
+}
+#api_content{
+  margin-left: 165px
+}
+#api_items{
+  margin-bottom: 10px;
+}
+#api_menu h5{
+  font-size: 18px;
+  color:white;
+  padding: 5px;
+  margin-top:10px;
+}
+.api_item{
+  cursor: pointer;
+  /*background-color: rgb(149, 18, 20); */
+}
+.api_item:hover{
+  /*background-color: #00baff;*/
+}
+.api_item_sub a{
+  display: block;
+  padding:10px;
+  border-top: 1px solid #e5e5e5;
+  font-size: 14px;
+  /*background-color: white;*/
+  font-weight: bold;
+}
+.api_item_sub a:hover{
+  background-color: #00baff;
+  color:black;
+}
+
 /* FULLSCREEN APP */
 #iioapp_fullscreen{
   position: absolute;
@@ -229,7 +280,7 @@ h1,h2,h3,h4{
   pre.prettyprint {
     width: 95%;
     margin: 1em auto;
-    padding: 1em;
+    padding: 0;
     border:none;
     overflow: auto;
   }
@@ -356,7 +407,7 @@ a.btn-iio:hover{
     }
 
 /*UNIVERSALS*/
-a,h2,canvas,input[type='submit'],.btn,#drag_overlay{
+a,h2,h5,canvas,input[type='submit'],.btn,#drag_overlay,.api_item{
   -o-transition:.5s;
   -ms-transition:.5s;
   -moz-transition:.5s;
