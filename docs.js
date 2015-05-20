@@ -60,89 +60,143 @@ show_docs_menu = function(){
 	});
 }
 
+h1 = function(html){ return '<h1>'+html+'</h1>' }
+h2 = function(html){ return '<h2>'+html+'</h2>' }
+kwd = function(html){ return "<span class='kwd'>"+html+"</span>" }
+a = function(name){ return '<a href="#'+name+'">'+name+'</a>' }
+pre = function(html){ return "<pre class='prettyprint linenums:1'>"+html+"</span>" }
+p = function(html){ return '<p>'+html+'</p>' }
+api_list = function(id){ return '<ul class="api_list" id="'+id+'"></ul>' }
+api_list_item = function(html){ return '<li class="api_list_item">'+html+'</li>' }
+api_list_info = function(html){ return '<p class="api_list_info"> - '+html+'</p>' }
+var clear = '<div class="clear"></div>';
+
 show_api_basics = function(){
 	show_docs_menu();
 	page.append('<div id="api_content"></div>');
+	var api_content = $('#api_content');
 
-	$('#api_content').append('<h1>iio.js Documentation</h1>');
-	$('#api_content').append('<h3><a href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">- Download iio.js 1.4</a></h3>');
+	api_content.append(h1('iio.js Documentation'));
+	api_content.append('<h3><a href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">- Download iio.js 1.4</a></h3>');
 
-	$('#api_content').append('<p>iio.js is a JavaScript framework for HTML5 Canvas applications. iio allows for <span class="kwd">object oriented development</span> and <span class="kwd">automated object managment</span>.</p>');
-	$('#api_content').append('<p>All code samples in the documentation are assumed to be running inside of an iio script with access to <span class="kwd">app</span>, unless full code is provided.</p>');
+	api_content.append(p('iio.js is a JavaScript framework for HTML5 Canvas applications. iio allows for '+kwd('object oriented development')+' and '+kwd('automated object managment')+'.'));
 
-	$('#api_content').append('<h2>Hello World</h2>');
-	$('#api_content').append("<pre class='prettyprint linenums:1'>&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;body&gt;\n&lt;script type='text/javascript' src='iio.js'&gt;&lt;/script&gt;\n&lt;script type='text/javascript'&gt;\n\n// define a new iio app\n// app is an App object\nHelloWorld = function( app ){\n\n\t// add a new text object to the app\n\tapp.add(new iio.Text({\n\t\t// set position to app center\n\t\tpos: app.center,\n\t\t// set text value\n\t\ttext: 'Hello World'\n\t}));\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;</pre>");
+	api_content.append(p('All code samples in the documentation are assumed to be running inside of an iio script with access to '+kwd('app')+', unless full code is provided.'));
+
+	api_content.append(h2('Hello World'));
+	api_content.append(pre("&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;body&gt;\n&lt;script type='text/javascript' src='iio.js'&gt;&lt;/script&gt;\n&lt;script type='text/javascript'&gt;\n\n// define a new iio app\n// app is an App object\nHelloWorld = function( app ){\n\n\t// add a new text object to the app\n\tapp.add(new iio.Text({\n\t\t// set position to app center\n\t\tpos: app.center,\n\t\t// set text value\n\t\ttext: 'Hello World'\n\t}));\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;"));
 }
 
 show_api_app_control = function(){
 	show_docs_menu();
 	page.append('<div id="api_content"></div>');
+	var api_content = $('#api_content');
 
-	$('#api_content').append('<h1>iio app control</h1>');
+	api_content.append(h1('iio app control'));
 
-	$('#api_content').append("<p>iio apps are wrapped in an application script so that they can be managed by iio's centralized app management system.</p>");
-	$('#api_content').append("<p>This design pattern will also allow you to utilize <span class='kwd'>iio.start</span>.</p>");
-	$('#api_content').append("<pre class='prettyprint linenums:1'>// define a new iio app\n// app is an App object\nHelloWorld = function( app ){\n\t//...\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n\n// start the app on an existing canvas\niio.start( HelloWorld, 'canvasId' );</pre>");
+	api_content.append(p("iio apps are wrapped in an application script so that they can be managed by iio's centralized app management system."));
+	api_content.append(p("This design pattern will also allow you to utilize "+kwd('iio.start')+"."));
+	api_content.append(pre("// define a new iio app\n// app is an App object\nHelloWorld = function( app ){\n\t//...\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n\n// start the app on an existing canvas\niio.start( HelloWorld, 'canvasId' );"));
 
-	$('#api_content').append('<h2>iio app settings</h2>');
-	$('#api_content').append("<p>iio apps can be started with settings that are known to the app.</p>");
-	$('#api_content').append("<pre class='prettyprint linenums:1'>// define a new iio app\nHelloWorld = function( app, settings ){\n\tsettings.mVar //...\n}\n\n// start the app fullscreen with settings\niio.start( [ HelloWorld, { mVar: mVal } ] );\n\n// start the app on an existing canvas\niio.start( [ HelloWorld, { mVar: mVal } ], 'canvasId' );</pre>");
+	api_content.append(h2('iio app settings'));
+	api_content.append(p("iio apps can be started with settings that are known to the app."));
+	api_content.append(pre("// define a new iio app\nHelloWorld = function( app, settings ){\n\tsettings.mVar //...\n}\n\n// start the app fullscreen with settings\niio.start( [ HelloWorld, { mVar: mVal } ] );\n\n// start the app on an existing canvas\niio.start( [ HelloWorld, { mVar: mVal } ], 'canvasId' );"));
+}
+
+show_api_Color = function(){
+	show_docs_menu();
+	page.append('<div id="api_content"></div>');
+	var api_content = $('#api_content');
+
+	// TITLE
+	api_content.append( h1('iio.Color') );
+	// OVERVIEW
+	api_content.append( p("An object for storing color defined with Red, Green, Blue, and Alpha channels.") );
+
+	// PROPERTIES
+		api_content.append( h2('Properties') );
+		api_content.append( api_list('properties') );
+		var properties = $('#properties');
+		// r
+		properties.append( api_list_item( kwd('float')+' r') );
+		properties.append( api_list_info("Red color value in the range [ 0, 255 ]") );
+		properties.append( clear );
+		// g
+		properties.append( api_list_item( kwd('float')+' g') );
+		properties.append( api_list_info("Green color value in the range [ 0, 255 ]") );
+		properties.append( clear );
+		// b
+		properties.append( api_list_item( kwd('float')+' b') );
+		properties.append( api_list_info("Blue color value in the range [ 0, 255 ]") );
+		properties.append( clear );
+		// a
+		properties.append( api_list_item( kwd('float')+' a') );
+		properties.append( api_list_info("Alpha color value in the range [ 0, 1 ]") );
+		properties.append( clear );
+		// sample
+		properties.append( pre("// access the properties of a color\nvar red = color.r;\nvar green = color.g;\nvar blue = color.b;\nvar alpha = color.a;") );
+		properties.append( pre("// set the properties of a color\ncolor.r = 255;\ncolor.g = 255;\ncolor.b = 255;\ncolor.a = 1;") );
 }
 
 show_api_Vector = function(){
 	show_docs_menu();
 	page.append('<div id="api_content"></div>');
+	var api_content = $('#api_content');
 
-	$('#api_content').append('<h1>iio.Vector</h1>');
-	$('#api_content').append("<p>Represents a 2D vector or point. Contains static and instance mathmatics.</p>");
+	// TITLE
+	api_content.append( h1('iio.Vector') );
+	// OVERVIEW
+	api_content.append( p("Represents a 2D vector or point. Contains static and instance mathmatics.") );
 
-	$('#api_content').append('<h2>Properties</h2>');
-	$('#api_content').append('<ul class="api_list" id="properties"></ul>');
+	// PROPERTIES
+		api_content.append( h2('Properties') );
+		api_content.append( api_list('properties') );
+		var properties = $('#properties');
+		// x
+		properties.append( api_list_item( kwd('float')+' x') );
+		properties.append( api_list_info("the x (horizontal) coordinate value in pixels") );
+		properties.append( clear );
+		// y
+		properties.append( api_list_item( kwd('float')+' y') );
+		properties.append( api_list_info("the y (vertical) coordinate value in pixels") );
+		// sample
+		properties.append( pre("// access the x and y values of a vector\nvar x = vector.x;\nvar y = vector.y;") );
+		properties.append( pre("// set the x and y values of a vector\nvector.x = value;\nvector.y = value;") );
 
-	$('#properties').append('<li class="api_list_item"><span class="kwd">float</span> x</li>');
-	$('#properties').append('<p class="api_list_info"> - the x (horizontal) coordinate value in pixels</p>');
-	$('#properties').append('<div class="clear"></div>');
+	// CONSTRUCTORS
+		api_content.append( h2('Constructors') );
+		api_content.append( api_list('constructors') );
+		var constructors = $('#constructors');
+		// Vector()
+		constructors.append( api_list_item('Vector()') );
+		constructors.append( api_list_info("create a vector with values 0,0") );
+		constructors.append( clear );
+		// Vector( x,y )
+		constructors.append( api_list_item('Vector( '+kwd('float')+' x, '+kwd('float')+' y )') );
+		constructors.append( api_list_info('create a vector with the given x and y values') );
+		constructors.append( clear );
+		// Vector( v )
+		constructors.append( api_list_item('Vector( '+a('Vector')+' v )') );
+		constructors.append( api_list_info('create a vector with the values of the given vector') );
+		constructors.append( pre("\nvar v0 = new iio.Vector();\nvar v1 = new iio.Vector( 40, 50 );\nvar v2 = new iio.Vector( v1 );") );
 
-	$('#properties').append('<li class="api_list_item"><span class="kwd">float</span> y</li>');
-	$('#properties').append('<p class="api_list_info"> - the y (vertical) coordinate value in pixels</p>');
-
-	$('#properties').append("<pre class='prettyprint linenums:1'>// access the x and y values of a vector\nvar x = vector.x;\nvar y = vector.y;</pre>");
-
-	$('#properties').append("<pre class='prettyprint linenums:1'>// set the x and y values of a vector\nvector.x = value;\nvector.y = value;</pre>");
-
-	$('#api_content').append('<h2>Constructors</h2>');
-	$('#api_content').append('<ul class="api_list" id="constructors"></ul>');
-
-	$('#constructors').append('<li class="api_list_item">Vector()</li>');
-	$('#constructors').append('<p class="api_list_info"> - create a vector with values 0,0</p>');
-	$('#constructors').append('<div class="clear"></div>');
-
-	$('#constructors').append('<li class="api_list_item">Vector( <span class="kwd">float</span> x, <span class="kwd">float</span> y )</li>');
-	$('#constructors').append('<p class="api_list_info"> - create a vector with the given x and y values</p>');
-	$('#constructors').append('<div class="clear"></div>');
-	
-	$('#constructors').append('<li class="api_list_item">Vector( <a href="#Vector">Vector</a> v )</li>');
-	$('#constructors').append('<p class="api_list_info"> - create a vector with the values of the given vector</p>');
-	$('#constructors').append("<pre class='prettyprint linenums:1'>\nvar v0 = new iio.Vector();\nvar v1 = new iio.Vector( 40, 50 );\nvar v2 = new iio.Vector( v1 );</pre>");
-
-	$('#api_content').append('<h2>Functions</h2>');
-	$('#api_content').append('<ul class="api_list" id="functions"></ul>');
-
-	$('#functions').append('<li class="api_list_item">clone()</li>');
-	$('#functions').append('<p class="api_list_info"> - return a deep copy of this vector</p>');
-
-	$('#functions').append("<pre class='prettyprint linenums:1'>var v = new iio.Vector();\nvar v_clone = v.clone();</pre>");
-
-	$('#functions').append('<div class="clear divide"></div>');
-
-	$('#functions').append('<li class="api_list_item">add( <span class="kwd">float</span> x, <span class="kwd">float</span> y )</li>');
-	$('#functions').append('<p class="api_list_info"> - add the given values to this vector</p>');
-
-	$('#functions').append('<div class="clear"></div>');
-
-	$('#functions').append('<li class="api_list_item">add( <a href="#Vector">Vector</a> v )</li>');
-	$('#functions').append('<p class="api_list_info"> - add the given vector to this vector</p>');
-	$('#functions').append("<pre class='prettyprint linenums:1'>var v0 = new iio.Vector();\nv0.add( 20, 30 );\n\nvar v1 = new iio.Vector();\nv1.add( v0 );</pre>");
+	// FUNCTIONS
+		api_content.append( h2('Functions') );
+		api_content.append( api_list('functions') );
+		var functions = $('#functions');
+		// clone
+		functions.append( api_list_item('clone()') );
+		functions.append( api_list_info('return a deep copy of this vector') );
+		functions.append( pre("var v = new iio.Vector();\nvar v_clone = v.clone();") );
+		functions.append( clear );
+		// add( x, y )
+		functions.append( api_list_item('add( '+kwd('float')+' x, '+kwd('float')+' y )') );
+		functions.append( api_list_info('add the given values to this vector') );
+		functions.append( clear );
+		// add( v )
+		functions.append( api_list_item('add( '+a('Vector')+' v )') );
+		functions.append( api_list_info('add the given vector to this vector') );
+		functions.append( pre("var v0 = new iio.Vector();\nv0.add( 20, 30 );\n\nvar v1 = new iio.Vector();\nv1.add( v0 );") );
 }
 
 toggle_menu = function( id, i ){

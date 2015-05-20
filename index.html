@@ -155,6 +155,9 @@
     } else if( window.location.hash == '#Vector' ){
       show_api_Vector();
       current = DOCS;
+    } else if( window.location.hash == '#Color' ){
+      show_api_Color();
+      current = DOCS;
     }
 
     // DEMOS
@@ -199,7 +202,8 @@
     highlight_menu();
     prettyPrint();
 
-    if( window.location.hash == '#Vector' )
+    if( window.location.hash == '#Vector' 
+      || window.location.hash == '#Color')
       $('.prettyprint ol.linenums').css('margin-left', '-40px');
   }
 
