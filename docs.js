@@ -27,6 +27,7 @@ show_docs_menu = function(){
 	//append_api_item_sub('functions','iio libraries');
 	append_api_item_sub('basics','app control');
 
+	append_api_item_sub('data','Abstract');
 	append_api_item_sub('data','Vector');
 	append_api_item_sub('data','Color');
 	append_api_item_sub('data','Gradient');
@@ -62,6 +63,7 @@ show_docs_menu = function(){
 
 h1 = function(html){ return '<h1>'+html+'</h1>' }
 h2 = function(html){ return '<h2>'+html+'</h2>' }
+h3 = function(html){ return '<h3>'+html+'</h3>' }
 kwd = function(html){ return "<span class='kwd'>"+html+"</span>" }
 a = function(name){ return '<a href="#'+name+'">'+name+'</a>' }
 pre = function(html){ return "<pre class='prettyprint linenums:1'>"+html+"</span>" }
@@ -69,7 +71,9 @@ p = function(html){ return '<p>'+html+'</p>' }
 api_list = function(id){ return '<ul class="api_list" id="'+id+'"></ul>' }
 api_list_item = function(html){ return '<li class="api_list_item">'+html+'</li>' }
 api_list_info = function(html){ return '<p class="api_list_info"> - '+html+'</p>' }
+noBold = function(html){ return "<span class='noBold'>"+html+"</span>"}
 var clear = '<div class="clear"></div>';
+var divide = '<div class="clear divide"></div>';
 
 show_api_basics = function(){
 	show_docs_menu();
@@ -103,6 +107,33 @@ show_api_app_control = function(){
 	api_content.append(pre("// define a new iio app\nHelloWorld = function( app, settings ){\n\tsettings.mVar //...\n}\n\n// start the app fullscreen with settings\niio.start( [ HelloWorld, { mVar: mVal } ] );\n\n// start the app on an existing canvas\niio.start( [ HelloWorld, { mVar: mVal } ], 'canvasId' );"));
 }
 
+show_api_Abstract = function(){
+	show_docs_menu();
+	page.append('<div id="api_content"></div>');
+	var api_content = $('#api_content');
+
+	// TITLE
+	api_content.append( h1('iio.Abstract') );
+	api_content.append( h3( kwd('Abstract') ) );
+	// OVERVIEW
+	api_content.append( p("An abstract root for all classes in iio. Every method defined here in Abstract is available in every other class.") );
+
+	// FUNCTIONS
+		api_content.append( h2('Functions') );
+		api_content.append( api_list('functions') );
+		var functions = $('#functions');
+		// clone
+		functions.append( api_list_item('clone() | ' + noBold('returns ') + kwd('Object') ) );
+		functions.append( api_list_info('returns a deep copy of this object (a new object with equal properties).') );
+		functions.append( pre("var obj_clone = obj.clone();") );
+		functions.append( divide );
+		// toString
+		functions.append( api_list_item('toString() | ' + noBold('returns ') + kwd('String') ) );
+		functions.append( api_list_info('returns a string that lists all properties and values in this object.') );
+		functions.append( pre("var obj_string = obj.toString();") );
+		functions.append( clear );
+}
+
 show_api_Color = function(){
 	show_docs_menu();
 	page.append('<div id="api_content"></div>');
@@ -110,6 +141,7 @@ show_api_Color = function(){
 
 	// TITLE
 	api_content.append( h1('iio.Color') );
+	api_content.append( h3( kwd('Color') +' : '+ a('Abstract') ) );
 	// OVERVIEW
 	api_content.append( p("An object for storing color defined with Red, Green, Blue, and Alpha channels.") );
 
@@ -136,6 +168,39 @@ show_api_Color = function(){
 		// sample
 		properties.append( pre("// access the properties of a color\nvar red = color.r;\nvar green = color.g;\nvar blue = color.b;\nvar alpha = color.a;") );
 		properties.append( pre("// set the properties of a color\ncolor.r = 255;\ncolor.g = 255;\ncolor.b = 255;\ncolor.a = 1;") );
+
+	// CONSTRUCTOR
+		api_content.append( h2('Constructor') );
+		api_content.append( api_list('constructor') );
+		var constructor = $('#constructor');
+		// Color( r, g, b, a )
+		constructor.append( api_list_item('Color( '+kwd('float')+' r, '+kwd('float')+' g, '+kwd('float')+' b, '+kwd('float')+' a )') );
+		constructor.append( api_list_info("create a color with the given values. The default alpha value is 1, all colors default to 0.") );
+		constructor.append( pre("// create a new color (black with full alpha)\nvar c0 = new iio.Color();\n\n// create a new blue color with full alpha\nvar c1 = new iio.Color( 0, 0, 255 );\n\n// create a new red color with 50% alpha\nvar c2 = new iio.Color( 255, 0, 0, 0.5 );") );
+
+	// STATIC FUNCTIONS
+		api_content.append( h2('Static Functions') );
+		api_content.append( api_list('static-functions') );
+		var static_functions = $('#static-functions');
+		// random
+		static_functions.append( api_list_item('Color.random() | ' + noBold('returns ') + a('Color') ) );
+		static_functions.append( api_list_info('returns a random color with full alpha') );
+		static_functions.append( pre("var random_color = iio.Color.random();") );
+
+	// FUNCTIONS
+		api_content.append( h2('Member Functions') );
+		api_content.append( api_list('functions') );
+		var functions = $('#functions');
+		// invert
+		functions.append( api_list_item('invert() | ' + noBold('returns ') + a('this') ) );
+		functions.append( api_list_info('inverts the r,g,b values of this color. Does not effect alpha.') );
+		functions.append( pre("color.invert();") );
+		functions.append( divide );
+		// randomize
+		functions.append( api_list_item('randomize() | ' + noBold('returns ') + a('this') ) );
+		functions.append( api_list_info('randomizes the r,g,b values of this color. Does not effect alpha.') );
+		functions.append( pre("color.randomize();") );
+		functions.append( clear );
 }
 
 show_api_Vector = function(){
@@ -145,6 +210,7 @@ show_api_Vector = function(){
 
 	// TITLE
 	api_content.append( h1('iio.Vector') );
+	api_content.append( h3( kwd('Vector') +' : '+ a('Abstract') ) );
 	// OVERVIEW
 	api_content.append( p("Represents a 2D vector or point. Contains static and instance mathmatics.") );
 
@@ -184,17 +250,12 @@ show_api_Vector = function(){
 		api_content.append( h2('Functions') );
 		api_content.append( api_list('functions') );
 		var functions = $('#functions');
-		// clone
-		functions.append( api_list_item('clone()') );
-		functions.append( api_list_info('return a deep copy of this vector') );
-		functions.append( pre("var v = new iio.Vector();\nvar v_clone = v.clone();") );
-		functions.append( clear );
 		// add( x, y )
-		functions.append( api_list_item('add( '+kwd('float')+' x, '+kwd('float')+' y )') );
+		functions.append( api_list_item('add( '+kwd('float')+' x, '+kwd('float')+' y ) | ' + noBold('returns ') + a('this') ) );
 		functions.append( api_list_info('add the given values to this vector') );
 		functions.append( clear );
 		// add( v )
-		functions.append( api_list_item('add( '+a('Vector')+' v )') );
+		functions.append( api_list_item('add( '+a('Vector')+' v ) | ' + noBold('returns ') + a('this') ) );
 		functions.append( api_list_info('add the given vector to this vector') );
 		functions.append( pre("var v0 = new iio.Vector();\nv0.add( 20, 30 );\n\nvar v1 = new iio.Vector();\nv1.add( v0 );") );
 }

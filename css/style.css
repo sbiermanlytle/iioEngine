@@ -200,6 +200,9 @@ h1,h2,h3,h4{
 #api_content .api_list{
   margin: 20px;
 }
+#api_content p{
+  padding-bottom: 6px;
+}
 .api_list_item{
   font-size: 16px;
   margin: 0;
@@ -212,7 +215,7 @@ h1,h2,h3,h4{
 .api_list_info{  
   display: inline-block;
   font-size: 14px;
-  margin-left: -4px;
+  margin-left: 0;
 }
 #api_items{
   margin-bottom: 10px;
@@ -466,6 +469,10 @@ a,h2,h5,canvas,input[type='submit'],.btn,#drag_overlay,.api_item{
 }
 .kwd{
   color: #65B042;
+}
+.noBold{
+  font-weight: normal;
+  font-size: 14px
 }
 .big-arrow{
   display: none;

@@ -158,6 +158,9 @@
     } else if( window.location.hash == '#Color' ){
       show_api_Color();
       current = DOCS;
+    } else if( window.location.hash == '#Abstract' ){
+      show_api_Abstract();
+      current = DOCS;
     }
 
     // DEMOS
@@ -203,7 +206,9 @@
     prettyPrint();
 
     if( window.location.hash == '#Vector' 
-      || window.location.hash == '#Color')
+      || window.location.hash == '#Color'
+      || window.location.hash == '#Abstract'
+    )
       $('.prettyprint ol.linenums').css('margin-left', '-40px');
   }
 
