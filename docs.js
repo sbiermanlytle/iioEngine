@@ -87,7 +87,62 @@ show_api_app_control = function(){
 	$('#api_content').append('<h2>iio app settings</h2>');
 	$('#api_content').append("<p>iio apps can be started with settings that are known to the app.</p>");
 	$('#api_content').append("<pre class='prettyprint linenums:1'>// define a new iio app\nHelloWorld = function( app, settings ){\n\tsettings.mVar //...\n}\n\n// start the app fullscreen with settings\niio.start( [ HelloWorld, { mVar: mVal } ] );\n\n// start the app on an existing canvas\niio.start( [ HelloWorld, { mVar: mVal } ], 'canvasId' );</pre>");
+}
 
+show_api_Vector = function(){
+	show_docs_menu();
+	page.append('<div id="api_content"></div>');
+
+	$('#api_content').append('<h1>iio.Vector</h1>');
+	$('#api_content').append("<p>Represents a 2D vector or point. Contains static and instance mathmatics.</p>");
+
+	$('#api_content').append('<h2>Properties</h2>');
+	$('#api_content').append('<ul class="api_list" id="properties"></ul>');
+
+	$('#properties').append('<li class="api_list_item"><span class="kwd">float</span> x</li>');
+	$('#properties').append('<p class="api_list_info"> - the x (horizontal) coordinate value in pixels</p>');
+	$('#properties').append('<div class="clear"></div>');
+
+	$('#properties').append('<li class="api_list_item"><span class="kwd">float</span> y</li>');
+	$('#properties').append('<p class="api_list_info"> - the y (vertical) coordinate value in pixels</p>');
+
+	$('#properties').append("<pre class='prettyprint linenums:1'>// access the x and y values of a vector\nvar x = vector.x;\nvar y = vector.y;</pre>");
+
+	$('#properties').append("<pre class='prettyprint linenums:1'>// set the x and y values of a vector\nvector.x = value;\nvector.y = value;</pre>");
+
+	$('#api_content').append('<h2>Constructors</h2>');
+	$('#api_content').append('<ul class="api_list" id="constructors"></ul>');
+
+	$('#constructors').append('<li class="api_list_item">Vector()</li>');
+	$('#constructors').append('<p class="api_list_info"> - create a vector with values 0,0</p>');
+	$('#constructors').append('<div class="clear"></div>');
+
+	$('#constructors').append('<li class="api_list_item">Vector( <span class="kwd">float</span> x, <span class="kwd">float</span> y )</li>');
+	$('#constructors').append('<p class="api_list_info"> - create a vector with the given x and y values</p>');
+	$('#constructors').append('<div class="clear"></div>');
+	
+	$('#constructors').append('<li class="api_list_item">Vector( <a href="#Vector">Vector</a> v )</li>');
+	$('#constructors').append('<p class="api_list_info"> - create a vector with the values of the given vector</p>');
+	$('#constructors').append("<pre class='prettyprint linenums:1'>\nvar v0 = new iio.Vector();\nvar v1 = new iio.Vector( 40, 50 );\nvar v2 = new iio.Vector( v1 );</pre>");
+
+	$('#api_content').append('<h2>Functions</h2>');
+	$('#api_content').append('<ul class="api_list" id="functions"></ul>');
+
+	$('#functions').append('<li class="api_list_item">clone()</li>');
+	$('#functions').append('<p class="api_list_info"> - return a deep copy of this vector</p>');
+
+	$('#functions').append("<pre class='prettyprint linenums:1'>var v = new iio.Vector();\nvar v_clone = v.clone();</pre>");
+
+	$('#functions').append('<div class="clear divide"></div>');
+
+	$('#functions').append('<li class="api_list_item">add( <span class="kwd">float</span> x, <span class="kwd">float</span> y )</li>');
+	$('#functions').append('<p class="api_list_info"> - add the given values to this vector</p>');
+
+	$('#functions').append('<div class="clear"></div>');
+
+	$('#functions').append('<li class="api_list_item">add( <a href="#Vector">Vector</a> v )</li>');
+	$('#functions').append('<p class="api_list_info"> - add the given vector to this vector</p>');
+	$('#functions').append("<pre class='prettyprint linenums:1'>var v0 = new iio.Vector();\nv0.add( 20, 30 );\n\nvar v1 = new iio.Vector();\nv1.add( v0 );</pre>");
 }
 
 toggle_menu = function( id, i ){

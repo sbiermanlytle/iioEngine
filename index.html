@@ -152,6 +152,9 @@
     } else if( window.location.hash == '#app-control' ){
       show_api_app_control();
       current = DOCS;
+    } else if( window.location.hash == '#Vector' ){
+      show_api_Vector();
+      current = DOCS;
     }
 
     // DEMOS
@@ -195,6 +198,9 @@
 
     highlight_menu();
     prettyPrint();
+
+    if( window.location.hash == '#Vector' )
+      $('.prettyprint ol.linenums').css('margin-left', '-40px');
   }
 
   display_current();

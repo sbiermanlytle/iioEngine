@@ -170,6 +170,7 @@ h1,h2,h3,h4{
 .demo_wrap{
   float:left;
   margin-right: 20px;
+  margin-bottom: 20px;
 }
 .demo{
   border:1px solid white;
@@ -179,7 +180,7 @@ h1,h2,h3,h4{
 }
 
 /* API */
-#api_menu ul{
+#api_menu ul, #api_content ul{
   list-style: none;
 }
 #api_menu{
@@ -196,6 +197,23 @@ h1,h2,h3,h4{
 #api_content{
   margin-left: 165px
 }
+#api_content .api_list{
+  margin: 20px;
+}
+.api_list_item{
+  font-size: 16px;
+  margin: 0;
+  font-weight: bold;
+  border-left: 4px solid #e5e5e5;
+  padding: 6px 10px;
+  color: #e5e5e5;
+  display: inline-block;
+}
+.api_list_info{  
+  display: inline-block;
+  font-size: 14px;
+  margin-left: -4px;
+}
 #api_items{
   margin-bottom: 10px;
 }
@@ -204,6 +222,10 @@ h1,h2,h3,h4{
   color:white;
   padding: 5px;
   margin-top:10px;
+}
+#api_content h2{
+  font-weight: normal;
+  border-bottom: 1px solid #e5e5e5;
 }
 .api_item{
   cursor: pointer;
@@ -223,6 +245,10 @@ h1,h2,h3,h4{
 .api_item_sub a:hover{
   background-color: #00baff;
   color:black;
+}
+.divide{
+  border-top: 1px solid #e5e5e5;
+  margin: 25px 0;
 }
 
 /* FULLSCREEN APP */
@@ -443,6 +469,10 @@ a,h2,h5,canvas,input[type='submit'],.btn,#drag_overlay,.api_item{
 }
 .big-arrow{
   display: none;
+}
+.clear{
+  clear:both;
+  display: block
 }
 
 @media only screen and (min-width:900px) {
