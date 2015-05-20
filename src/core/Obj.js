@@ -98,7 +98,8 @@ iio.Obj.prototype.convert_v = function(p){
   if(this[p]){
     if(this[p] instanceof Array)
       this[p] = new iio.Vector(this[p]);
-    else this[p] = new iio.Vector(this[p],this[p]);
+    else if(!(this[p] instanceof iio.Vector) )
+      this[p] = new iio.Vector(this[p],this[p]);
   }
 }
 iio.Obj.prototype.convert_vs = function(vs){
@@ -139,6 +140,11 @@ iio.Obj.prototype.add = function() {
     arguments[0].parent = this;
     arguments[0].app = this.app;
     arguments[0].ctx = this.ctx;
+    if(arguments[0].objs)
+      for(var i=0; i<arguments[0].objs.length; i++){
+        arguments[0].objs[i].app = this.app;
+        arguments[0].objs[i].ctx = this.ctx; 
+      }
     if (arguments[0] instanceof iio.Text)
       arguments[0].inferSize();
     //if(!arguments[0].pos)

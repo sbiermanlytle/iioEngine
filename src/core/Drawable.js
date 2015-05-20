@@ -322,13 +322,14 @@ iio.Drawable.prototype.draw = function(ctx){
   //draw objs in z index order
   if (this.objs&&this.objs.length > 0) {
     var drawnSelf = false;
-    this.objs.forEach(function(obj) {
-      if (!drawnSelf && obj.z >= this.z) {
+    for(var i=0; i<this.objs.length; i++){
+      if (!drawnSelf && this.objs[i].z >= this.z) {
         this.draw_obj(ctx);
         drawnSelf = true;
-      }
-      if (obj.draw) obj.draw(ctx);
-    }, this);
+      } 
+      if (this.objs[i].draw) 
+        this.objs[i].draw(ctx);
+    }
     if (!drawnSelf) this.draw_obj(ctx);
   } 
   //draw

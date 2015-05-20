@@ -810,7 +810,8 @@ iio.Obj.prototype.convert_v = function(p){
   if(this[p]){
     if(this[p] instanceof Array)
       this[p] = new iio.Vector(this[p]);
-    else this[p] = new iio.Vector(this[p],this[p]);
+    else if(!(this[p] instanceof iio.Vector) )
+      this[p] = new iio.Vector(this[p],this[p]);
   }
 }
 iio.Obj.prototype.convert_vs = function(vs){
@@ -851,6 +852,11 @@ iio.Obj.prototype.add = function() {
     arguments[0].parent = this;
     arguments[0].app = this.app;
     arguments[0].ctx = this.ctx;
+    if(arguments[0].objs)
+      for(var i=0; i<arguments[0].objs.length; i++){
+        arguments[0].objs[i].app = this.app;
+        arguments[0].objs[i].ctx = this.ctx; 
+      }
     if (arguments[0] instanceof iio.Text)
       arguments[0].inferSize();
     //if(!arguments[0].pos)
@@ -1350,13 +1356,14 @@ iio.Drawable.prototype.draw = function(ctx){
   //draw objs in z index order
   if (this.objs&&this.objs.length > 0) {
     var drawnSelf = false;
-    this.objs.forEach(function(obj) {
-      if (!drawnSelf && obj.z >= this.z) {
+    for(var i=0; i<this.objs.length; i++){
+      if (!drawnSelf && this.objs[i].z >= this.z) {
         this.draw_obj(ctx);
         drawnSelf = true;
-      }
-      if (obj.draw) obj.draw(ctx);
-    }, this);
+      } 
+      if (this.objs[i].draw) 
+        this.objs[i].draw(ctx);
+    }
     if (!drawnSelf) this.draw_obj(ctx);
   } 
   //draw
@@ -1656,7 +1663,7 @@ iio.Grid.prototype.init_cells = function(){
   for (var c = 0; c < this.C; c++) {
     this.cells[c] = [];
     for (var r = 0; r < this.R; r++) {
-      this.cells[c][r] = this.add({
+      this.cells[c][r] = this.add(new iio.Rectangle({
         pos:{
           x:x,
           y:y
@@ -1665,7 +1672,7 @@ iio.Grid.prototype.init_cells = function(){
         r: r,
         width: this.res.x,
         height: this.res.y
-      });
+      }));
       y += this.res.y;
     }
     y = -this.res.y * (this.R - 1) / 2;
@@ -1689,8 +1696,8 @@ iio.Grid.prototype.cellCenter = function(c, r) {
   }
 }
 iio.Grid.prototype.cellAt = function(x, y) {
-  if (x.x) return this.cells[Math.floor((x.x - this.left) / this.res.x)][Math.floor((x.y - this.top) / this.res.y)];
-  else return this.cells[Math.floor((x - this.left) / this.res.x)][Math.floor((y - this.top) / this.res.y)];
+  if (x.x) return this.cells[Math.floor((x.x - this.left()) / this.res.x)][Math.floor((x.y - this.top()) / this.res.y)];
+  else return this.cells[Math.floor((x - this.left()) / this.res.x)][Math.floor((y - this.top()) / this.res.y)];
 }
 iio.Grid.prototype.foreachCell = function(fn, p) {
   for (var c = 0; c < this.C; c++)

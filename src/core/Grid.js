@@ -30,7 +30,7 @@ iio.Grid.prototype.init_cells = function(){
   for (var c = 0; c < this.C; c++) {
     this.cells[c] = [];
     for (var r = 0; r < this.R; r++) {
-      this.cells[c][r] = this.add({
+      this.cells[c][r] = this.add(new iio.Rectangle({
         pos:{
           x:x,
           y:y
@@ -39,7 +39,7 @@ iio.Grid.prototype.init_cells = function(){
         r: r,
         width: this.res.x,
         height: this.res.y
-      });
+      }));
       y += this.res.y;
     }
     y = -this.res.y * (this.R - 1) / 2;
@@ -63,8 +63,8 @@ iio.Grid.prototype.cellCenter = function(c, r) {
   }
 }
 iio.Grid.prototype.cellAt = function(x, y) {
-  if (x.x) return this.cells[Math.floor((x.x - this.left) / this.res.x)][Math.floor((x.y - this.top) / this.res.y)];
-  else return this.cells[Math.floor((x - this.left) / this.res.x)][Math.floor((y - this.top) / this.res.y)];
+  if (x.x) return this.cells[Math.floor((x.x - this.left()) / this.res.x)][Math.floor((x.y - this.top()) / this.res.y)];
+  else return this.cells[Math.floor((x - this.left()) / this.res.x)][Math.floor((y - this.top()) / this.res.y)];
 }
 iio.Grid.prototype.foreachCell = function(fn, p) {
   for (var c = 0; c < this.C; c++)

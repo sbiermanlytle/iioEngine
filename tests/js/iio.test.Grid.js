@@ -381,8 +381,6 @@ iio.test.Grid = {
 		app.add( new iio.Grid( props, {
 			pos: app.center,
 			color: settings.color,
-			width: 80,
-			lineWidth: 5,
 			rVel: .02
 		})).add( new iio.Grid( props, {
 			rotation: Math.PI/4,
