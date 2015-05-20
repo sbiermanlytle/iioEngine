@@ -25,6 +25,8 @@ add_demo_preview = function( app, title, settings ){
 
 show_demo = function( app, title, settings){
 	$('#column').hide();
+	$('#header').css({ 'left': 0, 'margin-left': 0 });
+	$('#footer').css({ 'left': 0, 'margin-left': 0 });
 	$('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt;&lt; back</a> | <h1>'+title+'</h1> | <a id="source" href="">source code</a> </div>');
 	$('#back').click(function(){
 		window.history.back()

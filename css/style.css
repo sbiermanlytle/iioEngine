@@ -135,9 +135,8 @@ h1,h2,h3,h4{
   color:black;
 }
 #footer p{
-  text-align: center;
-  padding:3px;
-  padding-bottom:0;
+  text-align: center;  
+  padding: 3px 5px 0px 0px;
 }
 #footer a:hover{
   color:#00baff;
