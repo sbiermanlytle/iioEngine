@@ -123,6 +123,7 @@
   $(window).bind('hashchange', function() {
 
     page.empty();
+    iio.stop();
     $('canvas').remove();
     $('#fullscreen_header').remove();
     $('#column').show();
