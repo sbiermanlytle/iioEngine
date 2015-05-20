@@ -10,11 +10,16 @@ iio.is = {
   string: function(s) {
     return typeof s == 'string' || s instanceof String
   },
-  image: function(img) {
-    return ['png', 'jpg', 'gif', 'tiff'].some(
-      function(ie) {
-        return (img.indexOf('.' + ie) != -1)
-      });
+  filetype: function(file, extensions) {
+    return extensions.some(function(ext) {
+      return (file.indexOf('.' + ext) != -1)
+    });
+  },
+  image: function(file) {
+    return this.filetype(file, ['png', 'jpg', 'gif', 'tiff']);
+  },
+  sound: function(file) {
+    return this.filetype(file, ['wav', 'mp3', 'aac', 'ogg']);
   },
   between: function(val, min, max) {
     if (max < min) {

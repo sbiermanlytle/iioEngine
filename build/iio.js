@@ -45,6 +45,7 @@ iio.start = function(app, id, d) {
 }
 
 iio.script = function() {
+  if (typeof CoffeeScript == 'undefined') return;
   var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
   var iioScripts = scripts.filter(function(s) {
     return s.type === 'text/iioscript';
@@ -143,6 +144,7 @@ iio.load = function(src, onload) {
   img.onload = onload;
   return img;
 }
+
 iio.read = function(url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
@@ -301,11 +303,16 @@ iio.is = {
   string: function(s) {
     return typeof s == 'string' || s instanceof String
   },
-  image: function(img) {
-    return ['png', 'jpg', 'gif', 'tiff'].some(
-      function(ie) {
-        return (img.indexOf('.' + ie) != -1)
-      });
+  filetype: function(file, extensions) {
+    return extensions.some(function(ext) {
+      return (file.indexOf('.' + ext) != -1)
+    });
+  },
+  image: function(file) {
+    return this.filetype(file, ['png', 'jpg', 'gif', 'tiff']);
+  },
+  sound: function(file) {
+    return this.filetype(file, ['wav', 'mp3', 'aac', 'ogg']);
   },
   between: function(val, min, max) {
     if (max < min) {
@@ -2038,7 +2045,8 @@ iio.App.prototype._super = iio.Obj.prototype;
   'Square',
   'Grid',
   'Circle',
-  'Text'
+  'Text',
+  'Loader'
 ].forEach(function(element) {
   if (iio[element])
     iio.App.prototype[element] = iio[element];
@@ -2055,9 +2063,6 @@ iio.App.prototype.App = function(view, script, settings) {
   //set canvas & context
   this.canvas = view;
   this.ctx = view.getContext('2d');
-
-  //set AudioContext
-  //this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
   //prep canvas
   this.canvas.parent = this;
@@ -2180,42 +2185,208 @@ iio.App.prototype._update = function(o, dt) {
   this.draw();
 }
 ;
-iio.App.prototype.loadAudio = function(url, callback, onError) {
-  return new iio.Sound(this.audioCtx, url, callback, onError);
+iio.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+iio.Sound = function(buffer) {
+  // Set up a GainNode for volume control
+  this.gainNode = iio.audioCtx.createGain();
+  this.gainNode.connect(iio.audioCtx.destination);
+  this.buffer = buffer;
 }
 
-iio.Sound = function(audioCtx, url, callback, onError) {
-  // Set up a GainNode for volume control
-  this.gainNode = audioCtx.createGain();
-  this.gainNode.connect(audioCtx.destination);
+iio.Sound.prototype.play = function(options, delay) {
+  if (this.buffer === undefined) return;
+  var source = iio.audioCtx.createBufferSource();
+  source.buffer = this.buffer;
+  if (options) {
+    if (options.loop) source.loop = true;
+  }
+  source.connect(this.gainNode);
+  source.start(delay || 0);
+}
 
-  // Save this AudioContext for later use
-  this.audioCtx = audioCtx;
+iio.Sound.prototype.setGain = function(value) {
+  this.gainNode.gain.value = value;
+}
 
-  // For scoping in xhr.onload
-  var sound = this;
-
+;
+iio.loadSound = function(url, onLoad, onError) {
+  var sound = new iio.Sound();
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.responseType = 'arraybuffer';
-
   xhr.onload = function() {
-    audioCtx.decodeAudioData(xhr.response, callback || function(buffer) {
+    iio.audioCtx.decodeAudioData(xhr.response, function(buffer) {
       sound.buffer = buffer;
+      if (onLoad) onLoad(sound, buffer);
     }, onError); 
   };
-
+  xhr.onerror = onError;
   xhr.send();
+  return sound;
 }
 
-iio.Sound.prototype.play = function(gain) {
-  if (this.buffer === undefined) return;
-  if (gain !== undefined) {
-    this.gainNode.gain.value = gain;
-  }
-  var source = this.audioCtx.createBufferSource();
-  source.buffer = this.buffer;
-  source.connect(this.gainNode);
-  source.start(0);
+iio.loadImage = function(url, onLoad, onError) {
+  var img = new Image();
+  img.onload = onLoad;
+  img.onerror = onError;
+  img.src = url;
+  return img;
 }
+
+iio.Loader = function(basePath) {
+  this.basePath = (basePath || '.') + '/';
+};
+
+/*
+ * @params:
+ *   assets: Define the assets to load, can be of various formats
+ *   String
+ *     "sprite.png"
+ *     returns: {"sprite1.png": Image}
+ *
+ *   Array
+ *     [
+ *       "sprite1.png",
+ *       "ping.wav",
+ *       "background.jpg"
+ *     ]
+ *     returns: {
+ *       "sprite1.png": Image,
+ *       "ping.wav": Sound,
+ *       "background.jpg": Image
+ *     }
+ *
+ *     or 
+ *
+ *     [
+ *       {name: "sprite1.png", callback: processImage},
+ *       {name: "ping.wav", callback: processSound},
+ *       {name: "background.png", callback: processImage}
+ *     ]
+ *     returns: {
+ *       "sprite1.png": processImage(Image),
+ *       "ping.wav": processSound(Sound),
+ *       "background.jpg": processImage(Image)
+ *     }
+ *
+ *     or 
+ *
+ *     [
+ *       {name: "sprite1.png", callback: processImage},
+ *       {name: "ping.wav", callback: processSound},
+ *       "background.jpg"
+ *     ]
+ *     returns: {
+ *       "sprite1.png": processImage(Image),
+ *       "ping.wav": processSound(Sound),
+ *       "background.jpg": Image
+ *     }
+ *
+ *   Object
+ *     {name: "sprite1.png", callback: processSprite}
+ *     returns: {"sprite1.png": processSprite(Image)}
+ *
+ *     or 
+ *
+ *     ## With assetIds ##
+ *
+ *     {
+ *       "mainCharacter": "sprite1.png",
+ *       "loadingSound": "ping.wav",
+ *       "background": "background.jpg"
+ *     }
+ *     returns: {
+ *       "mainCharacter": Image,
+ *       "loadingSound": Sound,
+ *       "background": Image
+ *     }
+ *
+ *     or 
+ *
+ *     {
+ *       mainCharacter: {name: "sprite1.png", callback: processSprite},
+ *       loadingSound: "ping.wav",
+ *       background: "background.jpg"
+ *     }
+ *     returns: {
+ *       mainCharacter: processSprite(Image),
+ *       loadingSound: Sound,
+ *       background: Image
+ *     }
+ *
+ *   onProcessUpdate: function(percentage, lastLoadedAsset) { ... }
+ *
+ *   onComplete: function(assets) { ... }
+ *
+ * @returns:
+ *   Depending on the format of the asset parameter, this method returns different objects
+ *
+ * TODO szheng definitely need to write a test suite for this.
+ *               
+ */
+iio.Loader.prototype.load = function(assets, onComplete) {
+  var total = assets.length || Object.keys(assets).length;
+  var loaded = 0;
+  var _assets = {}
+  var postLoad = function() {
+    loaded++;
+    console.log(loaded);
+    if (loaded == total) onComplete(_assets);
+  };
+
+  // Helper function to load asset into _assets.
+  var load = function(assetName, postLoadProcess, id) {
+    var name = id || assetName;
+    var url = this.basePath + assetName;
+
+    var loader; // Loader to use
+    if (iio.is.image(url)) {
+      loader = iio.loadImage;
+    } else if (iio.is.sound(url)) {
+      loader = iio.loadSound;
+    } else {
+      return;
+    }
+
+    var asset = loader(url, function() {
+      if (postLoadProcess) {
+        _assets[name] = postloadProcess(asset);
+      } else {
+        _assets[name] = asset;
+      }
+      console.log('success');
+      postLoad();
+    }, postLoad);
+  }.bind(this);
+
+  if (iio.is.string(assets)) {
+    load(assets);
+  } else if (assets instanceof Array) {
+    assets.forEach(function(asset) {
+      if (iio.is.string(asset)) {
+        load(asset);
+      } else if (asset.name) {
+        load(asset.name, asset.callback, asset.id);
+      }
+    });
+  } else if (assets.name) {
+    load(assets.name, assets.callback);
+  } else {
+    for (var key in assets) {
+      if (assets.hasOwnProperty(key)) {
+        var asset = assets[key];
+        if (iio.is.string(asset)) {
+          load(asset, null, key);
+        } else if (asset.name) {
+          load(asset.name, asset.callback, key);
+        } else {
+          load(key, asset.callback, asset.id);
+        }
+      }
+    }
+  }
+
+  return _assets;
+};
 

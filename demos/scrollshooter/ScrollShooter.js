@@ -101,6 +101,8 @@ ScrollShooter = function( app, s ){
 			z: 25
 		}, meteorProps));
 	});
+
+  var laserSound = iio.loadSound('sounds/laser.wav');
 	
 	var laserFlashImg = iio.load( imgPath+'laserRedShot.png' );
 	var laserImg = iio.load( imgPath+'laserRed.png' );
@@ -169,6 +171,8 @@ ScrollShooter = function( app, s ){
 			vel: [ 0, -s ],
 			bounds: { top: -100 }
 		})));
+
+    laserSound.play();
 	}
 
 	var controller = { 
