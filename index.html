@@ -85,46 +85,36 @@
   var DOCS = 'docs';
   var DEMOS = 'demos';
   var TESTS = 'tests';
+  var current;
 
   var iioapps;
   var app_colors = [];
   app_colors[1] = new iio.Color(0,186,255);
   app_colors[0] = new iio.Color(101,176,66);
 
-  var current = HOME;
   var page = $('#page_content');
 
-  link_click = function(next){
-    if(current != next) {
-      $('#'+current).children().first().removeClass("active");
-      current = next;
-      $('#'+current).children().first().addClass("active");
-    }
-   /* page.empty();
-    $('canvas').remove();
-    $('#fullscreen_header').remove();
-    $('#column').show();*/
-    //display_fn();
-    //return false;
+  highlight_menu = function(){
+    $('#'+HOME).children().first().removeClass("active");
+    $('#'+DOCS).children().first().removeClass("active");
+    $('#'+DEMOS).children().first().removeClass("active");
+    $('#'+TESTS).children().first().removeClass("active");
+    $('#'+current).children().first().addClass("active");
   }
 
   $('#download').click(function(){
-    link_click( HOME );
     window.location.hash = '#download';
     return false;
   });
   $('#demos').click(function(){
-    link_click( DEMOS );
     window.location.hash = '#demos';
     return false;
   });
   $('#tests').click(function(){
-    link_click( TESTS );
     window.location.hash = '#tests';
     return false;
   });
   $('#docs').click(function(){
-    link_click( DOCS );
     window.location.hash = '#overview';
     return false;
   });
@@ -141,20 +131,68 @@
   });
 
   display_current = function(){
+
     // MAIN MENU
-    if( window.location.hash == '#download' || window.location.hash == '' )
+    if( window.location.hash == '#download' || window.location.hash == '' ){
       show_home();
-    else if( window.location.hash == '#demos' )
+      current = HOME;
+    } else if( window.location.hash == '#demos' ){
       show_demo_index();
-    else if( window.location.hash == '#tests' )
+      current = DEMOS;
+    } else if( window.location.hash == '#tests' ){
       show_test_index();
+      current = TESTS;
+    }
 
     // API MENU
-    else if( window.location.hash == '#overview' )
+    else if( window.location.hash == '#overview' ){
       show_api_basics();
-    else if( window.location.hash == '#app-control' )
+      current = DOCS;
+    } else if( window.location.hash == '#app-control' ){
       show_api_app_control();
+      current = DOCS;
+    }
 
+    // DEMOS
+    else if( window.location.hash == '#ScrollShooter' ){
+      show_demo( ScrollShooter, "ScrollShooter" );
+      current = DEMOS;
+    } else if( window.location.hash == '#Snake' ){
+      show_demo( Snake, "Snake" );
+      current = DEMOS;
+    } else if( window.location.hash == '#ColorGrid' ){
+      show_demo( ColorGrid, "ColorGrid", { w:20 } );
+      current = DEMOS;
+    } else if( window.location.hash == '#Squares' ){
+      show_demo( Squares, "Squares" );
+      current = DEMOS;
+    } else if( window.location.hash == '#Snow' ){
+      show_demo( Snow, "Snow" );
+      current = DEMOS;
+    }
+
+    // TESTS
+    else if( window.location.hash == '#Line' ){
+      show_unit_test( iio.test.Line, 'Line' );
+      current = TESTS;
+    } else if( window.location.hash == '#Circle' ){
+      show_unit_test( iio.test.Circle, "Circle" );
+      current = TESTS;
+    } else if( window.location.hash == '#Polygon' ){
+      show_unit_test( iio.test.Polygon, "Polygon" );
+      current = TESTS;
+    } else if( window.location.hash == '#Rectangle' ){
+      show_unit_test( iio.test.Rectangle, "Rectangle" );
+      current = TESTS;
+    } else if( window.location.hash == '#Text' ){
+      show_unit_test( iio.test.Text, "Text" );
+      current = TESTS;
+    } else if( window.location.hash == '#Grid' ){
+      show_unit_test( iio.test.Grid, "Grid" );
+      current = TESTS;
+    }
+
+    highlight_menu();
     prettyPrint();
   }
 

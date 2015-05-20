@@ -4,33 +4,37 @@ var show_demo_index = function(){
 	page.append('<div id="iioapps"></div>');
 	iioapps = document.getElementById('iioapps');
 
-	prep_demo( ScrollShooter, "ScrollShooter" );
-	prep_demo( Snake, "Snake" );
-	prep_demo( ColorGrid, "ColorGrid", {w:20} );
-	prep_demo( Squares, "Squares" );
-	prep_demo( Snow, "Snow" );
+	add_demo_preview( ScrollShooter, "ScrollShooter" );
+	add_demo_preview( Snake, "Snake" );
+	add_demo_preview( ColorGrid, "ColorGrid", {w:20} );
+	add_demo_preview( Squares, "Squares" );
+	add_demo_preview( Snow, "Snow" );
 }
 
-prep_demo = function( app, title, settings ){
+add_demo_preview = function( app, title, settings ){
 	create_demo_canvas( 200, title )
-	$( '#'+title ).click(function(){
-		return link_click( DEMOS, function(){
-			$('#column').hide();
-			$('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt;&lt; back</a> | <h1>'+title+'</h1> | <a id="source" href="">source code</a> </div>');
-			$('#back').click(function(){
-				return link_click( DEMOS, show_demo_index );
-			});
-			$('#source').click(function(e){
-				codeWindow = window.open("demos/source-code/"+title+".html", "littleWindow", "location=no,menubar=no,toolbar=no,width=700,height=800,left=0"); 
-				codeWindow.moveTo(0,0);
-				return false;
-			});
-			if( settings )
-				iio.start( [ app, settings ] );
-			else iio.start( app )
-		});
+	$('#'+title).click(function(){
+		window.location.hash = '#'+title;
+	    return false;
+	});
+	if(settings)
+		iio.start([ app, iio.merge( { preview:true }, settings ) ], title );
+	else 
+		iio.start([ app, { preview:true } ], title );
+}
+
+show_demo = function( app, title, settings){
+	$('#column').hide();
+	$('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt;&lt; back</a> | <h1>'+title+'</h1> | <a id="source" href="">source code</a> </div>');
+	$('#back').click(function(){
+		window.history.back()
+	});
+	$('#source').click(function(e){
+		codeWindow = window.open("demos/source-code/"+title+".html", "littleWindow", "location=no,menubar=no,toolbar=no,width=700,height=800,left=0"); 
+		codeWindow.moveTo(0,0);
+		return false;
 	});
 	if( settings )
-		iio.start([ app, iio.merge( { preview:true }, settings) ], title );
-	else iio.start([ app, { preview:true }], title );
+		iio.start( [ app, settings ] );
+	else iio.start( app )
 }
