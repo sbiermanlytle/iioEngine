@@ -26,8 +26,8 @@ TicTacToe=function(app){
 		width: 300,
 		color:'white',
 		lineWidth:10,
-		R:1,
-		C:2
+		R:3,
+		C:3
 	}));
 
 	grid.click = function(ev,p,cell){
