@@ -44,7 +44,7 @@ iio.convert = {
     }
   },
   color: function(c){
-    return iio.Color.constant( c.toLowerCase() );
+    return iio.Color[ c.toLowerCase() ];
   },
   vector: function(v){
     if(v instanceof Array)
@@ -278,7 +278,7 @@ iio.canvas = {
       // App.onClick
       if (this.parent.onClick) 
         this.parent.onClick(e, ep);
-      
+
       // App.objs.onClick
       this.parent.objs.forEach(function(obj, i) {
         if (i !== 0) ep = this.parent.convertEventPos(e);

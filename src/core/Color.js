@@ -49,22 +49,16 @@ iio.Color.prototype.randomize = function(alpha){
 
 // COLOR CONSTANTS
 //------------------------------------------------------------
-iio.Color.constants = [
-	{ string: 'transparent', r:0, g:0, b:0, a:0 },
-	{ string: 'black', r:0, g:0, b:0, a:1 },
-	{ string: 'white', r:255, g:255, b:255, a:1 },
-	{ string: 'red', r:255, g:0, b:0, a:1 },
-	{ string: 'blue', r:0, g:0, b:255, a:1 },
-	{ string: 'green', r:0, g:255, b:0, a:1 },
-]
-iio.Color.constant = function( color_string ){
-    for(var i=0; i<iio.Color.constants.length; i++)
-      if( iio.Color.constants[i].string == color_string )
-      	 return new iio.Color( 
-      	 	iio.Color.constants[i].r, 
-      	 	iio.Color.constants[i].g, 
-      	 	iio.Color.constants[i].b, 
-      	 	iio.Color.constants[i].a 
-      	 );
-    return false;
-}
+iio.Color.transparent = new iio.Color(0,0,0,0);
+iio.Color.black = new iio.Color(0,0,0,1);
+iio.Color.white = new iio.Color(255,255,255,1);
+iio.Color.gray = new iio.Color(128,128,128,1);
+iio.Color.red = new iio.Color(255,0,0,1);
+iio.Color.green = new iio.Color(0,128,0,1);
+iio.Color.blue = new iio.Color(0,0,255,1);
+iio.Color.lime = new iio.Color(0,255,0,1);
+iio.Color.aqua = new iio.Color(0,255,255,1);
+iio.Color.fuchsia = new iio.Color(255,0,255,1);
+iio.Color.maroon = new iio.Color(128,0,0,1);
+iio.Color.navy = new iio.Color(0,0,128,1);
+iio.Color.olive = new iio.Color(128,128,0,1);

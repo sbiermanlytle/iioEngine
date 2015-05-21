@@ -1,31 +1,18 @@
+/* App
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
 
-//DEFINITION
+// DEFINITION
 iio.App =  function() { 
   this.App.apply(this, arguments) 
 }
 iio.inherit(iio.App, iio.Drawable);
 iio.App.prototype._super = iio.Drawable.prototype;
 
-// Make iio's elements available to app scope
-[
-  'Vector',
-  'Color',
-  'Gradient',
-  'SpriteMap',
-  'Line',
-  'Polygon',
-  'Rectangle',
-  'Square',
-  'Grid',
-  'Circle',
-  'Text',
-  'Loader'
-].forEach(function(element) {
-  if (iio[element])
-    iio.App.prototype[element] = iio[element];
-});
-
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.App.prototype.App = function(view, script, settings) {
 
   this._super.Drawable.call(this);
@@ -60,9 +47,8 @@ iio.App.prototype.App = function(view, script, settings) {
     offset.top
   );
 
-  //initialize app properties
+  // initialize app properties
   this.collisions = [];
-  this.objs = [];
   this.loops = [];
 
   //add app to global app array
@@ -73,10 +59,13 @@ iio.App.prototype.App = function(view, script, settings) {
     app = iio.scripts[app];
   }*/
   //app.call(this, this, s);
+
+  // run script
   this.script = new script(this, settings);
 }
 
-//FUNCTIONS
+// FUNCTIONS
+//-------------------------------------------------------------------
 iio.App.prototype.convertEventPos = function(e) {
   return new iio.Vector( 
     e.clientX - this.pos.x, 
@@ -109,13 +98,6 @@ iio.App.prototype.draw = function(noClear) {
   if (this.objs.length > 0)
     for(var i=0; i<this.objs.length; i++)
       if (this.objs[i].draw) this.objs[i].draw(this.ctx);
-}
-iio.App.prototype.clear = function() {
-  this.ctx.clearRect(0, 0, this.width, this.height);
-  /*if(this.color){
-     this.ctx.fillStyle=this.color;
-     this.ctx.fillRect(0,0,this.width,this.height);
-  }*/
 }
 iio.App.prototype.collision = function(o1, o2, fn) {
   this.collisions.push(

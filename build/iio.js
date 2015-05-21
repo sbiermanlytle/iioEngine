@@ -349,7 +349,7 @@ iio.convert = {
     }
   },
   color: function(c){
-    return iio.Color.constant( c.toLowerCase() );
+    return iio.Color[ c.toLowerCase() ];
   },
   vector: function(v){
     if(v instanceof Array)
@@ -583,7 +583,7 @@ iio.canvas = {
       // App.onClick
       if (this.parent.onClick) 
         this.parent.onClick(e, ep);
-      
+
       // App.objs.onClick
       this.parent.objs.forEach(function(obj, i) {
         if (i !== 0) ep = this.parent.convertEventPos(e);
@@ -784,25 +784,19 @@ iio.Color.prototype.randomize = function(alpha){
 
 // COLOR CONSTANTS
 //------------------------------------------------------------
-iio.Color.constants = [
-	{ string: 'transparent', r:0, g:0, b:0, a:0 },
-	{ string: 'black', r:0, g:0, b:0, a:1 },
-	{ string: 'white', r:255, g:255, b:255, a:1 },
-	{ string: 'red', r:255, g:0, b:0, a:1 },
-	{ string: 'blue', r:0, g:0, b:255, a:1 },
-	{ string: 'green', r:0, g:255, b:0, a:1 },
-]
-iio.Color.constant = function( color_string ){
-    for(var i=0; i<iio.Color.constants.length; i++)
-      if( iio.Color.constants[i].string == color_string )
-      	 return new iio.Color( 
-      	 	iio.Color.constants[i].r, 
-      	 	iio.Color.constants[i].g, 
-      	 	iio.Color.constants[i].b, 
-      	 	iio.Color.constants[i].a 
-      	 );
-    return false;
-};
+iio.Color.transparent = new iio.Color(0,0,0,0);
+iio.Color.black = new iio.Color(0,0,0,1);
+iio.Color.white = new iio.Color(255,255,255,1);
+iio.Color.gray = new iio.Color(128,128,128,1);
+iio.Color.red = new iio.Color(255,0,0,1);
+iio.Color.green = new iio.Color(0,128,0,1);
+iio.Color.blue = new iio.Color(0,0,255,1);
+iio.Color.lime = new iio.Color(0,255,0,1);
+iio.Color.aqua = new iio.Color(0,255,255,1);
+iio.Color.fuchsia = new iio.Color(255,0,255,1);
+iio.Color.maroon = new iio.Color(128,0,0,1);
+iio.Color.navy = new iio.Color(0,0,128,1);
+iio.Color.olive = new iio.Color(128,128,0,1);;
 /* Gradient
 ------------------
 iio.js version 1.4
@@ -883,7 +877,7 @@ iio.Drawable.prototype.create = function(){
 
     // given string
     if( iio.is.string(arguments[i]) ){
-      var c = iio.Color.constant( arguments[i] );
+      var c = iio.Color[ arguments[i] ];
       // infer color
       if(c) props.color = c;
       // infer text
@@ -2221,34 +2215,21 @@ iio.Text.prototype.keyDown = function(key, cI, shift, fn) {
   this.app.draw();
   return cI;
 };
+/* App
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
 
-//DEFINITION
+// DEFINITION
 iio.App =  function() { 
   this.App.apply(this, arguments) 
 }
 iio.inherit(iio.App, iio.Drawable);
 iio.App.prototype._super = iio.Drawable.prototype;
 
-// Make iio's elements available to app scope
-[
-  'Vector',
-  'Color',
-  'Gradient',
-  'SpriteMap',
-  'Line',
-  'Polygon',
-  'Rectangle',
-  'Square',
-  'Grid',
-  'Circle',
-  'Text',
-  'Loader'
-].forEach(function(element) {
-  if (iio[element])
-    iio.App.prototype[element] = iio[element];
-});
-
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.App.prototype.App = function(view, script, settings) {
 
   this._super.Drawable.call(this);
@@ -2283,9 +2264,8 @@ iio.App.prototype.App = function(view, script, settings) {
     offset.top
   );
 
-  //initialize app properties
+  // initialize app properties
   this.collisions = [];
-  this.objs = [];
   this.loops = [];
 
   //add app to global app array
@@ -2296,10 +2276,13 @@ iio.App.prototype.App = function(view, script, settings) {
     app = iio.scripts[app];
   }*/
   //app.call(this, this, s);
+
+  // run script
   this.script = new script(this, settings);
 }
 
-//FUNCTIONS
+// FUNCTIONS
+//-------------------------------------------------------------------
 iio.App.prototype.convertEventPos = function(e) {
   return new iio.Vector( 
     e.clientX - this.pos.x, 
@@ -2332,13 +2315,6 @@ iio.App.prototype.draw = function(noClear) {
   if (this.objs.length > 0)
     for(var i=0; i<this.objs.length; i++)
       if (this.objs[i].draw) this.objs[i].draw(this.ctx);
-}
-iio.App.prototype.clear = function() {
-  this.ctx.clearRect(0, 0, this.width, this.height);
-  /*if(this.color){
-     this.ctx.fillStyle=this.color;
-     this.ctx.fillRect(0,0,this.width,this.height);
-  }*/
 }
 iio.App.prototype.collision = function(o1, o2, fn) {
   this.collisions.push(
