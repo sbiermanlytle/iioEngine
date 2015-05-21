@@ -39,6 +39,14 @@ iio.convert = {
     if(c.toLowerCase()=='red') return new iio.Color(255);
     if(c.toLowerCase()=='green') return new iio.Color(0,255);
     if(c.toLowerCase()=='blue') return new iio.Color(0,0,255);
+  },
+  vector: function(o,v){
+    if(o[v]){
+      if(o[v] instanceof Array)
+        o[v] = new iio.Vector(o[v]);
+      else if(!(o[v] instanceof iio.Vector) )
+        o[v] = new iio.Vector(o[v],o[v]);
+    }
   }
 }
 

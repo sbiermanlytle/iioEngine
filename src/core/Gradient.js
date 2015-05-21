@@ -1,17 +1,29 @@
+/* Gradient
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
+
 //DEFINITION
 iio.Gradient = function(){ this.Gradient.apply(this, arguments) };
+iio.inherit(iio.Gradient, iio.Abstract);
+iio.Gradient.prototype._super = iio.Abstract.prototype;
 
 //CONSTRUCTOR
 iio.Gradient.prototype.Gradient = function() {
-	for (var p in arguments[0]) this[p] = arguments[0][p];
-  	this.convert_v("start");
-  	this.convert_v("end");
-  	for(var i=0; i<this.stops.length; i++)
-  		if(iio.is.string(this.stops[i][1]))
-  			this.stops[i][1] = iio.convert.color(this.stops[i][1]);
+  this._super.Abstract.call(this,iio.merge_args(arguments));
 }
 
-//FUNCTIONS
+// MEMBER FUNCTIONS
+//------------------------------------------------------------
+iio.Gradient.prototype.convert_props = function(){
+	iio.convert.vector(this, "start");
+  iio.convert.vector(this, "end");
+  for(var i=0; i<this.stops.length; i++)
+  	if(iio.is.string(this.stops[i][1]))
+  		this.stops[i][1] = iio.convert.color(this.stops[i][1]);
+}
 iio.Gradient.prototype.canvasGradient = function(ctx){
 	var gradient;
 	if(this.startRadius)
@@ -19,11 +31,6 @@ iio.Gradient.prototype.canvasGradient = function(ctx){
 											 this.end.x,this.end.y,this.endRadius);
 	else gradient = ctx.createLinearGradient(this.start.x,this.start.y,this.end.x,this.end.y);
 	for(var i=0; i<this.stops.length; i++)
-		gradient.addColorStop(this.stops[i][0],this.stops[i][1].toString());
+		gradient.addColorStop(this.stops[i][0],this.stops[i][1].rgbaString());
 	return gradient;
 }
-iio.Gradient.prototype.convert_v = function(p){
-  if(this[p] && this[p] instanceof Array)
-    this[p] = new iio.Vector(this[p]);
-}
-

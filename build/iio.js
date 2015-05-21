@@ -105,6 +105,12 @@ iio.merge = function(o1,o2){
     o1[p] = o2[p];
   return o1;
 }
+iio.merge_args = function(o1){
+  var o2 = {};
+  for(var i=0; i<o1.length; i++)
+    o2 = iio.merge(o2,o1[i]);
+  return o2;
+}
 iio.addEvent = function(obj, evt, fn, capt) {
   if (obj.addEventListener) {
     obj.addEventListener(evt, fn, capt);
@@ -338,6 +344,14 @@ iio.convert = {
     if(c.toLowerCase()=='red') return new iio.Color(255);
     if(c.toLowerCase()=='green') return new iio.Color(0,255);
     if(c.toLowerCase()=='blue') return new iio.Color(0,0,255);
+  },
+  vector: function(o,v){
+    if(o[v]){
+      if(o[v] instanceof Array)
+        o[v] = new iio.Vector(o[v]);
+      else if(!(o[v] instanceof iio.Vector) )
+        o[v] = new iio.Vector(o[v],o[v]);
+    }
   }
 }
 
@@ -603,53 +617,52 @@ iio.draw = {
 /* Abstract
 ------------------
 iio.js version 1.4
----------------------------------------------------------------------
+--------------------------------------------------------------
 iio.js is licensed under the BSD 2-clause Open Source license
-Copyright (c) 2014, Sebastian Bierman-Lytle
-All rights reserved.
 */
 
-//DEFINITION
+// DEFINITION
 iio.Abstract = function(){ this.Abstract.apply(this, arguments) }
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Abstract.prototype.Abstract = function() {
-  this.set(arguments[0]);
+  this.set(arguments[0], true);
 }
 
-//FUNCTIONS
+// FUNCTIONS
 //-------------------------------------------------------------------
-/* set( p0, p1, ... )
-assigns the property and value of each given object to this object, 
-and converts shorthand declarations into correct property data types
- */
 iio.Abstract.prototype.set = function() {
   for (var p in arguments[0]) this[p] = arguments[0][p];
   if( this.convert_props ) this.convert_props();
 }
-
-/* clone()
-returns a deep copy of this object (a new object with equal properties)
-*/
 iio.Abstract.prototype.clone = function() {
 	return new this.constructor( this );
 }
-
-/* toString()
-returns a string that lists all properties and values in this object.
-*/
 iio.Abstract.prototype.toString = function() {
 	var str = '';
   for (var p in this) {
-  	if( typeof this[p] === 'function')
+  	/*if( typeof this[p] === 'function')
   		str += p + ' = function\n ';
-  	else str += p + ' = ' + this[p] + '\n';
+  	else str += p + ' = ' + this[p] + '\n';*/
+  	if (this[p] instanceof Array)
+  		str += p + ' = Array['+this[p].length+']\n'
+  	else if( typeof this[p] !== 'function' 
+  		&& p != '_super' )
+  		str += p + ' = ' + this[p] + '\n';
   }
   return str;
 };
+/* Vector
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
 
 //DEFINITION
 iio.Vector = function(){ this.Vector.apply(this, arguments) };
+iio.inherit(iio.Vector, iio.Abstract);
+iio.Vector.prototype._super = iio.Abstract.prototype;
 
 //CONSTRUCTOR
 iio.Vector.prototype.Vector = function(v,y) {
@@ -666,6 +679,7 @@ iio.Vector.prototype.Vector = function(v,y) {
 }
 
 //STATIC FUNCTIONS
+//------------------------------------------------------------
 iio.Vector.add = function(v1, v2) {
 	for (var p in v2)
 	  if (v1[p]) v1[p] += v2[p];
@@ -690,7 +704,8 @@ iio.Vector.dist = function(v1, v2) {
 	return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2))
 }
 
-//OBJECT FUNCTIONS
+// MEMBER FUNCTIONS
+//------------------------------------------------------------
 iio.Vector.prototype.clone = function(){
 	return new iio.Vector(this.x,this.y)
 }
@@ -702,16 +717,19 @@ iio.Vector.prototype.sub = function( x, y ){
 	return this;
 }
 ;
+/* Color
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
 
-//DEFINITION
+// DEFINITION
 iio.Color = function(){ this.Color.apply(this, arguments) };
+iio.inherit(iio.Color, iio.Abstract);
+iio.Color.prototype._super = iio.Abstract.prototype;
 
-//STATIC FUNCTIONS
-iio.Color.random = function(){
-	return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
-}
-
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Color.prototype.Color = function(r,g,b,a) {
 	this.r = r || 0;
 	this.g = g || 0;
@@ -720,11 +738,18 @@ iio.Color.prototype.Color = function(r,g,b,a) {
 	return this;
 }
 
-//FUNCTIONS
-iio.Color.prototype.clone = function(){
-	return new iio.Color(this.r, this.g, this.b, this.a)
+// STATIC FUNCTIONS
+//------------------------------------------------------------
+iio.Color.random = function(){
+	return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
 }
-iio.Color.prototype.toString = function(){
+
+// MEMBER FUNCTIONS
+//------------------------------------------------------------
+iio.Abstract.prototype.clone = function() {
+	return new iio.Color( this.r, this.g, this.b, this.a );
+}
+iio.Color.prototype.rgbaString = function(){
 	return 'rgba('+this.r+','+this.g+','+this.b+','+this.a+')';
 }
 iio.Color.prototype.invert = function(){
@@ -740,20 +765,32 @@ iio.Color.prototype.randomize = function(alpha){
 	if(alpha) this.a = iio.random();
 	return this;
 };
+/* Gradient
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
+
 //DEFINITION
 iio.Gradient = function(){ this.Gradient.apply(this, arguments) };
+iio.inherit(iio.Gradient, iio.Abstract);
+iio.Gradient.prototype._super = iio.Abstract.prototype;
 
 //CONSTRUCTOR
 iio.Gradient.prototype.Gradient = function() {
-	for (var p in arguments[0]) this[p] = arguments[0][p];
-  	this.convert_v("start");
-  	this.convert_v("end");
-  	for(var i=0; i<this.stops.length; i++)
-  		if(iio.is.string(this.stops[i][1]))
-  			this.stops[i][1] = iio.convert.color(this.stops[i][1]);
+  this._super.Abstract.call(this,iio.merge_args(arguments));
 }
 
-//FUNCTIONS
+// MEMBER FUNCTIONS
+//------------------------------------------------------------
+iio.Gradient.prototype.convert_props = function(){
+	iio.convert.vector(this, "start");
+  iio.convert.vector(this, "end");
+  for(var i=0; i<this.stops.length; i++)
+  	if(iio.is.string(this.stops[i][1]))
+  		this.stops[i][1] = iio.convert.color(this.stops[i][1]);
+}
 iio.Gradient.prototype.canvasGradient = function(ctx){
 	var gradient;
 	if(this.startRadius)
@@ -761,27 +798,29 @@ iio.Gradient.prototype.canvasGradient = function(ctx){
 											 this.end.x,this.end.y,this.endRadius);
 	else gradient = ctx.createLinearGradient(this.start.x,this.start.y,this.end.x,this.end.y);
 	for(var i=0; i<this.stops.length; i++)
-		gradient.addColorStop(this.stops[i][0],this.stops[i][1].toString());
+		gradient.addColorStop(this.stops[i][0],this.stops[i][1].rgbaString());
 	return gradient;
-}
-iio.Gradient.prototype.convert_v = function(p){
-  if(this[p] && this[p] instanceof Array)
-    this[p] = new iio.Vector(this[p]);
-}
-
-;
+};
+/* Obj
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
 
 //DEFINITION
 iio.Obj = function(){ this.Obj.apply(this, arguments) }
+iio.inherit(iio.Obj, iio.Abstract);
+iio.Obj.prototype._super = iio.Abstract.prototype;
 
 //CONSTRUCTOR
 iio.Obj.prototype.Obj = function() {
+  this._super.Abstract.call(this,this.merge_args(arguments));
   this.objs = [];
-  this.set(arguments[0], true);
 }
 
 //FUNCTIONS
-iio.Obj.prototype.merge_props = function(args){
+iio.Obj.prototype.merge_args = function(args){
   var props = {};
   for(var i=0; i<args.length; i++)
     props = iio.merge(props,args[i]);
@@ -1100,7 +1139,7 @@ iio.Drawable.prototype._super = iio.Obj.prototype;
 
 //CONSTRUCTOR
 iio.Drawable.prototype.Drawable = function() {
-  this._super.Obj.call(this,arguments[0]);
+  this._super.Obj.call(this,this.merge_args(arguments));
   //if(!this.pos) this.pos = {x:0, y:0}
 }
 
@@ -1358,13 +1397,13 @@ iio.Drawable.prototype.orient_ctx = function(ctx){
 iio.Drawable.prototype.prep_ctx_color = function(ctx){
   if(this.color instanceof iio.Gradient)
     ctx.fillStyle = this.color.canvasGradient(ctx);
-  else ctx.fillStyle = this.color.toString();
+  else ctx.fillStyle = this.color.rgbaString();
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_outline = function(ctx){
   if(this.outline instanceof iio.Gradient)
     ctx.strokeStyle = this.outline.canvasGradient(ctx);
-  else ctx.strokeStyle = this.outline.toString();
+  else ctx.strokeStyle = this.outline.rgbaString();
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_lineWidth = function(ctx){
@@ -1372,7 +1411,7 @@ iio.Drawable.prototype.prep_ctx_lineWidth = function(ctx){
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_shadow = function(ctx){
-  ctx.shadowColor = this.shadow.toString();
+  ctx.shadowColor = this.shadow.rgbaString();
   if(this.shadowBlur) ctx.shadowBlur = this.shadowBlur;
   if(this.shadowOffset) {
     ctx.shadowOffsetX = this.shadowOffset.x;
@@ -1444,7 +1483,7 @@ iio.Line.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Line.prototype.Line = function() {
-  this._super.Drawable.call(this,this.merge_props(arguments));
+  this._super.Drawable.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS
@@ -1464,7 +1503,7 @@ iio.Line.prototype.contains = function(v, y) {
 iio.Line.prototype.prep_ctx_color = function(ctx){
   if(this.color instanceof iio.Gradient)
     ctx.strokeStyle = this.color.canvasGradient(ctx);
-  else ctx.strokeStyle = this.color.toString();
+  else ctx.strokeStyle = this.color.rgbaString();
   ctx = this.prep_ctx_lineWidth(ctx);
   return ctx;
 }
@@ -1489,7 +1528,7 @@ iio.Polygon.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Polygon.prototype.Polygon = function() {
-  this._super.Drawable.call(this,this.merge_props(arguments));
+  this._super.Drawable.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS
@@ -1584,7 +1623,7 @@ iio.Rectangle.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Rectangle.prototype.Rectangle = function() {
-  this._super.Drawable.call(this,this.merge_props(arguments));
+  this._super.Drawable.call(this,this.merge_args(arguments));
   this.height = this.height || this.width;
 }
 
@@ -1699,7 +1738,7 @@ iio.Grid.prototype._super = iio.Rectangle.prototype;
 
 //CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
-  this._super.Rectangle.call(this,this.merge_props(arguments));
+  this._super.Rectangle.call(this,this.merge_args(arguments));
 
   // set res if undefined
   this.res = this.res || new iio.Vector(
@@ -1817,7 +1856,7 @@ iio.Circle.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Circle.prototype.Circle = function() {
-  this._super.Drawable.call(this,this.merge_props(arguments));
+  this._super.Drawable.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS
@@ -2181,7 +2220,7 @@ iio.App.prototype.stop = function() {
 iio.App.prototype.draw = function(noClear) {
   if (!noClear) this.ctx.clearRect(0, 0, this.width, this.height);
   if (this.color) {
-    this.ctx.fillStyle = this.color.toString();
+    this.ctx.fillStyle = this.color.rgbaString();
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
   if (this.round && this.canvas.style.borderRadius != this.round) {

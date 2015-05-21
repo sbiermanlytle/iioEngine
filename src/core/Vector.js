@@ -1,6 +1,14 @@
+/* Vector
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
 
 //DEFINITION
 iio.Vector = function(){ this.Vector.apply(this, arguments) };
+iio.inherit(iio.Vector, iio.Abstract);
+iio.Vector.prototype._super = iio.Abstract.prototype;
 
 //CONSTRUCTOR
 iio.Vector.prototype.Vector = function(v,y) {
@@ -17,6 +25,7 @@ iio.Vector.prototype.Vector = function(v,y) {
 }
 
 //STATIC FUNCTIONS
+//------------------------------------------------------------
 iio.Vector.add = function(v1, v2) {
 	for (var p in v2)
 	  if (v1[p]) v1[p] += v2[p];
@@ -41,7 +50,8 @@ iio.Vector.dist = function(v1, v2) {
 	return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2))
 }
 
-//OBJECT FUNCTIONS
+// MEMBER FUNCTIONS
+//------------------------------------------------------------
 iio.Vector.prototype.clone = function(){
 	return new iio.Vector(this.x,this.y)
 }

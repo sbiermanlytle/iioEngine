@@ -6,7 +6,7 @@ iio.Line.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Line.prototype.Line = function() {
-  this._super.Drawable.call(this,this.merge_props(arguments));
+  this._super.Drawable.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS
@@ -26,7 +26,7 @@ iio.Line.prototype.contains = function(v, y) {
 iio.Line.prototype.prep_ctx_color = function(ctx){
   if(this.color instanceof iio.Gradient)
     ctx.strokeStyle = this.color.canvasGradient(ctx);
-  else ctx.strokeStyle = this.color.toString();
+  else ctx.strokeStyle = this.color.rgbaString();
   ctx = this.prep_ctx_lineWidth(ctx);
   return ctx;
 }

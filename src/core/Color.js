@@ -1,13 +1,16 @@
+/* Color
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
 
-//DEFINITION
+// DEFINITION
 iio.Color = function(){ this.Color.apply(this, arguments) };
+iio.inherit(iio.Color, iio.Abstract);
+iio.Color.prototype._super = iio.Abstract.prototype;
 
-//STATIC FUNCTIONS
-iio.Color.random = function(){
-	return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
-}
-
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Color.prototype.Color = function(r,g,b,a) {
 	this.r = r || 0;
 	this.g = g || 0;
@@ -16,11 +19,18 @@ iio.Color.prototype.Color = function(r,g,b,a) {
 	return this;
 }
 
-//FUNCTIONS
-iio.Color.prototype.clone = function(){
-	return new iio.Color(this.r, this.g, this.b, this.a)
+// STATIC FUNCTIONS
+//------------------------------------------------------------
+iio.Color.random = function(){
+	return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
 }
-iio.Color.prototype.toString = function(){
+
+// MEMBER FUNCTIONS
+//------------------------------------------------------------
+iio.Abstract.prototype.clone = function() {
+	return new iio.Color( this.r, this.g, this.b, this.a );
+}
+iio.Color.prototype.rgbaString = function(){
 	return 'rgba('+this.r+','+this.g+','+this.b+','+this.a+')';
 }
 iio.Color.prototype.invert = function(){

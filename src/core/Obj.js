@@ -1,15 +1,23 @@
+/* Obj
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
 
 //DEFINITION
 iio.Obj = function(){ this.Obj.apply(this, arguments) }
+iio.inherit(iio.Obj, iio.Abstract);
+iio.Obj.prototype._super = iio.Abstract.prototype;
 
 //CONSTRUCTOR
 iio.Obj.prototype.Obj = function() {
+  this._super.Abstract.call(this,this.merge_args(arguments));
   this.objs = [];
-  this.set(arguments[0], true);
 }
 
 //FUNCTIONS
-iio.Obj.prototype.merge_props = function(args){
+iio.Obj.prototype.merge_args = function(args){
   var props = {};
   for(var i=0; i<args.length; i++)
     props = iio.merge(props,args[i]);

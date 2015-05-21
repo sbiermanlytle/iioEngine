@@ -6,7 +6,7 @@ iio.Grid.prototype._super = iio.Rectangle.prototype;
 
 //CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
-  this._super.Rectangle.call(this,this.merge_props(arguments));
+  this._super.Rectangle.call(this,this.merge_args(arguments));
 
   // set res if undefined
   this.res = this.res || new iio.Vector(

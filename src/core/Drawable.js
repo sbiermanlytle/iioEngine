@@ -6,7 +6,7 @@ iio.Drawable.prototype._super = iio.Obj.prototype;
 
 //CONSTRUCTOR
 iio.Drawable.prototype.Drawable = function() {
-  this._super.Obj.call(this,arguments[0]);
+  this._super.Obj.call(this,this.merge_args(arguments));
   //if(!this.pos) this.pos = {x:0, y:0}
 }
 
@@ -264,13 +264,13 @@ iio.Drawable.prototype.orient_ctx = function(ctx){
 iio.Drawable.prototype.prep_ctx_color = function(ctx){
   if(this.color instanceof iio.Gradient)
     ctx.fillStyle = this.color.canvasGradient(ctx);
-  else ctx.fillStyle = this.color.toString();
+  else ctx.fillStyle = this.color.rgbaString();
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_outline = function(ctx){
   if(this.outline instanceof iio.Gradient)
     ctx.strokeStyle = this.outline.canvasGradient(ctx);
-  else ctx.strokeStyle = this.outline.toString();
+  else ctx.strokeStyle = this.outline.rgbaString();
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_lineWidth = function(ctx){
@@ -278,7 +278,7 @@ iio.Drawable.prototype.prep_ctx_lineWidth = function(ctx){
   return ctx;
 }
 iio.Drawable.prototype.prep_ctx_shadow = function(ctx){
-  ctx.shadowColor = this.shadow.toString();
+  ctx.shadowColor = this.shadow.rgbaString();
   if(this.shadowBlur) ctx.shadowBlur = this.shadowBlur;
   if(this.shadowOffset) {
     ctx.shadowOffsetX = this.shadowOffset.x;

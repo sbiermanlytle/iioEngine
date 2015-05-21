@@ -6,7 +6,7 @@ iio.Polygon.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Polygon.prototype.Polygon = function() {
-  this._super.Drawable.call(this,this.merge_props(arguments));
+  this._super.Drawable.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS
