@@ -6,9 +6,10 @@ iio.Text.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Text.prototype.Text = function() {
-  this._super.Shape.call(this,arguments[0]);
+  this._super.Shape.call(this,iio.merge_args(arguments));
   this.size = this.size || 40;
-  this.color = this.color || 'black';
+  if(!this.outline)
+    this.color = this.color || new iio.Color();
   this.font = this.font || 'Arial';
   this.align = this.align || 'center';
 

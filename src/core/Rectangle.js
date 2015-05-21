@@ -6,7 +6,7 @@ iio.Rectangle.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Rectangle.prototype.Rectangle = function() {
-  this._super.Shape.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,iio.merge_args(arguments));
   this.height = this.height || this.width;
 }
 

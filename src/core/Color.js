@@ -46,3 +46,25 @@ iio.Color.prototype.randomize = function(alpha){
 	if(alpha) this.a = iio.random();
 	return this;
 }
+
+// COLOR CONSTANTS
+//------------------------------------------------------------
+iio.Color.constants = [
+	{ string: 'transparent', r:0, g:0, b:0, a:0 },
+	{ string: 'black', r:0, g:0, b:0, a:1 },
+	{ string: 'white', r:255, g:255, b:255, a:1 },
+	{ string: 'red', r:255, g:0, b:0, a:1 },
+	{ string: 'blue', r:0, g:0, b:255, a:1 },
+	{ string: 'green', r:0, g:255, b:0, a:1 },
+]
+iio.Color.constant = function( color_string ){
+    for(var i=0; i<iio.Color.constants.length; i++)
+      if( iio.Color.constants[i].string == color_string )
+      	 return new iio.Color( 
+      	 	iio.Color.constants[i].r, 
+      	 	iio.Color.constants[i].g, 
+      	 	iio.Color.constants[i].b, 
+      	 	iio.Color.constants[i].a 
+      	 );
+    return false;
+}

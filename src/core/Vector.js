@@ -15,7 +15,7 @@ iio.Vector.prototype.Vector = function(v,y) {
 	if(v instanceof Array){
 		this.x = v[0] || 0;
 		this.y = v[1] || 0;
-	} else if(v&&v.x) {
+	} else if( v && v.x ) {
 		this.x = v.x || 0;
 		this.y = v.y || 0;
 	} else {

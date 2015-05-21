@@ -13,28 +13,11 @@
 
 			Test = function(app){
 
-				app.set({ color: 'black' });
+				//app.set({ color: 'black' });
 
 				function reverse(o){ o.vel.x *= -1 }
 
-				var o = app.add(new iio.Circle({
-					pos: app.center,
-					radius: 25,
-					color: 'blue'
-					/*color: new iio.Gradient({
-						start: [ 0,0 ],
-						startRadius: 1,
-						end: [ 0,0 ],
-						endRadius: 40,
-						stops: [
-							[ 0, 'transparent' ],
-							[ 0.4, new iio.Color() ],
-							[ 1, 'red' ]
-						]
-					})*/
-				}));
-
-				var b = o;
+				app.create( app.center, 'hello world' )
 
 				//alert(o.toString())
 

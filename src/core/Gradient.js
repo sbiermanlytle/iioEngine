@@ -18,8 +18,8 @@ iio.Gradient.prototype.Gradient = function() {
 // MEMBER FUNCTIONS
 //------------------------------------------------------------
 iio.Gradient.prototype.convert_props = function(){
-	iio.convert.vector(this, "start");
-  iio.convert.vector(this, "end");
+	iio.convert.property.vector(this, "start");
+  iio.convert.property.vector(this, "end");
   for(var i=0; i<this.stops.length; i++)
   	if(iio.is.string(this.stops[i][1]))
   		this.stops[i][1] = iio.convert.color(this.stops[i][1]);

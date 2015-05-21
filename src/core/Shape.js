@@ -1,3 +1,9 @@
+/* Drawable
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+*/
 
 //DEFINITION
 iio.Shape = function(){ this.Shape.apply(this, arguments) }
@@ -6,11 +12,81 @@ iio.Shape.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Shape.prototype.Shape = function() {
-  this._super.Drawable.call(this,this.merge_args(arguments));
-  //if(!this.pos) this.pos = {x:0, y:0}
+  iio.Shape.prototype._super.Drawable.call(this,iio.merge_args(arguments));
+}
+
+//OVERRIDE FUNCTIONS
+//-------------------------------------------------------------------
+iio.Shape.prototype.convert_props = function(){
+  iio.Shape.prototype._super.convert_props.call(this, iio.merge_args(arguments));
+
+  // convert string colors to iio.Color
+  iio.convert.property.color(this,"outline");
+  iio.convert.property.color(this,"shadow");
+
+  // convert values to arrays
+  if(this.dash && !(this.dash instanceof Array))
+    this.dash = [this.dash];
+
+  // arrays to iio.Vector
+  iio.convert.property.vector(this,"pos");
+  iio.convert.property.vector(this,"origin");
+  iio.convert.property.vector(this,"vel");
+  iio.convert.property.vector(this,"acc");
+  iio.convert.property.vector(this,"shadowOffset");
+  iio.convert.property.vector(this,"res");
+  iio.convert.property.vectors(this,"vs");
+  iio.convert.property.vectors(this,"vels");
+  iio.convert.property.vectors(this,"accs");
+  iio.convert.property.vectors(this,"bezier");
+  iio.convert.property.vectors(this,"bezierVels");
+  iio.convert.property.vectors(this,"bezierAccs");
+
+  // set required properties
+  if(typeof this.fade != 'undefined' && typeof this.alpha == 'undefined')
+    this.alpha = 1;
+  if(typeof this.rAcc != 'undefined' && !this.rVel) 
+    this.rVel = 0;
+  if(typeof this.rVel != 'undefined' && !this.rotation) 
+    this.rotation = 0;
+  if(typeof this.bezierAccs != 'undefined' && !this.bezierVels){
+    this.bezierVels = [];
+    for(var i=0; i<this.bezierAccs.length; i++)
+      this.bezierVels.push(new iio.Vector);
+  }
+  if(typeof this.bezierVels != 'undefined' && !this.bezier){
+    this.bezier = [];
+    for(var i=0; i<this.bezierVels.length; i++)
+      this.bezier.push(new iio.Vector);
+  }
+
+  // handle image attachment
+  if (this.img){
+    if(iio.is.string(this.img)) {
+      var src = this.img;
+      this.img = new Image();
+      this.img.src = src;
+      this.img.parent = this;
+      var o = this;
+      if (!this.size()){
+        this.img.onload = function(e) {
+          o.setSize(o.img.width || 0, o.img.height || 0);
+          if(o.app) o.app.draw()
+        }
+      } else this.img.onload = function(e) {
+        if(o.app) o.app.draw()
+      }
+    } else {
+      if (!this.size()) {
+        this.setSize(this.img.width || 0, this.img.height || 0);
+        if(this.app) this.app.draw()
+      }
+    }
+  } 
 }
 
 //BOUNDS FUNCTIONS
+//-------------------------------------------------------------------
 iio.Shape.prototype.left = function(){ if(this.pos) return this.pos.x; else return 0 }
 iio.Shape.prototype.right = function(){ if(this.pos) return this.pos.x; else return 0 }
 iio.Shape.prototype.top = function(){ if(this.pos) return this.pos.y; else return 0 }

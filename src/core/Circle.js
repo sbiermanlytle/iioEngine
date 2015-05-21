@@ -6,7 +6,7 @@ iio.Circle.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Circle.prototype.Circle = function() {
-  this._super.Shape.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,iio.merge_args(arguments));
 }
 
 //FUNCTIONS
