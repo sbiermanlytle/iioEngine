@@ -89,10 +89,10 @@ var api = {
 			],
 			'Functions': [
 				{
-					definition: 'add( '+kwd('float')+' x, '+kwd('float')+' y ) | ' + small('returns ') + a('this'),
+					definition: 'add( '+kwd('float')+' x, '+kwd('float')+' y ) | ' + small('returns ') + kwd('this'),
 					descriptions: [ 'add the given values to this vector' ]
 				},{
-					definition: 'add( '+a('Vector')+' v ) | ' + small('returns ') + a('this'),
+					definition: 'add( '+a('Vector')+' v ) | ' + small('returns ') + kwd('this'),
 					descriptions: [ 'add the given vector to this vector' ],
 					samples: [ "var v0 = new iio.Vector();\nv0.add( 20, 30 );\n\nvar v1 = new iio.Vector();\nv1.add( v0 );" ]
 				}
@@ -146,13 +146,13 @@ var api = {
 			],
 			'Member Functions': [
 				{	// invert()
-					definition: 'invert() | ' + small('returns ') + a('this'),
+					definition: 'invert() | ' + small('returns ') + kwd('this'),
 					descriptions: [ 'Inverts the r,g,b values of this color. Does not effect alpha.' ],
 					samples: [ "color.invert();" ],
 					divider: true
 				},
 				{	// randomize()
-					definition: 'randomize() | ' + small('returns ') + a('this'),
+					definition: 'randomize() | ' + small('returns ') + kwd('this'),
 					descriptions: [ 'Randomizes the r,g,b values of this color. Does not effect alpha.' ],
 					samples: [ "color.randomize();" ]
 				}

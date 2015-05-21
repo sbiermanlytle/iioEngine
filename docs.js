@@ -154,5 +154,5 @@ toggle_menu = function( id, i ){
 append_api_item_sub = function( parent, href ){
 	var title = href;
 	href = href.replace(' ', '-');
-	$('#'+parent).append('<li class="api_item_sub"><a href="#'+href+'">'+title+'</a></li>');
+	$('#'+parent).append('<li class="api_item_sub"><a href="#api-'+href+'">'+title+'</a></li>');
 }

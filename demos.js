@@ -14,7 +14,7 @@ var show_demo_index = function(){
 add_demo_preview = function( app, title, settings ){
 	create_demo_canvas( 200, title )
 	$('#'+title).click(function(){
-		window.location.hash = '#'+title;
+		window.location.hash = '#demos-'+title;
 	    return false;
 	});
 	if(settings)
