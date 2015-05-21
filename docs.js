@@ -27,7 +27,7 @@ show_docs_menu = function(){
 	//append_api_item_sub('functions','iio libraries');
 	append_api_item_sub('basics','app control');
 
-	append_api_item_sub('data','Abstract');
+	append_api_item_sub('data','Interface');
 	append_api_item_sub('data','Vector');
 	append_api_item_sub('data','Color');
 	append_api_item_sub('data','Gradient');
@@ -66,7 +66,7 @@ h1 = function(html){ return '<h1>'+html+'</h1>' }
 h2 = function(html){ return '<h2>'+html+'</h2>' }
 h3 = function(html){ return '<h3>'+html+'</h3>' }
 kwd = function(html){ return "<span class='kwd'>"+html+"</span>" }
-a = function(name){ return '<a href="#'+name+'">'+name+'</a>' }
+a = function(name){ return '<a href="#api-'+name+'">'+name+'</a>' }
 pre = function(html){ return "<pre class='prettyprint linenums:1'>"+html+"</span>" }
 p = function(html){ return '<p>'+html+'</p>' }
 api_list = function(id){ return '<ul class="api_list" id="'+id+'"></ul>' }

@@ -40,8 +40,8 @@ display_current = function(){
       show_api_basics();
     else if( path == 'app-control' )
       show_api( api.AppControl );
-    else if( path == 'Abstract' ) 
-      show_api( api.Abstract );
+    else if( path == 'Interface' ) 
+      show_api( api.Interface );
     else if( path == 'Vector' ) 
       show_api( api.Vector );
     else if( path == 'Color' ) 

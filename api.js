@@ -19,9 +19,9 @@ var api = {
 			]
 		}
 	},
-	Abstract: {
-		classname: 'Abstract',
-		overview: [ "An abstract root for all classes in iio. Every method defined here in Abstract is available in every other class." ],
+	Interface: {
+		classname: 'Interface',
+		overview: [ "An Interface root for all classes in iio. Every method defined here in Interface is available in every other class." ],
 		data: {
 			'Member Functions': [
 				{ // set()
@@ -56,7 +56,7 @@ var api = {
 	},
 	Vector: {
 		classname: 'Vector',
-		inherits: [ 'Abstract' ],
+		inherits: [ 'Interface' ],
 		overview: [ "Represents a 2D vector or point. Contains static and instance mathmatics." ],
 		data: {
 			'Constructors': [
@@ -101,7 +101,7 @@ var api = {
 	},
 	Color: {
 		classname: 'Color',
-		inherits: [ 'Abstract' ],
+		inherits: [ 'Interface' ],
 		overview: [ "An object for storing color defined with Red, Green, Blue, and Alpha channels." ],
 		data: {
 			'Constructor': [ 
@@ -161,7 +161,7 @@ var api = {
 	},
 	Gradient: {
 		classname: 'Gradient',
-		inherits: [ 'Abstract' ],
+		inherits: [ 'Interface' ],
 		overview: [ "An object for storing a gradient defined with a start position, an end position, an array of color stops, and an optional start and end radius for a radial orientation." ],
 		data: {
 			'Constructor': [
@@ -206,5 +206,10 @@ var api = {
 				}
 			]
 		}
+	},
+	Obj: {
+		classname: 'Obj',
+		inherits: [ 'Interface' ],
+		overview: "A base class for objects that use iio's object management features."
 	}
 }
