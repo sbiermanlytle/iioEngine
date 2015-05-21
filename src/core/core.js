@@ -43,6 +43,11 @@ iio.start = function(app, id, d) {
     window.attachEvent(event, preppedApp);
   }*/
 }
+iio.stop = function( app ){
+  if(!app)
+    for(var i=0; i<iio.apps.length; i++)
+      iio.cancelLoops(iio.apps[i]);
+}
 
 iio.script = function() {
   if (typeof CoffeeScript == 'undefined') return;
@@ -214,11 +219,12 @@ iio.cancelLoop = function(l) {
   window.cancelAnimationFrame(l);
 }
 iio.cancelLoops = function(o, c) {
-  o.loops.forEach(function(loop) {
+  if( o.loops ) o.loops.forEach(function(loop) {
     iio.cancelLoop(loop.id);
   });
-  if (o.mainLoop) iio.cancelLoop(o.mainLoop.id);
-  if (typeof c == 'undefined')
+  if ( o.mainLoop ) 
+    iio.cancelLoop(o.mainLoop.id);
+  if ( typeof c == 'undefined' && o.objs )
     o.objs.forEach(function(obj) {
       iio.cancelLoops(obj);
     });

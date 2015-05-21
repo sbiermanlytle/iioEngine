@@ -6,12 +6,42 @@
 <!DOCTYPE html>
 <html>
 	<body>
-		<script type="text/javascript" src="../build/iio.min.js"></script>
+		<script type="text/javascript" src="../build/iio.js"></script>
 		<script type="text/javascript">
+
+
 
 			Test = function(app){
 
-				//app.set({ color: 'black' });
+				app.set({ color: 'black' });
+
+				function reverse(o){ o.vel.x *= -1 }
+
+				var obj = new iio.Abstract({
+					fuck: true
+				});
+
+				var obj2 = obj.clone();
+				obj2.set( { fuck:false } )
+
+				alert(obj.toString() + '\n\n' + obj2.toString())
+
+				/*app.add(new iio.Rectangle({
+					pos: app.center.clone(),
+					color: 'red',
+					width: 200,
+					vel: [ 1, 0 ],
+					bounds: {
+						right: {
+							bound: app.width,
+							callback: reverse
+						},
+						left: {
+							bound: 0, 
+							callback: reverse
+						}
+					}
+				}));*/
 
 				/*var s = app.add(new iio.Line({
 					color:'blue',
@@ -24,22 +54,20 @@
 
 				s.set({color:'red'})*/
 
-				var color = new iio.Color.random();
+				/*var color = new iio.Color.random();
 
 				var s = app.create(color, 200, app.center);
 
 				var s2 = app.create(color.clone().invert(), 100, app.center);
 
 				var c1 = s.color;
-				var c2 = s2.color;
+				var c2 = s2.color;*/
 
 				//s.set({color:'red'})
 
 			}
 
-			load_iio_remote(function(){
-				iio.start(Test)
-			});
+			iio.start(Test)
 
 		</script>
 	</body>
