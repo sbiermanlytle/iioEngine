@@ -310,7 +310,7 @@ iio.is = {
   },
   number: function(o) {
     if (typeof o === 'number') return true;
-    return (o - 0) == o && o.length > 0;
+    //return (o - 0) == o && o.length > 0;
   },
   string: function(s) {
     return typeof s == 'string' || s instanceof String
@@ -576,16 +576,23 @@ iio.canvas = {
   },
   prep_input: function(o) {
     o.onmousedown = function(e) {
+
+      // orient click position to canvas 0,0
       var ep = this.parent.convertEventPos(e);
-      if (this.parent.click) this.parent.click(e, ep);
+
+      // App.onClick
+      if (this.parent.onClick) 
+        this.parent.onClick(e, ep);
+      
+      // App.objs.onClick
       this.parent.objs.forEach(function(obj, i) {
         if (i !== 0) ep = this.parent.convertEventPos(e);
         if (obj.contains && obj.contains(ep))
-          if (obj.click) {
+          if (obj.onClick) {
             if (obj.cellAt) {
               var c = obj.cellAt(ep);
-              obj.click(e, ep, c, obj.cellCenter(c.c, c.r));
-            } else obj.click(e, ep);
+              obj.onClick(e, ep, c, obj.cellCenter(c.c, c.r));
+            } else obj.onClick(e, ep);
           }
       }, this)
     }
@@ -839,18 +846,18 @@ iio.js version 1.4
 iio.js is licensed under the BSD 2-clause Open Source license
 */
 
-//DEFINITION
+// DEFINITION
 iio.Drawable = function(){ this.Drawable.apply(this, arguments) }
 iio.inherit(iio.Drawable, iio.Interface);
 iio.Drawable.prototype._super = iio.Interface.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Drawable.prototype.Drawable = function() {
   iio.Drawable.prototype._super.Interface.call(this, iio.merge_args(arguments));
   this.objs = [];
 }
 
-//OVERRIDE FUNCTIONS
+// OVERRIDE FUNCTIONS
 //-------------------------------------------------------------------
 iio.Drawable.prototype.set = function() {
   iio.Drawable.prototype._super.set.call(this, iio.merge_args(arguments));
@@ -861,7 +868,7 @@ iio.Drawable.prototype.convert_props = function(){
   iio.convert.property.color(this,"color");
 }
 
-//FUNCTIONS
+// OBJECT MANAGMENT FUNCTIONS
 //-------------------------------------------------------------------
 iio.Drawable.prototype.clear = function() {
   objs.foreach(function(obj){
@@ -937,18 +944,22 @@ iio.Drawable.prototype.create = function(){
   return false;
 }
 iio.Drawable.prototype.add = function() {
+
   // if input is Array
   if (arguments[0] instanceof Array)
     for(var i=0; i<arguments[0].length; i++)
-      this.add(arguments);
+      this.add(arguments[0][i], true);
+
   // else input is singular object
   else {
+
     // set hierarchy properties
     arguments[0].parent = this;
 
     // set app & ctx refs for object
     arguments[0].app = this.app;
     arguments[0].ctx = this.ctx;
+
     // set app & ctx refs for object children
     if(arguments[0].objs && arguments[0].objs.length>0)
       for(var i=0; i<arguments[0].objs.length; i++){
@@ -988,41 +999,64 @@ iio.Drawable.prototype.add = function() {
             || arguments[0].app.looping === false))
       arguments[0].app.loop();
   }
-  // draw unless suppressed
+
+  // redraw unless suppressed
   if (arguments[arguments.length-1] === true);
   else if(this.app) this.app.draw();
 
   // return given object
   return arguments[0];
 }
-iio.Drawable.prototype.rmv = function(o, nd) {
-  callback = function(c, i, arr) {
-    if (c == o) {
-      arr.splice(i, 1);
-      return true;
-    } else return false;
+iio.Drawable.prototype.rmv = function() {
+
+  // if input is Array
+  if (arguments[0] instanceof Array)
+    for(var i=0; i<arguments[0].length; i++)
+      this.rmv(arguments[0][i], true);
+
+  // input is a singular object
+  else {
+
+    // remove object at index
+    if ( iio.is.number( arguments[0] ) && arguments[0] < this.objs.length )
+      return this.objs.splice(o, 1);
+
+    remove = function(c, i, arr) {
+      if (c == arguments[0]) {
+        arr.splice(i, 1);
+        return true;
+      } else return false;
+    }
+
+    // remove passed object
+    if (this.objs) this.objs.some(remove);
+
+    // removed associated collisions
+    if (this.collisions) this.collisions.forEach(function(collision, i) {
+
+      // remove collision referring only to removed object
+      if ( collision[0] == arguments[0] || collision[1] == arguments[0] )
+        this.collisions.splice(i, 1);
+      else {
+        // remove reference to removed object from collision arrays
+        if (collision[0] instanceof Array)
+          collision[0].some(remove)
+        if (collision[1] instanceof Array)
+          collision[1].some(remove)
+      }
+    })
   }
-  if (typeof o == 'undefined')
-    this.objs = [];
-  else if (o instanceof Array)
-    o.forEach(function(_o) {
-      this.rmv(_o);
-    }, this);
-  else if (iio.is.number(o) && o < this.objs.length)
-    this.objs.splice(o, 1);
-  else if (this.objs) this.objs.some(callback);
-  if (this.collisions) this.collisions.forEach(function(collision, i) {
-    if (collision[0] == o || collision[1] == o)
-      this.collisions.splice(i, 1);
-    else if (collision[0] instanceof Array)
-      collision[0].some(callback)
-    if (collision[1] instanceof Array)
-      collision[1].some(callback)
-  })
-  if (nd);
-  else this.app.draw();
-  return o;
+
+  // redraw unless suppressed
+  if (arguments[arguments.length-1] === true);
+  else if(this.app) this.app.draw();
+
+  // return removed object(s)
+  return arguments[0];
 }
+
+// LOOP MANAGMENT FUNCTIONS
+//-------------------------------------------------------------------
 iio.Drawable.prototype.loop = function(fps, fn) {
   this.looping = true;
   var loop;

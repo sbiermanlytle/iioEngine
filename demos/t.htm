@@ -17,7 +17,16 @@
 
 				function reverse(o){ o.vel.x *= -1 }
 
-				app.create( app.center, 'hello world' )
+				var o1 = app.create( app.center, 400, 'red' );
+				var o2 = app.create( app.center, 'hello world' );
+
+				var removed = false;
+				
+				app.onClick = function(){
+					if(!removed) app.rmv( [o1,o2] );
+					else app.add( [o1,o2] );
+					removed = !removed;
+				}
 
 				//alert(o.toString())
 

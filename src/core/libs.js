@@ -5,7 +5,7 @@ iio.is = {
   },
   number: function(o) {
     if (typeof o === 'number') return true;
-    return (o - 0) == o && o.length > 0;
+    //return (o - 0) == o && o.length > 0;
   },
   string: function(s) {
     return typeof s == 'string' || s instanceof String
@@ -271,16 +271,23 @@ iio.canvas = {
   },
   prep_input: function(o) {
     o.onmousedown = function(e) {
+
+      // orient click position to canvas 0,0
       var ep = this.parent.convertEventPos(e);
-      if (this.parent.click) this.parent.click(e, ep);
+
+      // App.onClick
+      if (this.parent.onClick) 
+        this.parent.onClick(e, ep);
+      
+      // App.objs.onClick
       this.parent.objs.forEach(function(obj, i) {
         if (i !== 0) ep = this.parent.convertEventPos(e);
         if (obj.contains && obj.contains(ep))
-          if (obj.click) {
+          if (obj.onClick) {
             if (obj.cellAt) {
               var c = obj.cellAt(ep);
-              obj.click(e, ep, c, obj.cellCenter(c.c, c.r));
-            } else obj.click(e, ep);
+              obj.onClick(e, ep, c, obj.cellCenter(c.c, c.r));
+            } else obj.onClick(e, ep);
           }
       }, this)
     }
