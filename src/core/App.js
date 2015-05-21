@@ -3,8 +3,8 @@
 iio.App =  function() { 
   this.App.apply(this, arguments) 
 }
-iio.inherit(iio.App, iio.Obj);
-iio.App.prototype._super = iio.Obj.prototype;
+iio.inherit(iio.App, iio.Drawable);
+iio.App.prototype._super = iio.Drawable.prototype;
 
 // Make iio's elements available to app scope
 [
@@ -28,7 +28,7 @@ iio.App.prototype._super = iio.Obj.prototype;
 //CONSTRUCTOR
 iio.App.prototype.App = function(view, script, settings) {
 
-  this._super.Obj.call(this);
+  this._super.Drawable.call(this);
 
   //set app reference for shared functions
   this.app = this;

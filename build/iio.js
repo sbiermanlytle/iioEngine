@@ -614,7 +614,7 @@ iio.draw = {
     ctx.stroke();
   }
 };
-/* Abstract
+/* Interface
 ------------------
 iio.js version 1.4
 --------------------------------------------------------------
@@ -622,23 +622,23 @@ iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 // DEFINITION
-iio.Abstract = function(){ this.Abstract.apply(this, arguments) }
+iio.Interface = function(){ this.Interface.apply(this, arguments) }
 
 // CONSTRUCTOR
-iio.Abstract.prototype.Abstract = function() {
+iio.Interface.prototype.Interface = function() {
   this.set(arguments[0], true);
 }
 
 // FUNCTIONS
 //-------------------------------------------------------------------
-iio.Abstract.prototype.set = function() {
+iio.Interface.prototype.set = function() {
   for (var p in arguments[0]) this[p] = arguments[0][p];
   if( this.convert_props ) this.convert_props();
 }
-iio.Abstract.prototype.clone = function() {
+iio.Interface.prototype.clone = function() {
 	return new this.constructor( this );
 }
-iio.Abstract.prototype.toString = function() {
+iio.Interface.prototype.toString = function() {
 	var str = '';
   for (var p in this) {
   	/*if( typeof this[p] === 'function')
@@ -661,8 +661,8 @@ iio.js is licensed under the BSD 2-clause Open Source license
 
 //DEFINITION
 iio.Vector = function(){ this.Vector.apply(this, arguments) };
-iio.inherit(iio.Vector, iio.Abstract);
-iio.Vector.prototype._super = iio.Abstract.prototype;
+iio.inherit(iio.Vector, iio.Interface);
+iio.Vector.prototype._super = iio.Interface.prototype;
 
 //CONSTRUCTOR
 iio.Vector.prototype.Vector = function(v,y) {
@@ -726,8 +726,8 @@ iio.js is licensed under the BSD 2-clause Open Source license
 
 // DEFINITION
 iio.Color = function(){ this.Color.apply(this, arguments) };
-iio.inherit(iio.Color, iio.Abstract);
-iio.Color.prototype._super = iio.Abstract.prototype;
+iio.inherit(iio.Color, iio.Interface);
+iio.Color.prototype._super = iio.Interface.prototype;
 
 // CONSTRUCTOR
 iio.Color.prototype.Color = function(r,g,b,a) {
@@ -746,7 +746,7 @@ iio.Color.random = function(){
 
 // MEMBER FUNCTIONS
 //------------------------------------------------------------
-iio.Abstract.prototype.clone = function() {
+iio.Color.prototype.clone = function() {
 	return new iio.Color( this.r, this.g, this.b, this.a );
 }
 iio.Color.prototype.rgbaString = function(){
@@ -774,12 +774,12 @@ iio.js is licensed under the BSD 2-clause Open Source license
 
 //DEFINITION
 iio.Gradient = function(){ this.Gradient.apply(this, arguments) };
-iio.inherit(iio.Gradient, iio.Abstract);
-iio.Gradient.prototype._super = iio.Abstract.prototype;
+iio.inherit(iio.Gradient, iio.Interface);
+iio.Gradient.prototype._super = iio.Interface.prototype;
 
 //CONSTRUCTOR
 iio.Gradient.prototype.Gradient = function() {
-  this._super.Abstract.call(this,iio.merge_args(arguments));
+  this._super.Interface.call(this,iio.merge_args(arguments));
 }
 
 // MEMBER FUNCTIONS
@@ -801,7 +801,7 @@ iio.Gradient.prototype.canvasGradient = function(ctx){
 		gradient.addColorStop(this.stops[i][0],this.stops[i][1].rgbaString());
 	return gradient;
 };
-/* Obj
+/* Drawable
 ------------------
 iio.js version 1.4
 --------------------------------------------------------------
@@ -809,35 +809,35 @@ iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 //DEFINITION
-iio.Obj = function(){ this.Obj.apply(this, arguments) }
-iio.inherit(iio.Obj, iio.Abstract);
-iio.Obj.prototype._super = iio.Abstract.prototype;
+iio.Drawable = function(){ this.Drawable.apply(this, arguments) }
+iio.inherit(iio.Drawable, iio.Interface);
+iio.Drawable.prototype._super = iio.Interface.prototype;
 
 //CONSTRUCTOR
-iio.Obj.prototype.Obj = function() {
-  this._super.Abstract.call(this,this.merge_args(arguments));
+iio.Drawable.prototype.Drawable = function() {
+  this._super.Interface.call(this,this.merge_args(arguments));
   this.objs = [];
 }
 
 //FUNCTIONS
-iio.Obj.prototype.merge_args = function(args){
+iio.Drawable.prototype.merge_args = function(args){
   var props = {};
   for(var i=0; i<args.length; i++)
     props = iio.merge(props,args[i]);
   return props;
 }
-iio.Obj.prototype.set = function() {
+iio.Drawable.prototype.set = function() {
   for (var p in arguments[0]) this[p] = arguments[0][p];
   this.convert_props();
   if (arguments[arguments.length-1] === true);
   else if(this.app) this.app.draw();
 }
-iio.Obj.prototype.setAlpha = function(a, noDraw){
+iio.Drawable.prototype.setAlpha = function(a, noDraw){
   this.alpha = a || 1;
   if (noDraw); else if(this.app) this.app.draw();
 }
 
-iio.Obj.prototype.convert_props = function(){
+iio.Drawable.prototype.convert_props = function(){
   
   // convert string colors to iio.Color
   if(iio.is.string(this.color)) 
@@ -905,7 +905,7 @@ iio.Obj.prototype.convert_props = function(){
     }
   } 
 }
-iio.Obj.prototype.convert_v = function(p){
+iio.Drawable.prototype.convert_v = function(p){
   if(this[p]){
     if(this[p] instanceof Array)
       this[p] = new iio.Vector(this[p]);
@@ -913,13 +913,13 @@ iio.Obj.prototype.convert_v = function(p){
       this[p] = new iio.Vector(this[p],this[p]);
   }
 }
-iio.Obj.prototype.convert_vs = function(vs){
+iio.Drawable.prototype.convert_vs = function(vs){
   if(this[vs])
     for(var i=0; i<this[vs].length; i++)
       if(this[vs][i] instanceof Array)
         this[vs][i] = new iio.Vector(this[vs][i]);
 }
-iio.Obj.prototype.create = function(){
+iio.Drawable.prototype.create = function(){
   var props = {};
   for(var i=0; i<arguments.length; i++){
     if(arguments[i] === null) break;
@@ -943,7 +943,7 @@ iio.Obj.prototype.create = function(){
     return this.add(new iio.Rectangle(props));
   else return this.add(new iio.Square(props));
 }
-iio.Obj.prototype.add = function() {
+iio.Drawable.prototype.add = function() {
   if (arguments[0] instanceof Array)
     for(var i=0; i<arguments[0].length; i++)
       this.add(arguments);
@@ -983,7 +983,7 @@ iio.Obj.prototype.add = function() {
   else if(this.app) this.app.draw();
   return arguments[0];
 }
-iio.Obj.prototype.rmv = function(o, nd) {
+iio.Drawable.prototype.rmv = function(o, nd) {
   callback = function(c, i, arr) {
     if (c == o) {
       arr.splice(i, 1);
@@ -1011,10 +1011,10 @@ iio.Obj.prototype.rmv = function(o, nd) {
   else this.app.draw();
   return o;
 }
-iio.Obj.prototype.clear = function() {
+iio.Drawable.prototype.clear = function() {
   this.objs = [];
 }
-iio.Obj.prototype.loop = function(fps, fn) {
+iio.Drawable.prototype.loop = function(fps, fn) {
   this.looping = true;
   var loop;
   if (typeof fn == 'undefined') {
@@ -1065,11 +1065,11 @@ iio.Obj.prototype.loop = function(fps, fn) {
   }*/
   return loop.id;
 }
-iio.Obj.prototype.clear_loops = function() {
+iio.Drawable.prototype.clear_loops = function() {
   for (var i = 0; i < this.loops.length; i++)
     iio.cancelLoop(this.loops[i]);
 }
-iio.Obj.prototype.pause = function(c) {
+iio.Drawable.prototype.pause = function(c) {
   if (this.paused) {
     this.paused = false;
     this.loops.forEach(function(loop) {
@@ -1077,8 +1077,8 @@ iio.Obj.prototype.pause = function(c) {
     });
     if (this.mainLoop) iio.loop(this.mainLoop);
     if (typeof c == 'undefined')
-      this.objs.forEach(function(obj) {
-        obj.loops.forEach(function(loop) {
+      this.objs.forEach(function(Drawable) {
+        Drawable.loops.forEach(function(loop) {
           iio.loop(loop);
         });
       });
@@ -1133,40 +1133,40 @@ iio.SpriteMap.prototype.sprite = function(w, h, a, x, y, n) {
 };
 
 //DEFINITION
-iio.Drawable = function(){ this.Drawable.apply(this, arguments) }
-iio.inherit(iio.Drawable, iio.Obj);
-iio.Drawable.prototype._super = iio.Obj.prototype;
+iio.Shape = function(){ this.Shape.apply(this, arguments) }
+iio.inherit(iio.Shape, iio.Drawable);
+iio.Shape.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
-iio.Drawable.prototype.Drawable = function() {
-  this._super.Obj.call(this,this.merge_args(arguments));
+iio.Shape.prototype.Shape = function() {
+  this._super.Drawable.call(this,this.merge_args(arguments));
   //if(!this.pos) this.pos = {x:0, y:0}
 }
 
 //BOUNDS FUNCTIONS
-iio.Drawable.prototype.left = function(){ if(this.pos) return this.pos.x; else return 0 }
-iio.Drawable.prototype.right = function(){ if(this.pos) return this.pos.x; else return 0 }
-iio.Drawable.prototype.top = function(){ if(this.pos) return this.pos.y; else return 0 }
-iio.Drawable.prototype.bottom = function(){ if(this.pos) return this.pos.y; else return 0 }
-iio.Drawable.prototype.resolve = function(b, c) {
+iio.Shape.prototype.left = function(){ if(this.pos) return this.pos.x; else return 0 }
+iio.Shape.prototype.right = function(){ if(this.pos) return this.pos.x; else return 0 }
+iio.Shape.prototype.top = function(){ if(this.pos) return this.pos.y; else return 0 }
+iio.Shape.prototype.bottom = function(){ if(this.pos) return this.pos.y; else return 0 }
+iio.Shape.prototype.resolve = function(b, c) {
   if (b.callback) return b.callback(c);
   return true;
 }
-iio.Drawable.prototype.over_upper_limit = function(bnd, val, c) {
+iio.Shape.prototype.over_upper_limit = function(bnd, val, c) {
   if (iio.is.number(bnd) && val > bnd || typeof bnd.bound != 'undefined' && val > bnd.bound ) 
     return this.resolve(bnd, c);
   return false;
 }
-iio.Drawable.prototype.below_lower_limit = function(bnd, val, c) {
+iio.Shape.prototype.below_lower_limit = function(bnd, val, c) {
   if (iio.is.number(bnd) && val < bnd || typeof bnd.bound != 'undefined' && val < bnd.bound ) 
     return this.resolve(bnd, c);
   return false;
 }
 
 //UPDATE FUNCTIONS
-iio.Drawable.prototype.update = function() {
+iio.Shape.prototype.update = function() {
 
-  // transform and remove Drawableect if necessary
+  // transform and remove Shapeect if necessary
   var remove = false;
   if(this.bounds) remove = this.past_bounds();
   if (this.shrink) remove = this.update_shrink();
@@ -1190,7 +1190,7 @@ iio.Drawable.prototype.update = function() {
         if (obj.update && obj.update()) this.rmv(obj);
       }, this);
 }
-iio.Drawable.prototype.update_vel = function(){
+iio.Shape.prototype.update_vel = function(){
   if(this.pos){
     if (this.vel.x) this.pos.x += this.vel.x;
     if (this.vel.y) this.pos.y += this.vel.y;
@@ -1201,7 +1201,7 @@ iio.Drawable.prototype.update_vel = function(){
     }
   }
 }
-iio.Drawable.prototype.update_vels = function(){
+iio.Shape.prototype.update_vels = function(){
   if(this.vs){
     for(var i=0; i<this.vels.length; i++){
       if (this.vels[i].x) this.vs[i].x += this.vels[i].x;
@@ -1209,7 +1209,7 @@ iio.Drawable.prototype.update_vels = function(){
     }
   }
 }
-iio.Drawable.prototype.update_bezier_vels = function(){
+iio.Shape.prototype.update_bezier_vels = function(){
   if(this.bezier){
     for(var i=0; i<this.bezierVels.length; i++){
       if (this.bezierVels[i].x) this.bezier[i].x += this.bezierVels[i].x;
@@ -1217,7 +1217,7 @@ iio.Drawable.prototype.update_bezier_vels = function(){
     }
   }
 }
-iio.Drawable.prototype.update_bezier_accs = function(){
+iio.Shape.prototype.update_bezier_accs = function(){
   if(this.bezierVels){
     for(var i=0; i<this.bezierAccs.length; i++){
       if (this.bezierAccs[i].x) this.bezierVels[i].x += this.bezierAccs[i].x;
@@ -1225,15 +1225,15 @@ iio.Drawable.prototype.update_bezier_accs = function(){
     }
   }
 }
-iio.Drawable.prototype.update_rotation = function(){
+iio.Shape.prototype.update_rotation = function(){
   this.rotation += this.rVel;
   if(this.rotation > 6283 || this.rotation < -6283) this.rotation = 0;
 }
-iio.Drawable.prototype.update_acc = function(){
+iio.Shape.prototype.update_acc = function(){
   this.vel.x += this.acc.x;
   this.vel.y += this.acc.y;
 }
-iio.Drawable.prototype.update_accs = function(){
+iio.Shape.prototype.update_accs = function(){
   if(this.vels){
     for(var i=0; i<this.accs.length; i++){
       if (this.accs[i].x) this.vels[i].x += this.accs[i].x;
@@ -1241,17 +1241,17 @@ iio.Drawable.prototype.update_accs = function(){
     }
   }
 }
-iio.Drawable.prototype.update_shrink = function(){
+iio.Shape.prototype.update_shrink = function(){
   if (this.shrink.speed)
     return this._shrink(this.shrink.speed, this.shrink.callback);
   else return this._shrink(this.shrink);
 }
-iio.Drawable.prototype.update_fade = function(){
+iio.Shape.prototype.update_fade = function(){
   if (this.fade.speed)
     return this._fade(this.fade.speed, this.fade.callback);
   else return this._fade(this.fade);
 }
-iio.Drawable.prototype.past_bounds = function(){
+iio.Shape.prototype.past_bounds = function(){
   if (this.bounds.right && this.over_upper_limit(this.bounds.right, this.right(), this)) return true;
   if (this.bounds.left && this.below_lower_limit(this.bounds.left, this.left(), this)) return true;
   if (this.bounds.top && this.below_lower_limit(this.bounds.top, this.top(), this)) return true;
@@ -1260,7 +1260,7 @@ iio.Drawable.prototype.past_bounds = function(){
   if (this.bounds.leftRotation && this.below_lower_limit(this.bounds.leftRotation, this.rotation, this)) return true;
   return false;
 }
-iio.Drawable.prototype.update_properties_deprecated = function(){
+iio.Shape.prototype.update_properties_deprecated = function(){
   if (o.simple) {
     if (!(o.bbx instanceof Array)) {
       o.bbx = [o.bbx, o.bbx];
@@ -1307,7 +1307,7 @@ iio.Drawable.prototype.update_properties_deprecated = function(){
 }
 
 //ANIMATION FUNCTIONS
-iio.Drawable.prototype.playAnim = function(fps, t, r, fn, s) {
+iio.Shape.prototype.playAnim = function(fps, t, r, fn, s) {
   if (iio.is.string(t)) {
     var o = this;
     this.anims.some(function(anim, i) {
@@ -1331,7 +1331,7 @@ iio.Drawable.prototype.playAnim = function(fps, t, r, fn, s) {
   else this.app.draw();
   return loop;
 }
-iio.Drawable.prototype.nextFrame = function(o) {
+iio.Shape.prototype.nextFrame = function(o) {
   o.animFrame++;
   if (o.animFrame >= o.anims[o.animKey].frames.length) {
     o.animFrame = 0;
@@ -1345,13 +1345,13 @@ iio.Drawable.prototype.nextFrame = function(o) {
     }
   }
 }
-iio.Drawable.prototype.prevFrame = function(o) {
+iio.Shape.prototype.prevFrame = function(o) {
   o.animFrame--;
   if (o.animFrame < 0)
     o.animFrame = o.anims[o.animKey].frames.length - 1;
   o.app.draw();
 }
-iio.Drawable.prototype._shrink = function(s, r) {
+iio.Shape.prototype._shrink = function(s, r) {
   this.width *= 1 - s;
   this.height *= 1 - s;
   if (this.width < .02 
@@ -1361,7 +1361,7 @@ iio.Drawable.prototype._shrink = function(s, r) {
     else return true;
   }
 }
-iio.Drawable.prototype._fade = function(s, r) {
+iio.Shape.prototype._fade = function(s, r) {
   this.alpha *= 1 - s;
   if (this.alpha < s || this.alpha > 1-s
     ||this.alpha > this.fade.upperBound
@@ -1375,7 +1375,7 @@ iio.Drawable.prototype._fade = function(s, r) {
 
 
 //DRAW FUNCTIONS
-iio.Drawable.prototype.orient_ctx = function(ctx){
+iio.Shape.prototype.orient_ctx = function(ctx){
   ctx = ctx || this.app.ctx;
   ctx.save();
 
@@ -1394,23 +1394,23 @@ iio.Drawable.prototype.orient_ctx = function(ctx){
   }
   return ctx;
 }
-iio.Drawable.prototype.prep_ctx_color = function(ctx){
+iio.Shape.prototype.prep_ctx_color = function(ctx){
   if(this.color instanceof iio.Gradient)
     ctx.fillStyle = this.color.canvasGradient(ctx);
   else ctx.fillStyle = this.color.rgbaString();
   return ctx;
 }
-iio.Drawable.prototype.prep_ctx_outline = function(ctx){
+iio.Shape.prototype.prep_ctx_outline = function(ctx){
   if(this.outline instanceof iio.Gradient)
     ctx.strokeStyle = this.outline.canvasGradient(ctx);
   else ctx.strokeStyle = this.outline.rgbaString();
   return ctx;
 }
-iio.Drawable.prototype.prep_ctx_lineWidth = function(ctx){
+iio.Shape.prototype.prep_ctx_lineWidth = function(ctx){
   ctx.lineWidth = this.lineWidth || 1;
   return ctx;
 }
-iio.Drawable.prototype.prep_ctx_shadow = function(ctx){
+iio.Shape.prototype.prep_ctx_shadow = function(ctx){
   ctx.shadowColor = this.shadow.rgbaString();
   if(this.shadowBlur) ctx.shadowBlur = this.shadowBlur;
   if(this.shadowOffset) {
@@ -1422,18 +1422,18 @@ iio.Drawable.prototype.prep_ctx_shadow = function(ctx){
   }
   return ctx;
 }
-iio.Drawable.prototype.prep_ctx_dash = function(ctx){
+iio.Shape.prototype.prep_ctx_dash = function(ctx){
   if(this.dashOffset) ctx.lineDashOffset = this.dashOffset
   ctx.setLineDash(this.dash);
   return ctx;
 }
-iio.Drawable.prototype.finish_path_shape = function(ctx){
+iio.Shape.prototype.finish_path_shape = function(ctx){
   if (this.color) ctx.fill();
   if (this.img) ctx.drawImage(this.img, -this.width / 2, -this.height / 2, this.width, this.height);
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
 } 
-iio.Drawable.prototype.draw_obj = function(ctx){
+iio.Shape.prototype.draw_obj = function(ctx){
   ctx.save();
   if(this.alpha) ctx.globalAlpha = this.alpha;
   if (this.lineCap) ctx.lineCap = this.lineCap;
@@ -1447,7 +1447,7 @@ iio.Drawable.prototype.draw_obj = function(ctx){
   if(this.draw_shape) this.draw_shape(ctx);
   ctx.restore();
 }
-iio.Drawable.prototype.draw = function(ctx){
+iio.Shape.prototype.draw = function(ctx){
 
   if (this.hidden) return;
   ctx = this.orient_ctx(ctx);
@@ -1469,7 +1469,7 @@ iio.Drawable.prototype.draw = function(ctx){
   else this.draw_obj(ctx);
   ctx.restore();
 }
-iio.Drawable.prototype.draw_line = function(ctx, x1, y1, x2, y2){
+iio.Shape.prototype.draw_line = function(ctx, x1, y1, x2, y2){
   ctx.beginPath();
   ctx.moveTo(x, y);
   ctx.lineTo(x1, y1);
@@ -1478,12 +1478,12 @@ iio.Drawable.prototype.draw_line = function(ctx, x1, y1, x2, y2){
 
 //DEFINITION
 iio.Line = function(){ this.Line.apply(this, arguments) };
-iio.inherit(iio.Line, iio.Drawable);
-iio.Line.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Line, iio.Shape);
+iio.Line.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Line.prototype.Line = function() {
-  this._super.Drawable.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS
@@ -1523,12 +1523,12 @@ iio.Line.prototype.draw_shape = function(ctx) {
 
 //DEFINITION
 iio.Polygon = function(){ this.Polygon.apply(this, arguments) };
-iio.inherit(iio.Polygon, iio.Drawable);
-iio.Polygon.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Polygon, iio.Shape);
+iio.Polygon.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Polygon.prototype.Polygon = function() {
-  this._super.Drawable.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS
@@ -1618,12 +1618,12 @@ iio.Polygon.prototype.bottom = function(){
 
 //DEFINITION
 iio.Rectangle = function(){ this.Rectangle.apply(this, arguments) };
-iio.inherit(iio.Rectangle, iio.Drawable);
-iio.Rectangle.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Rectangle, iio.Shape);
+iio.Rectangle.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Rectangle.prototype.Rectangle = function() {
-  this._super.Drawable.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,this.merge_args(arguments));
   this.height = this.height || this.width;
 }
 
@@ -1707,29 +1707,6 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
     if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
   }
 };
-
-//DEFINITION
-iio.X = function(){ this.X.apply(this, arguments) };
-iio.inherit(iio.X, iio.Rectangle);
-iio.X.prototype._super = iio.Rectangle.prototype;
-
-//CONSTRUCTOR
-iio.X.prototype.X = function() {
-  this._super.Rectangle.call(this,this.merge_props(arguments));
-}
-
-//FUNCTIONS
-iio.X.prototype.draw_shape = function(ctx){
-  ctx.translate(-this.width / 2, -this.height / 2);
-  /*if (this.bezier) {
-    iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
-    this.finish_path_shape(ctx);
-  }*/
-  iio.draw.line(ctx, 0, 0, this.width, this.height);
-  iio.draw.line(ctx, this.width, 0, 0, this.height);
-  ctx.restore();
-}
-iio.X.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;;
 
 //DEFINITION
 iio.Grid = function(){ this.Grid.apply(this, arguments) };
@@ -1851,12 +1828,12 @@ iio.Grid.prototype.draw_shape = function(ctx) {
 
 //DEFINITION
 iio.Circle = function(){ this.Circle.apply(this, arguments) };
-iio.inherit(iio.Circle, iio.Drawable);
-iio.Circle.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Circle, iio.Shape);
+iio.Circle.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Circle.prototype.Circle = function() {
-  this._super.Drawable.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS
@@ -1906,12 +1883,12 @@ iio.Circle.prototype._shrink = function(s, r) {
 
 //DEFINITION
 iio.Text = function(){ this.Text.apply(this, arguments) };
-iio.inherit(iio.Text, iio.Drawable);
-iio.Text.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Text, iio.Shape);
+iio.Text.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Text.prototype.Text = function() {
-  this._super.Drawable.call(this,arguments[0]);
+  this._super.Shape.call(this,arguments[0]);
   this.size = this.size || 40;
   this.color = this.color || 'black';
   this.font = this.font || 'Arial';
@@ -2129,8 +2106,8 @@ iio.Text.prototype.keyDown = function(key, cI, shift, fn) {
 iio.App =  function() { 
   this.App.apply(this, arguments) 
 }
-iio.inherit(iio.App, iio.Obj);
-iio.App.prototype._super = iio.Obj.prototype;
+iio.inherit(iio.App, iio.Drawable);
+iio.App.prototype._super = iio.Drawable.prototype;
 
 // Make iio's elements available to app scope
 [
@@ -2154,7 +2131,7 @@ iio.App.prototype._super = iio.Obj.prototype;
 //CONSTRUCTOR
 iio.App.prototype.App = function(view, script, settings) {
 
-  this._super.Obj.call(this);
+  this._super.Drawable.call(this);
 
   //set app reference for shared functions
   this.app = this;

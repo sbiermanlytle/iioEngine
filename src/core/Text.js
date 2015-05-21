@@ -1,12 +1,12 @@
 
 //DEFINITION
 iio.Text = function(){ this.Text.apply(this, arguments) };
-iio.inherit(iio.Text, iio.Drawable);
-iio.Text.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Text, iio.Shape);
+iio.Text.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Text.prototype.Text = function() {
-  this._super.Drawable.call(this,arguments[0]);
+  this._super.Shape.call(this,arguments[0]);
   this.size = this.size || 40;
   this.color = this.color || 'black';
   this.font = this.font || 'Arial';

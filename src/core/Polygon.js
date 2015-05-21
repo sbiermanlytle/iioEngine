@@ -1,12 +1,12 @@
 
 //DEFINITION
 iio.Polygon = function(){ this.Polygon.apply(this, arguments) };
-iio.inherit(iio.Polygon, iio.Drawable);
-iio.Polygon.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Polygon, iio.Shape);
+iio.Polygon.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Polygon.prototype.Polygon = function() {
-  this._super.Drawable.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS

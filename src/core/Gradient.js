@@ -7,12 +7,12 @@ iio.js is licensed under the BSD 2-clause Open Source license
 
 //DEFINITION
 iio.Gradient = function(){ this.Gradient.apply(this, arguments) };
-iio.inherit(iio.Gradient, iio.Abstract);
-iio.Gradient.prototype._super = iio.Abstract.prototype;
+iio.inherit(iio.Gradient, iio.Interface);
+iio.Gradient.prototype._super = iio.Interface.prototype;
 
 //CONSTRUCTOR
 iio.Gradient.prototype.Gradient = function() {
-  this._super.Abstract.call(this,iio.merge_args(arguments));
+  this._super.Interface.call(this,iio.merge_args(arguments));
 }
 
 // MEMBER FUNCTIONS

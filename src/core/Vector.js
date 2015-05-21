@@ -7,8 +7,8 @@ iio.js is licensed under the BSD 2-clause Open Source license
 
 //DEFINITION
 iio.Vector = function(){ this.Vector.apply(this, arguments) };
-iio.inherit(iio.Vector, iio.Abstract);
-iio.Vector.prototype._super = iio.Abstract.prototype;
+iio.inherit(iio.Vector, iio.Interface);
+iio.Vector.prototype._super = iio.Interface.prototype;
 
 //CONSTRUCTOR
 iio.Vector.prototype.Vector = function(v,y) {

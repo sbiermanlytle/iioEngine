@@ -1,12 +1,12 @@
 
 //DEFINITION
 iio.Line = function(){ this.Line.apply(this, arguments) };
-iio.inherit(iio.Line, iio.Drawable);
-iio.Line.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Line, iio.Shape);
+iio.Line.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Line.prototype.Line = function() {
-  this._super.Drawable.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS

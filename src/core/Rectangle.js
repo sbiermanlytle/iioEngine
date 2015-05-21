@@ -1,12 +1,12 @@
 
 //DEFINITION
 iio.Rectangle = function(){ this.Rectangle.apply(this, arguments) };
-iio.inherit(iio.Rectangle, iio.Drawable);
-iio.Rectangle.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Rectangle, iio.Shape);
+iio.Rectangle.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Rectangle.prototype.Rectangle = function() {
-  this._super.Drawable.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,this.merge_args(arguments));
   this.height = this.height || this.width;
 }
 

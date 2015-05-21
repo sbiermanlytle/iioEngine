@@ -7,8 +7,8 @@ iio.js is licensed under the BSD 2-clause Open Source license
 
 // DEFINITION
 iio.Color = function(){ this.Color.apply(this, arguments) };
-iio.inherit(iio.Color, iio.Abstract);
-iio.Color.prototype._super = iio.Abstract.prototype;
+iio.inherit(iio.Color, iio.Interface);
+iio.Color.prototype._super = iio.Interface.prototype;
 
 // CONSTRUCTOR
 iio.Color.prototype.Color = function(r,g,b,a) {
@@ -27,7 +27,7 @@ iio.Color.random = function(){
 
 // MEMBER FUNCTIONS
 //------------------------------------------------------------
-iio.Abstract.prototype.clone = function() {
+iio.Color.prototype.clone = function() {
 	return new iio.Color( this.r, this.g, this.b, this.a );
 }
 iio.Color.prototype.rgbaString = function(){

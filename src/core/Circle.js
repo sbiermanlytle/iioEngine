@@ -1,12 +1,12 @@
 
 //DEFINITION
 iio.Circle = function(){ this.Circle.apply(this, arguments) };
-iio.inherit(iio.Circle, iio.Drawable);
-iio.Circle.prototype._super = iio.Drawable.prototype;
+iio.inherit(iio.Circle, iio.Shape);
+iio.Circle.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Circle.prototype.Circle = function() {
-  this._super.Drawable.call(this,this.merge_args(arguments));
+  this._super.Shape.call(this,this.merge_args(arguments));
 }
 
 //FUNCTIONS
