@@ -1,14 +1,14 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-  <title>iio.js &middot; Home</title>
-  <meta name="description" content="A JS Framework for HTML5 Canvas">
+  <title>iio.js</title>
+  <meta name="description" content="iio.js is a framework for HTML5 Canvas">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="favicon/png" href="img/favicon.ico">
   <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
-<body onload="prettyPrint()">
+<body>
 
   <div class="colorbar top"></div>
 
@@ -16,57 +16,84 @@
 
   <img id="bg_glow" src="img/bg_glow.jpg"/>
 
-  <header id="header">
-    <div id="iio">
-      <a href="iioengine">iio</a>
-    </div>
-    <nav id="nav">
-      <ul>
-        <li><a href="iioengine"><p id="active">Download</p></a></li>
-        <li><a href="docs"><p>Docs</p></a></li>
-        <li><a href="demos"><p>Demos</p></a></li>
-        <li><a href="tests"><p>Tests</p></a></li>
-      </ul>
-    </nav>
-  </header>
-
   <div id="content">
 
-    <h1>A JS Framework for HTML5 Canvas</h1>
-    <h3>lightweight, efficient, with zero dependencies</h3>
-    <p>iio.js is a javascript library that speeds the <span class="kwd">creation and deployment</span> of HTML5 Canvas applications. The download includes production and development <span class="kwd">full source code</span> for all versions of the framework.</p>
+    <header id="header">
 
-    <h2>Free &amp; Open Source</h2>
-    <p>The core platform is <span class="kwd">open source and free</span> to use for any purpose.</p>
-    <p>Submit additions, questions, and bugs on <a href="https://github.com/sbiermanlytle/iioengine">Github</a>. General inquires may be sent to <a href="http://iiointeractive.com/contact">iio interactive</a>.</p>
-
-    <h4>Setup is easy, just download then follow the quick start guide.</h4>
-
-    <div class="arrows_btns">
-      <div class="btn_wrap">
-
-        <img class="big-arrow left-arrow" src="img/arrow-grey.png"/>
-
-        <p style="min-width:190px" class="big-btn"><a id="download" style="padding:15px 26px" class="btn-iio grey" href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">Download v1.4</a></p>
-
-        <img class="big-arrow" src="img/arrow.png"/>
-
-        <p id="quickstart-btn" style="min-width:181px" class="big-btn"><a class="btn-iio" href="tutorials/quick-start.php">Quick Start Guide</a></p>
-
+      <div id="column">
+      <div id="iio">
+        <a href="">iio</a>
       </div>
-    </div>
+      <nav id="nav">
+        <ul>
+          <li><a id="download" href=""><p class="active">Download</p></a></li>
+          <li><a id="docs" href="docs"><p>API</p></a></li>
+          <li><a id="demos" href="demos"><p>Demos</p></a></li>
+          <li><a id="tests" href="#tests"><p>Tests</p></a></li>
+          <li><a target="_blank" href="https://github.com/sbiermanlytle/iioengine"><p>Github</p></a></li>
+          <li><a target="_blank" href="https://twitter.com/iioEngine"><p>Twitter</p></a></li>
+        </ul>
+      </nav>
+      </div>
+    </header>
+
+    <div id="page_content"></div>
+
+    <footer id="footer">
+        <p>&copy; 2015 <a href="http://iiointeractive.com/"><span class="blue">iio</span> inc</a></p>
+    </footer>
 
   </div> <!-- END CONTENT -->
-
-  <footer id="footer">
-  	<div class="left">&copy; 2015 <a href="http://iiointeractive.com/"><span class="blue">iio</span> interactive</a> | <a target="_new" href="https://github.com/sbiermanlytle/iioengine">Github</a> | <a target="_new" href="https://twitter.com/iioEngine">Twitter</a></div>
-  	<div class="right"><a target="_new" href="http://iiointeractive.com/contact">Contact</a></div>
-  </footer>
-
   </div> <!-- END MAIN -->
 
+  <div class="colorbar bottom"></div>
+
+  <!-- JS LIBRARIES -->
   <script type="text/javascript" src="js/iio.min.js"></script>
   <script type="text/javascript" src="js/prettify.js"></script>
+  <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+
+  <!-- HOME -->
+  <script type="text/javascript" src="home.js"></script>
+
+  <!-- DOCS -->
+  <script type="text/javascript" src="docs.js"></script>
+  <script type="text/javascript" src="api.js"></script>
+
+  <!-- DEMOS -->
+  <script type="text/javascript" src="demos.js"></script>
+  <script type="text/javascript" src="demos/demo-functions.js"></script>
+  <script type="text/javascript" src="demos/ColorGrid.js"></script>
+  <script type="text/javascript" src="demos/Squares.js"></script>
+  <script type="text/javascript" src="demos/Snow.js"></script>
+  <script type="text/javascript" src="demos/Snake.js"></script>
+  <script type="text/javascript" src="demos/ScrollShooter.js"></script>
+
+  <!-- TESTS -->
+  <script type="text/javascript" src="tests.js"></script>
+  <script type="text/javascript" src="tests/iio.test.functions.js"></script>
+  <script type="text/javascript" src="tests/iio.test.Line.js"></script>
+  <script type="text/javascript" src="tests/iio.test.Circle.js"></script>
+  <script type="text/javascript" src="tests/iio.test.Polygon.js"></script>
+  <script type="text/javascript" src="tests/iio.test.Rectangle.js"></script>
+  <script type="text/javascript" src="tests/iio.test.Text.js"></script>
+  <script type="text/javascript" src="tests/iio.test.Grid.js"></script>
+
+  <!-- WEB PAGE CONTROLLER -->
+  <script type="text/javascript">
+
+  var iioapps;
+  var app_colors = [];
+  app_colors[1] = new iio.Color(0,186,255);
+  app_colors[0] = new iio.Color(101,176,66);
+
+  var page = $('#page_content');
+
+  </script>
+
+  <!-- LOCAL LIBRARIES -->
+  <script type="text/javascript" src="nav.js"></script>
+  <script type="text/javascript" src="router.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,38 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">// define a new iio app
+TestDashRounded = function( app, settings ){
+
+	// define shared circle properties
+	app.add(new iio.Circle({
+		// set position to app center
+		pos: app.center,
+		// set radius to 25px
+		radius: 25,
+		// set outline color to green
+		outline: 'green',
+		// set line width to 10px
+		lineWidth: 10,
+		// set dash with .1px length, 17.2px spacing
+		dash: [ .1, 17.2 ],
+		// a round line cap and small dash length
+		// creates a dotted effect
+		lineCap: 'round',
+		// set a dash offset of 10px
+		dashOffset: 10
+	}));
+}
+
+// start the app on an existing canvas
+iio.start( TestDashRounded, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

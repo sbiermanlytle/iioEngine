@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; Test &middot; Line</title>
+  <meta name="description" content="iio.Line unit tests">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">// define a new iio app
+TestHidden = function( app, settings ){
+
+	// set appupdate speed to 1 fps
+	app.loop(1);
+
+	// add a new line to the app
+	app.add(new iio.Line({
+		// set position to app center
+		pos: app.center.clone(),
+		// set color to blue
+		color: 'blue',
+		// set width to 10px
+		width: 10,
+		// initialize hidden property
+		hidden: false,
+		// set vertices relative to pos
+		vs:[
+			// start vertex position
+			[ -30,-30 ],
+			// end vertex position
+			[  30, 30 ]
+		],
+		// set update function
+		onUpdate: function(){
+			// switch the hidden property
+			// true/false
+			this.hidden = !this.hidden;
+		}
+	}));
+}
+
+// start the app on an existing canvas
+iio.start( TestHidden, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>
