@@ -205,7 +205,6 @@ h1,h2,h3,h4{
 .api_list_item{
   font-size: 16px;
   margin: 0;
-  font-weight: bold;
   border-left: 4px solid #e5e5e5;
   padding: 6px 10px;
   color: #e5e5e5;
@@ -249,7 +248,7 @@ h1,h2,h3,h4{
   color:black;
 }
 .divide{
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid #6F6F6F;
   margin: 25px 0;
 }
 
@@ -469,7 +468,7 @@ a,h2,h5,canvas,input[type='submit'],.btn,#drag_overlay,.api_item{
 .kwd{
   color: #65B042;
 }
-.noBold{
+.small{
   font-weight: normal;
   font-size: 14px
 }

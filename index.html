@@ -58,6 +58,7 @@
 
   <!-- DOCS -->
   <script type="text/javascript" src="docs.js"></script>
+  <script type="text/javascript" src="api.js"></script>
 
   <!-- DEMOS -->
   <script type="text/javascript" src="demos.js"></script>
@@ -152,16 +153,19 @@
       show_api_basics();
       current = DOCS;
     } else if( window.location.hash == '#app-control' ){
-      show_api_app_control();
+      show_api( api.AppControl );
       current = DOCS;
     } else if( window.location.hash == '#Vector' ){
-      show_api_Vector();
+      show_api( api.Vector );
       current = DOCS;
     } else if( window.location.hash == '#Color' ){
-      show_api_Color();
+      show_api( api.Color );
+      current = DOCS;
+    } else if( window.location.hash == '#Gradient' ){
+      show_api( api.Gradient );
       current = DOCS;
     } else if( window.location.hash == '#Abstract' ){
-      show_api_Abstract();
+      show_api( api.Abstract )
       current = DOCS;
     }
 
@@ -209,7 +213,9 @@
 
     if( window.location.hash == '#Vector' 
       || window.location.hash == '#Color'
+      || window.location.hash == '#Gradient'
       || window.location.hash == '#Abstract'
+      || window.location.hash == '#app-control'
     )
       $('.prettyprint ol.linenums').css('margin-left', '-40px');
   }
