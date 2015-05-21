@@ -33,16 +33,15 @@ show_docs_menu = function(){
 	append_api_item_sub('data','Gradient');
 	append_api_item_sub('data','Sound');
 
-	append_api_item_sub('objects','Obj');
 	append_api_item_sub('objects','Drawable');
 	append_api_item_sub('objects','App');
+	append_api_item_sub('objects','Shape');
 	append_api_item_sub('objects','Line');
 	append_api_item_sub('objects','Text');
 	append_api_item_sub('objects','Circle');
 	append_api_item_sub('objects','Polygon');
 	append_api_item_sub('objects','Rectangle');
 	append_api_item_sub('objects','Grid');
-	append_api_item_sub('objects','X');
 
 	$('#api_item_h_'+headers[0]).click(function(){
 		toggle_menu(headers[0],0);
