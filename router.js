@@ -50,6 +50,8 @@ display_current = function(){
       show_api( api.Gradient );
     else if( path == 'Drawable' ) 
       show_api( api.Drawable );
+    else if( path == 'App' ) 
+      show_api( api.App );
   } 
 
   // DEMO ROUTER

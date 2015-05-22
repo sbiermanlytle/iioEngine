@@ -210,7 +210,7 @@ var api = {
 		inherits: [ 'Interface' ],
 		overview: [ "A root class for all drawable objects classes in iio. Initializes data and provides functions for iio's object management features." ],
 		data: {
-			'Properties': [
+			'Associated Objects': [
 				{	// app
 					definition: a('App') + ' app',
 					descriptions: [ "Associated App." ],
@@ -223,12 +223,49 @@ var api = {
 					definition: a('Drawable') + ' parent',
 					descriptions: [ "Parent object." ],
 					samples: [ "// access a drawable's parent\nvar parent = drawable.parent;" ]
-				},{	// pos
+				}
+			],
+			'Object Arrays': [
+				{	// objs
+					definition: kwd('Array')+'<'+a('Shape') + '> objs',
+					descriptions: [ "Array of child shapes." ],
+					samples: [ 
+						"// access a drawable's objs\nvar obj0 = drawable.objs[0];\nvar obj1 = drawable.objs[1];",
+						"// add a shape to the array\ndrawable.add( shape );",
+						"// remove a shape from the array\ndrawable.rmv( shape );",
+						"// remove all shapes from the array\ndrawable.clear();"
+					]
+				},{	// collisions
+					definition: kwd('Array')+'<'+a('Object') + '> collisions',
+					descriptions: [ "Array of collision objects." ],
+					samples: [ 
+						"// access collision object properties\nvar group0 = drawable.collisions[0][0];\nvar group1 = drawable.collisions[0][1];\nvar collision_callback = drawable.collisions[0][2];\n"
+					]
+				},{	// loops
+					definition: kwd('Array')+'<'+a('Object') + '> loops',
+					descriptions: [ "Array of loop objects." ],
+					samples: [ 
+						"// access loop properties\nvar loopId = drawable.loops[0].id;\nvar loop_callback = drawable.loops[0].fn;",
+					]
+				}
+			],
+			'Properties': [
+				{	// pos
 					definition: a('Vector') + ' pos',
 					descriptions: [ "xy position coordinates." ],
 					samples: [ 
 						"// access a drawable's position coordinates\nvar pos = drawable.pos;\nvar x = drawable.pos.x;\nvar y = drawable.pos.y;",
 						"// set a drawable's position\ndrawable.set({ pos: [10,20] });\ndrawable.set({ pos: new iio.Vector(10,20) });"
+					]
+				},{	// width
+					definition: kwd('float') + ' width',
+					descriptions: [ "Pixel width." ]
+				},{	// height
+					definition: kwd('float') + ' height',
+					descriptions: [ "Pixel height." ],
+					samples: [ 
+						"// access a drawable's width value\nvar width = drawable.width;",
+						"// access a drawable's height value\nvar height = drawable.height;",
 					]
 				},{	// color
 					definition: a('Color') + '|' + a('Gradient') + ' color',
@@ -238,14 +275,12 @@ var api = {
 						"// set a drawable's color to a Color\ndrawable.set({ color: 'blue' });",
 						"// set a drawable's color to a Gradient\ndrawable.set({ color: new iio.Gradient({\n\tstart: [ 0, -50 ] ),\n\tend: [ 0, 50 ],\n\tstops: [\n\t\t[ 0, 'black' ],\n\t\t[ 0.5, 'blue' ],\n\t\t[ 1, 'blue' ]\n\t]\n})});"
 					]
-				},{	// objs
-					definition: kwd('Array')+'<'+a('Shape') + '> objs',
-					descriptions: [ "Array of child shapes." ],
+				},{	// paused
+					definition: kwd('bool') + ' paused',
+					descriptions: [ "A toggle indicating whether or not this objects "+a('loops')+' are running.' ],
 					samples: [ 
-						"// access a drawable's objs\nvar obj0 = drawable.objs[0];\nvar obj1 = drawable.objs[1];",
-						"// add a shape to the array\ndrawable.add( shape );",
-						"// remove a shape from the array\ndrawable.rmv( shape );",
-						"// remove all shapes from the array\ndrawable.clear();",
+						"// access a drawable's paused property\nvar paused = drawable.paused;",
+						"// pause or unpause\ndrawable.pause();"
 					]
 				}
 			],
@@ -303,8 +338,79 @@ var api = {
 						"// create a Rectangle at app center\nvar rectangle = app.create( app.center, 50, 'red' );",
 						"// create a Line\nvar line = app.create( 'red', {\n\tvs: [\n\t\t[ 10,10 ],\n\t\t[ 80,80 ]\n\t]\n});",
 						"// create a Circle at app center\nvar circle = app.create( app.center, 'red', {\n\tradius: 20\n});"
+					]
+				},
+				{	// collision()
+					definition: 'collision( '+a('Shape')+' s0, '+a('Shape')+' s1, '+kwd('function')+' callback ) | ' + small('returns ') + kwd('int')
+				},{
+					definition: 'collision( '+kwd('Array')+' g0, '+kwd('Array')+' g1, '+kwd('function')+' callback ) | ' + small('returns ') + kwd('int'),
+					descriptions: [ 'Creates a collision object which tests collisions between two '+a('Shape')+' objects, two arrays of '+a('Shape')+' objects, or a mix of both types, and runs the given callback function, passing the two colliding objects as parameters.' ],
+					samples: [ 
+						"// add a collision object\ndrawable.collision( objA, objB, callback );\n\n// add a collision object with arrays\n// and an inline callback function\nvar groupA = [ shape0, shape1, shape2 ];\nvar groupB = [ shape3, shape4 ];\nvar index = drawable.collision( groupA, groupB, function( A, B ){\n\t//...\n});"
+					]
+				}
+			],
+			'Loop Management': [
+				{	// loop()
+					definition: 'loop() | ' + small('returns ') + kwd('int')
+				},{
+					definition: 'loop( '+kwd('float')+' fps ) | ' + small('returns ') + kwd('int')
+				},{
+					definition: 'loop( '+kwd('function')+' callback ) | ' + small('returns ') + kwd('int')
+				},{
+					definition: 'loop( '+kwd('float')+' fps, '+kwd('function')+' callback ) | ' + small('returns ') + kwd('int'),
+					descriptions: [ 'Initiates a loop with or without a given callback at 60fps or the given framerate. Returns the new loop id.' ],
+					samples: [
+						"// add a 60 fps update loop\nvar loopId =  drawable.loop();",
+						"// add a 40 fps update loop\nvar loopId =  drawable.loop( 40 );",
+						"// add a 60 fps update with a callback\nvar loopId = drawable.loop( callback );",
+						"// add a 40 fps update with a callback\nvar loopId = drawable.loop( 40, callback );",
+						"// cancel a loop\niio.cancelLoop( loopId );",
 					],
 					divider: true
+				},{ // pause
+					definition: 'pause() | ' + small('returns ') + kwd('this'),
+					descriptions: [ 'Pauses or unpauses all loops in the '+a('loops')+' array, depending upon the value of the '+a('paused')+' property.' ],
+					samples: [
+						"// pause or unpause\ndrawable.pause();"
+					],
+				}
+			]
+		}
+	},
+	App: {
+		classname: 'App',
+		inherits: [ 'Drawable', 'Interface' ],
+		overview: [ 
+			'A HTML Canvas wrapper that manages the updating and rendering of attached '+a('Shape')+' objects.',
+			"An initilized "+a('App')+" is passed to a custom iio script whenever "+a('iio.start')+" is called."
+		],
+		samples: [
+			"// define a new script to receive\n// an instance of App\nvar MyApp = function( app ){\n\t//...\n}\n// start the script\niio.start( MyApp );"
+		],
+		data: {
+			'Properties':[
+				{	// canvas
+					definition: a('Canvas') + ' canvas',
+					descriptions: [ "Associated HTML Canvas element." ],
+					samples: [ "// access an app's canvas\nvar canvas = drawable.canvas;" ]
+				},{	// center
+					definition: a('Vector') + ' center',
+					descriptions: [ "The center coordinate of the app." ],
+					samples: [ "// access an app's center coordinate\nvar center = drawable.center;" ]
+				}
+			],
+			'Functions':[
+				{	// draw
+					definition: 'draw( '+kwd('bool')+' noClear ) | ' + small('returns ') + kwd('this'),
+					descriptions: [ 
+						"Draws the background color and all objects in "+a('objs')+' in '+a('z')+' index order.',
+						"The canvas will first be cleared unless "+kwd('noClear')+' is '+kwd('true')+'.'
+					],
+					samples: [ 
+						"// redraw the app\napp.draw();",
+						"// redraw the app without clearing the last render\napp.draw( true );"
+					]
 				}
 			]
 		}
