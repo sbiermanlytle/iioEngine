@@ -56,6 +56,7 @@ iio.convert = {
   vectors: function(vs){
     for(var i=0; i<vs.length; i++)
       vs[i] = iio.convert.vector( vs[i] );
+    return vs;
   }
 }
 
@@ -273,7 +274,7 @@ iio.canvas = {
     o.onmousedown = function(e) {
 
       // orient click position to canvas 0,0
-      var ep = this.parent.convertEventPos(e);
+      var ep = this.parent.convert_event_pos(e);
 
       // App.onClick
       if (this.parent.onClick) 
@@ -281,7 +282,7 @@ iio.canvas = {
 
       // App.objs.onClick
       this.parent.objs.forEach(function(obj, i) {
-        if (i !== 0) ep = this.parent.convertEventPos(e);
+        if (i !== 0) ep = this.parent.convert_event_pos(e);
         if (obj.contains && obj.contains(ep))
           if (obj.onClick) {
             if (obj.cellAt) {

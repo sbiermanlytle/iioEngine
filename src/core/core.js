@@ -168,6 +168,8 @@ iio.read = function(url, callback) {
 
 //LOOPING
 iio.loop = function(fps, caller, fn) {
+
+  // LOOP USING setTimeout
   if (iio.is.number(fps) || typeof window.requestAnimationFrame == 'undefined' || !fps.af) {
     if (typeof(fps.af) != 'undefined' && typeof(fps.fps) == 'undefined') {
       fn = caller;
@@ -202,7 +204,10 @@ iio.loop = function(fps, caller, fn) {
     };
     caller.id = window.setTimeout(loop, 1000 / fps);
     return caller.id;
-  } else {
+  } 
+
+  // LOOP USING requestAnimationFrame
+  else {
     fn = caller;
     caller = fps;
 

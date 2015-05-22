@@ -168,6 +168,8 @@ iio.read = function(url, callback) {
 
 //LOOPING
 iio.loop = function(fps, caller, fn) {
+
+  // LOOP USING setTimeout
   if (iio.is.number(fps) || typeof window.requestAnimationFrame == 'undefined' || !fps.af) {
     if (typeof(fps.af) != 'undefined' && typeof(fps.fps) == 'undefined') {
       fn = caller;
@@ -202,7 +204,10 @@ iio.loop = function(fps, caller, fn) {
     };
     caller.id = window.setTimeout(loop, 1000 / fps);
     return caller.id;
-  } else {
+  } 
+
+  // LOOP USING requestAnimationFrame
+  else {
     fn = caller;
     caller = fps;
 
@@ -361,6 +366,7 @@ iio.convert = {
   vectors: function(vs){
     for(var i=0; i<vs.length; i++)
       vs[i] = iio.convert.vector( vs[i] );
+    return vs;
   }
 }
 
@@ -578,7 +584,7 @@ iio.canvas = {
     o.onmousedown = function(e) {
 
       // orient click position to canvas 0,0
-      var ep = this.parent.convertEventPos(e);
+      var ep = this.parent.convert_event_pos(e);
 
       // App.onClick
       if (this.parent.onClick) 
@@ -586,7 +592,7 @@ iio.canvas = {
 
       // App.objs.onClick
       this.parent.objs.forEach(function(obj, i) {
-        if (i !== 0) ep = this.parent.convertEventPos(e);
+        if (i !== 0) ep = this.parent.convert_event_pos(e);
         if (obj.contains && obj.contains(ep))
           if (obj.onClick) {
             if (obj.cellAt) {
@@ -847,14 +853,16 @@ iio.Drawable.prototype._super = iio.Interface.prototype;
 
 // CONSTRUCTOR
 iio.Drawable.prototype.Drawable = function() {
-  iio.Drawable.prototype._super.Interface.call(this, iio.merge_args(arguments));
+  iio.Drawable.prototype._super.Interface.call(this, arguments[0]);
   this.objs = [];
+  this.collisions = [];
+  this.loops = [];
 }
 
 // OVERRIDE FUNCTIONS
 //-------------------------------------------------------------------
 iio.Drawable.prototype.set = function() {
-  iio.Drawable.prototype._super.set.call(this, iio.merge_args(arguments));
+  iio.Drawable.prototype._super.set.call(this, arguments[0]);
   if (arguments[arguments.length-1] === true);
   else if(this.app) this.app.draw();
 }
@@ -862,80 +870,26 @@ iio.Drawable.prototype.convert_props = function(){
   iio.convert.property.color(this,"color");
 }
 
+
+// DATA MANAGEMENT FUNCTIONS
+//-------------------------------------------------------------------
+iio.Drawable.prototype.localFrameVector = function(v){
+  return new iio.Vector( 
+    v.x - this.pos.x, 
+    v.y - this.pos.y
+  )
+}
+
 // OBJECT MANAGMENT FUNCTIONS
 //-------------------------------------------------------------------
-iio.Drawable.prototype.clear = function() {
+iio.Drawable.prototype.clear = function( noDraw ) {
   objs.foreach(function(obj){
-    obj.clearLoops();
+    iio.cancelLoops(obj)
   })
   this.objs = [];
-}
-iio.Drawable.prototype.create = function(){
-  var props = {};
-  for(var i=0; i<arguments.length; i++){
-    if(arguments[i] === null) continue;
-
-    // given string
-    if( iio.is.string(arguments[i]) ){
-      var c = iio.Color[ arguments[i] ];
-      // infer color
-      if(c) props.color = c;
-      // infer text
-      else props.text = arguments[i]
-    }
-
-    // given Color
-    else if(arguments[i] instanceof iio.Color)
-      // infer color
-      props.color = arguments[i];
-
-    // given Vector
-    else if( arguments[i] instanceof iio.Vector )
-      // infer position
-      props.pos = arguments[i];
-
-    // given Array
-    else if( arguments[i] instanceof Array )
-      // infer position
-      props.pos = arguments[i];
-
-    //given Object
-    else if(typeof arguments[i] === 'object')
-      // merge objects
-      props = iio.merge(props,arguments[i]);
-
-    // given number
-    else if(iio.is.number(arguments[i]))
-      // infer width
-      props.width = arguments[i];
-  }
-
-  if(props.vs){
-    // infer Line
-    if(props.vs.length == 2)
-      return this.add(new iio.Line(props));
-    // infer Polygon
-    else return this.add(new iio.Polygon(props));
-  } 
-  // infer Circle
-  else if(props.radius)
-    return this.add(new iio.Ellipse(props));
-  // infer Text
-  else if(props.text)
-    return this.add(new iio.Text(props));
-  // infer Grid
-  else if(props.res || props.R || props.C)
-    return this.add(new iio.Grid(props));
-  // infer Rectangle
-  else if(props.width)
-    return this.add(new iio.Rectangle(props));
-  // infer Color
-  else if(props.color)
-    return props.color;
-  // infer Vector
-  else if(props.pos)
-    return props.pos
-  return false;
+  if ( noDraw );
+  else if(this.app) this.app.draw();
+  return this;
 }
 iio.Drawable.prototype.add = function() {
 
@@ -989,8 +943,7 @@ iio.Drawable.prototype.add = function() {
         || arguments[0].onUpdate 
         || arguments[0].shrink 
         || arguments[0].fade 
-        ) && (typeof arguments[0].app.looping == 'undefined' 
-            || arguments[0].app.looping === false))
+        ) && !arguments[0].app.looping )
       arguments[0].app.loop();
   }
 
@@ -1048,24 +1001,146 @@ iio.Drawable.prototype.rmv = function() {
   // return removed object(s)
   return arguments[0];
 }
+iio.Drawable.prototype.create = function(){
+  var props = {};
+  for(var i=0; i<arguments.length; i++){
+    if(arguments[i] === null) continue;
+
+    // given string
+    if( iio.is.string(arguments[i]) ){
+      var c = iio.Color[ arguments[i] ];
+      // infer color
+      if(c) props.color = c;
+      // infer text
+      else props.text = arguments[i]
+    }
+
+    // given Color
+    else if(arguments[i] instanceof iio.Color)
+      // infer color
+      props.color = arguments[i];
+
+    // given Vector
+    else if( arguments[i] instanceof iio.Vector )
+      // infer position
+      props.pos = arguments[i];
+
+    // given Array
+    else if( arguments[i] instanceof Array )
+      // infer position
+      props.pos = iio.convert.vector(arguments[i]);
+
+    //given Object
+    else if(typeof arguments[i] === 'object')
+      // merge objects
+      props = iio.merge(props,arguments[i]);
+
+    // given number
+    else if(iio.is.number(arguments[i]))
+      // infer width
+      props.width = arguments[i];
+  }
+
+  if(props.vs){
+    // infer Line
+    if(props.vs.length == 2)
+      return this.add(new iio.Line(props));
+    // infer Polygon
+    else return this.add(new iio.Polygon(props));
+  } 
+  // infer Circle
+  else if(props.radius)
+    return this.add(new iio.Ellipse(props));
+  // infer Text
+  else if(props.text)
+    return this.add(new iio.Text(props));
+  // infer Grid
+  else if(props.res || props.R || props.C)
+    return this.add(new iio.Grid(props));
+  // infer Rectangle
+  else if(props.width)
+    return this.add(new iio.Rectangle(props));
+  // infer Color
+  else if(props.color)
+    return props.color;
+  // infer Vector
+  else if(props.pos)
+    return props.pos
+  return false;
+}
+iio.Drawable.prototype.collision = function(o1, o2, fn) {
+  this.collisions.push( [o1, o2, fn] );
+  return this.collisions.length-1;
+}
+iio.Drawable.prototype.cCollisions = function(o1, o2, fn) {
+  if (o1 instanceof Array) {
+    if (o2 instanceof Array) {
+      if (o2.length == 0) return;
+      o1.forEach(function(_o1) {
+        o2.forEach(function(_o2) {
+          if (iio.collision.check(_o1, _o2)) fn(_o1, _o2);
+        });
+      });
+    } else {
+      o1.forEach(function(_o1) {
+        if (iio.collision.check(_o1, o2)) fn(_o1, o2);
+      });
+    }
+  } else {
+    if (o2 instanceof Array) {
+      o2.forEach(function(_o2) {
+        if (iio.collision.check(o1, _o2)) fn(o1, _o2);
+      });
+    } else if (iio.collision.check(o1, o2)) fn(o1, o2);
+  }
+}
+iio.Drawable.prototype._update = function(o,dt){
+  if (this.update) this.update(dt);
+  if (this.objs && this.objs.length > 0)
+    this.objs.forEach(function(obj) {
+      if (obj.update && obj.update(o, dt)) this.rmv(obj);
+    }, this);
+  if (this.collisions && this.collisions.length > 0) {
+    this.collisions.forEach(function(collision) {
+      this.cCollisions(collision[0], collision[1], collision[2]);
+    }, this);
+  }
+  this.draw();
+}
 
 // LOOP MANAGMENT FUNCTIONS
 //-------------------------------------------------------------------
-iio.Drawable.prototype.loop = function(fps, fn) {
+iio.Drawable.prototype.loop = function(fps, callback) {
+
+  // set looping flag
   this.looping = true;
+
+  // create loop object
   var loop;
-  if (typeof fn == 'undefined') {
+
+  if (typeof callback == 'undefined') {
+
+    // replace mainLoop: 60fps with no callback
     if (typeof fps == 'undefined') {
+
+      // cancel old mainLoop if it exists
       if (this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
+
+      // define new mainLoop
       loop = this.app.mainLoop = {
         fps: 60,
         fn: this,
         af: this.rqAnimFrame,
         o: this.app
-      };
-      this.app.fps = 60;
+      }
+
+      // set new mainLoop and app fps
+      this.app.fps = loop.fps;
       loop.id = this.app.mainLoop.id = iio.loop(this.app.mainLoop);
+
     } else {
+
+      // loop given callback at 60fps
       if (!iio.is.number(fps)) {
         loop = {
           fps: 60,
@@ -1073,38 +1148,50 @@ iio.Drawable.prototype.loop = function(fps, fn) {
           af: this.rqAnimFrame
         }
         loop.id = iio.loop(loop, fps);
-      } else {
+      } 
+      // replace mainLoop: given fps with callback
+      else {
+
+        // cancel old mainLoop if it exists
         if (this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
+        
+        // define new mainLoop
         loop = this.app.mainLoop = {
           fps: fps,
           o: this.app,
           af: false
         }
+
+        // set new mainLoop and app fps
         this.app.fps = fps;
         loop.id = this.app.mainLoop.id = iio.loop(this.app.mainLoop);
       }
     }
-  } else {
+  } 
+
+  // loop callback at given framerate
+  else {
     loop = {
       fps: fps,
-      fn: fn,
+      fn: callback,
       o: this,
       af: this.rqAnimFrame
-    };
+    }
     loop.id = iio.loop(fps, loop);
   }
+
+  // add new loop to array
   this.loops.push(loop);
+
   /*if(typeof o.app.fps=='undefined'||o.app.fps<fps){
      if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
      o.app.mainLoop={fps:fps,o:o.app,af:o.app.rqAnimFrame}
      o.app.fps=fps;
      o.app.mainLoop.id=iio.loop(o.app.mainLoop);
   }*/
+  
+  // return id of new loop
   return loop.id;
-}
-iio.Drawable.prototype.clearLoops = function() {
-  for (var i = 0; i < this.loops.length; i++)
-    iio.cancelLoop(this.loops[i]);
 }
 iio.Drawable.prototype.pause = function(c) {
   if (this.paused) {
@@ -1114,8 +1201,8 @@ iio.Drawable.prototype.pause = function(c) {
     });
     if (this.mainLoop) iio.loop(this.mainLoop);
     if (typeof c == 'undefined')
-      this.objs.forEach(function(Drawable) {
-        Drawable.loops.forEach(function(loop) {
+      this.objs.forEach(function(o) {
+        o.loops.forEach(function(loop) {
           iio.loop(loop);
         });
       });
@@ -1124,8 +1211,8 @@ iio.Drawable.prototype.pause = function(c) {
     iio.cancelLoop(this.mainLoop.id);
     this.paused = true;
   }
-}
-;
+  return this;
+};
 
 //DEFINITION
 iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
@@ -1182,7 +1269,7 @@ iio.Shape.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Shape.prototype.Shape = function() {
-  iio.Shape.prototype._super.Drawable.call(this,iio.merge_args(arguments));
+  iio.Shape.prototype._super.Drawable.call(this,arguments[0]);
 }
 
 //OVERRIDE FUNCTIONS
@@ -1596,7 +1683,7 @@ iio.Line.prototype._super = iio.Shape.prototype;
 
 //CONSTRUCTOR
 iio.Line.prototype.Line = function() {
-  this._super.Shape.call(this,iio.merge_args(arguments));
+  this._super.Shape.call(this,arguments[0]);
 }
 
 //FUNCTIONS
@@ -2264,10 +2351,6 @@ iio.App.prototype.App = function(view, script, settings) {
     offset.top
   );
 
-  // initialize app properties
-  this.collisions = [];
-  this.loops = [];
-
   //add app to global app array
   iio.apps.push(this);
 
@@ -2283,12 +2366,6 @@ iio.App.prototype.App = function(view, script, settings) {
 
 // FUNCTIONS
 //-------------------------------------------------------------------
-iio.App.prototype.convertEventPos = function(e) {
-  return new iio.Vector( 
-    e.clientX - this.pos.x, 
-    e.clientY - this.pos.y
-  )
-}
 iio.App.prototype.stop = function() {
   this.objs.forEach(function(obj) {
     iio.cancelLoops(obj);
@@ -2297,64 +2374,28 @@ iio.App.prototype.stop = function() {
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
   this.clear();
 }
-iio.App.prototype.draw = function(noClear) {
-  if (!noClear) this.ctx.clearRect(0, 0, this.width, this.height);
+iio.App.prototype.draw = function( noClear ) {
+
+  // clear canvas
+  if( !noClear )
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+  // draw background color
   if (this.color) {
     this.ctx.fillStyle = this.color.rgbaString();
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
-  if (this.round && this.canvas.style.borderRadius != this.round) {
-    this.canvas.style.borderRadius = this.round;
-    //this.canvas.style.MozBorderRadius=this.round;
-    //this.canvas.style.WebkitBorderRadius=this.round;
-  }
-  if (this.outline)
-    this.canvas.style.border = (this.lineWidth || 1) + 'px solid ' + this.outline;
-  if (this.alpha)
-    this.canvas.style.opacity = this.alpha;
+
+  // draw child objects
   if (this.objs.length > 0)
     for(var i=0; i<this.objs.length; i++)
       if (this.objs[i].draw) this.objs[i].draw(this.ctx);
 }
-iio.App.prototype.collision = function(o1, o2, fn) {
-  this.collisions.push(
-    [o1, o2, fn]
-  );
-}
-iio.App.prototype.cCollisions = function(o1, o2, fn) {
-  if (o1 instanceof Array) {
-    if (o2 instanceof Array) {
-      if (o2.length == 0) return;
-      o1.forEach(function(_o1) {
-        o2.forEach(function(_o2) {
-          if (iio.collision.check(_o1, _o2)) fn(_o1, _o2);
-        });
-      });
-    } else {
-      o1.forEach(function(_o1) {
-        if (iio.collision.check(_o1, o2)) fn(_o1, o2);
-      });
-    }
-  } else {
-    if (o2 instanceof Array) {
-      o2.forEach(function(_o2) {
-        if (iio.collision.check(o1, _o2)) fn(o1, _o2);
-      });
-    } else if (iio.collision.check(o1, o2)) fn(o1, o2);
-  }
-}
-iio.App.prototype._update = function(o, dt) {
-  if (this.update) this.update(dt);
-  if (this.objs && this.objs.length > 0)
-    this.objs.forEach(function(obj) {
-      if (obj.update && obj.update(o, dt)) this.rmv(obj);
-    }, this);
-  if (this.collisions && this.collisions.length > 0) {
-    this.collisions.forEach(function(collision) {
-      this.cCollisions(collision[0], collision[1], collision[2]);
-    }, this);
-  }
-  this.draw();
+iio.App.prototype.convert_event_pos = function(e) {
+  return new iio.Vector( 
+    e.clientX - this.pos.x, 
+    e.clientY - this.pos.y
+  )
 }
 ;
 iio.audioCtx = new (window.AudioContext || window.webkitAudioContext)();

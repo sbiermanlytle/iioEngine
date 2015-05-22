@@ -12,7 +12,7 @@ iio.Shape.prototype._super = iio.Drawable.prototype;
 
 //CONSTRUCTOR
 iio.Shape.prototype.Shape = function() {
-  iio.Shape.prototype._super.Drawable.call(this,iio.merge_args(arguments));
+  iio.Shape.prototype._super.Drawable.call(this,arguments[0]);
 }
 
 //OVERRIDE FUNCTIONS

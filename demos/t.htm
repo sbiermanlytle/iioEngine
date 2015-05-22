@@ -11,14 +11,25 @@
 
 
 
-			Test = function(app){
+		Test = function(app){
 
-				app.set({ color: 'black' });
+			app.set({ color:'black' });
 
-				function reverse(o){ o.vel.x *= -1 }
+			app.create({
+				pos: app.center,
+				color: 'red',
+				width: 400,
+				rVel: .02,
+				onUpdate: function(o){
+					var b = o;
+					var c = app;
+				}
+			})
 
-				app.create( app.center, 400, 
-					'red' )
+			app.onClick = function(){
+				app.pause()
+			}
+
 
 				/*var color = iio.Color.constant('Red');
 
