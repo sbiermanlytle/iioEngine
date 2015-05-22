@@ -25,11 +25,9 @@ var api = {
 		data: {
 			'Member Functions': [
 				{ // set()
-					definition: 'set( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... ) | ' + small('returns ') + kwd('this')
-				},{
-					definition: 'set( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ..., '+kwd('Boolean')+' noDraw ) | ' + small('returns ') + kwd('this'),
+					definition: 'set( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... ) | ' + small('returns ') + kwd('this'),
 					descriptions: [
-						'Assigns the property and value of each given object to this object, and converts shorthand declarations into correct property data types. Redraws the associated '+a('App')+" if "+kwd('noDraw')+" is undefined or false.",
+						'Assigns the property and value of each given object to this object, and converts shorthand declarations into correct property data types.',
 						a('Vector')+' properties may be given as arrays: '+kwd('[ x, y ]'),
 						a('Color')+' properties may be given as string keywords: '+kwd("'blue'")
 					],
@@ -207,9 +205,108 @@ var api = {
 			]
 		}
 	},
-	Obj: {
-		classname: 'Obj',
+	Drawable: {
+		classname: 'Drawable',
 		inherits: [ 'Interface' ],
-		overview: "A base class for objects that use iio's object management features."
+		overview: [ "A root class for all drawable objects classes in iio. Initializes data and provides functions for iio's object management features." ],
+		data: {
+			'Properties': [
+				{	// app
+					definition: a('App') + ' app',
+					descriptions: [ "Associated App." ],
+					samples: [ "// access a drawable's app\nvar app = drawable.app;" ]
+				},{	// ctx
+					definition: a('Context') + ' ctx',
+					descriptions: [ "Associated Canvas 2d Context." ],
+					samples: [ "// access a drawable's ctx\nvar ctx = drawable.ctx;" ]
+				},{	// parent
+					definition: a('Drawable') + ' parent',
+					descriptions: [ "Parent object." ],
+					samples: [ "// access a drawable's parent\nvar parent = drawable.parent;" ]
+				},{	// pos
+					definition: a('Vector') + ' pos',
+					descriptions: [ "xy position coordinates." ],
+					samples: [ 
+						"// access a drawable's position coordinates\nvar pos = drawable.pos;\nvar x = drawable.pos.x;\nvar y = drawable.pos.y;",
+						"// set a drawable's position\ndrawable.set({ pos: [10,20] });\ndrawable.set({ pos: new iio.Vector(10,20) });"
+					]
+				},{	// color
+					definition: a('Color') + '|' + a('Gradient') + ' color',
+					descriptions: [ "Draw color." ],
+					samples: [ 
+						"// access a drawable's color\nvar color = drawable.color;",
+						"// set a drawable's color to a Color\ndrawable.set({ color: 'blue' });",
+						"// set a drawable's color to a Gradient\ndrawable.set({ color: new iio.Gradient({\n\tstart: [ 0, -50 ] ),\n\tend: [ 0, 50 ],\n\tstops: [\n\t\t[ 0, 'black' ],\n\t\t[ 0.5, 'blue' ],\n\t\t[ 1, 'blue' ]\n\t]\n})});"
+					]
+				},{	// objs
+					definition: kwd('Array')+'<'+a('Shape') + '> objs',
+					descriptions: [ "Array of child shapes." ],
+					samples: [ 
+						"// access a drawable's objs\nvar obj0 = drawable.objs[0];\nvar obj1 = drawable.objs[1];",
+						"// add a shape to the array\ndrawable.add( shape );",
+						"// remove a shape from the array\ndrawable.rmv( shape );",
+						"// remove all shapes from the array\ndrawable.clear();",
+					]
+				}
+			],
+			'Object Management': [
+				{	// clear()
+					definition: 'clear( '+kwd('bool')+' noDraw ) | ' + small('returns ') + kwd('this'),
+					descriptions: [ 'Clears the '+a('objs')+' array and cancels all loops in the cleared objects. Redraws the associated '+a('App')+' if noDraw is undefined or false.' ],
+					samples: [
+						"// clear all app objects\napp.clear();",
+						"// clear all child objects in a Rectangle\n// suppress the redraw\nrectangle.clear( true );"
+					],
+					divider: true
+				},
+				{	// add()
+					definition: 'add( '+a('Shape')+' shape, '+kwd('bool')+' noDraw ) | ' + small('returns ') + a('Shape')
+				},{
+					definition: 'add( [ '+a('Shape')+' s0, '+a('Shape')+' s1, ... ], '+kwd('bool')+' noDraw ) | ' + small('returns ') + kwd('Array'),
+					descriptions: [ 'Adds the given shape or array of shapes to this objects '+a('objs')+' array in '+a('z')+' index order, then returns the argument.',
+						'Adds a '+a('z')+' value of '+kwd('0')+' if '+a('z')+' is undefined.',
+						'Redraws the associated '+a('App')+' if '+kwd('noDraw')+' is undefined or false.'
+					],
+					samples: [ 
+						"// add a shape\nobj.add( shape );",
+						"// create a Rectangle and add it\nvar shape = obj.add( new iio.Rectangle({\n\tpos: app.center,\n\twidth: 100,\n\tcolor:'red'\n}));",
+						"// add a shape and suppress its redraw\nobj.add( shape, true );",
+						"// add multiple shapes\nobj.add( [ shape0, shape1, shape2 ] );"
+					],
+					divider: true
+				},
+				{	// rmv()
+					definition: 'rmv( '+a('Shape')+' shape, '+kwd('bool')+' noDraw ) | ' + small('returns ') + a('Shape')
+				},{
+					definition: 'rmv( [ '+a('Shape')+' s0, '+a('Shape')+' s1, ... ], '+kwd('bool')+' noDraw ) | ' + small('returns ') + kwd('Array')
+				},{
+					definition: 'rmv( '+kwd('int')+' index, '+kwd('bool')+' noDraw ) | ' + small('returns ') + a('Shape'),
+					descriptions: [ 'Removes the given shape, array of shapes, or shape at the given index from this objects '+a('objs')+' array, then returns the removed shape or array of shapes.',
+						'Stops all associated loops from the removed shape and all of its child shapes.',
+						'Removes the shape from all collision references in this object.',
+						'Redraws the associated '+a('App')+' if '+kwd('noDraw')+' is undefined or false.' 
+					],
+					samples: [ 
+						"// remove a shape\nobj.rmv( shape );",
+						"// remove a shape at index 4\nobj.rmv( 4 );",
+						"// remove multiple shapes and suppress the redraw\nobj.rmv( [ shape0, shape1 ], true );"
+					],
+					divider: true
+				},
+				{	// create( p0, p1, ... )
+					definition: 'create( '+kwd('p0')+', '+kwd('p1')+', ... ) | ' + small('returns ') + kwd('Object'),
+					descriptions: [ 'Classifies given values by their type and creates and adds a new object with correct property value pairs. Possible objects created and returned can be: '+a('Vector')+', '+a('Color')+', '+a('Line')+', '+a('Text')+', '+a('Ellipse')+', '+a('Polygon')+', '+a('Rectangle')+', '+a('Grid')+'.' ],
+					samples: [ 
+						"// create a Vector\nvar vector = app.create( [10,20] );",
+						"// create a Color\nvar color = app.create( 'red' );",
+						"// create a Text at app center\nvar text = app.create( app.center, 'hello world' );",
+						"// create a Rectangle at app center\nvar rectangle = app.create( app.center, 50, 'red' );",
+						"// create a Line\nvar line = app.create( 'red', {\n\tvs: [\n\t\t[ 10,10 ],\n\t\t[ 80,80 ]\n\t]\n});",
+						"// create a Circle at app center\nvar circle = app.create( app.center, 'red', {\n\tradius: 20\n});"
+					],
+					divider: true
+				}
+			]
+		}
 	}
 }

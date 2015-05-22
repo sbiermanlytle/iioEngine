@@ -48,6 +48,8 @@ display_current = function(){
       show_api( api.Color );
     else if( path == 'Gradient' ) 
       show_api( api.Gradient );
+    else if( path == 'Drawable' ) 
+      show_api( api.Drawable );
   } 
 
   // DEMO ROUTER
