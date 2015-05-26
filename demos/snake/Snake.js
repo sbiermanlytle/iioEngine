@@ -1,27 +1,63 @@
-Snake = function(app,s){
+/* Snake
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+Copyright (c) 2015, iio inc. All rights reserved.
+*/
 
-	//set size of the game grid
+Snake = function( app, settings ){
+
+	// define variables to track snake 
+	var head, body, direction, snake_speed, snake_color, inverted;
+
+	// define the starting body size
+	var starting_body = 4;
+
+	// define the snakes starting speed
+	var starting_speed = 4;
+	
+	// define the cell size of the game grid
 	var res = 20;
-	//reduce the size if this is a preview
-	if(s&&s.preview) res = 10;
 
+	// initialize settings
+	settings = settings || {};
 
-	var snake_size = Math.floor(app.width/res);
+	// if preview is active
+	if( settings.preview )
+		// limit the size of the grid cells
+		res = 10;
+
+	// set snake size based on the grid size
+	var snake_size = Math.floor( app.width/res );
+
+	// define the snake's start position
 	var startPos = new iio.Vector(
 		snake_size * res/2 + snake_size/2,
 		snake_size * 4 + snake_size/2
 	)
 	
-	var starting_body = 4;
-	var starting_speed = 4;
-	var head, body, direction, snake_speed, snake_color, inverted;
+	// define a function to be run when the app is resized
 	function reset(){
-		app.rmv();
-		if(s && s.preview) snake_color = new iio.Color(240,240,240);
+
+		// clear all objects and loops from app
+		app.clear();
+
+		// if preview is active
+		if( false ){ //settings.preview ) 
+			// set the snake color to white
+			snake_color = new iio.Color(240,240,240);
+			// set the background color to black
+			app.set({ color: 'black' });
+		}
+		// preview is not active
 		else {
+			// set the snake color to a random color
 			snake_color = iio.Color.random();
+			// set the background color to the inverse color
 			app.set({ color: snake_color.clone().invert() });
 		}
+
 		head = app.add( new iio.Rectangle({
 			pos:[
 				startPos.x,

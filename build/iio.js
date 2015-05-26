@@ -883,9 +883,8 @@ iio.Drawable.prototype.localFrameVector = function(v){
 // OBJECT MANAGMENT FUNCTIONS
 //-------------------------------------------------------------------
 iio.Drawable.prototype.clear = function( noDraw ) {
-  objs.foreach(function(obj){
-    iio.cancelLoops(obj)
-  })
+  for(var i=0; i<this.objs.length; i++)
+    iio.cancelLoops(this.objs[i]);
   this.objs = [];
   if ( noDraw );
   else if(this.app) this.app.draw();
