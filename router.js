@@ -3,7 +3,6 @@ var hostname = 'iioengine.github';
 var HOME = 'download';
 var DOCS = 'docs';
 var DEMOS = 'demos';
-var TESTS = 'tests';
 var current;
 
 $(window).bind('hashchange', function() {
@@ -12,6 +11,9 @@ $(window).bind('hashchange', function() {
 	iio.stop();
 	$('canvas').remove();
 	$('#fullscreen_header').remove();
+  toggle_ids = [];
+  toggles = [];
+  numToggles = 0;
 	$('#column').show();
 	$('#header').css({ 'left': 'inherit', 'margin-left': -140 });
 	$('#footer').css({ 'left': 'inherit', 'margin-left': -140 });
@@ -19,6 +21,7 @@ $(window).bind('hashchange', function() {
 });
 
 display_current = function(){
+  var anchor;
 
   // MAIN ROUTER
   if( window.location.hash == '#download' || window.location.hash == '' ){
@@ -33,21 +36,44 @@ display_current = function(){
   }
 
   // API ROUTER
-  else if( window.location.hash.substr( 0, 5 ) == '#api-' ){
+  else if( window.location.hash.substr( 0, 5 ) == '#api.' ){
     current = DOCS;
     var path = window.location.hash.substr( 5 );
+    var anchorPos = path.indexOf('.');
+    if(anchorPos > -1){
+      anchor = path.substr( anchorPos );
+      path = path.substr( 0, anchorPos );
+    }
     if( path == 'overview' )
       show_api_basics();
-    else if( path == 'app-control' )
+    else if( path == 'App-control' )
       show_api( api.AppControl );
-    else if( path == 'Abstract' ) 
-      show_api( api.Abstract );
+    else if( path == 'Interface' ) 
+      show_api( api.Interface );
     else if( path == 'Vector' ) 
       show_api( api.Vector );
     else if( path == 'Color' ) 
       show_api( api.Color );
     else if( path == 'Gradient' ) 
       show_api( api.Gradient );
+    else if( path == 'Drawable' ) 
+      show_api( api.Drawable );
+    else if( path == 'App' ) 
+      show_api( api.App );
+    else if( path == 'Shape' ) 
+      show_api( api.Shape );
+    else if( path == 'Line' ) 
+      show_api( api.Line );
+    else if( path == 'Text' ) 
+      show_api( api.Text );
+    else if( path == 'Ellipse' ) 
+      show_api( api.Ellipse );
+    else if( path == 'Polygon' ) 
+      show_api( api.Polygon );
+    else if( path == 'Rectangle' ) 
+      show_api( api.Rectangle );
+    else if( path == 'Grid' ) 
+      show_api( api.Grid );
   } 
 
   // DEMO ROUTER
@@ -66,29 +92,18 @@ display_current = function(){
     else if( path == 'Snow' )
       show_demo( Snow, "Snow" );
 
-  } else if( window.location.hash.substr( 0, 6 ) == '#test-' ){
-    current = TESTS;
-    var path = window.location.hash.substr( 6 );
-    
-    if( path == 'Line' )
-      show_unit_test( iio.test.Line, 'Line' );
-    else if( path == 'Circle' )
-      show_unit_test( iio.test.Circle, "Circle" );
-    else if( path == 'Polygon' )
-      show_unit_test( iio.test.Polygon, "Polygon" );
-    else if( path == 'Rectangle' )
-      show_unit_test( iio.test.Rectangle, "Rectangle" );
-    else if( path == 'Text' )
-      show_unit_test( iio.test.Text, "Text" );
-    else if( path == 'Grid' )
-      show_unit_test( iio.test.Grid, "Grid" );
   }
 
   highlight_menu();
   prettyPrint();
 
-  if( window.location.hash.substr( 0, 5 ) == '#api-' )
+  if( window.location.hash.substr( 0, 5 ) == '#api.' )
     $('.prettyprint ol.linenums').css('margin-left', '-40px');
+
+  if(anchor){
+    var e = document.getElementById( window.location.hash.substr(1) );
+    if(e) e.scrollIntoView(true);
+  }
 }
 
 display_current();

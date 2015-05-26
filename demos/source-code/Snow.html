@@ -2,13 +2,18 @@
 <head>
 	<meta charset="utf-8">
   <title>iio.js &middot; Snow</title>
-  <meta name="description" content="iio.Line Snow demo source code">
+  <meta name="description" content="iio Snow demo source code">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
   <link rel="stylesheet" type="text/css" href="../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+	<pre class="prettyprint linenums:1">/* Snow
+*  ------------------
+*  iio.js version 1.4 
+*/
+
+// define a new iio app
 function Snow( app, settings ){
 
 	// define the total number of particles
@@ -19,24 +24,22 @@ function Snow( app, settings ){
 
 	// if settings are passed and preview is active
 	if( settings &amp;&amp; settings.preview ) {
-		// limit the total number
+		// limit the total number of particles
 		num = 50;
-		// shrink the average size
+		// limit the average size
 		radius_mid = 20;
 	}
 
 	// add new circles to the app
 	for(var i=0; i&lt;num; i++)
 		app.add( new iio.Circle({
-			// set position relative to app 0,0
+			// set random position above app view
 			pos:[ 
-				// random x value constrained to the screen
 				iio.random(0, app.width), 
-				// random y value constrained to the screen
 				iio.random(-app.height, 0) 
 			],
 			// set random radius relative to the average size
-			radius: iio.random(radius_mid-15, radius_mid+15),
+			radius: iio.random( radius_mid-15, radius_mid+15 ),
 			// set color to white
 			color: 'white',
 			// set random velocity
@@ -70,31 +73,40 @@ function Snow( app, settings ){
 		// set bounds on each object, relative to the new size
 		for(var i=0; i&lt;app.objs.length; i++)
 			app.objs[i].bounds = {
+				// position the object back at the top
+				// whenever it reaches a bottom limit
 				bottom:{
 					limit: app.height + 140, 
 					callback: function(o){
+						// set random x pos within app view
 						o.pos.x = iio.random(0, app.width);
+						// set random y pos above app
 						o.pos.y = iio.random(-app.height, -100);
 					}
 				},
 				left:{
 					limit: 0,
-					callback: function(o){ 
-						o.vel.x*=-1 
+					callback: function(o){
+						// reverse the object's velocity 
+						o.vel.x *= -1 
 					}
 				},
 				right:{ 
 					limit: app.width, 
 					callback: function(o){ 
-						o.vel.x*=-1 
+						// reverse the object's velocity 
+						o.vel.x *= -1 
 					}
 				}
 			}
-	}; this.resize();
+	}; 
+
+	// set the initial bounds
+	this.resize();
 }
 
 // start the app on an existing canvas
-iio.start( TestConstructor, 'canvasId' );</pre>
+iio.start( Snow, 'canvasId' );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>

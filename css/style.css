@@ -35,7 +35,7 @@ h1,h2,h3,h4{
   color:#EFEFEF;
 }
 #iioapps canvas{
-  border:1px solid transparent;
+  border:1px solid #6F6F6F;
   cursor: pointer
 }
 #iioapps canvas:hover{
@@ -181,6 +181,7 @@ h1,h2,h3,h4{
 /* API */
 #api_menu ul, #api_content ul{
   list-style: none;
+  overflow: hidden;
 }
 #api_menu{
   width: 160px;
@@ -222,7 +223,9 @@ h1,h2,h3,h4{
   font-size: 18px;
   color:white;
   padding: 5px;
-  margin-top:10px;
+  padding-top: 15px;
+  border-bottom: 1px solid #e5e5e5;
+  background-color: rgba(20, 20, 20, .4);
 }
 #api_content h2{
   font-weight: normal;
@@ -239,9 +242,15 @@ h1,h2,h3,h4{
   display: block;
   padding:10px;
   border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
   font-size: 14px;
   /*background-color: white;*/
   font-weight: bold;
+  background-color:rgba(30, 30, 30, .4);
+}
+.api_item_sub .hashed{
+  background-color: #444444;
+  color:white;
 }
 .api_item_sub a:hover{
   background-color: #00baff;
@@ -250,6 +259,35 @@ h1,h2,h3,h4{
 .divide{
   border-top: 1px solid #6F6F6F;
   margin: 25px 0;
+}
+#api_menu .api_property_list{
+  padding-left:4px;
+}
+#api_menu .api_property a{
+  border-top: 1px solid #6F6F6F;
+  border-bottom: none;
+  color: white;
+  font-weight: normal;
+  font-size: 11px;
+  background-color:rgba(22, 22, 22, .4);
+}
+#api_menu .api_property a:hover{
+  background-color: #00baff;
+  color:black;
+}
+#api_menu .first_prop a{
+  border-top: none;
+}
+#api_menu .api_property .hashed{
+  background-color: #00baff;
+  color:black;
+  font-weight: bold;
+}
+#api_menu .api_property_list{
+}
+.overview_anchor{
+  position: absolute;
+  top: -20px;
 }
 
 /* FULLSCREEN APP */
