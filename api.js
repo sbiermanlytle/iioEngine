@@ -19,6 +19,15 @@ var api = {
 			]
 		}
 	},
+  Loader: {
+    classname: 'Loader',
+    overview: [
+      "To help developers with creating games that utilize large assets such as images and sounds, iio provides a loader."
+    ],
+    samples: [
+      "// Create an instance of a Loader\n// Provide it with assets and a callback to be invoked on completion\nloader = new iio.Loader([\"bark.wav\", \"dog.jpg\"], onComplete);"
+    ]
+  },
 	Abstract: {
 		classname: 'Abstract',
 		overview: [ "An abstract root for all classes in iio. Every method defined here in Abstract is available in every other class." ],
