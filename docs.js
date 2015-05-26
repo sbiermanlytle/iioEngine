@@ -1,82 +1,60 @@
-var top_menu_toggles = [];
-var headers = [];
-headers[0] = 'basics';
-//headers[1] = 'functions';
-headers[1] = 'data';
-headers[2] = 'objects';
-
 show_docs_menu = function(){
+
+	toggle_ids[0] = 'basics';
+	toggle_ids[1] = 'data';
+	toggle_ids[2] = 'objects';
+	toggle_ids[3] = 'shapes';
+
 	page.append('<div id="api_menu"></div>');
 	$('#api_menu').append('<ul id="api_items"></ul>');
 
-	for( var i=0; i<headers.length; i++ ){
+	for( var i=0; i<toggle_ids.length; i++ ){
 
 		// create section wrapper
-		$('#api_items').append('<li><div id="api_item_'+headers[i]+'" class="api_item"></div></li>');
+		$('#api_items').append('<li><div id="api_item_'+toggle_ids[i]+'" class="api_item"></div></li>');
 		// create header element
-		$('#api_item_'+headers[i]).append('<h5 id="api_item_h_'+headers[i]+'">'+headers[i]+'</h5>');
+		$('#api_item_'+toggle_ids[i]).append('<h5 id="api_item_h_'+toggle_ids[i]+'">'+toggle_ids[i]+'</h5>');
 		// create list
-		$('#api_item_'+headers[i]).append('<ul id="'+headers[i]+'"></ul>');
+		$('#api_item_'+toggle_ids[i]).append('<ul id="'+toggle_ids[i]+'"></ul>');
 
-		top_menu_toggles[i] = false;
-		document.getElementById('api_item_'+headers[i]).onselectstart = function() { return false }
+		// add collapse listener
+		$('#api_item_h_'+toggle_ids[i])[0].toggleIndex = numToggles;
+		toggles[i] = false;
+		numToggles++;
+		$('#api_item_h_'+toggle_ids[i]).click(function(){
+			toggle_menu( toggle_ids[this.toggleIndex], this.toggleIndex );
+		});
+
+		// disable text highlighting
+		document.getElementById('api_item_'+toggle_ids[i]).onselectstart = function() { return false }
 	}
 
-	append_api_item_sub('basics','overview');
+	append_api_item_sub_no_api('basics','overview');
 
 	//append_api_item_sub('functions','iio libraries');
-	append_api_item_sub('basics','app control');
+	append_api_item_sub('basics', api.AppControl);
 
-	append_api_item_sub('data','Interface');
-	append_api_item_sub('data','Vector');
-	append_api_item_sub('data','Color');
-	append_api_item_sub('data','Gradient');
-	append_api_item_sub('data','Sound');
+	append_api_item_sub('data', api.Interface );
+	append_api_item_sub('data', api.Vector );
+	append_api_item_sub('data', api.Color );
+	append_api_item_sub('data', api.Gradient );
+	//append_api_item_sub('data','Sound');
 
-	append_api_item_sub('objects','Drawable');
-	append_api_item_sub('objects','App');
-	append_api_item_sub('objects','Shape');
-	append_api_item_sub('objects','Line');
-	append_api_item_sub('objects','Text');
-	append_api_item_sub('objects','Circle');
-	append_api_item_sub('objects','Polygon');
-	append_api_item_sub('objects','Rectangle');
-	append_api_item_sub('objects','Grid');
+	append_api_item_sub('objects', api.Drawable );
+	append_api_item_sub('objects', api.App );
+	append_api_item_sub('objects', api.Shape );
 
-	$('#api_item_h_'+headers[0]).click(function(){
-		toggle_menu(headers[0],0);
-		return false;
-	});
-	/*$('#api_item_h_'+headers[1]).click(function(){
-		toggle_menu(headers[1],1);
-		return false;
-	});*/
-	$('#api_item_h_'+headers[1]).click(function(){
-		toggle_menu(headers[1],1);
-		return false;
-	});
-	$('#api_item_h_'+headers[2]).click(function(){
-		toggle_menu(headers[2],2);
-		return false;
-	});
+	append_api_item_sub('shapes', api.Line );
+	append_api_item_sub('shapes', api.Text );
+	append_api_item_sub('shapes', api.Ellipse );
+	append_api_item_sub('shapes', api.Polygon );
+	append_api_item_sub('shapes', api.Rectangle );
+	append_api_item_sub('shapes', api.Grid );
 }
-
-h1 = function(html){ return '<h1>'+html+'</h1>' }
-h2 = function(html){ return '<h2>'+html+'</h2>' }
-h3 = function(html){ return '<h3>'+html+'</h3>' }
-kwd = function(html){ return "<span class='kwd'>"+html+"</span>" }
-a = function(name){ return '<a href="#api-'+name+'">'+name+'</a>' }
-pre = function(html){ return "<pre class='prettyprint linenums:1'>"+html+"</span>" }
-p = function(html){ return '<p>'+html+'</p>' }
-api_list = function(id){ return '<ul class="api_list" id="'+id+'"></ul>' }
-api_list_item = function(html){ return '<li class="api_list_item">'+html+'</li>' }
-api_list_info = function(html){ return '<p class="api_list_info"> - '+html+'</p>' }
-small = function(html){ return "<span class='small'>"+html+"</span>"}
-var clear = '<div class="clear"></div>';
-var divide = '<div class="clear divide"></div>';
 
 show_api_basics = function(){
 	show_docs_menu();
+
 	page.append('<div id="api_content"></div>');
 	var api_content = $('#api_content');
 
@@ -93,7 +71,7 @@ show_api_basics = function(){
 
 show_api = function( api ){
 	show_docs_menu();
-	page.append('<div id="api_content"></div>');
+	page.append('<div id="api_content"><div id="'+'api.'+api.classname.replace(" ","-")+'.Overview" class="overview_anchor"></div></div>');
 	var api_content = $('#api_content');
  
 	// TITLE
@@ -120,7 +98,7 @@ show_api = function( api ){
 		for(var o in api.data ){
 			var encoded = o;
 			encoded = encoded.replace(" ","-");
-			api_content.append( h2( o ) );
+			api_content.append( h2( o, "api."+api.classname.replace(" ","-")+'.'+encoded ) );
 			api_content.append( api_list( encoded ) );
 			var list = $( '#' + encoded );
 			for(var i=0; i<api.data[o].length; i++ ){
@@ -145,13 +123,49 @@ show_api = function( api ){
 }
 
 toggle_menu = function( id, i ){
-	if(top_menu_toggles[i]) $('#'+id).slideDown(400);
+	if(toggles[i]) $('#'+id).slideDown(400);
 	else $('#'+id).slideUp(400);
-	top_menu_toggles[i] = !top_menu_toggles[i];
+	toggles[i] = !toggles[i];
 }
 
-append_api_item_sub = function( parent, href ){
+append_api_item_sub_no_api = function( parent, href ){
 	var title = href;
-	href = href.replace(' ', '-');
-	$('#'+parent).append('<li class="api_item_sub"><a href="#api-'+href+'">'+title+'</a></li>');
+	href = title.replace(' ', '-');
+	var html = '<li class="api_item_sub"><a href="#api.'+href+'">'+title+'</a>';
+	html += '<ul class="api_property"></ul>';
+	html += '</li>';
+	$('#'+parent).append(html);
+}
+append_api_item_sub = function( parent, api ){
+	var title = api.classname;
+	var href = title.replace(' ', '-');
+	var html = '<li class="api_item_sub"><a id="api_item_sub_h_'+parent+'-'+href+'"'
+		+ ( ( window.location.hash.includes('#api.'+href+'.' )) ? ' class="hashed"' : '' )
+		+'>'+title+'</a>';
+	html += '<ul class="api_property_list" id="'+parent+'-'+href+'">';
+	html += '<li class="api_property first_prop"><a href="#api.'+href+'.Overview"'
+	+ ( ( window.location.hash == '#api.'+href+'.Overview' ) ? ' class="hashed"' : '' )
+	+'>Overview</a></li>';
+	var html_prop;
+	for( var prop in api.data ){
+		html_prop = prop.replace(' ','-');
+		html += '<li class="api_property"><a href="#api.'+href+'.'+html_prop+'"'
+		+ ( ( window.location.hash == '#api.'+href+'.'+html_prop ) ? ' class="hashed"' : '' )
+		+'>'+prop+'</a></li>';
+	}
+	html += '</ul></li>';
+	$('#'+parent).append(html);
+
+	// add collapse listener
+	toggle_ids[numToggles] = parent+'-'+href;
+	$('#api_item_sub_h_'+parent+'-'+href)[0].toggleIndex = numToggles;
+	$('#api_item_sub_h_'+parent+'-'+href).click(function(){
+		toggle_menu( toggle_ids[this.toggleIndex], this.toggleIndex );
+	});
+	if( !window.location.hash.includes('#api.'+href+'.') ){
+		$('#'+parent+'-'+href).hide();
+		toggles[numToggles] = true;
+	} else toggles[numToggles] = false;
+	numToggles++;
+	//$('#'+parent+'-'+href).slideUp();
 }

@@ -19,6 +19,6 @@ $('#tests').click(function(){
   return false;
 });
 $('#docs').click(function(){
-  window.location.hash = '#api-overview';
+  window.location.hash = '#api.overview';
   return false;
 });

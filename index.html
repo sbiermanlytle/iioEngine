@@ -11,39 +11,35 @@
 <body>
 
   <div class="colorbar top"></div>
-
   <div id="main">
+    <img id="bg_glow" src="img/bg_glow.jpg"/>
+    <div id="content">
+      <header id="header">
 
-  <img id="bg_glow" src="img/bg_glow.jpg"/>
+        <div id="column">
+        <div id="iio">
+          <a href="">iio</a>
+        </div>
+        <nav id="nav">
+          <ul>
+            <li><a id="download" href=""><p class="active">Download</p></a></li>
+            <li><a id="docs" href="docs"><p>API</p></a></li>
+            <li><a id="demos" href="demos"><p>Demos</p></a></li>
+            <li><a id="tests" href="#tests"><p>Tests</p></a></li>
+            <li><a target="_blank" href="https://github.com/sbiermanlytle/iioengine"><p>Github</p></a></li>
+            <li><a target="_blank" href="https://twitter.com/iioEngine"><p>Twitter</p></a></li>
+          </ul>
+        </nav>
+        </div>
+      </header>
 
-  <div id="content">
+      <div id="page_content"></div>
 
-    <header id="header">
+      <footer id="footer">
+          <p>&copy; 2015 <a href="http://iiointeractive.com/"><span class="blue">iio</span> inc</a></p>
+      </footer>
 
-      <div id="column">
-      <div id="iio">
-        <a href="">iio</a>
-      </div>
-      <nav id="nav">
-        <ul>
-          <li><a id="download" href=""><p class="active">Download</p></a></li>
-          <li><a id="docs" href="docs"><p>API</p></a></li>
-          <li><a id="demos" href="demos"><p>Demos</p></a></li>
-          <li><a id="tests" href="#tests"><p>Tests</p></a></li>
-          <li><a target="_blank" href="https://github.com/sbiermanlytle/iioengine"><p>Github</p></a></li>
-          <li><a target="_blank" href="https://twitter.com/iioEngine"><p>Twitter</p></a></li>
-        </ul>
-      </nav>
-      </div>
-    </header>
-
-    <div id="page_content"></div>
-
-    <footer id="footer">
-        <p>&copy; 2015 <a href="http://iiointeractive.com/"><span class="blue">iio</span> inc</a></p>
-    </footer>
-
-  </div> <!-- END CONTENT -->
+    </div> <!-- END CONTENT -->
   </div> <!-- END MAIN -->
 
   <div class="colorbar bottom"></div>
@@ -52,6 +48,10 @@
   <script type="text/javascript" src="js/iio.min.js"></script>
   <script type="text/javascript" src="js/prettify.js"></script>
   <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+
+  <!-- LOCAL LIBRARIES -->
+  <script type="text/javascript" src="html-helpers.js"></script>
+  <script type="text/javascript" src="nav.js"></script>
 
   <!-- HOME -->
   <script type="text/javascript" src="home.js"></script>
@@ -89,10 +89,14 @@
 
   var page = $('#page_content');
 
+  // API menu 
+  var toggle_ids = [];
+  var toggles = [];
+  var numToggles = 0;
+
   </script>
 
-  <!-- LOCAL LIBRARIES -->
-  <script type="text/javascript" src="nav.js"></script>
+  <!-- ROUTER -->
   <script type="text/javascript" src="router.js"></script>
 
 </body>
