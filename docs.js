@@ -52,6 +52,16 @@ show_docs_menu = function(){
 	append_api_item_sub('shapes', api.Grid );
 }
 
+show_unit_test = function( test_function, test_class ){
+	$('#api_content').append( h2('Unit Tests', "api."+test_class+'.unit-tests') );
+	$('#api_content').append('<h3>click any app to view the source code</h3>');
+	$('#api_content').append('<div id="iioapps"></div>');
+
+	iioapps = document.getElementById('iioapps');
+	iio.test.create_canvas_grid( 100, 5, 6 );
+	iio.test.show_tests( test_function, test_class );
+}
+
 show_api_basics = function(){
 	show_docs_menu();
 
@@ -92,6 +102,10 @@ show_api = function( api ){
 		if( api.samples )
 			for(var i=0; i<api.samples.length; i++ )
 				api_content.append( pre( api.samples[i] ) );
+
+		// UNIT TESTS
+		if( api.unitTests )
+			show_unit_test( api.unitTests, api.classname )
 
 
 		// FUNCTIONS & PROPERTIES
@@ -162,7 +176,7 @@ append_api_item_sub = function( parent, api ){
 	$('#api_item_sub_h_'+parent+'-'+href).click(function(){
 		toggle_menu( toggle_ids[this.toggleIndex], this.toggleIndex );
 	});
-	if( !window.location.hash.includes('#api.'+href+'.') ){
+	if( !window.location.hash.includes('#api.'+href+'.') && window.location.hash != '#api.'+href ){
 		$('#'+parent+'-'+href).hide();
 		toggles[numToggles] = true;
 	} else toggles[numToggles] = false;

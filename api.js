@@ -28,8 +28,8 @@ var api = {
 					definition: 'set( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... ) | ' + small('returns ') + kwd('this'),
 					descriptions: [
 						'Assigns the property and value of each given object to this object, and converts shorthand declarations into correct property data types.',
-						a('Vector')+' properties may be given as arrays: '+kwd('[ x, y ]'),
-						a('Color')+' properties may be given as string keywords: '+kwd("'blue'")
+						a('Vector')+' properties may be given as arrays: '+kwd('[ x, y ]')+'.',
+						a('Color')+' properties may be given as string keywords: '+kwd("'blue'")+'.'
 					],
 					samples: [
 						"// set an objects color to blue\nobj.set({ color: 'blue' });",
@@ -241,7 +241,7 @@ var api = {
 					divider: true
 				},{	// paused
 					definition: kwd('bool') + ' paused',
-					descriptions: [ "A toggle indicating whether or not this objects "+a('loops')+' are running.' ],
+					descriptions: [ "A toggle indicating whether or not this objects "+kwd('loops')+' are running.' ],
 					samples: [ 
 						"// access a drawable's paused property\nvar paused = drawable.paused;",
 						"// pause or unpause\ndrawable.pause();"
@@ -292,7 +292,7 @@ var api = {
 			'Object Management': [
 				{	// clear()
 					definition: 'clear( '+kwd('bool')+' noDraw ) | ' + small('returns ') + kwd('this'),
-					descriptions: [ 'Clears the '+a('objs')+' array and cancels all loops in the cleared objects. Redraws the associated '+a('App')+' if noDraw is undefined or false.' ],
+					descriptions: [ 'Clears the '+kwd('objs')+' array and cancels all loops in the cleared objects. Redraws the associated '+a('App')+' if noDraw is undefined or false.' ],
 					samples: [
 						"// clear all app objects\napp.clear();",
 						"// clear all child objects in a Rectangle\n// suppress the redraw\nrectangle.clear( true );"
@@ -303,8 +303,8 @@ var api = {
 					definition: 'add( '+a('Shape')+' shape, '+kwd('bool')+' noDraw ) | ' + small('returns ') + a('Shape')
 				},{
 					definition: 'add( [ '+a('Shape')+' s0, '+a('Shape')+' s1, ... ], '+kwd('bool')+' noDraw ) | ' + small('returns ') + kwd('Array'),
-					descriptions: [ 'Adds the given shape or array of shapes to this objects '+a('objs')+' array in '+a('z')+' index order, then returns the argument.',
-						'Adds a '+a('z')+' value of '+kwd('0')+' if '+a('z')+' is undefined.',
+					descriptions: [ 'Adds the given shape or array of shapes to this objects '+kwd('objs')+' array in '+kwd('z')+' index order, then returns the argument.',
+						'Adds a '+kwd('z')+' value of '+kwd('0')+' if '+kwd('z')+' is undefined.',
 						'Redraws the associated '+a('App')+' if '+kwd('noDraw')+' is undefined or false.'
 					],
 					samples: [ 
@@ -321,7 +321,7 @@ var api = {
 					definition: 'rmv( [ '+a('Shape')+' s0, '+a('Shape')+' s1, ... ], '+kwd('bool')+' noDraw ) | ' + small('returns ') + kwd('Array')
 				},{
 					definition: 'rmv( '+kwd('int')+' index, '+kwd('bool')+' noDraw ) | ' + small('returns ') + a('Shape'),
-					descriptions: [ 'Removes the given shape, array of shapes, or shape at the given index from this objects '+a('objs')+' array, then returns the removed shape or array of shapes.',
+					descriptions: [ 'Removes the given shape, array of shapes, or shape at the given index from this objects '+kwd('objs')+' array, then returns the removed shape or array of shapes.',
 						'Stops all associated loops from the removed shape and all of its child shapes.',
 						'Removes the shape from all collision references in this object.',
 						'Redraws the associated '+a('App')+' if '+kwd('noDraw')+' is undefined or false.' 
@@ -376,7 +376,7 @@ var api = {
 					divider: true
 				},{ // pause
 					definition: 'pause() | ' + small('returns ') + kwd('this'),
-					descriptions: [ 'Pauses or unpauses all loops in the '+a('loops')+' array, depending upon the value of the '+a('paused')+' property.' ],
+					descriptions: [ 'Pauses or unpauses all loops in the '+kwd('loops')+' array, depending upon the value of the '+kwd('paused')+' property.' ],
 					samples: [
 						"// pause or unpause\ndrawable.pause();"
 					],
@@ -389,7 +389,7 @@ var api = {
 		inherits: [ 'Drawable', 'Interface' ],
 		overview: [ 
 			'A HTML Canvas wrapper that manages the updating and rendering of attached '+a('Shape')+' objects.',
-			"An initilized "+a('App')+" is passed to a custom iio script whenever "+a('iio.start')+" is called."
+			"An initilized "+a('App')+" is passed to a custom iio script whenever "+kwd('iio.start')+" is called."
 		],
 		samples: [
 			"// define a new script to receive\n// an instance of App\nvar MyApp = function( app ){\n\t//...\n}\n// start the script\niio.start( MyApp );"
@@ -410,7 +410,7 @@ var api = {
 				{	// draw
 					definition: 'draw( '+kwd('bool')+' noClear ) | ' + small('returns ') + kwd('this'),
 					descriptions: [ 
-						"Draws the background color and all objects in "+a('objs')+' in '+a('z')+' index order.',
+						"Draws the background color and all objects in "+kwd('objs')+' in '+kwd('z')+' index order.',
 						"The canvas will first be cleared unless "+kwd('noClear')+' is '+kwd('true')+'.'
 					],
 					samples: [ 
@@ -528,7 +528,7 @@ var api = {
 					definition: kwd('float')+' lineWidth',
 					descriptions: [ 
 						"The width of all lines and outlines that are drawn for the object.", 
-						a('Line')+" uses "+a('width')+" instead of "+a('lineWidth')+" for its size value." 
+						a('Line')+" uses "+kwd('width')+" instead of "+kwd('lineWidth')+" for its size value." 
 					],
 					samples: [ 
 						"// access a shape's lineWidth\nvar lineWidth = shape.lineWidth;",
@@ -573,7 +573,8 @@ var api = {
 	Line: {
 		classname: 'Line',
 		inherits: [ 'Shape','Drawable','Interface' ],
-		overview: [ "A line shape defined by a start and end position ("+a('vs')+').' ],
+		overview: [ "A line shape defined by a start and end position ("+kwd('vs')+').' ],
+		unitTests: iio.test.Line,
 		data: {
 			'Constructor': [
 				{
@@ -608,7 +609,7 @@ var api = {
 				},
 				{	// vels
 					definition: kwd('Array')+'<'+a('Vector')+'> vels',
-					descriptions: [ "An array of velocity vectors associated with the position coordinates in "+a('vs')+'.' ],
+					descriptions: [ "An array of velocity vectors associated with the position coordinates in "+kwd('vs')+'.' ],
 					samples: [
 						"// access the coordinate velocities of a line\nvar start_pos_vel = line.vels[0];\nvar end_pos_vel = line.vels[1];",
 						"// set the coordinate velocities of a line\nline.vels[0] = new iio.Vector( 1,1 );\nline.vels[1] = new iio.Vector( -1,-1 );",
@@ -621,7 +622,7 @@ var api = {
 					definition: kwd('Array')+'<'+a('Vector')+'> bezier',
 					descriptions: [ 
 						"An array of two coordinates defining the positions of two bezier handles.",
-						"If "+a('pos')+' is specified, bezier handles are positioned locally, otherwise they are positioned globally.' 
+						"If "+kwd('pos')+' is specified, bezier handles are positioned locally, otherwise they are positioned globally.' 
 					],
 					samples: [
 						"// access the bezier handle positions of a line\nvar bezier0_pos = line.bezier[0];\nvar bezier1_pos = line.bezier[1];",
@@ -632,7 +633,7 @@ var api = {
 				},
 				{	// bezierVels
 					definition: kwd('Array')+'<'+a('Vector')+'> bezierVels',
-					descriptions: [ "An array of velocity vectors associated with the bezier handle position coordinates in "+a('bezier')+'.' ],
+					descriptions: [ "An array of velocity vectors associated with the bezier handle position coordinates in "+kwd('bezier')+'.' ],
 					samples: [
 						"// access the bezier handle velocities\nvar bezier0_vel = line.bezierVels[0];\nvar bezier1_vel = line.bezierVels[1];",
 						"// set the bezier handle velocities\nline.bezierVels[0] = new iio.Vector( 1,1 );\nline.bezierVels[1] = new iio.Vector( -1,-1 );",
@@ -642,7 +643,7 @@ var api = {
 				},
 				{	// bezierAccs
 					definition: kwd('Array')+'<'+a('Vector')+'> bezierAccs',
-					descriptions: [ "An array of acceleration vectors associated with the bezier handle position coordinates in "+a('bezier')+'.' ],
+					descriptions: [ "An array of acceleration vectors associated with the bezier handle position coordinates in "+kwd('bezier')+'.' ],
 					samples: [
 						"// access the bezier handle acclerations\nvar bezier0_acc = line.bezierAccs[0];\nvar bezier1_acc = line.bezierAccs[1];",
 						"// set the bezier handle acclerations\nline.bezierAccs[0] = new iio.Vector( 1,1 );\nline.bezierAccs[1] = new iio.Vector( -1,-1 );",
@@ -656,6 +657,7 @@ var api = {
 		classname: 'Text',
 		inherits: [ 'Shape','Drawable','Interface' ],
 		overview: [ "A text object defined by a position and text string." ],
+		unitTests: iio.test.Text,
 		data: {
 			'Constructor': [
 				{
@@ -712,6 +714,7 @@ var api = {
 		classname: 'Ellipse',
 		inherits: [ 'Shape','Drawable','Interface' ],
 		overview: [ "An ellipse shape defined by a position and 1 or 2 radii." ],
+		unitTests: iio.test.Circle,
 		data: {
 			'Constructor': [
 				{
@@ -747,7 +750,8 @@ var api = {
 	Polygon: {
 		classname: 'Polygon',
 		inherits: [ 'Shape','Drawable','Interface' ],
-		overview: [ "A polygon shape defined by an array of vertices. An optional "+a('pos')+' property allows for relative local coordinate positioning instead of global positioning.' ],
+		overview: [ "A polygon shape defined by an array of vertices. An optional "+kwd('pos')+' property allows for relative local coordinate positioning instead of global positioning.' ],
+		unitTests: iio.test.Polygon,
 		data: {
 			'Constructor': [
 				{
@@ -777,6 +781,7 @@ var api = {
 		classname: 'Rectangle',
 		inherits: [ 'Shape','Drawable','Interface' ],
 		overview: [ "A rectangle shape defined by a position, width, and height." ],
+		unitTests: iio.test.Rectangle,
 		data: {
 			'Constructor': [
 				{
@@ -813,6 +818,7 @@ var api = {
 		classname: 'Grid',
 		inherits: [ 'Shape','Drawable','Interface' ],
 		overview: [ "A grid shape defined by a position, number of columns, number of rows, and either a cell resolution vector or a width and height." ],
+		unitTests: iio.test.Grid,
 		data: {
 			'Constructor': [
 				{
@@ -858,7 +864,7 @@ var api = {
 						"The resolution (width and height) of the grid's cells.",
 						"This property is inferred upon creation if only "+kwd('width')+", "+kwd('height')+", and number of rows and columns are given.",
 							"If this property is given and "+kwd('width')+" and "+kwd('height')+" are undefined, then the width and height are inferred from "+kwd('res')+'.',
-							"Because of the correlation between these properties, always use "+a('set')+' when changing the value of '+kwd('res')+'.'
+							"Because of the correlation between these properties, always use "+kwd('set')+' when changing the value of '+kwd('res')+'.'
 					],
 					samples: [
 						"// access the grid resolution\nvar cell_width = grid.res.x;\nvar cell_height = grid.res.y;",

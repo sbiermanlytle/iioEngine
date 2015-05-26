@@ -3,7 +3,6 @@ var hostname = 'iioengine.github';
 var HOME = 'download';
 var DOCS = 'docs';
 var DEMOS = 'demos';
-var TESTS = 'tests';
 var current;
 
 $(window).bind('hashchange', function() {
@@ -93,22 +92,6 @@ display_current = function(){
     else if( path == 'Snow' )
       show_demo( Snow, "Snow" );
 
-  } else if( window.location.hash.substr( 0, 6 ) == '#test-' ){
-    current = TESTS;
-    var path = window.location.hash.substr( 6 );
-    
-    if( path == 'Line' )
-      show_unit_test( iio.test.Line, 'Line' );
-    else if( path == 'Circle' )
-      show_unit_test( iio.test.Circle, "Circle" );
-    else if( path == 'Polygon' )
-      show_unit_test( iio.test.Polygon, "Polygon" );
-    else if( path == 'Rectangle' )
-      show_unit_test( iio.test.Rectangle, "Rectangle" );
-    else if( path == 'Text' )
-      show_unit_test( iio.test.Text, "Text" );
-    else if( path == 'Grid' )
-      show_unit_test( iio.test.Grid, "Grid" );
   }
 
   highlight_menu();
