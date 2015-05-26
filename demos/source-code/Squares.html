@@ -1,11 +1,20 @@
-/* Squares
-------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
-Copyright (c) 2015, iio inc. All rights reserved.
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; Squares</title>
+  <meta name="description" content="iio Squares demo source code">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">/* Squares
+*  ------------------
+*  iio.js version 1.4 
 */
-Squares = function( app, settings ){
+
+// define a new iio app
+function Squares( app, settings ){
 
 	// define the total number of squares
 	var num = 120;
@@ -14,12 +23,12 @@ Squares = function( app, settings ){
 	var speed = 0.2;
 
 	// if settings are passed and preview is active
-	if( settings && settings.preview )
+	if( settings &amp;&amp; settings.preview )
 		// limit the total number of squares
 		num = 40;
 
 	// add new squares to the app
-	for(var i=0; i<num; i++)
+	for(var i=0; i&lt;num; i++)
 		app.add( new iio.Rectangle({
 			// set random position within app view
 			pos: [ 
@@ -59,7 +68,7 @@ Squares = function( app, settings ){
 
 		// set bounds on each object, relative to the new size
 		// use callbacks to make squares bounce off app boundaries
-		for(var i=0; i<app.objs.length; i++)
+		for(var i=0; i&lt;app.objs.length; i++)
 			app.objs[i].bounds = {
 				bottom: {
 					bound: app.height, 
@@ -95,3 +104,9 @@ Squares = function( app, settings ){
 	// set the initial bounds
 	this.resize();
 }
+
+// start the app on an existing canvas
+iio.start( Squares, 'canvasId' );</pre>
+<script type="text/javascript" src="../../js/prettify.js"></script>
+</body>
+</html>

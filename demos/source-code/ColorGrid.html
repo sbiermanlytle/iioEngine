@@ -1,12 +1,24 @@
-/* ColorGrid
-------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
-Copyright (c) 2015, iio inc. All rights reserved.
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; ColorGrid</title>
+  <meta name="description" content="iio ColorGrid demo source code">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">/* ColorGrid
+*  ------------------
+*  iio.js version 1.4 
 */
-ColorGrid = function( app, settings ){
-	
+
+// define a new iio app
+function ColorGrid( app, settings ){
+
+	// set the background color to black
+	app.set({ color:'black' });
+
 	// set default width value
 	var w = 20;
 
@@ -21,8 +33,8 @@ ColorGrid = function( app, settings ){
 		app.clear();
 
 		// create a grid of squares
-		for( var c=w/2; c<app.width;  c+=w )
-		for( var r=w/2; r<app.height; r+=w )
+		for( var c=w/2; c&lt;app.width;  c+=w )
+		for( var r=w/2; r&lt;app.height; r+=w )
 			app.add( new iio.Rectangle({
 				// set position relative to row and column
 				pos: [c,r],
@@ -49,3 +61,9 @@ ColorGrid = function( app, settings ){
 	// initialize the app
 	this.resize();
 }
+
+// start the app on an existing canvas
+iio.start( ColorGrid, 'canvasId' );</pre>
+<script type="text/javascript" src="../../js/prettify.js"></script>
+</body>
+</html>
