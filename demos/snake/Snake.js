@@ -8,34 +8,46 @@ Copyright (c) 2015, iio inc. All rights reserved.
 
 Snake = function( app, settings ){
 
-	// define variables to track snake 
-	var head, body, direction, snake_speed, snake_color, inverted;
-
-	// define the starting body size
-	var starting_body = 4;
-
-	// define the snakes starting speed
-	var starting_speed = 4;
-	
-	// define the cell size of the game grid
-	var res = 20;
-
 	// initialize settings
 	settings = settings || {};
 
-	// if preview is active
+	// define the number of columns
+	var num_columns = 20;
+
+	// limit column number if preview
 	if( settings.preview )
-		// limit the size of the grid cells
-		res = 10;
+		num_columns = 10;
 
-	// set snake size based on the grid size
-	var snake_size = Math.floor( app.width/res );
+	// define direction constants
+	var UP = 0;
+	var RIGHT = 1;
+	var DOWN = 2;
+	var LEFT = 3;
 
-	// define the snake's start position
-	var startPos = new iio.Vector(
-		snake_size * res/2 + snake_size/2,
-		snake_size * 4 + snake_size/2
-	)
+	// properties shared by snake and food
+	var shared_props = {
+		outline: 'white',
+		lineWidth: 1,
+		shadow: 'black',
+		shadowBlur: 20,
+		width: Math.floor( app.width / num_columns )
+	}
+
+	// define game objects and initial values
+	var food;
+	var snake = {
+		head: {},
+		body: [],
+		initial_direction: RIGHT,
+		initial_pos: new iio.Vector(
+			shared_props.width * num_columns/2 + shared_props.width/2,
+			shared_props.width * 4 + shared_props.width/2
+		),
+		initial_body_length: 4,
+		initial_speed: 4,
+		speed: 4,
+		width: shared_props.width
+	} 
 	
 	// define a function to be run when the app is resized
 	function reset(){
@@ -43,127 +55,113 @@ Snake = function( app, settings ){
 		// clear all objects and loops from app
 		app.clear();
 
-		// if preview is active
-		if( false ){ //settings.preview ) 
-			// set the snake color to white
-			snake_color = new iio.Color(240,240,240);
-			// set the background color to black
-			app.set({ color: 'black' });
-		}
-		// preview is not active
-		else {
-			// set the snake color to a random color
-			snake_color = iio.Color.random();
-			// set the background color to the inverse color
-			app.set({ color: snake_color.clone().invert() });
-		}
+		// set the snake color to a random color
+		shared_props.color = iio.Color.random();
 
-		head = app.add( new iio.Rectangle({
-			pos:[
-				startPos.x,
-				startPos.y
-			], 
-			color: snake_color,
-			outline: 'white',
-			lineWidth: 1,
-			shadow: 'black',
-			shadowBlur: 20,
-			width:snake_size
+		// set the background color to the inverse color
+		app.set({ color: shared_props.color.clone().invert() });
+
+		// create snake head
+		snake.head = app.add( new iio.Rectangle( shared_props, {
+			pos: snake.initial_pos.clone()
 		}));
-		body = [];
-		for(var i=0; i<starting_body-1; i++)
-			body[i] = app.add( new iio.Rectangle({
+
+		// clear snake body
+		snake.body = [];
+
+		// create snake body
+		for(var i = 0; i < snake.initial_body_length-1; i++)
+			snake.body[i] = app.add( new iio.Rectangle( shared_props, {
 				pos:[
-					startPos.x - snake_size * (i+1),
-					startPos.y
-				], 
-				color: snake_color,
-				outline: 'white',
-				lineWidth: 1,
-				shadow: 'black',
-				shadowBlur: 20,
-				width: snake_size
+					snake.initial_pos.x - snake.width * (i+1),
+					snake.initial_pos.y
+				]
 			}));
-		direction = RIGHT;
-		snake_speed=starting_speed;
+
+		// set initial properties
+		snake.direction = RIGHT;
+		snake.speed = snake.initial_speed;
+
+		// create food
 		makeFood();
 	};
 
-	var food;
-	function makeFood(){
-		var randomPos = new iio.Vector(
-			snake_size*iio.randomInt(0,res)+snake_size/2,
-			snake_size*iio.randomInt(0,app.height/snake_size)
-				+snake_size/2
-		);
-		food = app.add( new iio.Rectangle({
-			pos: randomPos,
-			color:snake_color,
-			outline: 'white',
-			shadow: 'black',
-			shadowBlur: 20,
-			width: snake_size
-		}));
-	}; makeFood();
-	
-	var UP = 0;
-	var RIGHT = 1;
-	var DOWN = 2;
-	var LEFT = 3;
-	this.keyDown=function(e,k){ 
-		if(direction!=DOWN && k=='up arrow' || k=='w')
-			direction = UP;
-		else if(direction!=LEFT && k=='right arrow' || k=='d') 
-			direction = RIGHT;
-		else if(direction!=UP && k=='down arrow' || k=='s') 
-			direction = DOWN;
-		else if(direction!=RIGHT && k=='left arrow' || k=='a') 
-			direction = LEFT; 
+	// keypress handling
+	// sets snake direction depending on key value
+	this.keyDown = function( event, key ){ 
+
+		if( snake.direction != DOWN && key == 'up arrow' || key == 'w' )
+			snake.direction = UP;
+
+		else if( snake.direction != LEFT && key == 'right arrow' || key == 'd' ) 
+			snake.direction = RIGHT;
+
+		else if( snake.direction != UP && key == 'down arrow' || key == 's' ) 
+			snake.direction = DOWN;
+
+		else if( snake.direction != RIGHT && key == 'left arrow' || key == 'a' ) 
+			snake.direction = LEFT; 
 	}
 
-	function updateSnake(){
-		if(head.pos.x==food.pos.x 
-			&& head.pos.y==food.pos.y){
-			food.color=head.color;
-			body.push(food);
+	// create food
+	function makeFood(){
+
+		// define a random grid position in the view 
+		var randomPos = new iio.Vector(
+			snake.width * iio.randomInt(0,num_columns) + snake.width/2,
+			snake.width * iio.randomInt(0,app.height / snake.width) 
+				+ snake.width/2
+		);
+
+		// create food object
+		food = app.add( new iio.Rectangle( shared_props, {
+			pos: randomPos
+		}));
+	}
+
+	this.onUpdate = function(){
+		if( snake.head.pos.x == food.pos.x 
+			&& snake.head.pos.y == food.pos.y ){
+			food.color=snake.head.color;
+			snake.body.push(food);
 			makeFood();
-			snake_speed++;
+			snake.speed++;
 		}
-		for(var i = body.length-1; i>0; i--){
-			body[i].pos.x = body[i-1].pos.x;
-			body[i].pos.y = body[i-1].pos.y;
+		for(var i = snake.body.length-1; i>0; i--){
+			snake.body[i].pos.x = snake.body[i-1].pos.x;
+			snake.body[i].pos.y = snake.body[i-1].pos.y;
 		}
-		body[0].pos.x = head.pos.x;
-		body[0].pos.y = head.pos.y;
-		if(!s || !s.preview)
-			for(var i=1; i<body.length; i++)
-				if(head.pos.x==body[i].pos.x 
-					&& head.pos.y==body[i].pos.y)
+		snake.body[0].pos.x = snake.head.pos.x;
+		snake.body[0].pos.y = snake.head.pos.y;
+		if(!settings.preview)
+			for(var i=1; i<snake.body.length; i++)
+				if(snake.head.pos.x==snake.body[i].pos.x 
+					&& snake.head.pos.y==snake.body[i].pos.y)
 					reset();
 
-		if(s && s.preview && iio.random()<.4)
-			direction = iio.randomInt(0,4);
-		switch(direction){
+		if( settings.preview && iio.random()<.4 )
+			snake.direction = iio.randomInt(0,4);
+		switch(snake.direction){
 			case UP: 
-				head.pos.y -= snake_size;
-				if(head.pos.y-snake_size/2<0) reset(); 
+				snake.head.pos.y -= snake.width;
+				if(snake.head.pos.y-snake.width/2<0) reset(); 
 				break;
 			case RIGHT: 
-				head.pos.x += snake_size; 
-				if(head.pos.x>app.width) reset();
+				snake.head.pos.x += snake.width; 
+				if(snake.head.pos.x>app.width) reset();
 				break;
 			case DOWN: 
-				head.pos.y += snake_size; 
-				if(head.pos.y>app.height) reset();
+				snake.head.pos.y += snake.width; 
+				if(snake.head.pos.y>app.height) reset();
 				break;
 			case LEFT: 
-				head.pos.x -= snake_size;
-				if(head.pos.x-snake_size/2<0) reset(); 
+				snake.head.pos.x -= snake.width;
+				if(snake.head.pos.x-snake.width/2<0) reset(); 
 				break;
 		}
-		return snake_speed;
+		return snake.speed;
 	}
 
-	app.loop(starting_speed,updateSnake);
 	reset();
+	app.loop( snake.initial_speed );
 }

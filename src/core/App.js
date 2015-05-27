@@ -62,6 +62,10 @@ iio.App.prototype.App = function(view, script, settings) {
 
 // FUNCTIONS
 //-------------------------------------------------------------------
+iio.App.prototype.update = function(){
+  if(this.script.onUpdate) this.script.onUpdate();
+  this.draw();
+}
 iio.App.prototype.stop = function() {
   this.objs.forEach(function(obj) {
     iio.cancelLoops(obj);

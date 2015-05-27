@@ -62,3 +62,7 @@ iio.Vector.prototype.sub = function( x, y ){
 	this.y -= y;
 	return this;
 }
+iio.Vector.prototype.equals = function( x, y ){
+	if( x.x ) return this.x === x.x && this.y === x.y;
+	else return this.x === x && this.y === y;
+}
