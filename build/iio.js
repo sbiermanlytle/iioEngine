@@ -1099,7 +1099,9 @@ iio.Drawable.prototype.cCollisions = function(o1, o2, fn) {
   }
 }
 iio.Drawable.prototype._update = function(o,dt){
-  if (this.update) this.update(dt);
+  var nuFPS;
+  if (this.update)
+    nuFPS = this.update(dt);
   if (this.objs && this.objs.length > 0)
     this.objs.forEach(function(obj) {
       if (obj.update && obj.update(o, dt)) this.rmv(obj);
@@ -1110,6 +1112,7 @@ iio.Drawable.prototype._update = function(o,dt){
     }, this);
   }
   //this.draw();
+  return nuFPS;
 }
 
 // LOOP MANAGMENT FUNCTIONS
@@ -1919,7 +1922,7 @@ iio.Grid.prototype._super = iio.Rectangle.prototype;
 
 //CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
-  this._super.Rectangle.call(this,this.merge_args(arguments));
+  this._super.Rectangle.call(this,iio.merge_args(arguments));
 
   // set res if undefined
   this.res = this.res || new iio.Vector(
@@ -1944,10 +1947,7 @@ iio.Grid.prototype.init_cells = function(){
     this.cells[c] = [];
     for (var r = 0; r < this.R; r++) {
       this.cells[c][r] = this.add(new iio.Rectangle({
-        pos:{
-          x:x,
-          y:y
-        },
+        pos: new iio.Vector( x,y ),
         c: c,
         r: r,
         width: this.res.x,
@@ -2371,8 +2371,11 @@ iio.App.prototype.App = function(view, script, settings) {
 // FUNCTIONS
 //-------------------------------------------------------------------
 iio.App.prototype.update = function(){
-  if(this.script.onUpdate) this.script.onUpdate();
+  var nuFPS;
+  if(this.script.onUpdate) 
+    nuFPS = this.script.onUpdate();
   this.draw();
+  return nuFPS;
 }
 iio.App.prototype.stop = function() {
   this.objs.forEach(function(obj) {

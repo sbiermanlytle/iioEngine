@@ -255,7 +255,9 @@ iio.Drawable.prototype.cCollisions = function(o1, o2, fn) {
   }
 }
 iio.Drawable.prototype._update = function(o,dt){
-  if (this.update) this.update(dt);
+  var nuFPS;
+  if (this.update)
+    nuFPS = this.update(dt);
   if (this.objs && this.objs.length > 0)
     this.objs.forEach(function(obj) {
       if (obj.update && obj.update(o, dt)) this.rmv(obj);
@@ -266,6 +268,7 @@ iio.Drawable.prototype._update = function(o,dt){
     }, this);
   }
   //this.draw();
+  return nuFPS;
 }
 
 // LOOP MANAGMENT FUNCTIONS

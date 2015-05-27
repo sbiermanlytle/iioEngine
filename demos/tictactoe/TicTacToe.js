@@ -30,12 +30,12 @@ TicTacToe=function(app){
 		C:3
 	}));
 
-	grid.click = function(ev,p,cell){
+	grid.onClick = function(ev,p,cell){
 		cell.set({color:'blue'});
-		cell.add(new iio.X({
+		/*cell.add(new iio.X({
 			width:40,
 			color:'red'
-		}))
+		}))*/
 	}
 
 	/*app.set({ color: 'black'} );
