@@ -33,12 +33,13 @@ show_docs_menu = function(){
 
 	//append_api_item_sub('functions','iio libraries');
 	append_api_item_sub('basics', api.AppControl);
+  append_api_item_sub('basics', api.Loader);
 
 	append_api_item_sub('data', api.Interface );
 	append_api_item_sub('data', api.Vector );
 	append_api_item_sub('data', api.Color );
 	append_api_item_sub('data', api.Gradient );
-	//append_api_item_sub('data','Sound');
+	//append_api_item_sub('data', api.Sound);
 
 	append_api_item_sub('objects', api.Drawable );
 	append_api_item_sub('objects', api.App );

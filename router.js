@@ -48,6 +48,10 @@ display_current = function(){
       show_api_basics();
     else if( path == 'App-control' )
       show_api( api.AppControl );
+    else if( path == 'Loader' )
+      show_api( api.Loader );
+    else if( path == 'Sound' )
+      show_api( api.Sound );
     else if( path == 'Interface' ) 
       show_api( api.Interface );
     else if( path == 'Vector' ) 

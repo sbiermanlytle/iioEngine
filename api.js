@@ -25,8 +25,53 @@ var api = {
       "To help developers with creating games that utilize large assets such as images and sounds, iio provides a loader."
     ],
     samples: [
-      "// Create an instance of a Loader\n// Provide it with assets and a callback to be invoked on completion\nloader = new iio.Loader([\"bark.wav\", \"dog.jpg\"], onComplete);"
-    ]
+      "// Create an instance of a Loader\n" + 
+      "// Provide it with a base path and a callback\n" +
+      "// to be invoked on completion\n" + 
+      "loader = new iio.Loader(\"./assets\");"
+    ],
+    data: {
+      'Constructor': [
+        {
+          definition: 'load(' + kwd('string') + ' basePath)',
+          descriptions: ["Give the loader a base path from which to find assets"]
+        }
+      ],
+      'Functions': [
+        {
+          definition: 'load(' + kwd('string') + ' asset[, ' + kwd('function') + ' onComplete])',
+          descriptions: [ 
+            "pass only one asset to the loader " +
+            "with optional callback function on completion"
+          ],
+          samples: [
+            "loader.load(\"sprite.png\", function(assets) { ... })"
+          ]
+        },
+        {
+          definition: 'load(' + kwd('array') + ' assets[, ' + kwd('function') + ' onComplete])',
+          descriptions: [ 
+            "pass multiple assets in an array to the loader with optional callback function on completion",
+            "optionally specify a callback function for each asset for post load processing"
+          ],
+          samples: [
+            "loader.load([\n\t\"sprite1.png\",\n\t\"ping.wav\",\n\t\"background.jpg\"\n], function(assets) { ... })",
+            "loader.load([\n\t{name: \"sprite1.png\", callback: processImage},\n\t{name: \"ping.wav\", callback: processSound},\n\t{name: \"background.png\", callback: processImage}\n], function(assets) { ... })"
+          ]
+        },
+        {
+          definition: 'load(' + kwd('object') + ' assets[, ' + kwd('function') + ' onComplete])',
+          descriptions: [ 
+            "pass multiple assets in object format to the loader " +
+            "callback function on completion"
+          ],
+          samples: [
+            "loader.load({name: \"sprite1.png\", callback: processSprite}, function(assets) { ... })",
+            "loader.load({\n\tmainCharacter: {name: \"sprite1.png\", callback: processSprite}, \n\tloadingSound: \"ping.wav\",\n\tbackground: \"background.jpg\"\n}, function(assets) { ... })"
+          ]
+        },
+      ]
+    }
   },
 	Interface: {
 		classname: 'Interface',
