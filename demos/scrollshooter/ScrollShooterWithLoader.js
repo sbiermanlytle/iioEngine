@@ -73,7 +73,7 @@ ScrollShooter = function( app, s ){
   }
 
   var main = function(assets) {
-    assets.theme.play({loop: true});
+    assets.theme.play(0, {loop: true});
 
     createScrollObjects( numSmallStars, stars, {
       img: assets.starSmall,

@@ -2422,30 +2422,12 @@ iio.inherit(iio.Sound, iio.Interface);
 iio.Sound.prototype._super = iio.Interface.prototype;
 
 //CONSTRUCTOR
-iio.Sound.prototype.Sound = function(buffer) {
+iio.Sound.prototype.Sound = function(url, onLoad, onError) {
+  var sound = this;
   // Set up a GainNode for volume control
   this.gainNode = iio.audioCtx.createGain();
   this.gainNode.connect(iio.audioCtx.destination);
-  this.buffer = buffer;
-}
-
-iio.Sound.prototype.play = function(options, delay) {
-  if (this.buffer === undefined) return;
-  var source = iio.audioCtx.createBufferSource();
-  source.buffer = this.buffer;
-  if (options) {
-    if (options.loop) source.loop = true;
-  }
-
-  if (this.gain)
-    this.gainNode.gain.value = this.gain;
-  source.connect(this.gainNode);
-  source.start(delay || 0);
-}
-
-;
-iio.loadSound = function(url, onLoad, onError) {
-  var sound = new iio.Sound();
+  
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.responseType = 'arraybuffer';
@@ -2457,6 +2439,25 @@ iio.loadSound = function(url, onLoad, onError) {
   };
   xhr.onerror = onError;
   xhr.send();
+}
+
+iio.Sound.prototype.play = function(delay, properties) {
+  if (properties) this.set(properties);
+  if (this.buffer === undefined) return;
+  var source = iio.audioCtx.createBufferSource();
+  source.buffer = this.buffer;
+  if (this.loop)
+    source.loop = true;
+
+  if (this.gain)
+    this.gainNode.gain.value = this.gain;
+  source.connect(this.gainNode);
+  source.start(delay || 0);
+}
+
+;
+iio.loadSound = function(url, onLoad, onError) {
+  var sound = new iio.Sound(url, onLoad, onError);
   return sound;
 }
 
