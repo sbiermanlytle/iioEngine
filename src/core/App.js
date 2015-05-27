@@ -63,8 +63,11 @@ iio.App.prototype.App = function(view, script, settings) {
 // FUNCTIONS
 //-------------------------------------------------------------------
 iio.App.prototype.update = function(){
-  if(this.script.onUpdate) this.script.onUpdate();
+  var nuFPS;
+  if(this.script.onUpdate) 
+    nuFPS = this.script.onUpdate();
   this.draw();
+  return nuFPS;
 }
 iio.App.prototype.stop = function() {
   this.objs.forEach(function(obj) {

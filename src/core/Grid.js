@@ -6,7 +6,7 @@ iio.Grid.prototype._super = iio.Rectangle.prototype;
 
 //CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
-  this._super.Rectangle.call(this,this.merge_args(arguments));
+  this._super.Rectangle.call(this,iio.merge_args(arguments));
 
   // set res if undefined
   this.res = this.res || new iio.Vector(
@@ -31,10 +31,7 @@ iio.Grid.prototype.init_cells = function(){
     this.cells[c] = [];
     for (var r = 0; r < this.R; r++) {
       this.cells[c][r] = this.add(new iio.Rectangle({
-        pos:{
-          x:x,
-          y:y
-        },
+        pos: new iio.Vector( x,y ),
         c: c,
         r: r,
         width: this.res.x,
