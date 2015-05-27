@@ -266,10 +266,13 @@ var api = {
     data: {
       Constructor: [
         {
-				  definition: 'Sound( '+kwd('Sting')+' soundFile[, '+kwd('Function')+' onload , '+kwd('Function')+' onerror])',
+				  definition: 'Sound( '+kwd('String')+' soundFile[, '+kwd('Function')+' onLoad , '+kwd('Function')+' onError] )',
           descriptions: [ 
             "Create a Sound instance from the audio file located at soundFile",
             "Call optional callback functions for success and error."
+          ],
+          samples: [
+            "var sound = new iio.Sound(\n\t\"bark.wav\", \n\tfunction(sound, buffer) { ... }, \n\tfunction(error) { ... }\n)"
           ]
         }
       ],
@@ -279,11 +282,15 @@ var api = {
           descriptions: [ "Gain (volume) level, must be between 0 and 1" ]
         },
         {
-          definition: kwd('Function') + ' onload',
+          definition: kwd('Boolean') + ' loop',
+          descriptions: [ "Flag to loop playback" ]
+        },
+        {
+          definition: kwd('Function') + ' onLoad',
           descriptions: [ "Callback to be called once loading of the sound buffer is successful" ]
         },
         {
-          definition: kwd('Function') + ' onerror',
+          definition: kwd('Function') + ' onError',
           descriptions: [ 
             "Callback to be called if an error occurs in loading",
             "This can happen due to multiple reasons: nonexistent file, corrupted buffer, etc"
@@ -292,13 +299,14 @@ var api = {
       ],
       Functions: [
         {
-          definition: 'play([' + kwd('Object') + ' properties])',
+          definition: 'play([' +kwd('Integer') + ' delay, ' + kwd('Object') + ' properties])',
           descriptions: [
-            "Play the sound through iio's AudioContext, subject to it's properties at that moment in time",
+            "Play the sound through iio's AudioContext, with an optional delay",
+            "Subject to it's properties at that moment in time",
             "Or optionally provide properties to be set before being played."
           ],
           samples: [
-            "// set volume to 75% before playing\nsound.play({gain: 0.75})"
+            "// set volume to 75% before playing\n// loop playback\nsound.play({gain: 0.75, loop: true})"
           ]
         }
       ]
