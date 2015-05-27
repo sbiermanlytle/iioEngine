@@ -259,6 +259,51 @@ var api = {
 			]
 		}
 	},
+  Sound: {
+    classname: 'Sound',
+    inherits: [ 'Interface' ],
+    overview: [ "Represents a sound buffer. Similar fashion to JavaScript's native Image class" ],
+    data: {
+      Constructor: [
+        {
+				  definition: 'Sound( '+kwd('Sting')+' soundFile[, '+kwd('Function')+' onload , '+kwd('Function')+' onerror])',
+          descriptions: [ 
+            "Create a Sound instance from the audio file located at soundFile",
+            "Call optional callback functions for success and error."
+          ]
+        }
+      ],
+      Properties: [
+        {
+          definition: kwd('Float') + ' gain',
+          descriptions: [ "Gain (volume) level, must be between 0 and 1" ]
+        },
+        {
+          definition: kwd('Function') + ' onload',
+          descriptions: [ "Callback to be called once loading of the sound buffer is successful" ]
+        },
+        {
+          definition: kwd('Function') + ' onerror',
+          descriptions: [ 
+            "Callback to be called if an error occurs in loading",
+            "This can happen due to multiple reasons: nonexistent file, corrupted buffer, etc"
+          ]
+        },
+      ],
+      Functions: [
+        {
+          definition: 'play([' + kwd('Object') + ' properties])',
+          descriptions: [
+            "Play the sound through iio's AudioContext, subject to it's properties at that moment in time",
+            "Or optionally provide properties to be set before being played."
+          ],
+          samples: [
+            "// set volume to 75% before playing\nsound.play({gain: 0.75})"
+          ]
+        }
+      ]
+    }
+  },
 	Drawable: {
 		classname: 'Drawable',
 		inherits: [ 'Interface' ],
