@@ -1,1 +1,0 @@
-<h3>.<a href="graphics-engine.php#refLine">refLine</a> :: <?php echo $NumberLink ?></h3>

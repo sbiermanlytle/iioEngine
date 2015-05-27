@@ -1,31 +1,60 @@
-Snake = function(app,s){
+/* Snake
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+Copyright (c) 2015, iio inc. All rights reserved.
+*/
 
-	//set size of the game grid
-	var res = 20;
-	//reduce the size if this is a preview
-	if(s&&s.preview) res = 10;
+Snake = function( app, settings ){
 
+	// initialize settings
+	settings = settings || {};
 
-	var snake_size = Math.floor(app.width/res);
-	var startPos = new iio.Vector(
-		snake_size * res/2 + snake_size/2,
+	// define the number of columns
+	var num_columns = 20;
+
+	// limit columns if preview is active
+	if( settings.preview )
+		num_columns = 10;
+
+	// define variables to track snake 
+	var head, body, direction, snake_speed, snake_color, inverted;
+
+	// define initial game properties
+	var starting_body = 4;
+	var starting_speed = 4;
+	var snake_size = Math.floor( app.width / num_columns );
+	var start_pos = new iio.Vector(
+		snake_size * num_columns/2 + snake_size/2,
 		snake_size * 4 + snake_size/2
 	)
 	
-	var starting_body = 4;
-	var starting_speed = 4;
-	var head, body, direction, snake_speed, snake_color, inverted;
+	// define a function to be run when the app is resized
 	function reset(){
-		app.rmv();
-		if(s && s.preview) snake_color = new iio.Color(240,240,240);
+
+		// clear all objects and loops from app
+		app.clear();
+
+		// if preview is active
+		if( false ){ //settings.preview ) 
+			// set the snake color to white
+			snake_color = new iio.Color(240,240,240);
+			// set the background color to black
+			app.set({ color: 'black' });
+		}
+		// preview is not active
 		else {
+			// set the snake color to a random color
 			snake_color = iio.Color.random();
+			// set the background color to the inverse color
 			app.set({ color: snake_color.clone().invert() });
 		}
+
 		head = app.add( new iio.Rectangle({
 			pos:[
-				startPos.x,
-				startPos.y
+				start_pos.x,
+				start_pos.y
 			], 
 			color: snake_color,
 			outline: 'white',
@@ -38,8 +67,8 @@ Snake = function(app,s){
 		for(var i=0; i<starting_body-1; i++)
 			body[i] = app.add( new iio.Rectangle({
 				pos:[
-					startPos.x - snake_size * (i+1),
-					startPos.y
+					start_pos.x - snake_size * (i+1),
+					start_pos.y
 				], 
 				color: snake_color,
 				outline: 'white',
@@ -56,7 +85,7 @@ Snake = function(app,s){
 	var food;
 	function makeFood(){
 		var randomPos = new iio.Vector(
-			snake_size*iio.randomInt(0,res)+snake_size/2,
+			snake_size*iio.randomInt(0,num_columns)+snake_size/2,
 			snake_size*iio.randomInt(0,app.height/snake_size)
 				+snake_size/2
 		);
@@ -99,13 +128,13 @@ Snake = function(app,s){
 		}
 		body[0].pos.x = head.pos.x;
 		body[0].pos.y = head.pos.y;
-		if(!s || !s.preview)
+		if(!settings.preview)
 			for(var i=1; i<body.length; i++)
 				if(head.pos.x==body[i].pos.x 
 					&& head.pos.y==body[i].pos.y)
 					reset();
 
-		if(s && s.preview && iio.random()<.4)
+		if( settings.preview && iio.random()<.4 )
 			direction = iio.randomInt(0,4);
 		switch(direction){
 			case UP: 
