@@ -738,7 +738,10 @@ iio.Vector.prototype.sub = function( x, y ){
 	this.y -= y;
 	return this;
 }
-;
+iio.Vector.prototype.equals = function( x, y ){
+	if( x.x ) return this.x === x.x && this.y === x.y;
+	else return this.x === x && this.y === y;
+};
 /* Color
 ------------------
 iio.js version 1.4
@@ -967,8 +970,10 @@ iio.Drawable.prototype.rmv = function() {
     if ( iio.is.number( arguments[0] ) && arguments[0] < this.objs.length )
       return this.objs.splice(o, 1);
 
+    var _arg = arguments[0];
+
     remove = function(c, i, arr) {
-      if (c == arguments[0]) {
+      if (c == _arg) {
         arr.splice(i, 1);
         return true;
       } else return false;
@@ -981,7 +986,7 @@ iio.Drawable.prototype.rmv = function() {
     if (this.collisions) this.collisions.forEach(function(collision, i) {
 
       // remove collision referring only to removed object
-      if ( collision[0] == arguments[0] || collision[1] == arguments[0] )
+      if ( collision[0] == _arg || collision[1] == _arg )
         this.collisions.splice(i, 1);
       else {
         // remove reference to removed object from collision arrays
@@ -1104,7 +1109,7 @@ iio.Drawable.prototype._update = function(o,dt){
       this.cCollisions(collision[0], collision[1], collision[2]);
     }, this);
   }
-  this.draw();
+  //this.draw();
 }
 
 // LOOP MANAGMENT FUNCTIONS
@@ -1384,10 +1389,10 @@ iio.Shape.prototype.update = function() {
 
   if (this.onUpdate) this.onUpdate();
 
-  if (this.objs && this.objs.length > 0)
+  /*if (this.objs && this.objs.length > 0)
       this.objs.forEach(function(obj) {
         if (obj.update && obj.update()) this.rmv(obj);
-      }, this);
+      }, this);*/
 }
 iio.Shape.prototype.update_vel = function(){
   if(this.pos){
@@ -2365,6 +2370,10 @@ iio.App.prototype.App = function(view, script, settings) {
 
 // FUNCTIONS
 //-------------------------------------------------------------------
+iio.App.prototype.update = function(){
+  if(this.script.onUpdate) this.script.onUpdate();
+  this.draw();
+}
 iio.App.prototype.stop = function() {
   this.objs.forEach(function(obj) {
     iio.cancelLoops(obj);

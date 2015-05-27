@@ -126,8 +126,10 @@ iio.Drawable.prototype.rmv = function() {
     if ( iio.is.number( arguments[0] ) && arguments[0] < this.objs.length )
       return this.objs.splice(o, 1);
 
+    var _arg = arguments[0];
+
     remove = function(c, i, arr) {
-      if (c == arguments[0]) {
+      if (c == _arg) {
         arr.splice(i, 1);
         return true;
       } else return false;
@@ -140,7 +142,7 @@ iio.Drawable.prototype.rmv = function() {
     if (this.collisions) this.collisions.forEach(function(collision, i) {
 
       // remove collision referring only to removed object
-      if ( collision[0] == arguments[0] || collision[1] == arguments[0] )
+      if ( collision[0] == _arg || collision[1] == _arg )
         this.collisions.splice(i, 1);
       else {
         // remove reference to removed object from collision arrays
@@ -263,7 +265,7 @@ iio.Drawable.prototype._update = function(o,dt){
       this.cCollisions(collision[0], collision[1], collision[2]);
     }, this);
   }
-  this.draw();
+  //this.draw();
 }
 
 // LOOP MANAGMENT FUNCTIONS

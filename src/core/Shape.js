@@ -128,10 +128,10 @@ iio.Shape.prototype.update = function() {
 
   if (this.onUpdate) this.onUpdate();
 
-  if (this.objs && this.objs.length > 0)
+  /*if (this.objs && this.objs.length > 0)
       this.objs.forEach(function(obj) {
         if (obj.update && obj.update()) this.rmv(obj);
-      }, this);
+      }, this);*/
 }
 iio.Shape.prototype.update_vel = function(){
   if(this.pos){
