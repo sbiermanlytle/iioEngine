@@ -49,6 +49,7 @@ iio.Color.prototype.randomize = function(alpha){
 
 // COLOR CONSTANTS
 //------------------------------------------------------------
+iio.Color.iioBlue = new iio.Color(0,186,255);
 iio.Color.transparent = new iio.Color(0,0,0,0);
 iio.Color.black = new iio.Color(0,0,0,1);
 iio.Color.white = new iio.Color(255,255,255,1);

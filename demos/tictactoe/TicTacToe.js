@@ -1,78 +1,68 @@
-TicTacToe=function(app){
+/* Tic Tac Toe
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+Copyright (c) 2015, iio inc. All rights reserved.
+*/
 
-  //var dingX = app.loadAudio("assets/sounds/coin-3.wav");
-  //var dingO = app.loadAudio("assets/sounds/coin-4.wav");
+TicTacToe = function( app, settings ){
 
-  	/*app.set({ color: 'black'} );
+	// set the background color to black
+	app.set({ color: 'black' });
 				
-	var grid = app.add(new iio.Rectangle({
+	// add a 3x3 grid to app center
+	var grid = app.add( new iio.Grid({
 		pos: app.center,
-		width: 300,
-		color:'white'
-	}))
-	var o = grid.add(new iio.Rectangle({
-		width: 200,
-		color:'red'
-	}))
-	var q = o.add(new iio.Rectangle({
-		width: 100,
-		color:'blue'
-	}))*/
-
-	app.set({ color: 'black'} );
-				
-	var grid = app.add(new iio.Grid({
-		pos: app.center,
-		width: 300,
-		color:'white',
-		lineWidth:10,
-		R:3,
-		C:3
-	}));
-
-	grid.onClick = function(ev,p,cell){
-		cell.set({color:'blue'});
-		/*cell.add(new iio.X({
-			width:40,
-			color:'red'
-		}))*/
-	}
-
-	/*app.set({ color: 'black'} );
-				
-	var grid = app.add(new iio.Grid({
-		pos: app.center,
+		// make the grid as big as the smaller screen dimension
 		width: ( app.height < app.width ) ? app.height : app.width,
 		color:'white',
-		lineWidth:10,
+		lineWidth: 10,
 		R:3,
 		C:3
 	}));
 
+	// define boolean to indicate player turns
 	var xTurn = true;
-	grid.click=function(event,ePos,cell){
 
+	// define a function to be called when the grid is clicked
+	grid.onClick = function( event, pos, cell ){
+
+		// if the clicked cell is empty
 		if(!cell.taken){
 
+			// create a new text object
+			var play_piece = new iio.Text({
+				size: cell.width,
+				font: 'sans-serif'
+			});
+
+			// depending upon the current turn
+			// set the text object string and color
 			if(xTurn) {
-		        cell.add(new iio.X({
-		          width: cell.height/1.3,
-		          color: 'red',
-		          lineWidth: 10
-		        }));
-		        //dingX.play();
-		      } else {
-		        cell.add(new iio.Circle({
-		          width:cell.height/1.3,
-		          outline: '#00baff',
-		          lineWidth: 10
-		        }));
-		        //dingO.play();
-		      }
+				play_piece.text = 'X';
+				play_piece.color = iio.Color.red;
+			} else { 
+				play_piece.text = 'O';
+				play_piece.color = iio.Color.iioBlue;
+			}
 
-			xTurn=!xTurn;
+			// add the text object to the cell
+			cell.add( play_piece );
 
-		} cell.taken=true;
-	}*/
+			// create a new property in cell to
+			// indicate that it is not empty
+			cell.taken = true;
+
+			// change turns
+			xTurn = !xTurn;
+		}
+	}
+
+	// if settings are passed and preview is active
+	if( settings && settings.preview )
+		// generate 4 random selections
+		for( var i=0; i<4; i++ )
+			grid.onClick( null, null, grid.objs[iio.randomInt( 0,8 )] );
 }
 

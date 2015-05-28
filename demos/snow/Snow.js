@@ -5,7 +5,8 @@ iio.js version 1.4
 iio.js is licensed under the BSD 2-clause Open Source license
 Copyright (c) 2015, iio inc. All rights reserved.
 */
-function Snow( app, settings ){
+
+Snow = function( app, settings ){
 
 	// set the background color to black
 	app.set({ color:'black' });

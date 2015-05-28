@@ -793,6 +793,7 @@ iio.Color.prototype.randomize = function(alpha){
 
 // COLOR CONSTANTS
 //------------------------------------------------------------
+iio.Color.iioBlue = new iio.Color(0,186,255);
 iio.Color.transparent = new iio.Color(0,0,0,0);
 iio.Color.black = new iio.Color(0,0,0,1);
 iio.Color.white = new iio.Color(255,255,255,1);
@@ -966,27 +967,35 @@ iio.Drawable.prototype.rmv = function() {
   // input is a singular object
   else {
 
-    // remove object at index
-    if ( iio.is.number( arguments[0] ) && arguments[0] < this.objs.length )
-      return this.objs.splice(o, 1);
-
-    var _arg = arguments[0];
+    var _argument = arguments[0];
 
     remove = function(c, i, arr) {
-      if (c == _arg) {
+      if (c == _argument) {
         arr.splice(i, 1);
         return true;
       } else return false;
     }
 
+    // remove object at index
+    if ( iio.is.number( arguments[0] ) ){
+      if( arguments[0] < this.objs.length )
+        _argument = this.objs.splice( arguments[0], 1 );
+
+      // passed index out of bounds
+      else return false;
+
     // remove passed object
-    if (this.objs) this.objs.some(remove);
+    } else if (this.objs) 
+      this.objs.some(remove);
+
+    // return false if parent has no children
+    else return false;
 
     // removed associated collisions
     if (this.collisions) this.collisions.forEach(function(collision, i) {
 
       // remove collision referring only to removed object
-      if ( collision[0] == _arg || collision[1] == _arg )
+      if ( collision[0] == _argument || collision[1] == _argument )
         this.collisions.splice(i, 1);
       else {
         // remove reference to removed object from collision arrays

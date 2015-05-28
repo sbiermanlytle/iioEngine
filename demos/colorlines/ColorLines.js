@@ -1,69 +1,63 @@
-ColorLines = function(app,s){
-    ding1 = app.loadAudio("assets/sounds/coin-1.wav");
-    ding2 = app.loadAudio("assets/sounds/coin-2.wav");
-    ding3 = app.loadAudio("assets/sounds/coin-3.wav");
-    ding4 = app.loadAudio("assets/sounds/coin-4.wav");
+/* ColorLines
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+Copyright (c) 2015, iio inc. All rights reserved.
+*/
 
-	for(var offset=-app.width; offset<app.width; offset+=s.w){
-		app.add(new iio.Line({
+ColorLines = function( app, settings ){
+
+	// initialize settings
+	settings = settings || {};
+	var lineWidth = settings.lineWidth || 60;
+
+	// add enough lines to fill the screen
+	for( var offset = -app.width-lineWidth; offset < app.width; offset += lineWidth ){
+		app.add( new iio.Line({
 			color: iio.Color.random(),
-			width: s.w,
+			width: lineWidth,
+			// set line vertices
 			vs:[
-				[ 0+offset, 0-s.w ],
-				[ app.width+s.w, app.height-offset ]
+				// start coordinates
+				[ 0+offset, 0-lineWidth ],
+				// end coordinates
+				[ app.width+lineWidth, app.height-offset ]
 			],
+			// animate the color with changing cycles
 			cycle: 0,
 			onUpdate: function(){
 				switch(this.cycle){
 					case 1: 
-						if(this.color.g>100) {
+						if(this.color.g>100)
 							this.color.g--;
-              if (this.color.g % 128 === 0) ding1.play();
-            } else if(this.color.r>100) {
+						else if(this.color.r>100)
 							this.color.r--;
-              if (this.color.r % 128 === 0) ding3.play();
-            } else if(this.color.b>100) {
-							this.color.b--;
-              if (this.color.b % 128 === 0) ding4.play();
-            } else this.cycle = iio.randomInt(0,3);
+						else this.cycle = iio.randomInt(1,3);
 						break;
 					case 2: 
-						if(this.color.b<200) {
+						if(this.color.b<200)
 							this.color.b++;
-              if (this.color.b % 128 === 0) ding4.play();
-            } else if(this.color.g<200) {
-							this.color.g++;
-              if (this.color.g % 128 === 0) ding3.play();
-            } else if(this.color.r<200) {
+						else if(this.color.r<200)
 							this.color.r++;
-              if (this.color.r % 128 === 0) ding2.play();
-            } else this.cycle = iio.randomInt(0,3);
+						else this.cycle = iio.randomInt(1,3);
 						break;
 					case 3: 
-						if(this.color.g>0) {
+						if(this.color.g>0)
 							this.color.g--;
-              if (this.color.g % 128 === 0) ding2.play();
-            } else if(this.color.r>0) {
+						else if(this.color.r>0)
 							this.color.r--;
-              if (this.color.r % 128 === 0) ding1.play();
-            } else if(this.color.b>0) {
-							this.color.b--;
-              if (this.color.b % 128 === 0) ding4.play();
-            } else this.cycle = iio.randomInt(0,3);
+						else this.cycle = iio.randomInt(1,3);
 						break;
 					default: 
-						if(this.color.r<255) {
+						if(this.color.r<255)
 							this.color.r++;
-              if (this.color.r % 128 === 0) ding3.play();
-            } else if(this.color.b<255) {
+						else if(this.color.b<255)
 							this.color.b++;
-              if (this.color.b % 128 === 0) ding1.play();
-            } else if(this.color.g<255) {
-							this.color.g++;
-              if (this.color.g % 128 === 0) ding2.play();
-            } else this.cycle = iio.randomInt(0,3);
+						else this.cycle = iio.randomInt(1,3);
 				}
 			}
-		}));
+		// pass true to suppress app redraw
+		}), true);
 	}
 }
