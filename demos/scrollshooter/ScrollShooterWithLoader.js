@@ -73,7 +73,7 @@ ScrollShooter = function( app, s ){
   }
 
   var main = function(assets) {
-    assets.theme.play({loop: true});
+    assets.theme.play(0, {loop: true});
 
     createScrollObjects( numSmallStars, stars, {
       img: assets.starSmall,
@@ -117,9 +117,9 @@ ScrollShooter = function( app, s ){
     }, meteorProps));
 
     var laserSound = assets.laserSound;
-    laserSound.setGain(0.125);
+    laserSound.set({gain: 0.125});
     var explode = assets.explode;
-    explode.setGain(0.25);
+    explode.set({gain: 0.25});
     var laser = assets.laser;
     var laserFlash = assets.laserFlash;
     fireLaser = function(x,y,s){

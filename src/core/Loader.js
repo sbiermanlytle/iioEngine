@@ -1,16 +1,5 @@
 iio.loadSound = function(url, onLoad, onError) {
-  var sound = new iio.Sound();
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.responseType = 'arraybuffer';
-  xhr.onload = function() {
-    iio.audioCtx.decodeAudioData(xhr.response, function(buffer) {
-      sound.buffer = buffer;
-      if (onLoad) onLoad(sound, buffer);
-    }, onError); 
-  };
-  xhr.onerror = onError;
-  xhr.send();
+  var sound = new iio.Sound(url, onLoad, onError);
   return sound;
 }
 
