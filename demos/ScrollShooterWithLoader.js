@@ -83,7 +83,7 @@ ScrollShooter = function( app, s ){
     laserSound: 'sounds/laser.wav',
     explode: 'sounds/explode.wav',
     player: 'images/player.png',
-    playerLeft: 'images/playerleft.png',
+    playerLeft: 'images/playerLeft.png',
     playerRight: 'images/playerRight.png',
     laser: 'images/laserRed.png',
     laserFlash: 'images/laserRedShot.png',
