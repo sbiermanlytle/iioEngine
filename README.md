@@ -10,7 +10,7 @@ iio Engine 1.2.2 was the last stable deployment. You may wish to use that versio
 ## links
 Homepage: http://iioEngine.com
 
-Twitter: @iioEngine
+Twitter: @iioinc
 
 ## loading iio Engine
 You can load the minified engine from a local folder or the iio Engine URL:
