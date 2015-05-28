@@ -28,46 +28,39 @@ var api = {
 		  "// Create an instance of a Loader\n" + 
 		  "// Provide it with a base path and a callback\n" +
 		  "// to be invoked on completion\n" + 
-		  "loader = new iio.Loader(\"./assets\");"
+		  "loader = new iio.Loader( './assets' );"
 		],
 		data: {
-		  'Constructor': [
-		    {
-		      definition: 'load(' + kwd('string') + ' basePath)',
-		      descriptions: ["Give the loader a base path from which to find assets"]
-		    }
-		  ],
 		  'Functions': [
 		    {
-		      definition: 'load(' + kwd('string') + ' asset[, ' + kwd('function') + ' onComplete])',
+		      definition: 'load( ' + kwd('string') + ' asset, ' + kwd('function') + ' onComplete )',
 		      descriptions: [ 
-		        "pass only one asset to the loader " +
-		        "with optional callback function on completion"
+		        "Load one asset with an optional callback function on completion"
 		      ],
 		      samples: [
-		        "loader.load(\"sprite.png\", function(assets) { ... })"
+		        "loader.load( 'sprite.png', function(assets) { ... } );"
 		      ]
 		    },
 		    {
-		      definition: 'load(' + kwd('array') + ' assets[, ' + kwd('function') + ' onComplete])',
+		      definition: 'load( ' + kwd('Array') + ' assets, ' + kwd('function') + ' onComplete )',
 		      descriptions: [ 
-		        "pass multiple assets in an array to the loader with optional callback function on completion",
+		        "Pass multiple assets in an array to the loader with optional callback function on completion",
 		        "optionally specify a callback function for each asset for post load processing"
 		      ],
 		      samples: [
-		        "loader.load([\n\t\"sprite1.png\",\n\t\"ping.wav\",\n\t\"background.jpg\"\n], function(assets) { ... })",
-		        "loader.load([\n\t{name: \"sprite1.png\", callback: processImage},\n\t{name: \"ping.wav\", callback: processSound},\n\t{name: \"background.png\", callback: processImage}\n], function(assets) { ... })"
+		        "loader.load([\n\t'sprite1.png',\n\t'ping.wav',\n\t'background.jpg'\n], function(assets) { ... })",
+		        "loader.load([\n\t{ name: 'sprite1.png', callback: processImage },\n\t{ name: 'ping.wav', callback: processSound },\n\t{ name: 'background.png', callback: processImage }\n], function(assets) { ... })"
 		      ]
 		    },
 		    {
-		      definition: 'load(' + kwd('object') + ' assets[, ' + kwd('function') + ' onComplete])',
+		      definition: 'load( ' + kwd('object') + ' assets, ' + kwd('function') + ' onComplete )',
 		      descriptions: [ 
-		        "pass multiple assets in object format to the loader " +
+		        "Pass multiple assets in object format to the loader " +
 		        "callback function on completion"
 		      ],
 		      samples: [
-		        "loader.load({name: \"sprite1.png\", callback: processSprite}, function(assets) { ... })",
-		        "loader.load({\n\tmainCharacter: {name: \"sprite1.png\", callback: processSprite}, \n\tloadingSound: \"ping.wav\",\n\tbackground: \"background.jpg\"\n}, function(assets) { ... })"
+		        "loader.load({\n\tname: 'sprite1.png',\n\tcallback: processSprite\n}, function(assets) { ... });",
+		        "loader.load({\n\tmainCharacter: {\n\t\tname: 'sprite1.png',\n\t\tcallback: processSprite\n\t}, \n\tloadingSound: 'ping.wav',\n\tbackground: 'background.jpg'\n}, function(assets) { ... });"
 		      ]
 		    },
 		  ]
@@ -262,17 +255,17 @@ var api = {
   Sound: {
     classname: 'Sound',
     inherits: [ 'Interface' ],
-    overview: [ "Represents a sound buffer. Similar fashion to JavaScript's native Image class" ],
+    overview: [ "Represents a sound buffer. Similar fashion to JavaScript's native Image class." ],
     data: {
       Constructor: [
         {
-				  definition: 'Sound( '+kwd('String')+' soundFile[, '+kwd('Function')+' onLoad , '+kwd('Function')+' onError] )',
+				  definition: 'Sound( '+kwd('string')+' soundFile, '+kwd('function')+' onLoad , '+kwd('function')+' onError )',
           descriptions: [ 
             "Create a Sound instance from the audio file located at soundFile",
             "Call optional callback functions for success and error."
           ],
           samples: [
-            "var sound = new iio.Sound(\n\t\"bark.wav\", \n\tfunction(sound, buffer) { ... }, \n\tfunction(error) { ... }\n)"
+            "var sound = new iio.Sound(\n\t'bark.wav', \n\tfunction(sound, buffer) { ... }, \n\tfunction(error) { ... }\n)"
           ]
         }
       ],
@@ -287,26 +280,26 @@ var api = {
         },
         {
           definition: kwd('Function') + ' onLoad',
-          descriptions: [ "Callback to be called once loading of the sound buffer is successful" ]
+          descriptions: [ "Called on successful load" ]
         },
         {
           definition: kwd('Function') + ' onError',
           descriptions: [ 
             "Callback to be called if an error occurs in loading",
-            "This can happen due to multiple reasons: nonexistent file, corrupted buffer, etc"
+            "Errors can occur due to multiple reasons: nonexistent file, corrupted buffer, etc"
           ]
         },
       ],
       Functions: [
         {
-          definition: 'play([' +kwd('Integer') + ' delay, ' + kwd('Object') + ' properties])',
+          definition: 'play( [ ' +kwd('Integer') + ' delay, ' + kwd('Object') + ' properties ] )',
           descriptions: [
             "Play the sound through iio's AudioContext, with an optional delay",
             "Subject to it's properties at that moment in time",
             "Or optionally provide properties to be set before being played."
           ],
           samples: [
-            "// set volume to 75% before playing\n// loop playback\nsound.play({gain: 0.75, loop: true})"
+            "// set volume to 75% before playing\n// loop playback\nsound.play({ gain: 0.75, loop: true })"
           ]
         }
       ]
