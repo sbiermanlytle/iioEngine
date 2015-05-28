@@ -259,6 +259,59 @@ var api = {
 			]
 		}
 	},
+  Sound: {
+    classname: 'Sound',
+    inherits: [ 'Interface' ],
+    overview: [ "Represents a sound buffer. Similar fashion to JavaScript's native Image class" ],
+    data: {
+      Constructor: [
+        {
+				  definition: 'Sound( '+kwd('String')+' soundFile[, '+kwd('Function')+' onLoad , '+kwd('Function')+' onError] )',
+          descriptions: [ 
+            "Create a Sound instance from the audio file located at soundFile",
+            "Call optional callback functions for success and error."
+          ],
+          samples: [
+            "var sound = new iio.Sound(\n\t\"bark.wav\", \n\tfunction(sound, buffer) { ... }, \n\tfunction(error) { ... }\n)"
+          ]
+        }
+      ],
+      Properties: [
+        {
+          definition: kwd('Float') + ' gain',
+          descriptions: [ "Gain (volume) level, must be between 0 and 1" ]
+        },
+        {
+          definition: kwd('Boolean') + ' loop',
+          descriptions: [ "Flag to loop playback" ]
+        },
+        {
+          definition: kwd('Function') + ' onLoad',
+          descriptions: [ "Callback to be called once loading of the sound buffer is successful" ]
+        },
+        {
+          definition: kwd('Function') + ' onError',
+          descriptions: [ 
+            "Callback to be called if an error occurs in loading",
+            "This can happen due to multiple reasons: nonexistent file, corrupted buffer, etc"
+          ]
+        },
+      ],
+      Functions: [
+        {
+          definition: 'play([' +kwd('Integer') + ' delay, ' + kwd('Object') + ' properties])',
+          descriptions: [
+            "Play the sound through iio's AudioContext, with an optional delay",
+            "Subject to it's properties at that moment in time",
+            "Or optionally provide properties to be set before being played."
+          ],
+          samples: [
+            "// set volume to 75% before playing\n// loop playback\nsound.play({gain: 0.75, loop: true})"
+          ]
+        }
+      ]
+    }
+  },
 	Drawable: {
 		classname: 'Drawable',
 		inherits: [ 'Interface' ],

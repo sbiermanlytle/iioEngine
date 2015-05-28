@@ -39,7 +39,7 @@ show_docs_menu = function(){
 	append_api_item_sub('data', api.Vector );
 	append_api_item_sub('data', api.Color );
 	append_api_item_sub('data', api.Gradient );
-	//append_api_item_sub('data', api.Sound);
+  append_api_item_sub('data', api.Sound);
 
 	append_api_item_sub('objects', api.Drawable );
 	append_api_item_sub('objects', api.App );
