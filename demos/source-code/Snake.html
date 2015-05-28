@@ -1,11 +1,19 @@
-/* Snake
-------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
-Copyright (c) 2015, iio inc. All rights reserved.
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>iio.js &middot; Snake</title>
+  <meta name="description" content="iio Snake demo source code">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+	<pre class="prettyprint linenums:1">/* Snake
+*  ------------------
+*  iio.js version 1.4 
 */
 
+// define a new iio app
 Snake = function( app, settings ){
 
 	// initialize settings
@@ -71,7 +79,7 @@ Snake = function( app, settings ){
 		snake.body = [];
 
 		// create snake body
-		for(var i = 0; i < snake.initial_body_length-1; i++)
+		for(var i = 0; i &lt; snake.initial_body_length-1; i++)
 			snake.body[i] = app.add( new iio.Rectangle( shared_props, {
 				pos:[
 					snake.initial_pos.x - snake.width * (i+1),
@@ -111,22 +119,22 @@ Snake = function( app, settings ){
 
 		// if snake isn't moving down
 		if( snake.direction != DOWN 
-			&& key == 'up arrow' || key == 'w' )
+			&amp;&amp; key == 'up arrow' || key == 'w' )
 			snake.direction = UP;
 
 		// if snake isn't moving left
 		else if( snake.direction != LEFT 
-			&& key == 'right arrow' || key == 'd' ) 
+			&amp;&amp; key == 'right arrow' || key == 'd' ) 
 			snake.direction = RIGHT;
 
 		// if snake isn't moving up
 		else if( snake.direction != UP 
-			&& key == 'down arrow' || key == 's' ) 
+			&amp;&amp; key == 'down arrow' || key == 's' ) 
 			snake.direction = DOWN;
 
 		// if snake isn't moving right
 		else if( snake.direction != RIGHT 
-			&& key == 'left arrow' || key == 'a' ) 
+			&amp;&amp; key == 'left arrow' || key == 'a' ) 
 			snake.direction = LEFT; 
 	}
 
@@ -137,7 +145,7 @@ Snake = function( app, settings ){
 		// if not preview, reset the game if the snake's head
 		// overlaps with the snake body
 		if( !settings.preview )
-			for(var i=1; i<snake.body.length; i++)
+			for(var i=1; i&lt;snake.body.length; i++)
 				if( snake.head.pos.equals( snake.body[i].pos ) )
 					// GAME OVER
 					reset();
@@ -166,7 +174,7 @@ Snake = function( app, settings ){
 		snake.body[0].pos.y = snake.head.pos.y;
 
 		// if preview, randomize the snake direction 
-		if( settings.preview && iio.random() < 0.4 )
+		if( settings.preview &amp;&amp; iio.random() &lt; 0.4 )
 			snake.direction = iio.randomInt(0,4);
 
 		// move the snake head depending upon its direction
@@ -176,7 +184,7 @@ Snake = function( app, settings ){
 			case UP: 
 				snake.head.pos.y -= snake.width;
 				// GAME OVER if snake hits the wall
-				if(snake.head.pos.y-snake.width/2 < 0) 
+				if(snake.head.pos.y-snake.width/2 &lt; 0) 
 					reset(); 
 				break;
 			// move the snake head right
@@ -197,7 +205,7 @@ Snake = function( app, settings ){
 			case LEFT: 
 				snake.head.pos.x -= snake.width;
 				// GAME OVER if snake hits the wall
-				if(snake.head.pos.x-snake.width/2<0) 
+				if(snake.head.pos.x-snake.width/2&lt;0) 
 					reset(); 
 				break;
 		}
@@ -212,3 +220,9 @@ Snake = function( app, settings ){
 	// loop onUpdate at the initial speed
 	app.loop( snake.initial_speed );
 }
+
+// start the app on an existing canvas
+iio.start( Snake, 'canvasId' );</pre>
+<script type="text/javascript" src="../../js/prettify.js"></script>
+</body>
+</html>

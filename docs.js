@@ -77,7 +77,7 @@ show_api_basics = function(){
 	api_content.append(p('All code samples in the documentation are assumed to be running inside of an iio script with access to '+kwd('app')+', unless full code is provided.'));
 
 	api_content.append(h2('Hello World'));
-	api_content.append(pre("&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;body&gt;\n&lt;script type='text/javascript' src='iio.js'&gt;&lt;/script&gt;\n&lt;script type='text/javascript'&gt;\n\n// define a new iio app\n// app is an App object\nHelloWorld = function( app ){\n\n\t// add a new text object to the app\n\tapp.add(new iio.Text({\n\t\t// set position to app center\n\t\tpos: app.center,\n\t\t// set text value\n\t\ttext: 'Hello World'\n\t}));\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;"));
+	api_content.append(pre("&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;body&gt;\n&lt;script type='text/javascript' src='iio.js'&gt;&lt;/script&gt;\n&lt;script type='text/javascript'&gt;\n\n// app is an App object\nHelloWorld = function( app ){\n\n\t// create and add a text object\n\tapp.create( app.center, 'Hello World' );\n\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;"));
 }
 
 show_api = function( api ){

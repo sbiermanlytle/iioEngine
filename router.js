@@ -95,6 +95,12 @@ display_current = function(){
       show_demo( Squares, "Squares" );
     else if( path == 'Snow' )
       show_demo( Snow, "Snow" );
+    else if( path == 'TicTacToe' )
+      show_demo( TicTacToe, "TicTacToe" );
+    else if( path == 'MineSweeper' )
+      show_demo( MineSweeper, "MineSweeper" );
+    else if( path == 'ColorLines' )
+      show_demo( ColorLines, "ColorLines" );
 
   }
 

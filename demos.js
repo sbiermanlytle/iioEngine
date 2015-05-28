@@ -7,8 +7,11 @@ var show_demo_index = function(){
 	add_demo_preview( ScrollShooter, "ScrollShooter" );
 	add_demo_preview( Snake, "Snake" );
 	add_demo_preview( ColorGrid, "ColorGrid", {w:20} );
+	add_demo_preview( ColorLines, "ColorLines", { lineWidth:20 } );
+	add_demo_preview( MineSweeper, "MineSweeper", { color: new iio.Color(255,255,255) } );
 	add_demo_preview( Squares, "Squares" );
 	add_demo_preview( Snow, "Snow" );
+	add_demo_preview( TicTacToe, "TicTacToe" );
 }
 
 add_demo_preview = function( app, title, settings ){

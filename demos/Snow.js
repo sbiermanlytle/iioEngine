@@ -1,4 +1,4 @@
-/* Gradient
+/* Snow
 ------------------
 iio.js version 1.4
 --------------------------------------------------------------
@@ -6,9 +6,8 @@ iio.js is licensed under the BSD 2-clause Open Source license
 Copyright (c) 2015, iio inc. All rights reserved.
 */
 
-// define a new iio app
-function Snow( app, settings ){
-
+Snow = function( app, settings ){
+	
 	// define the total number of circles
 	var num = 400;
 
@@ -56,7 +55,7 @@ function Snow( app, settings ){
 		}), true);
 
 	// define a function to be run when the app is resized
-	this.resize=function(){
+	this.resize = function(){
 
 		// set bounds on each object, relative to the new size
 		for(var i=0; i<app.objs.length; i++)
@@ -74,15 +73,15 @@ function Snow( app, settings ){
 				left:{
 					bound: 0,
 					callback: function(o){ 
-						// reverse the object's velocity 
-						o.vel.x*=-1 
+						// reverse x velocity 
+						o.vel.x *= -1 
 					}
 				},
 				right:{ 
 					bound: app.width, 
 					callback: function(o){ 
-						// reverse the object's velocity 
-						o.vel.x*=-1 
+						// reverse x velocity
+						o.vel.x *= -1 
 					}
 				}
 			}

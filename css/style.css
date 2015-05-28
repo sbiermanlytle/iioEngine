@@ -383,7 +383,7 @@ h1,h2,h3,h4{
   }
   .prettyprint ol.linenums {
     list-style: decimal;
-    margin-left: -6px;
+    margin-left: 6px;
   }
 
 /*BUTTON*/
