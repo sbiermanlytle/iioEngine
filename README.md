@@ -1,28 +1,26 @@
-iioengine
-========= 
+iio.js
+====== 
 
-iio Engine is an open source JavaScript framework that streamlines the development HTML5 Canvas applications. This repo contains all published copies and working editions of iio Engine.
+iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all published copies and working editions of iio.js.
 
-iio Engine 1.4.0 is the working copy of a push to finalize the upgrade. It will be modified frequently as it is tested and extended.
-
-iio Engine 1.2.2 was the last stable deployment. You may wish to use that version (available at iioEngine.com) if you would like a better documented and more stable platform to work with.
+iio.js was formarly known as 'iio Engine'. The last version of iio Engine, v1.2.2, included Box2D compatability and tutorials. Visit iioEngine.com for the old versions source code, documentation, tutorials, and demos.
 
 ## links
-Homepage: http://iioEngine.com
+Homepage: http://iioinc.github.io/iio.js
 
 Twitter: @iioinc
 
-## loading iio Engine
+## loading iio.js
 You can load the minified engine from a local folder or the iio Engine URL:
 
-	<script type="text/javascript" src="http://iioengine.com/iioEngine.min.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/iioinc/iio.js/master/build/iio.min.js"></script>
 
 iio Engine has a debugging version with extra features:
 
-	<script type="text/javascript" src="http://iioengine.com/iioEngine-debug.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/iioinc/iio.js/master/build/iio_debug.js"></script>
 
 ## building Source Files
-To edit source files, use Grunt to re-build the engine. Grunt depends on nodejs and npm.
+To edit source files, use Grunt to re-build. Grunt depends on nodejs and npm.
 
 ### installing nodejs and grunt
 If you have brew you can install node easily
@@ -47,7 +45,7 @@ Include the debug flag to build the debugging versions
 
 ## license
 
-The iio Engine is licensed under the BSD 2-clause Open Source license
+iio.js is licensed under the BSD 2-clause Open Source license
 
 Copyright (c) 2014, Sebastian Bierman-Lytle
 All rights reserved.
