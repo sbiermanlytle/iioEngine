@@ -86,7 +86,7 @@ display_current = function(){
     var path = window.location.hash.substr( 7 );
 
     if( path == 'ScrollShooter' )
-      show_demo( ScrollShooter, "ScrollShooter" );
+      show_demo( ScrollShooterSounds, "ScrollShooter" );
     else if( path == 'Snake' )
       show_demo( Snake, "Snake" );
     else if( path == 'ColorGrid' )

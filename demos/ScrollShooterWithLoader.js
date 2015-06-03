@@ -3,10 +3,12 @@
  * ------------------
  * iio.js version 1.4
  */
-ScrollShooter = function( app, s ){
+ScrollShooterSounds = function( app, s ){
   // For namespace of the new Object passed to here.
   // User defined functions can go in here, such as onUpdate
   var user = this;
+
+  var loadingText = app.create('Loading', app.center);
 
   // Arrays for holding references to objects created
   var meteors = [];
@@ -87,16 +89,17 @@ ScrollShooter = function( app, s ){
     playerRight: 'images/playerRight.png',
     laser: 'images/laserRed.png',
     laserFlash: 'images/laserRedShot.png',
-    theme: 'sounds/theme.mp3',
+    //theme: 'sounds/theme.mp3',
   }
 
   // The main body of this app
   // This will be the callback function to the loader
   // which will be called once all assets are completely loaded (or failed)
   var main = function(assets) {
+    app.rmv(loadingText);
     // Play the theme if not preview
-    if(!( s && s.preview ))
-      assets.theme.play(0, {loop: true});
+    /*if(!( s && s.preview ))
+      assets.theme.play(0, {loop: true});*/
 
     // Create a bunch of small stars
     createScrollObjects( numSmallStars, stars, {
