@@ -155,17 +155,17 @@ append_api_item_sub = function( parent, api ){
 	var title = api.classname;
 	var href = title.replace(' ', '-');
 	var html = '<li class="api_item_sub"><a id="api_item_sub_h_'+parent+'-'+href+'"'
-		+ ( ( window.location.hash.includes('#api.'+href+'.' )) ? ' class="hashed"' : '' )
+		+ ( ( current_hash.includes('#api.'+href+'.' )) ? ' class="hashed"' : '' )
 		+'>'+title+'</a>';
 	html += '<ul class="api_property_list" id="'+parent+'-'+href+'">';
 	html += '<li class="api_property first_prop"><a href="#api.'+href+'.Overview"'
-	+ ( ( window.location.hash == '#api.'+href+'.Overview' ) ? ' class="hashed"' : '' )
+	+ ( ( current_hash == '#api.'+href+'.Overview' ) ? ' class="hashed"' : '' )
 	+'>Overview</a></li>';
 	var html_prop;
 	for( var prop in api.data ){
 		html_prop = prop.replace(' ','-');
 		html += '<li class="api_property"><a href="#api.'+href+'.'+html_prop+'"'
-		+ ( ( window.location.hash == '#api.'+href+'.'+html_prop ) ? ' class="hashed"' : '' )
+		+ ( ( current_hash == '#api.'+href+'.'+html_prop ) ? ' class="hashed"' : '' )
 		+'>'+prop+'</a></li>';
 	}
 	html += '</ul></li>';
@@ -177,7 +177,7 @@ append_api_item_sub = function( parent, api ){
 	$('#api_item_sub_h_'+parent+'-'+href).click(function(){
 		toggle_menu( toggle_ids[this.toggleIndex], this.toggleIndex );
 	});
-	if( !window.location.hash.includes('#api.'+href+'.') && window.location.hash != '#api.'+href ){
+	if( !current_hash.includes('#api.'+href+'.') && current_hash != '#api.'+href ){
 		$('#'+parent+'-'+href).hide();
 		toggles[numToggles] = true;
 	} else toggles[numToggles] = false;

@@ -6,14 +6,14 @@ highlight_menu = function(){
 }
 
 $('#download').click(function(){
-  window.location.hash = '#download';
+  goTo('#download');
   return false;
 });
 $('#demos').click(function(){
-  window.location.hash = '#demos';
+  goTo('#demos');
   return false;
 });
 $('#docs').click(function(){
-  window.location.hash = '#api.overview';
+  goTo('#api.overview');
   return false;
 });

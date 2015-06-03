@@ -4,8 +4,20 @@ var HOME = 'download';
 var DOCS = 'docs';
 var DEMOS = 'demos';
 var current;
+var current_hash = '';
+
+function goTo( hash ) {
+  if ( $.browser.webkit == false ) {
+      window.location.hash = hash;
+  } else {
+      window.location.href = hash;
+      window.location.href = hash;
+  }
+  current_hash = hash;
+}
 
 $(window).bind('hashchange', function() {
+  ga('send', 'pageview', current_hash.substring(1) );
 
 	page.empty();
 	iio.stop();
@@ -24,21 +36,21 @@ display_current = function(){
   var anchor;
 
   // MAIN ROUTER
-  if( window.location.hash == '#download' || window.location.hash == '' ){
+  if( current_hash == '#download' || current_hash == '' ){
     current = HOME;
     show_home();
-  } else if( window.location.hash == '#demos' ){
+  } else if( current_hash == '#demos' ){
     current = DEMOS;
     show_demo_index();
-  } else if( window.location.hash == '#tests' ){
+  } else if( current_hash == '#tests' ){
     current = TESTS;
     show_test_index();
   }
 
   // API ROUTER
-  else if( window.location.hash.substr( 0, 5 ) == '#api.' ){
+  else if( current_hash.substr( 0, 5 ) == '#api.' ){
     current = DOCS;
-    var path = window.location.hash.substr( 5 );
+    var path = current_hash.substr( 5 );
     var anchorPos = path.indexOf('.');
     if(anchorPos > -1){
       anchor = path.substr( anchorPos );
@@ -81,9 +93,9 @@ display_current = function(){
   } 
 
   // DEMO ROUTER
-  else if( window.location.hash.substr( 0, 7 ) == '#demos-' ){
+  else if( current_hash.substr( 0, 7 ) == '#demos-' ){
     current = DEMOS;
-    var path = window.location.hash.substr( 7 );
+    var path = current_hash.substr( 7 );
 
     if( path == 'ScrollShooter' )
       show_demo( ScrollShooterSounds, "ScrollShooter" );
@@ -107,11 +119,11 @@ display_current = function(){
   highlight_menu();
   prettyPrint();
 
-  if( window.location.hash.substr( 0, 5 ) == '#api.' )
+  if( current_hash.substr( 0, 5 ) == '#api.' )
     $('.prettyprint ol.linenums').css('margin-left', '-40px');
 
   if(anchor){
-    var e = document.getElementById( window.location.hash.substr(1) );
+    var e = document.getElementById( current_hash.substr(1) );
     if(e) e.scrollIntoView(true);
   }
 }
