@@ -7,7 +7,8 @@ var current;
 var current_hash = '';
 
 function goTo( hash ) {
-  if ( $.browser.webkit == false ) {
+  var n = navigator.appName;
+  if ( navigator.appName.includes('Mozilla') || navigator.appName.includes('Safari') ) {
       window.location.hash = hash;
   } else {
       window.location.href = hash;
