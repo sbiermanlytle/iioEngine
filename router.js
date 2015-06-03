@@ -43,7 +43,7 @@ refresh = function(){
 $(window).bind( 'hashchange', refresh );
 
 display_current = function(){
-  //ga('send', 'pageview', current_hash.substring(1) );
+  ga('send', 'pageview', current_hash.substring(1) );
   var anchor;
 
   // MAIN ROUTER
