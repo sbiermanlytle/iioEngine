@@ -155,7 +155,7 @@ append_api_item_sub = function( parent, api ){
 	var title = api.classname;
 	var href = title.replace(' ', '-');
 	var html = '<li class="api_item_sub"><a id="api_item_sub_h_'+parent+'-'+href+'"'
-		+ ( ( current_hash.includes('#api.'+href+'.' )) ? ' class="hashed"' : '' )
+		+ ( ( current_hash.indexOf('#api.'+href+'.' ) >= 0 ) ? ' class="hashed"' : '' )
 		+'>'+title+'</a>';
 	html += '<ul class="api_property_list" id="'+parent+'-'+href+'">';
 	html += '<li class="api_property first_prop"><a href="#api.'+href+'.Overview"'
@@ -177,7 +177,7 @@ append_api_item_sub = function( parent, api ){
 	$('#api_item_sub_h_'+parent+'-'+href).click(function(){
 		toggle_menu( toggle_ids[this.toggleIndex], this.toggleIndex );
 	});
-	if( !current_hash.includes('#api.'+href+'.') && current_hash != '#api.'+href ){
+	if( !(current_hash.indexOf('#api.'+href+'.') >= 0) && current_hash != '#api.'+href ){
 		$('#'+parent+'-'+href).hide();
 		toggles[numToggles] = true;
 	} else toggles[numToggles] = false;

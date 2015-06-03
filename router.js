@@ -4,7 +4,7 @@ var HOME = 'download';
 var DOCS = 'docs';
 var DEMOS = 'demos';
 var current;
-var current_hash = '';
+var current_hash = window.location.hash;
 
 var is_chrome = navigator.userAgent.indexOf('Chrome') > -1;
 var is_explorer = navigator.userAgent.indexOf('MSIE') > -1;
@@ -21,12 +21,12 @@ function goTo( hash ) {
       window.location.href = hash;
       window.location.href = hash;
   }
-  current_hash = hash;
+  current_hash = window.location.hash;
+  refresh();
 }
 
-$(window).hashchange( function(){
-  ga('send', 'pageview', current_hash.substring(1) );
-
+refresh = function(){
+  current_hash = window.location.hash;
 	page.empty();
 	iio.stop();
 	$('canvas').remove();
@@ -38,9 +38,12 @@ $(window).hashchange( function(){
 	$('#header').css({ 'left': 'inherit', 'margin-left': -140 });
 	$('#footer').css({ 'left': 'inherit', 'margin-left': -140 });
 	display_current();
-});
+}
+
+$(window).bind( 'hashchange', refresh );
 
 display_current = function(){
+  //ga('send', 'pageview', current_hash.substring(1) );
   var anchor;
 
   // MAIN ROUTER
