@@ -24,7 +24,7 @@ function goTo( hash ) {
   current_hash = hash;
 }
 
-$(window).bind('hashchange', function() {
+$(window).hashchange( function(){
   ga('send', 'pageview', current_hash.substring(1) );
 
 	page.empty();
