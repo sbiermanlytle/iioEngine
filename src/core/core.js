@@ -106,10 +106,13 @@ iio.merge = function(o1,o2){
   return o1;
 }
 iio.merge_args = function(o1){
-  var o2 = {};
-  for(var i=0; i<o1.length; i++)
-    o2 = iio.merge(o2,o1[i]);
-  return o2;
+  if(o1){
+    var o2 = {};
+    for(var i=0; i<o1.length; i++)
+      o2 = iio.merge(o2,o1[i]);
+    return o2;
+  }
+  return o1;
 }
 iio.addEvent = function(obj, evt, fn, capt) {
   if (obj.addEventListener) {
