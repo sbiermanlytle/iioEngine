@@ -518,6 +518,18 @@ a,h2,h5,canvas,input[type='submit'],.btn,#drag_overlay,.api_item{
   display: block
 }
 
+/*COLS*/
+.col_two{
+  float:left;
+  width:50%;
+}
+.col_two p, .col_two h2{
+  padding:30px 30px 10px 0;
+}
+.col_two .big-btn{
+  padding:0;
+}
+
 @media only screen and (min-width:900px) {
   #header,#footer{
     left:inherit;

@@ -1,5 +1,5 @@
 var show_demo_index = function(){
-	page.append('<h1>iio.js App Demos</h1>');
+	//page.append('<h1>iio.js App Demos</h1>');
 	page.append('<h3>click an app for full screen and more details</h3>');
 	page.append('<div id="iioapps"></div>');
 	iioapps = document.getElementById('iioapps');
