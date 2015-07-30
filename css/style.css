@@ -34,11 +34,11 @@ h4{
 h1,h2,h3,h4{
   color:#EFEFEF;
 }
-#iioapps canvas{
+.iioapps canvas{
   border:1px solid #6F6F6F;
   cursor: pointer
 }
-#iioapps canvas:hover{
+.iioapps canvas:hover{
   border:1px solid #00baff;
 }
 
@@ -74,7 +74,7 @@ h1,h2,h3,h4{
   padding-top: 5px;
   padding-bottom: 5px;
 }
-#iioapps{
+.iioapps{
   margin-top: 15px;
 }
 
@@ -169,7 +169,7 @@ h1,h2,h3,h4{
 .demo_wrap{
   float:left;
   margin-right: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .demo{
   border:1px solid white;
@@ -524,7 +524,7 @@ a,h2,h5,canvas,input[type='submit'],.btn,#drag_overlay,.api_item{
   width:50%;
 }
 .col_two p, .col_two h2{
-  padding:30px 30px 10px 0;
+  padding:10px 30px 10px 0;
 }
 .col_two .big-btn{
   padding:0;

@@ -1,21 +1,5 @@
-var show_demo_index = function(){
-	//page.append('<h1>iio.js App Demos</h1>');
-	page.append('<h3>click an app for full screen and more details</h3>');
-	page.append('<div id="iioapps"></div>');
-	iioapps = document.getElementById('iioapps');
-
-	add_demo_preview( ScrollShooter, "ScrollShooter" );
-	add_demo_preview( Snake, "Snake" );
-	add_demo_preview( ColorGrid, "ColorGrid", {w:20} );
-	add_demo_preview( ColorLines, "ColorLines", { lineWidth:20 } );
-	add_demo_preview( MineSweeper, "MineSweeper", { color: new iio.Color(255,255,255) } );
-	add_demo_preview( Squares, "Squares" );
-	add_demo_preview( Snow, "Snow" );
-	add_demo_preview( TicTacToe, "TicTacToe" );
-}
-
-add_demo_preview = function( app, title, settings ){
-	create_demo_canvas( 200, title )
+add_demo_preview = function( elem, app, title, settings ){
+	create_demo_canvas( elem, 200, title )
 	$('#'+title).click(function(){
 		goTo('#demos-'+title);
 	    return false;
@@ -42,4 +26,32 @@ show_demo = function( app, title, settings){
 	if( settings )
 		iio.start( [ app, settings ] );
 	else iio.start( app )
+}
+
+function create_demo_canvas( elem, SIZE, id ){
+	
+	var canvas, container, h, p;
+	
+	container = document.createElement('div');
+	container.className += "demo_wrap";
+
+	h = document.createElement('h4');
+	h.innerHTML = id;
+	h.className += "demo_title";
+
+	canvas = document.createElement('canvas');
+	canvas.id = id;
+	canvas.width = SIZE;
+	canvas.height = SIZE;
+	canvas.className += "demo";
+	/*canvas.codeurl = testcode_url(R,C);
+	canvas.onclick = function(e){
+		codeWindow = window.open(this.codeurl, "littleWindow", "location=no,menubar=no,toolbar=no,width=500,height=600,left=0"); 
+		codeWindow.moveTo(0,0);
+	}*/
+	
+	container.appendChild(canvas);
+	container.appendChild(h);
+	elem.appendChild(container);
+	return canvas;
 }
