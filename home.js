@@ -4,7 +4,6 @@ show_home = function(){
 	);
 
 	//page.append('<h1>iio.js App Demos</h1>');
-	//page.append('<h3>click an app for full screen and more details</h3>');
 	var iioApps1 = document.createElement('div');
 	iioApps1.className = 'iioapps';
 	page.append(iioApps1);
@@ -22,7 +21,8 @@ show_home = function(){
 			p('The core platform is <span class="kwd">open source and free</span> to use for any purpose. The download includes production and development '+kwd('full source code')+' for all versions of the framework.') +
 			p('Submit additions, questions, and bugs on '+ahref('Github', 'https://github.com/sbiermanlytle/iioengine')+'. General inquires may be sent to '+ahref('iioinc.com', 'http://iioinc.com/contact')+'.') +
 		'</div>' +
-		clear
+		clear +
+		h3('click an app for full screen and more details')
 	);
 
 	var iioApps2 = document.createElement('div');
