@@ -23,10 +23,11 @@
 
 	var iioapps = document.body;
 	var app_colors = [];
-	app_colors[1] = new iio.Color(0,186,255);
-	app_colors[0] = new iio.Color(101,176,66);
+	app_colors[0] = new iio.Color(0,186,255);
+	app_colors[1] = new iio.Color(iio.Color.rgbToHex(101,176,66), 0.1);
+	app_colors[2] = new iio.Color("#FAAAAA", 1);
 
-	iio.start([iio.test.Grid.shrink, { color:app_colors[0] }], 'c');
+	iio.start([iio.test.Grid.shrink, { color:app_colors[2] }], 'c');
 
 </script>
 </body>
