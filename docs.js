@@ -56,9 +56,9 @@ show_docs_menu = function(){
 show_unit_test = function( test_function, test_class ){
 	$('#api_content').append( h2('Unit Tests', "api."+test_class+'.unit-tests') );
 	$('#api_content').append('<h3>click any app to view the source code</h3>');
-	$('#api_content').append('<div id="iioapps"></div>');
-
-	iioapps = document.getElementById('iioapps');
+	iioapps = document.createElement('div');
+	iioapps.className = 'iioapps';
+	$('#api_content').append(iioapps);
 	iio.test.create_canvas_grid( 100, 5, 6 );
 	iio.test.show_tests( test_function, test_class );
 }
