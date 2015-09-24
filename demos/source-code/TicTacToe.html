@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; TicTacToe</title>
   <meta name="description" content="iio TicTacToe demo source code">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" href="../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">/* TicTacToe
+  <pre class="prettyprint linenums:1">/* TicTacToe
 *  ------------------
 *  iio.js version 1.4 
 */
@@ -16,62 +16,62 @@
 // define a new iio app
 function TicTacToe( app, settings ){
 
-	// set the background color to black
-	app.set({ color: 'black' });
-				
-	// add a 3x3 grid to app center
-	var grid = app.add( new iio.Grid({
-		pos: app.center,
-		// make the grid as big as the smaller screen dimension
-		width: ( app.height &lt; app.width ) ? app.height : app.width,
-		color:'white',
-		lineWidth: 5,
-		R:3,
-		C:3
-	}));
+  // set the background color to black
+  app.set({ color: 'black' });
+        
+  // add a 3x3 grid to app center
+  var grid = app.add( new iio.Grid({
+    pos: app.center,
+    // make the grid as big as the smaller screen dimension
+    width: ( app.height &lt; app.width ) ? app.height : app.width,
+    color:'white',
+    lineWidth: 5,
+    R:3,
+    C:3
+  }));
 
-	// define boolean to indicate player turns
-	var xTurn = true;
+  // define boolean to indicate player turns
+  var xTurn = true;
 
-	// define a function to be called when the grid is clicked
-	grid.onClick = function( event, pos, cell ){
+  // define a function to be called when the grid is clicked
+  grid.onClick = function( event, pos, cell ){
 
-		// if the clicked cell is empty
-		if(!cell.taken){
+    // if the clicked cell is empty
+    if(!cell.taken){
 
-			// create a new text object
-			var play_piece = new iio.Text({
-				size: cell.width,
-				font: 'sans-serif'
-			});
+      // create a new text object
+      var play_piece = new iio.Text({
+        size: cell.width,
+        font: 'sans-serif'
+      });
 
-			// depending upon the current turn
-			// set the text object string and color
-			if(xTurn) {
-				play_piece.text = 'X';
-				play_piece.color = iio.Color.red;
-			} else { 
-				play_piece.text = 'O';
-				play_piece.color = iio.Color.iioBlue;
-			}
+      // depending upon the current turn
+      // set the text object string and color
+      if(xTurn) {
+        play_piece.text = 'X';
+        play_piece.color = iio.Color.red;
+      } else { 
+        play_piece.text = 'O';
+        play_piece.color = iio.Color.iioBlue;
+      }
 
-			// add the text object to the cell
-			cell.add( play_piece );
+      // add the text object to the cell
+      cell.add( play_piece );
 
-			// create a new property in cell to
-			// indicate that it is not empty
-			cell.taken = true;
+      // create a new property in cell to
+      // indicate that it is not empty
+      cell.taken = true;
 
-			// change turns
-			xTurn = !xTurn;
-		}
-	}
+      // change turns
+      xTurn = !xTurn;
+    }
+  }
 
-	// if settings are passed and preview is active
-	if( settings &amp;&amp; settings.preview )
-		// generate 4 random selections
-		for( var i=0; i&lt;4; i++ )
-			grid.onClick( {}, {}, grid.objs[iio.randomInt( 0,8 )] );
+  // if settings are passed and preview is active
+  if( settings &amp;&amp; settings.preview )
+    // generate 4 random selections
+    for( var i=0; i&lt;4; i++ )
+      grid.onClick( {}, {}, grid.objs[iio.randomInt( 0,8 )] );
 }
 
 // start the app on an existing canvas

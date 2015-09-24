@@ -27,17 +27,17 @@ function goTo( hash ) {
 
 refresh = function(){
   current_hash = window.location.hash;
-	page.empty();
-	iio.stop();
-	$('canvas').remove();
-	$('#fullscreen_header').remove();
+  page.empty();
+  iio.stop();
+  $('canvas').remove();
+  $('#fullscreen_header').remove();
   toggle_ids = [];
   toggles = [];
   numToggles = 0;
-	$('#column').show();
-	$('#header').css({ 'left': 'inherit', 'margin-left': -140 });
-	$('#footer').css({ 'left': 'inherit', 'margin-left': -140 });
-	display_current();
+  $('#column').show();
+  $('#header').css({ 'left': 'inherit', 'margin-left': -140 });
+  $('#footer').css({ 'left': 'inherit', 'margin-left': -140 });
+  display_current();
 }
 
 $(window).bind( 'hashchange', refresh );
