@@ -44,7 +44,7 @@ iio.convert = {
     }
   },
   color: function(c){
-    return iio.Color[ c.toLowerCase() ];
+    return iio.Color[c.toLowerCase()]();
   },
   vector: function(v){
     if(v instanceof Array)

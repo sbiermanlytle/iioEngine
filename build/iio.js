@@ -357,7 +357,7 @@ iio.convert = {
     }
   },
   color: function(c){
-    return iio.Color[ c.toLowerCase() ];
+    return iio.Color[c.toLowerCase()]();
   },
   vector: function(v){
     if(v instanceof Array)
@@ -835,20 +835,20 @@ iio.Color.prototype.randomize = function(alpha){
 
 // COLOR CONSTANTS
 //------------------------------------------------------------
-iio.Color.iioBlue = new iio.Color(0,186,255);
-iio.Color.transparent = new iio.Color(0,0,0,0);
-iio.Color.black = new iio.Color(0,0,0,1);
-iio.Color.white = new iio.Color(255,255,255,1);
-iio.Color.gray = new iio.Color(128,128,128,1);
-iio.Color.red = new iio.Color(255,0,0,1);
-iio.Color.green = new iio.Color(0,128,0,1);
-iio.Color.blue = new iio.Color(0,0,255,1);
-iio.Color.lime = new iio.Color(0,255,0,1);
-iio.Color.aqua = new iio.Color(0,255,255,1);
-iio.Color.fuchsia = new iio.Color(255,0,255,1);
-iio.Color.maroon = new iio.Color(128,0,0,1);
-iio.Color.navy = new iio.Color(0,0,128,1);
-iio.Color.olive = new iio.Color(128,128,0,1);;
+iio.Color.iioBlue = function(){ return new iio.Color(0,186,255) }
+iio.Color.transparent = function(){ return new iio.Color(0,0,0,0) }
+iio.Color.black = function(){ return new iio.Color(0,0,0,1) }
+iio.Color.white = function(){ return new iio.Color(255,255,255,1) }
+iio.Color.gray = function(){ return new iio.Color(128,128,128,1) }
+iio.Color.red = function(){ return new iio.Color(255,0,0,1) }
+iio.Color.green = function(){ return new iio.Color(0,128,0,1) }
+iio.Color.blue = function(){ return new iio.Color(0,0,255,1) }
+iio.Color.lime = function(){ return new iio.Color(0,255,0,1) }
+iio.Color.aqua = function(){ return new iio.Color(0,255,255,1) }
+iio.Color.fuchsia = function(){ return new iio.Color(255,0,255,1) }
+iio.Color.maroon = function(){ return new iio.Color(128,0,0,1) }
+iio.Color.navy = function(){ return new iio.Color(0,0,128,1) }
+iio.Color.olive = function(){ return new iio.Color(128,128,0,1) };
 /* Gradient
 ------------------
 iio.js version 1.4
