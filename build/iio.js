@@ -2397,14 +2397,7 @@ iio.App.prototype.App = function(view, script, settings) {
     this.height / 2
   );
 
-  //get DOM offset of canvas
-  var offset = view.getBoundingClientRect();
-
-  //set canvas DOM position
-  this.pos = new iio.Vector(
-    offset.left,
-    offset.top
-  );
+  this.update_pos();
 
   //add app to global app array
   iio.apps.push(this);
@@ -2427,6 +2420,13 @@ iio.App.prototype.update = function(){
     nuFPS = this.script.onUpdate();
   this.draw();
   return nuFPS;
+}
+iio.App.prototype.update_pos = function(){
+  var offset = this.canvas.getBoundingClientRect();
+  this.pos = new iio.Vector(
+    offset.left,
+    offset.top
+  );
 }
 iio.App.prototype.stop = function() {
   this.objs.forEach(function(obj) {
@@ -2454,6 +2454,7 @@ iio.App.prototype.draw = function( noClear ) {
       if (this.objs[i].draw) this.objs[i].draw(this.ctx);
 }
 iio.App.prototype.convert_event_pos = function(e) {
+  this.update_pos();
   return new iio.Vector( 
     e.clientX - this.pos.x, 
     e.clientY - this.pos.y
