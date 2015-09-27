@@ -1,0 +1,156 @@
+<!doctype html>
+  <body>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript">
+
+Bubbles = function(io){
+
+  function CircleGrid(){
+      this.CircleGrid.apply(this, arguments);
+   }; iio.CircleGrid=CircleGrid;
+   iio.inherit(CircleGrid, iio.Grid)
+
+   //Constructor
+   CircleGrid.prototype._super = iio.Grid.prototype;
+   CircleGrid.prototype.CircleGrid = function(v,y,c,r,res,yRes){
+      this._super.Grid.call(this,v,y,c,r,res,yRes);
+   }
+   CircleGrid.prototype._getCellCenter = iio.Grid.prototype.getCellCenter;
+   CircleGrid.prototype.getCellCenter = function(c,r, pixelPos){
+      var gridCenter = this._getCellCenter(c,r,pixelPos);
+      var C = Math.floor(gridCenter.y/this.res.y);
+      if (C%2!=0) 
+        gridCenter.x+=this.res.x/4;
+      gridCenter.y-=8*C;
+      return gridCenter;
+   }
+   CircleGrid.prototype._getCellAt = iio.Grid.prototype.getCellAt;
+   CircleGrid.prototype.getCellAt = function(pos,y){
+      var realPos = pos.clone();
+      var C = Math.floor(realPos.y/this.res.y);
+      if (C%2!=0) 
+        realPos.x-=this.res.x/4;
+      realPos.y+=8*C;
+      return this._getCellAt(realPos);
+   }
+
+
+  io.setBGColor('black')
+    .setCursorStyle('crosshair')
+    .disableStaticCollisionChecks();
+
+  var BUBBLE_RADIUS = 50;
+  var BUBBLE_SPEED = io.canvas.height/50;
+  
+  var COLORS = [
+     'red'
+    ,'#00baff'
+    ,'Chartreuse'
+    ,'Yellow'
+    ,'purple'];
+
+  var nextColor = iio.getRandomInt(0,COLORS.length);
+
+  var bubbleGrid = new CircleGrid(0,0,io.canvas,BUBBLE_RADIUS*2);
+  //  .setStrokeStyle('white'));
+
+  var bubbleBase = io.addToGroup('Bubble Base'
+    ,new iio.Circle(io.canvas.width/2,io.canvas.height,150)
+      .setFillStyle(COLORS[nextColor])
+    ,10);
+ 
+  createBubble = function(position, velocity, fillStyle){
+    return io.addToGroup('Bubbles'
+      ,new iio.Circle(position,BUBBLE_RADIUS) //50px radius
+      .setFillStyle(fillStyle)
+      .enableKinematics()
+      .setVel(velocity)
+      .setBound('left', 0
+        ,function(obj){
+          obj.vel.x = -obj.vel.x*.8;
+          return true;
+         })
+      .setBound('right', io.canvas.width
+        ,function(obj){
+          obj.vel.x = -obj.vel.x*.8;
+          return true;
+        })
+      .setBound('top', 0
+        ,function(obj){
+          //obj.vel.y = 0;
+          obj.vel.y = -obj.vel.y*.8;
+          //obj.vel.x = 0;
+          //obj.bounds = undefined;
+          return true;
+         })
+      .setBound('bottom', io.canvas.height
+        ,function(obj){
+          obj.vel.y = -obj.vel.y*.8;
+          return true;
+        }));
+  }
+
+  createNewTopRow = function(){
+    var pos = new iio.Vec(0,BUBBLE_RADIUS);
+    for (var c=0;c<bubbleGrid.C;c++){
+      pos.x = c*bubbleGrid.res.x+BUBBLE_RADIUS;
+      createBubble(pos,new iio.Vec(),COLORS[iio.getRandomInt(0,COLORS.length)]);
+      bubbleGrid.cells[c][0].taken=true;
+    }
+    /*for (var x=BUBBLE_RADIUS;x<io.canvas.width;x+=BUBBLE_RADIUS*2){
+      pos.x = x;
+      createBubble(pos,new iio.Vec(),COLORS[iio.getRandomInt(0,COLORS.length)]);
+    }*/
+  }; createNewTopRow();
+ 
+  io.addGroup('Bubbles',1);
+  io.setCollisionCallback('Bubbles'
+    ,function(b1,b2){
+      function processCollision(a1,a2){
+        a1.stopKinematics();
+        if (a1.styles.fillStyle == a2.styles.fillStyle){
+          if (typeof a1.neighbors == 'undefined')
+            a1.neighbors = [];
+          a1.neighbors[a1.neighbors.length] = a2;
+        }
+      }
+      processCollision(b1,b2);
+      processCollision(b2,b1);
+      var cell = bubbleGrid.getCellAt(b2.pos);
+      var i=0;
+      while(typeof bubbleGrid.cells[cell.x][cell.y].taken!='undefined'
+        && bubbleGrid.cells[cell.x][cell.y].taken){
+        if (i%4==0)
+          cell.x++;
+        else if (i%4==1)
+          cell.x-=2;
+        else if (i%4==2)
+          cell.y--;
+        else cell.y+=2;
+        i++;
+      }
+      b2.setPos(bubbleGrid.getCellCenter(b2.pos,true));
+      bubbleGrid.cells[cell.x][cell.y].taken = true;
+     });
+
+  io.canvas.addEventListener('mousedown', function(event){
+    var pos = new iio.Vec(io.canvas.width/2,io.canvas.height-100);
+    var mousePos = io.getEventPosition(event);
+    var x = mousePos.x-pos.x;
+    var y = mousePos.y-pos.y;
+    var t = Math.atan2(x,-y);
+    var vX = 10*Math.sin(t);
+    var vY = -10*Math.cos(t);
+    var vel = new iio.Vec(vX,vY).normalize().mult(BUBBLE_SPEED);
+    createBubble(pos,vel,COLORS[nextColor]);
+    nextColor = iio.getRandomInt(0,COLORS.length);
+    bubbleBase.setFillStyle(COLORS[nextColor]);
+  });
+
+  io.setFramerate(60);
+ 
+}; iio.start(Bubbles);
+
+    </script>
+  </body>
+</html>

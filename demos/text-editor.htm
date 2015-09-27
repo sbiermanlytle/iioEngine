@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <body>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript">
+/*
+Requires The iio Engine
+Version 1.2.2+
+Author: Sebastian Bierman-Lytle
+License: BSD 2-Clause OS
+*/
+TextEditor = function(io){
+
+  io.setBGColor('black');
+
+  var txt = io.addObj(new iio.Text('Edit This Text', io.canvas.center)
+      .setFont('30px Consolas')
+      .setTextAlign('center')
+      .setFillStyle('white'));
+
+  var xPos=txt.right();
+  txt.cursor = io.addObj(new iio.Line(xPos,txt.pos.y+10,xPos,txt.pos.y-parseInt(txt.font,10))
+    .setStrokeStyle('white',1));
+
+  var cursorIndex=txt.text.length;
+  var shift=false;
+
+  document.addEventListener('keydown',function(e){
+    var keyString=iio.getKeyString(e);
+    if (keyString=='shift'){
+      shift=true; return;
+    }
+    cursorIndex=txt.keyboardEdit(e,cursorIndex,shift);
+    if (keyString=='left arrow' && cursorIndex>0) 
+      cursorIndex--;
+    else if (keyString=='right arrow' && cursorIndex<txt.text.length) 
+      cursorIndex++;
+    var x=txt.getX(io.context,cursorIndex);
+    txt.cursor.pos.x=txt.cursor.endPos.x=x;
+    txt.cursor.setStrokeStyle('white');
+    blink=false;
+    io.draw();
+  });
+
+  document.addEventListener('keyup',function(e){
+    if (iio.keyCodeIs('shift',e)) shift=false;
+  });
+
+  var blink=false;
+  io.setFramerate(2,function(){
+    if(blink) txt.cursor.setStrokeStyle('');
+    else txt.cursor.setStrokeStyle('white');
+    blink=!blink;
+    io.draw();
+  });
+
+}; iio.start(TextEditor);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<body>
+<script type="text/javascript" src="../core/iioEngine.js"></script>
+<script type="text/javascript">
+
+DashedLines = function(io){	
+
+	var padding = 50;
+	var lineSpacing = (io.canvas.height-padding*2)/3;
+	var y = io.canvas.height/2-padding;
+
+	//dashed blue line
+	io.addObj(new iio.Line(padding,y,io.canvas.width-padding,y)
+		.setStrokeStyle('blue',10)
+		.setLineCap('square')
+		.setDash([5,20]));
+	
+	y+=padding;
+
+	//dotted line, dots 20px apart
+	io.addObj(new iio.Line(padding,y,io.canvas.width-padding,y)
+		.setStrokeStyle('red',10)
+		.setLineCap('round')
+		.setDash([.1,20]));
+	
+	y+=padding;
+
+	//alternate dashes and dots
+	io.addObj(new iio.Line(padding,y,io.canvas.width-padding,y)
+		.setStrokeStyle('green',10)
+		.setLineCap('round')
+		.setDash([20,20,.1,20,.3,50]));
+
+}; iio.start(DashedLines);
+
+</script>
+</body>
+</html>

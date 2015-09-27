@@ -1,0 +1,27 @@
+<!doctype html>
+  <body>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript">
+
+    ButtonDemo = function(io){
+
+      var btn = io.addObj(new iio.Rect(io.canvas.center, 160, 40)
+        .setFillStyle('#00baff'));
+
+      //print instructions
+      btn.text = io.addObj(new iio.Text('Button!',btn.pos)
+                    .setFont('26px Consolas')
+                    .translate(0,8)
+                    .setTextAlign('center')
+                    .setFillStyle('white'));
+
+      io.canvas.addEventListener('mousedown', function(event){
+        if (btn.contains(io.getEventPosition(event)))
+          alert('button pushed');
+      });
+ 
+    }; iio.start(ButtonDemo);
+
+    </script>
+  </body>
+</html>
