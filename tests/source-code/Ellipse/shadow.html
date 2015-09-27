@@ -1,0 +1,43 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+TestShadow = function( app, settings ){
+
+  // set app background color to white
+  app.set({ color:'white' })
+
+  // add a new circle to the app
+  app.add(new iio.Ellipse({
+    // set position to app center
+    pos: app.center.clone(),
+    // set color to green
+    color: 'green',
+    // set radius to 25px
+    radius: 25,
+    // set dash with 20px width and spacing
+    dash: 20,
+    // set line width to 5px
+    lineWidth: 5,
+    // set shadow color 
+    // to 50% transparent black
+    shadow: new iio.Color( 0,0,0,.5 ),
+    // set shadow blur
+    shadowBlur: 5,
+    // set shadow offset
+    shadowOffset: [ 4,4 ]
+  }));
+}
+
+// start the app on an existing canvas
+iio.start( TestShadow, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

@@ -16,7 +16,7 @@ show_demo_index = function(){
 
   show_unit_test(page, iio.test.Line, 'Line', 0);
   show_unit_test(page, iio.test.Text, 'Text', 1);
-  show_unit_test(page, iio.test.Circle, 'Circle', 2);
+  show_unit_test(page, iio.test.Ellipse, 'Ellipse', 2);
   show_unit_test(page, iio.test.Rectangle, 'Rectangle', 3);
   show_unit_test(page, iio.test.Polygon, 'Polygon', 4);
   show_unit_test(page, iio.test.Grid, 'Grid', 5);

@@ -456,7 +456,7 @@ var api = {
             "// create a Text at app center\nvar text = app.create( app.center, 'hello world' );",
             "// create a Rectangle at app center\nvar rectangle = app.create( app.center, 50, 'red' );",
             "// create a Line\nvar line = app.create( 'red', {\n\tvs: [\n\t\t[ 10,10 ],\n\t\t[ 80,80 ]\n\t]\n});",
-            "// create a Circle at app center\nvar circle = app.create( app.center, 'red', {\n\tradius: 20\n});"
+            "// create a circle at app center\nvar circle = app.create( app.center, 'red', {\n\tradius: 20\n});"
           ],
           divider: true
         },
@@ -828,7 +828,7 @@ var api = {
     classname: 'Ellipse',
     inherits: [ 'Shape','Drawable','Interface' ],
     overview: [ "An ellipse shape defined by a position and 1 or 2 radii." ],
-    unitTests: iio.test.Circle,
+    unitTests: iio.test.Ellipse,
     data: {
       'Constructor': [
         {
