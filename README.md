@@ -24,7 +24,7 @@ iio.js has a debugging version with extra features:
 ## building Source Files (optional)
 If you would like to edit iio.js source code files, use Grunt to re-build. Grunt depends on nodejs and npm.
 
-### installing nodejs and grunt (optional)
+#### installing nodejs and grunt
 If you have brew you can install node easily
 
     brew install node
