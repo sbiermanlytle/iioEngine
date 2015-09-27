@@ -3,7 +3,7 @@ iio.test.Ellipse = {
 		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
-			radius: 25
+			radius: 25,
 		}));
 	},
 	rotation : function(app, settings ){
@@ -11,7 +11,8 @@ iio.test.Ellipse = {
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
-			rotation: Math.PI/2
+			vRadius: 35,
+			rotation: Math.PI/4
 		}));
 	},
 	origin : function(app, settings ){
@@ -20,6 +21,7 @@ iio.test.Ellipse = {
 			origin: [ 8, -8 ],
 			color: settings.color,
 			radius: 25,
+			vRadius: 30,
 			rVel: .02
 		}));
 	},

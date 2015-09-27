@@ -23,12 +23,12 @@ iio.test.setup_master = function(){
 
 	iio.test.create_canvas_grid( 100, 5, 6 );
 }
-iio.test.create_canvas_grid = function( SIZE, COLS, ROWS ){
+iio.test.create_canvas_grid = function( SIZE, COLS, ROWS, ID ){
 	var canvas, clear;
 	for(var R=0; R<ROWS; R++){
 		for(var C=0; C<COLS; C++){
 			canvas = document.createElement('canvas');
-			canvas.id = "c"+R+""+C;
+			canvas.id = ID+"c"+R+""+C;
 			canvas.width = SIZE;
 			canvas.height = SIZE;
 			//canvas.codeurl = iio.test.source_code_url(R,C,test_class);
@@ -43,7 +43,7 @@ iio.test.create_canvas_grid = function( SIZE, COLS, ROWS ){
 		iioapps.appendChild(clear);
 	}
 }
-iio.test.show_tests = function( test_class, class_name ){
+iio.test.show_tests = function( test_class, class_name, id ){
 
 	var r = 0;
 	var c = 0;
@@ -56,8 +56,8 @@ iio.test.show_tests = function( test_class, class_name ){
 
 	function run_test(test_function,source_code_url){
 		if(test_function){
-			document.getElementById('c'+r+''+c).codeurl = source_code_url;
-			iio.start([test_function, { color:app_colors[color] }], 'c'+r+''+c);
+			document.getElementById(id+'c'+r+''+c).codeurl = source_code_url;
+			iio.start([test_function, { color:app_colors[color] }], id+'c'+r+''+c);
 			switch_color();
 			c++;
 		}
