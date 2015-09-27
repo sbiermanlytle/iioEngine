@@ -348,6 +348,20 @@ var api = {
           ]
         }
       ],
+      'Functions': [
+        {  // onClick
+          definition: 'onClick( '+kwd('Event')+' event, '+a('Vector')+' pos ) | ' + small('returns ') + kwd('boolean'),
+          descriptions: [ 
+            "Called when a face or edge of the object is clicked. "+kwd('Event')+' is a JavaScript Event object.',
+            "Note that this function only runs by default on "+a('App')+' and App.'+a('objs')+'.'
+          ],
+          samples: [ 
+            "// detect when the app is clicked\napp.onClick = function( event, pos ){\n  // handle input...\n}",
+            "// detect when an object added to app is clicked\nvar obj = app.add( new iio.Rectangle({\n  //...\n  onClick: function( event, pos ){\n    // handle input...\n  })\n});",
+            "// simulate a click on the app\napp.onClick( null, app.center );"
+          ]
+        }
+      ],
       'Associated Objects': [
         {  // app
           definition: a('App') + ' app',
@@ -620,7 +634,7 @@ var api = {
           descriptions: [ "The color of a shape outline.", a('Line')+" is the only object that does not have an "+kwd('outline')+'.' ],
           samples: [ 
             "// access a shape's outline color\nvar outline_color = shape.outline;",
-            "// set a shape's outline color directly\nshape.outline = iio.Color.red;",
+            "// set a shape's outline color directly\nshape.outline = iio.Color.red();",
             "// set a shape's outline color using set\nshape.set({ outline: 'red' });"
           ],
           divider: true
@@ -643,7 +657,7 @@ var api = {
           descriptions: [ "The shadow color." ],
           samples: [ 
             "// access a shape's shdow color\nvar shadow_color = shape.shadow;",
-            "// set a shape's shadow color directly\nshape.shadow = new iio.Color.black;",
+            "// set a shape's shadow color directly\nshape.shadow = new iio.Color.black();",
             "// set a shape's shadow color using set\nshape.set({ shadow: 'black' });"
           ],
           divider: true
@@ -969,6 +983,18 @@ var api = {
           samples: [
             "// access the grid resolution\nvar cell_width = grid.res.x;\nvar cell_height = grid.res.y;",
             "// set grid resolution using set\ngrid.set({ res: [ 30,40 ] });"
+          ]
+        }
+      ],
+      'Functions': [
+        {  // onClick
+          definition: 'onClick( '+kwd('Event')+' event, '+a('Vector')+', pos '+a('Rectangle')+' cell ) | ' + small('returns ') + kwd('boolean'),
+          descriptions: [ 
+            "Called when a face or edge of the Grid is clicked. "+kwd('Event')+' is a JavaScript Event object.',
+            "Note that this function only runs by default on grids added directly to "+a('App')+'.'
+          ],
+          samples: [ 
+            "// detect when the grid is clicked\ngrid.onClick = function( event, pos, cell ){\n  // handle input...\n}",
           ]
         }
       ],
