@@ -10,14 +10,16 @@ iio.js was formarly known as 'iio Engine'. The last version of iio Engine, v1.2.
 ## links
 Homepage: http://iio.js.org
 
+Tutorials: http://iioinc.com/tutorials
+
 Twitter: @iioinc
 
-## using iio.js
-All you need to use the library is to load the minified build file from a local folder or the iio.js URL:
+## loading iio.js
+To use the library, load an iio.js build file from a local folder or the iio.js URL:
 
 	<script type="text/javascript" src="http://iio.js.org/iio.min.js"></script>
 
-iio.js has a debugging version with extra features:
+iio_debug.js has a debugging version with extra features:
 
 	<script type="text/javascript" src="http://iio.js.org/iio_debug.js"></script>
 
