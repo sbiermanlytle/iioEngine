@@ -39,24 +39,15 @@ function TicTacToe( app, settings ){
     // if the clicked cell is empty
     if(!cell.taken){
 
-      // create a new text object
-      var play_piece = new iio.Text({
+      // add a new Text object to the cell
+      cell.add( new iio.Text({
+        // depending upon the current turn
+        // set the object text and color
+        text: xTurn ? 'X' : 'O',
+        color: xTurn ? 'red' : 'iioblue',
         size: cell.width,
-        font: 'sans-serif'
-      });
-
-      // depending upon the current turn
-      // set the text object string and color
-      if(xTurn) {
-        play_piece.text = 'X';
-        play_piece.color = iio.Color.red();
-      } else { 
-        play_piece.text = 'O';
-        play_piece.color = iio.Color.iioBlue();
-      }
-
-      // add the text object to the cell
-      cell.add( play_piece );
+        font: 'sans-serif',
+      }));
 
       // create a new property in cell to
       // indicate that it is not empty
