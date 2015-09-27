@@ -43,6 +43,7 @@ refresh = function(){
 $(window).bind( 'hashchange', refresh );
 
 display_current = function(){
+  // DISABLE ga FOR OFFLINE USE
   ga('send', 'pageview', current_hash.substring(1) );
   var anchor;
 

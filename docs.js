@@ -53,14 +53,14 @@ show_docs_menu = function(){
   append_api_item_sub('shapes', api.Grid );
 }
 
-show_unit_test = function( test_function, test_class ){
-  $('#api_content').append( h2('Unit Tests', "api."+test_class+'.unit-tests') );
-  $('#api_content').append('<h3>click any app to view the source code</h3>');
+show_unit_test = function( parent, test_function, test_class, id ){
+  parent.append( h2(test_class+' Unit Tests', "api."+test_class+'.unit-tests') );
+  parent.append('<h3>click any app to view the source code</h3>');
   iioapps = document.createElement('div');
   iioapps.className = 'iioapps';
-  $('#api_content').append(iioapps);
-  iio.test.create_canvas_grid( 100, 5, 6 );
-  iio.test.show_tests( test_function, test_class );
+  parent.append(iioapps);
+  iio.test.create_canvas_grid( 100, 5, 6, id );
+  iio.test.show_tests( test_function, test_class, id );
 }
 
 show_api_basics = function(){
@@ -106,7 +106,7 @@ show_api = function( api ){
 
     // UNIT TESTS
     if( api.unitTests )
-      show_unit_test( api.unitTests, api.classname )
+      show_unit_test( $('#api_content'), api.unitTests, api.classname )
 
 
     // FUNCTIONS & PROPERTIES

@@ -1,3 +1,27 @@
+show_demo_index = function(){
+  page.append(h1('iio.js App Demos'));
+  page.append('<h3>click any app to view the source code</h3>');
+  var iioApps = document.createElement('div');
+  iioApps.className = 'iioapps';
+  page.append(iioApps);
+  add_demo_preview( iioApps, ScrollShooter, "ScrollShooter" );
+  add_demo_preview( iioApps, Snake, "Snake" );
+  add_demo_preview( iioApps, ColorGrid, "ColorGrid", {w:20} );
+  add_demo_preview( iioApps, ColorLines, "ColorLines", { lineWidth:20 } );
+  add_demo_preview( iioApps, MineSweeper, "MineSweeper", { color: new iio.Color(255,255,255) } );
+  add_demo_preview( iioApps, Squares, "Squares" );
+  add_demo_preview( iioApps, Snow, "Snow" );
+  add_demo_preview( iioApps, TicTacToe, "TicTacToe" );
+  page.append(clear);
+
+  show_unit_test(page, iio.test.Line, 'Line', 0);
+  show_unit_test(page, iio.test.Text, 'Text', 1);
+  show_unit_test(page, iio.test.Circle, 'Circle', 2);
+  show_unit_test(page, iio.test.Rectangle, 'Rectangle', 3);
+  show_unit_test(page, iio.test.Polygon, 'Polygon', 4);
+  show_unit_test(page, iio.test.Grid, 'Grid', 5);
+}
+
 add_demo_preview = function( elem, app, title, settings ){
   create_demo_canvas( elem, 200, title )
   $('#'+title).click(function(){
