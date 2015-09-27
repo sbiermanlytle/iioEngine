@@ -835,7 +835,7 @@ iio.Color.prototype.randomize = function(alpha){
 
 // COLOR CONSTANTS
 //------------------------------------------------------------
-iio.Color.iioBlue = function(){ return new iio.Color(0,186,255) }
+iio.Color.iioblue = function(){ return new iio.Color(0,186,255) }
 iio.Color.transparent = function(){ return new iio.Color(0,0,0,0) }
 iio.Color.black = function(){ return new iio.Color(0,0,0,1) }
 iio.Color.white = function(){ return new iio.Color(255,255,255,1) }
