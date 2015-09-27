@@ -171,6 +171,7 @@ iio.test.Ellipse = {
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
+			vRadius: 35,
 			shrink: {
 				speed: .03,
 				upperBound: 25,
