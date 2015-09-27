@@ -1,7 +1,7 @@
 {
-  "name": "iioengine",
+  "name": "iiojs",
   "version": "1.4.0",
-  "description": "The iio Engine streamlines the development of HTML5 applications.",
+  "description": "iio.js Engine speeds the development and deploy of HTML5 applications.",
   "main": "Gruntfile.js",
   "directories": {
     "doc": "docs",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sbiermanlytle/iioengine.git"
+    "url": "https://github.com/iioinc/iio.js"
   },
   "keywords": [
     "html5",
@@ -33,7 +33,7 @@
   "author": "Sebastian Bierman-Lytle",
   "license": "BSD",
   "bugs": {
-    "url": "https://github.com/sbiermanlytle/iioengine/issues"
+    "url": "https://github.com/iioinc/iio.js/issues"
   },
-  "homepage": "https://github.com/sbiermanlytle/iioengine"
+  "homepage": "http://iio.js.org"
 }
