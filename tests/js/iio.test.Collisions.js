@@ -46,7 +46,7 @@ iio.test.Collisions = {
 		});
 	},
 	/*rotation : function(app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
@@ -54,7 +54,7 @@ iio.test.Collisions = {
 		}));
 	},
 	origin : function(app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			origin: [ 8, -8 ],
 			color: settings.color,
@@ -68,7 +68,7 @@ iio.test.Collisions = {
 
 		function reverse(o){ o.vel.x *= -1 }
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center.clone(),
 			color: settings.color,
 			radius: 25,
@@ -89,7 +89,7 @@ iio.test.Collisions = {
 
 		var speed = 1;
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center.clone(),
 			color: settings.color,
 			radius: 25,
@@ -109,7 +109,7 @@ iio.test.Collisions = {
 
 		function reverse(o){ o.rVel *= -1 }
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center.clone(),
 			origin: [ 12, -12 ],
 			color: settings.color,
@@ -129,7 +129,7 @@ iio.test.Collisions = {
 	},
 	rAcc_bounds : function( app, settings ){
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center.clone(),
 			origin: [ 12, -12 ],
 			color: settings.color,
@@ -157,7 +157,7 @@ iio.test.Collisions = {
 
 		app.loop(1);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
@@ -168,7 +168,7 @@ iio.test.Collisions = {
 		}));
 	},
 	alpha : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
@@ -182,7 +182,7 @@ iio.test.Collisions = {
 		}));
 	},
 	color : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color.clone(),
 			radius: 25,
@@ -194,7 +194,7 @@ iio.test.Collisions = {
 
 		app.loop(10);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			outline: settings.color.clone(),
@@ -204,7 +204,7 @@ iio.test.Collisions = {
 		}));
 	},
 	shrink : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
@@ -221,7 +221,7 @@ iio.test.Collisions = {
 		}));
 	},
 	dash : function ( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			outline: settings.color,
@@ -230,7 +230,7 @@ iio.test.Collisions = {
 		}));
 	},
 	dash_rounded : function ( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			outline: settings.color,
@@ -241,7 +241,7 @@ iio.test.Collisions = {
 		}));
 	},
 	gradient : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			color: new iio.Gradient({
@@ -255,7 +255,7 @@ iio.test.Collisions = {
 		}));
 	},
 	radial_gradient : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			color: new iio.Gradient({
@@ -275,7 +275,7 @@ iio.test.Collisions = {
 
 		app.set({color:'white'})
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			outline: settings.color,
 			lineWidth: 5,
@@ -293,17 +293,17 @@ iio.test.Collisions = {
 			lineWidth: 5
 		}
 
-		app.add( new iio.Circle(props,{
+		app.add( new iio.Ellipse(props,{
 			pos: app.center,
 			origin: [ 8, -8 ],
 			radius: 25,
 			rVel: .02
-		})).add( new iio.Circle(props,{
+		})).add( new iio.Ellipse(props,{
 			radius: 12
 		}))
 	},
 	img : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: app.width/2.5,
 			clip: true,
@@ -314,7 +314,7 @@ iio.test.Collisions = {
 
 		app.loop(1);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: app.width/2.5,
 			clip: true,

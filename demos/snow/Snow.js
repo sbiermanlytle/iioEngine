@@ -27,7 +27,7 @@ Snow = function( app, settings ){
 
 	// add new circles to the app
 	for(var i=0; i<num; i++)
-		app.add( new iio.Circle({
+		app.add( new iio.Ellipse({
 			// set random position above app view
 			pos:[ 
 				iio.random(0, app.width), 

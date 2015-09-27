@@ -1,13 +1,13 @@
-iio.test.Circle = {
+iio.test.Ellipse = {
 	constructor : function(app, settings){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
 			radius: 25
 		}));
 	},
 	rotation : function(app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
@@ -15,7 +15,7 @@ iio.test.Circle = {
 		}));
 	},
 	origin : function(app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			origin: [ 8, -8 ],
 			color: settings.color,
@@ -29,7 +29,7 @@ iio.test.Circle = {
 
 		function reverse(o){ o.vel.x *= -1 }
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center.clone(),
 			color: settings.color,
 			radius: 25,
@@ -50,7 +50,7 @@ iio.test.Circle = {
 
 		var speed = 1;
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center.clone(),
 			color: settings.color,
 			radius: 25,
@@ -70,7 +70,7 @@ iio.test.Circle = {
 
 		function reverse(o){ o.rVel *= -1 }
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center.clone(),
 			origin: [ 12, -12 ],
 			color: settings.color,
@@ -90,7 +90,7 @@ iio.test.Circle = {
 	},
 	rAcc_bounds : function( app, settings ){
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center.clone(),
 			origin: [ 12, -12 ],
 			color: settings.color,
@@ -118,7 +118,7 @@ iio.test.Circle = {
 
 		app.loop(1);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
@@ -129,7 +129,7 @@ iio.test.Circle = {
 		}));
 	},
 	alpha : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
@@ -143,7 +143,7 @@ iio.test.Circle = {
 		}));
 	},
 	color : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color.clone(),
 			radius: 25,
@@ -155,7 +155,7 @@ iio.test.Circle = {
 
 		app.loop(10);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			outline: settings.color.clone(),
@@ -165,7 +165,7 @@ iio.test.Circle = {
 		}));
 	},
 	shrink : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			color: settings.color,
 			radius: 25,
@@ -182,7 +182,7 @@ iio.test.Circle = {
 		}));
 	},
 	dash : function ( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			outline: settings.color,
@@ -191,7 +191,7 @@ iio.test.Circle = {
 		}));
 	},
 	dash_rounded : function ( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			outline: settings.color,
@@ -202,7 +202,7 @@ iio.test.Circle = {
 		}));
 	},
 	gradient : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			color: new iio.Gradient({
@@ -216,7 +216,7 @@ iio.test.Circle = {
 		}));
 	},
 	radial_gradient : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: 25,
 			color: new iio.Gradient({
@@ -236,7 +236,7 @@ iio.test.Circle = {
 
 		app.set({color:'white'})
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			outline: settings.color,
 			lineWidth: 5,
@@ -254,17 +254,17 @@ iio.test.Circle = {
 			lineWidth: 5
 		}
 
-		app.add( new iio.Circle(props,{
+		app.add( new iio.Ellipse(props,{
 			pos: app.center,
 			origin: [ 8, -8 ],
 			radius: 25,
 			rVel: .02
-		})).add( new iio.Circle(props,{
+		})).add( new iio.Ellipse(props,{
 			radius: 12
 		}))
 	},
 	img : function( app, settings ){
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: app.width/2.5,
 			clip: true,
@@ -275,7 +275,7 @@ iio.test.Circle = {
 
 		app.loop(1);
 
-		app.add(new iio.Circle({
+		app.add(new iio.Ellipse({
 			pos: app.center,
 			radius: app.width/2.5,
 			clip: true,

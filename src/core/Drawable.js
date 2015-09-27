@@ -216,7 +216,7 @@ iio.Drawable.prototype.create = function(){
     // infer Polygon
     else return this.add(new iio.Polygon(props));
   } 
-  // infer Circle
+  // infer Ellipse
   else if(props.radius)
     return this.add(new iio.Ellipse(props));
   // infer Text

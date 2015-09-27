@@ -15,7 +15,7 @@ coreSrc = [
   'Polygon.js',
   'Rectangle.js',
   'Grid.js',
-  'Circle.js',
+  'Ellipse.js',
   'Text.js',
   'App.js',
   'Sound.js',
