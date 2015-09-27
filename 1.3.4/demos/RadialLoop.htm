@@ -1,0 +1,42 @@
+<!-- 
+	iio Engine v1.3
+	***************
+ -->
+<!DOCTYPE html>
+<html>
+		<script type="text/javascript" src="../core/iioEngine.js"></script>
+		<script type="text/javascript" src="../core/iioParser.js"></script>
+	<body>  
+		<script type="text/javascript">
+
+RadialLoop = function(app,s){
+	
+	app.set('black');
+	
+	var obj = app.add('center o '+app.width*1.5);
+
+	var speed = 10;
+	var gradient;
+	var speedUp = true;
+	var bands = .1;
+	app.loop(speed, function(){
+		gradient = 'gradient:0,0,.01,0,0,width/2';
+		for(var i=0;i<=1;i+=bands)
+			gradient+=":"+i+',randomColor';
+		obj.set(gradient);
+		if(speedUp) {
+			speed++;
+			bands-=.0004;
+		} else {
+			speed--;
+			bands+=.0004;
+		} 
+		if(speed==10||speed==250) speedUp=!speedUp;
+		return speed;
+	});
+
+}; iio.start(RadialLoop);
+
+		</script>
+	</body>
+</html>

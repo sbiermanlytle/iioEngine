@@ -1,0 +1,1 @@
+@HelloWorld = (app) -> app.add app.center, text:"Hello World"

@@ -1,0 +1,337 @@
+<!--
+    iio engine sandbox
+    url: iioengine.com/sandbox/iio.htm
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    iio Engine is licensed under the BSD 2-clause Open Source license
+    Copyright (c) 2014, Sebastian Bierman-Lytle
+    All rights reserved.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <title>iio Engine &middot; Sandbox</title>
+    <meta name="description" content="The iio Engine is an extensive HTML5 framework for interactive web application development.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="res/favicon.png">
+    <link href="res/sandbox.css" rel="stylesheet">
+    <script type="text/javascript" src="ace/ace.js"></script>
+    <script type="text/javascript" src="../core/iioEngine.js"></script>
+    <script type="text/javascript" src="../core/iioParser.js"></script>
+    <script type="text/javascript" src="../core/parser.js"></script>
+</head>
+<body>
+    <div id='left'>
+    <header>
+        <ul>
+            <li id='home'><a href="../">iio</a></li>
+            <div id='btnbar'>
+                <li id='run'><a href="javascript:updateApp()">run</a></li>
+                <li id='save'><a href="javascript:save()">save</a></li>
+                <li><a id='load'>load</a><input type="file" id="files" /></li>
+                <li id='submit'><a target="_blank" href="http://iioapps.com">publish</a></li>
+            </div>
+        </ul>
+    </header>
+    <div id='toolbar'>
+        <div class='tool' id='themes'>
+            <p>color scheme</p>
+            <select id="theme" size="1">
+                <optgroup label="Light">
+                    <option value="ace/theme/chrome">Chrome</option>
+                    <option value="ace/theme/clouds">Clouds</option>
+                    <option value="ace/theme/crimson_editor">Crimson Editor</option>
+                    <option value="ace/theme/dawn">Dawn</option>
+                    <option value="ace/theme/dreamweaver">Dreamweaver</option>
+                    <option value="ace/theme/eclipse">Eclipse</option>
+                    <option value="ace/theme/github">Github</option>
+                    <option value="ace/theme/solarized_light">Solarized Light</option>
+                    <option value="ace/theme/textmate">TextMate</option>
+                    <option value="ace/theme/tomorrow">Tomorrow</option>
+                    <option value="ace/theme/xcode">xCode</option>
+                    <option value="ace/theme/kuroir">Kuroir</option>
+                    <option value="ace/theme/katzenmilch">KatzenMilch</option>
+                </optgroup>
+                <optgroup label="Dark">
+                    <option value="ace/theme/ambiance">Ambiance</option>
+                    <option value="ace/theme/chaos">Chaos</option>
+                    <option value="ace/theme/clouds_midnight">Clouds Midnight</option>
+                    <option value="ace/theme/cobalt">Cobalt</option>
+                    <option value="ace/theme/idle_fingers">Idle Fingers</option>
+                    <option value="ace/theme/kr_theme">krTheme</option>
+                    <option value="ace/theme/merbivore">Merbivore</option>
+                    <option value="ace/theme/merbivore_soft">Merbivore Soft</option>
+                    <option value="ace/theme/mono_industrial">Mono Industrial</option>
+                    <option value="ace/theme/monokai">Monokai</option>
+                    <option value="ace/theme/pastel_on_dark">Pastel on Dark</option>
+                    <option value="ace/theme/solarized_dark">Solarized Dark</option>
+                    <option value="ace/theme/terminal">Terminal</option>
+                    <option value="ace/theme/tomorrow_night">Tomorrow Night</option>
+                    <option value="ace/theme/tomorrow_night_blue">Tomorrow Night Blue</option>
+                    <option value="ace/theme/tomorrow_night_bright">Tomorrow Night Bright</option>
+                    <option value="ace/theme/tomorrow_night_eighties">Tomorrow Night 80s</option>
+                    <option value="ace/theme/twilight">Twilight</option>
+                    <option value="ace/theme/vibrant_ink">Vibrant Ink</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class='tool' id='word_wrap'>
+            <input id='word_wrap_box' type="checkbox" onclick="wordWrap()" name="word-wrap">
+            <p>word wrap</p>
+        </div>
+        <div class='tool' id='line_nums'>
+            <input id='line_num_box' type="checkbox" onclick="lineNums()" name="line-nums">
+            <p>line #s</p>
+        </div>
+        <div class='tool' id='invisibles'>
+            <input id='invisibles_box' type="checkbox" onclick="invisibles()" name="invisibles">
+            <p>invisibles</p>
+        </div>
+        <div class='tool' id='api_link'>
+            <a target="_blank" href="/api">iio API</a>
+        </div>
+    </div>
+    <div id='drag-overlay'><p>drop in any iio file</p></div>
+    <div style="display:none">
+    <h2 id='launchcode_head'>JavaScript Launch Code</h2>
+    <pre id="editor1">iio.start([iioParser,{c:code}],'canvas');</pre> 
+    </div>
+<pre id="editor2">set black end
+var s = 20
+
+var reset = fn()
+    clear
+    for var c = s/2 to width by s
+        for var r = s/2 to height by s
+            add square
+                pos c:r
+                size s
+                color white
+                shrink random 0.05 to 0.2 then
+                    obj.width s
+                    obj.height s
+                    obj.color random color
+                end
+            end
+        end
+    end
+    draw
+end
+
+reset()
+onresize reset</pre>
+    </div>
+    <!--<div id='center'></div>-->
+    <div id='right'>
+       <canvas id='canvas'></canvas> 
+    </div>
+    <script type="text/javascript">
+    var left = document.getElementById('left');
+    var right = document.getElementById('right');
+    var center = document.getElementById('center');
+    var app = document.getElementById('canvas');
+    var editor1 = ace.edit("editor1");
+    editor1.setTheme("ace/theme/katzenmilch");
+    editor1.getSession().setMode("ace/mode/javascript");
+    var editor2 = ace.edit("editor2");
+    editor2.setTheme("ace/theme/katzenmilch");
+    editor2.getSession().setMode("ace/mode/javascript");
+    wordWrap=function(){
+        var wrap = document.getElementById('word_wrap_box').checked;
+        editor1.getSession().setUseWrapMode(wrap);
+        editor2.getSession().setUseWrapMode(wrap);
+    }
+    document.getElementById('line_num_box').checked=true;
+    lineNums=function(){
+        var bool = document.getElementById('line_num_box').checked;
+        editor1.renderer.setShowGutter(bool);
+        editor2.renderer.setShowGutter(bool);
+    }
+    invisibles=function(){
+        var bool = document.getElementById('invisibles_box').checked;
+        editor1.setShowInvisibles(bool);
+        editor2.setShowInvisibles(bool);
+    }
+    /*var resizeApp=false;
+    iio.addEvent(center, 'mousedown', function(event){
+        resizeApp=true;
+    });
+    iio.addEvent(window, 'mousemove', function(event){
+        if(resizeApp) {
+            event.preventDefault();
+            if(event.clientX<parseInt(center.style.left,10)||event.clientX>parseInt(center.style.left,10)+10){
+                center.style.left=event.clientX+'px';
+                left.style.width=event.clientX+'px';
+            }
+        }
+    });*/
+    iio.addEvent(window, 'mouseup', function(event){
+        resizeApp=false;
+     });
+    setDim=function(e){
+        var w=window.innerWidth-parseInt(left.style.width,10);
+        right.style.width=w+'px';
+        //center.style.left=parseInt(left.style.width,10)+'px';
+        app.width=w;
+        app.height=right.clientHeight;
+        document.getElementById('editor2').style.height=(left.clientHeight)+'px';
+        //if(iio.apps.length>0)
+            //io.apps[0].resize(e,w,app.height);
+    }; 
+    left.style.width='389px';
+    setDim();
+    window.onresize=setDim;
+    var code = document.getElementById('editor');
+    var head = document.getElementsByTagName("head")[0] || document.documentElement;
+    var data;
+    createScript=function(data){
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+         try {
+          // doesn't work on ie...
+          script.appendChild(document.createTextNode(data));
+        } catch(e) {
+          // IE has funky script nodes
+          script.text = data;
+        }
+        head.insertBefore(script,head.firstChild);
+        head.removeChild(script);
+    }
+    getName=function(){
+        var start = editor1.getSession().getValue();
+        return start.substring(start.indexOf("(")+1,start.indexOf(","));
+    }
+    updateApp=function(){
+        /*data = getName()+'=function(app,s){';
+        data += editor2.getSession().getValue();
+        data += '}'
+        createScript(data); */
+        iio.start(eval(parser.parse(editor2.getSession().getValue())),'canvas');
+        //iio.start([iioParser,{c:editor2.getSession().getValue(), vars: {}}],'canvas');
+        //createScript(editor1.getSession().getValue());
+    }
+    updateApp();
+    function createPopup(name){
+    var popup = open("", "Popup", "width=436,height=200");
+        var code = popup.document.createElement("pre");
+        code.innerHTML = getName()+" = function(app,s){\n\n";
+        code.innerHTML += editor2.getSession().getValue();
+        code.innerHTML += "\n\n}\n";
+        //code.innerHTML += editor1.getSession().getValue();;
+        popup.document.body.appendChild(code);
+    }
+    save=function(){
+        //var name = window.prompt("Name the Application","App")
+        //if(name!=null)
+        createPopup(name);
+    }
+    function load(evt) {
+        document.getElementById('files').click();/*
+        if(evt.target.files){
+        var files = evt.target.files; // FileList object
+
+        // files is a FileList of File objects. List some properties.
+        var output = [];
+        for (var i = 0, f; f = files[i]; i++) {
+          output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                      f.size, ' bytes, last modified: ',
+                      f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                      '</li>');
+        }
+        document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+        }*/
+      }
+    document.getElementById("files").onchange = function(e){
+        handleFileSelect(e);
+    };
+      document.getElementById('load').addEventListener('mousedown', load, false);
+
+  function handleFileSelect(evt) {
+     evt.stopPropagation();
+     evt.preventDefault();
+     handleLeave();
+
+     var files;
+     if(evt.dataTransfer) files = evt.dataTransfer.files;
+     else files = evt.target.files;
+     var reader = new FileReader();
+     reader.addEventListener("load", function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        var code = event.target.result;
+        var name_i = code.indexOf(" ");
+        var name_e = code.indexOf("=");
+        if(name_e<name_i) name_i=name_e;
+        var name = code.substring(0,name_i)
+        editor1.setValue("iio.start("+name+",'canvas');");
+        code=code.substring(code.indexOf("{")+1);
+        code.replace(/\n|\r/g, "");
+        var start_i = code.indexOf("iio.start")
+        var start;
+        if(start_i>0){
+            start=code.substring(start_i);
+            code=code.substring(0,start_i);
+        }
+        if(start) editor1.setValue(start);
+        code=code.substring(0,code.lastIndexOf("}"));
+        editor2.setValue(code);
+        updateApp();
+     });
+     reader.readAsText(files[0]);
+     //editor2.setValue(reader.result);
+
+     // files is a FileList of File objects. List some properties.
+     /*var output = [];
+     for (var i = 0, f; f = files[i]; i++) {
+      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                  f.size, ' bytes, last modified: ',
+                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                  '</li>');
+     }*/
+     //document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+  }
+
+  function handleDragOver(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+    document.getElementById('drag-overlay').style.display='inherit';
+  }
+
+  function handleLeave(evt){
+    document.getElementById('drag-overlay').style.display='none';
+  }
+
+  // Setup the dnd listeners.
+  var dropZone = document.getElementById('left');
+  dropZone.addEventListener('dragover', handleDragOver, false);
+  //dropZone.addEventListener('dragleave', handleLeave, false);
+  document.getElementById('drag-overlay').addEventListener('dragleave', handleLeave, false);
+  dropZone.addEventListener('drop', handleFileSelect, false);
+  var theme = document.getElementById('theme');
+  theme.selectedIndex=12;
+  theme.addEventListener('change',function(e){
+    editor1.setTheme(theme.value);
+    editor2.setTheme(theme.value);
+  })
+
+   var _run=false;
+   iio.addEvent(window,'keydown',function(e){
+        _run=false;
+        var k=iio.key.string(e);
+        for(var i=0;i<iio.apps.length;i++)
+            if(iio.apps[i].runScript.onKeyDown)
+                iio.apps[i].runScript.onKeyDown(e,k);
+    });
+    iio.addEvent(window,'keyup',function(e){
+        _run=true;
+        window.setTimeout(function(){
+            if(_run) updateApp();
+            _run=false;
+        },500);
+        var k=iio.key.string(e);
+        for(var i=0;i<iio.apps.length;i++)
+            if(iio.apps[i].runScript.onKeyUp)
+                iio.apps[i].runScript.onKeyUp(e,k);
+    });
+</script>
+</body>

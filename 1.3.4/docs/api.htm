@@ -1,0 +1,157 @@
+<!--
+	iio engine
+	url: iioengine.com/api
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	iio Engine is licensed under the BSD 2-clause Open Source license
+	Copyright (c) 2014, Sebastian Bierman-Lytle
+	All rights reserved.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <title>iio Engine &middot; API</title>
+    <meta name="description" content="The iio Engine is an extensive HTML5 framework for interactive web application development.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="res/favicon.png">
+    <link href="res/prettify.css" type="text/css" rel="stylesheet" />
+    <link href="res/style.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="res/prettify.js"></script>
+</head>
+<body onload="prettyPrint()">
+	<header>
+		<ul>
+			<li id='home'><a href="http://iioengine.com">iio</a></li>
+			<li>iioEngine API v1.3.3</li>
+		</ul>
+	</header>
+	<div id='main'>
+		<ul id='ul'>
+			<li id='overview_li'></li>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		redirect=function(hash){
+			window.location.hash="#"+hash;
+			showme(window.location.hash.substring(1),true);
+		}
+		showme=function(e,donthash){
+			if(donthash);
+			else window.location.hash="#"+e;
+			var dE=document.getElementById(e+'_a');
+			e=document.getElementById(e);
+			if(e.className.indexOf('closed')>-1){
+				dE.lastBG=dE.style.backgroundColor;
+				if(dE.className&&dE.className.indexOf('secondary')>-1) dE.style.backgroundColor='rgb(70, 70, 70)';
+				else if(dE.className&&dE.className.indexOf('tertiary')>-1) dE.style.backgroundColor='rgb(226, 226, 226)';
+				else dE.style.backgroundColor='#00baff';
+				e.style.display='inherit';
+				e.className=e.className.substring(0,e.className.indexOf('closed'));
+			} else {
+				dE.style.backgroundColor=dE.lastBG;
+				e.style.display='none';
+				e.className+=' closed';
+			}
+		}
+		jumpTo=function(){
+			var oID;
+			var id=window.location.hash;
+			if(id){
+				id=id.substring(1);
+				oID=id;
+				showme(id);
+			}
+			var elem=document.getElementById(id);
+			while(elem.parentNode){
+				elem=elem.parentNode;
+				if(elem.className&&elem.className.indexOf('closed')>-1)
+					showme(elem.id,true);
+			}
+			if(oID) window.location.hash="#"+oID;
+		}
+		var ul = document.getElementById('ul');
+		createLi=function(t,inn){
+			var li = document.createElement('li');
+			var h2 = document.createElement('h2');
+			h2.innerHTML='<a id="'+t.toLowerCase()+'_a" class="primary" href="javascript:showme('+"'"+t.toLowerCase()+"'"+')">'+t+'</a>';
+			li.appendChild(h2);
+			var div = document.createElement('div');
+			div.className='inner closed';
+			div.style.display='none';
+			div.id=t.toLowerCase();
+			for(var i=0;i<inn.length;i++){
+				var h3=document.createElement('h3');
+				h3.innerHTML='<a id="'+inn[i].t.toLowerCase()+'_'+t.toLowerCase()+'_a" href="javascript:showme('+"'"+inn[i].t.toLowerCase()+'_'+t.toLowerCase()+"'"+')">'+inn[i].t+'</a>';
+				if(i>0) h3.className='lower';
+				div.appendChild(h3);
+				var div2=document.createElement('div');
+				div2.className='inner2 closed';
+				div2.style.display='none';
+				div2.id=inn[i].t.toLowerCase()+'_'+t.toLowerCase();
+				var ul2=document.createElement('ul');
+				for(var j=0;j<inn[i].l.length;j++){
+					var li2=document.createElement('li');
+					var h4=document.createElement('h4');
+					var classes='secondary';
+					if(inn[i].l[j].i)
+						classes+=' implemented';
+					h4.innerHTML='<a id="'+inn[i].l[j].t.toLowerCase()+'_a" class="'+classes+'" href="javascript:showme('+"'"+inn[i].l[j].t.toLowerCase()+"'"+')">'+inn[i].l[j].t+'</a>';
+					li2.appendChild(h4);
+					var scope=document.createElement('div');
+					scope.className='scope';
+					scope.innerHTML='';
+					if(inn[i].l[j].a)
+						scope.innerHTML='<p class="app">app</p>';
+					if(inn[i].l[j].o)
+						scope.innerHTML+='<p class="obj">obj</p>';
+					li2.appendChild(scope);
+					var div3=document.createElement('div');
+					div3.className='inner3 closed';
+					div3.style.display='none';
+					div3.id=inn[i].l[j].t.toLowerCase();
+					appendInfo=function(e,data){
+						var div=document.createElement('div');
+						div.className='info_cont';
+						div.innerHTML='<p class="title">'+data.l[0]+'</p>';
+						for(var q=1;q<data.l.length;q++)
+							div.innerHTML+=data.l[q];
+						e.appendChild(div);
+					}
+					if(inn[i].l[j].l[0]&&inn[i].l[j].l[0].t){
+						var ul3=document.createElement('ul');
+						for(var p=0;p<inn[i].l[j].l.length;p++){
+							var li3=document.createElement('li');
+							var h5=document.createElement('h5');
+							var classNames="tertiary";
+							if(p>0)classNames+=" lower";
+							var ti=inn[i].l[j].l[p].t;
+							if(ti.indexOf(inn[i].l[j].t)>-1)
+								ti=ti.split("_")[1];
+							h5.innerHTML='<a id="'+inn[i].l[j].l[p].t.toLowerCase()+'_a" class="'+classNames+'" href="javascript:showme('+"'"+inn[i].l[j].l[p].t.toLowerCase()+"'"+')">'+ti+'</a>';
+							li3.appendChild(h5);
+							var div4=document.createElement('div');
+							div4.className="inner2 inner4 closed";
+							div4.style.display='none';
+							div4.id=inn[i].l[j].l[p].t.toLowerCase();
+							appendInfo(div4,inn[i].l[j].l[p]);
+							li3.appendChild(div4);
+							ul3.appendChild(li3);
+						}
+						div3.appendChild(ul3);
+					} else appendInfo(div3,inn[i].l[j]);
+					li2.appendChild(div3);
+					ul2.appendChild(li2);
+				}
+				div2.appendChild(ul2);
+				div.appendChild(div2);
+			}
+			li.appendChild(div);
+			ul.appendChild(li);
+		}
+	</script>
+	<script type="text/javascript" src="lang/english.js"></script>
+	<script type="text/javascript">
+		if(window.location.hash) jumpTo();
+	</script>
+</body>
+</html>

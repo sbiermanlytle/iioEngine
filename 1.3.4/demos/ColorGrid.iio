@@ -1,0 +1,24 @@
+set black end
+var s = 20
+
+var reset = fn()
+	clear
+	for var c = s/2 to width by s
+		for var r = s/2 to height by s
+			add
+				pos c:r
+				size s
+				color white
+				shrink random 0.05 to 0.2 then
+					obj.width s
+					obj.height s
+					obj.color random color
+				end
+			end
+		end
+	end
+	draw
+end
+
+reset()
+onresize reset

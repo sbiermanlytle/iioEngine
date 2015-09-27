@@ -1,31 +1,11 @@
 [![JS.ORG](https://img.shields.io/badge/js.org-iio-888888.svg?style=flat-square)](http://js.org)
 
-iio.js v1.4 BETA
-================
+iio.js v1.3 archive
+===================
 
-iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all published copies and working editions of iio.js.
+iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications.
 
-iio.js was formarly known as 'iio Engine'. The last version of iio Engine, v1.2.2, included Box2D compatability and tutorials. Visit the archive folder or visit iioEngine.com or the for the old versions source code, documentation, tutorials, and demos.
-
-## links
-Homepage: http://iio.js.org
-
-Documentation: http://iio.js.org/#api.overview
-
-Demos: http://iio.js.org/#demos
-
-Tutorials: http://iioinc.com/tutorials
-
-Twitter: @iioinc
-
-## loading iio.js
-To use the library, load an iio.js build file from a local folder or the iio.js URL:
-
-	<script type="text/javascript" src="http://iio.js.org/iio.min.js"></script>
-
-iio_debug.js has a debugging version with extra features:
-
-	<script type="text/javascript" src="http://iio.js.org/iio_debug.js"></script>
+This repo contains archives of the v1.3 source codes, which were never completed or released.
 
 ## building Source Files (optional)
 If you would like to edit iio.js source code files, use Grunt to re-build. Grunt depends on nodejs and npm.
