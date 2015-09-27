@@ -1,30 +1,30 @@
 [![JS.ORG](https://img.shields.io/badge/js.org-iio-888888.svg?style=flat-square)](http://js.org)
 
-iio.js
-====== 
+iio.js v1.4 BETA
+================
 
 iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all published copies and working editions of iio.js.
 
-iio.js was formarly known as 'iio Engine'. The last version of iio Engine, v1.2.2, included Box2D compatability and tutorials. Visit iioEngine.com for the old versions source code, documentation, tutorials, and demos.
+iio.js was formarly known as 'iio Engine'. The last version of iio Engine, v1.2.2, included Box2D compatability and tutorials. Visit the archive folder or visit iioEngine.com or the for the old versions source code, documentation, tutorials, and demos.
 
 ## links
-Homepage: http://iioinc.github.io/iio.js
+Homepage: http://iio.js.org
 
 Twitter: @iioinc
 
-## loading iio.js
-You can load the minified engine from a local folder or the iio Engine URL:
+## using iio.js
+All you need to use the library is to load the minified build file from a local folder or the iio.js URL:
 
-	<script type="text/javascript" src="https://raw.githubusercontent.com/iioinc/iio.js/master/build/iio.min.js"></script>
+	<script type="text/javascript" src="http://iio.js.org/iio.min.js"></script>
 
-iio Engine has a debugging version with extra features:
+iio.js has a debugging version with extra features:
 
-	<script type="text/javascript" src="https://raw.githubusercontent.com/iioinc/iio.js/master/build/iio_debug.js"></script>
+	<script type="text/javascript" src="http://iio.js.org/iio_debug.js"></script>
 
-## building Source Files
-To edit source files, use Grunt to re-build. Grunt depends on nodejs and npm.
+## building Source Files (optional)
+If you would like to edit iio.js source code files, use Grunt to re-build. Grunt depends on nodejs and npm.
 
-### installing nodejs and grunt
+### installing nodejs and grunt (optional)
 If you have brew you can install node easily
 
     brew install node
