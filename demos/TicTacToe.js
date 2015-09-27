@@ -38,10 +38,10 @@ TicTacToe = function( app, settings ){
       // set the text object string and color
       if(xTurn) {
         play_piece.text = 'X';
-        play_piece.color = iio.Color.red;
+        play_piece.color = iio.Color.red();
       } else { 
         play_piece.text = 'O';
-        play_piece.color = iio.Color.iioBlue;
+        play_piece.color = iio.Color.iioBlue();
       }
 
       // add the text object to the cell
