@@ -10,6 +10,10 @@ iio.js was formarly known as 'iio Engine'. The last version of iio Engine, v1.2.
 ## links
 Homepage: http://iio.js.org
 
+Documentation: http://iio.js.org/#api.overview
+
+Demos: http://iio.js.org/#demos
+
 Tutorials: http://iioinc.com/tutorials
 
 Twitter: @iioinc
