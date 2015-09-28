@@ -110,7 +110,7 @@ display_current = function(){
     var path = current_hash.substr( 7 );
 
     if( path == 'ScrollShooter' )
-      show_demo( ScrollShooterSounds, "ScrollShooter" );
+      show_demo( ScrollShooter, "ScrollShooter" );
     else if( path == 'Snake' )
       show_demo( Snake, "Snake" );
     else if( path == 'ColorGrid' )
