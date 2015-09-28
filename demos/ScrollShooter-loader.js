@@ -1,6 +1,6 @@
 ScrollShooter = function( app, s ){
 
-  var soundOn = navigator.online;
+  var soundOn = navigator.onLine;
 
   var meteors = [];
   var stars = [];
