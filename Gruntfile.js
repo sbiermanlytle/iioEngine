@@ -2,6 +2,7 @@ srcPath = 'src/core';
 
 // Files will be concatenated in the following order
 coreSrc = [
+  'license',
   'core.js',
   'libs.js',
   'Interface.js',
@@ -45,11 +46,11 @@ module.exports = function(grunt) {
           'build/iio.min.js': ['<%= concat.iio.dest %>']
         }
       },
-      debug: {
+      /*debug: {
         files: {
           'build/iio_debug.min.js': ['<%= concat.debug.dest %>']
         }
-      }
+      }*/
     }
   });
 
