@@ -2151,7 +2151,7 @@ iio.Ellipse.prototype.contains = function(v, y) {
     if (this.rotation) {
       v.x -= this.pos.x;
       v.y -= this.pos.y;
-      v = iio.rotatePoint(v.x, v.y, -this.rotation);
+      v = iio.point.rotate(v.x, v.y, -this.rotation);
       v.x += this.pos.x;
       v.y += this.pos.y;
     }
