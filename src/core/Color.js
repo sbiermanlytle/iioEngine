@@ -35,7 +35,7 @@ iio.Color.prototype.Color = function(r,g,b,a) {
 iio.Color.random = function(){
 	return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
 }
-
+iio.Color.invert = function(c){ return new iio.Color(255-c.r,255-c.g,255-c.b,c.a) }
 iio.Color.hexToRgb = function(hex) {
 	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -50,7 +50,6 @@ iio.Color.hexToRgb = function(hex) {
 		b: parseInt(result[3], 16)
 	} : null;
 }
-
 iio.Color.rgbToHex = function(r, g, b) {
 	// TODO https://drafts.csswg.org/css-color/#hex-notation CSS4 will support 8 digit hex string (#RRGGBBAA)
 	function componentToHex(c) {

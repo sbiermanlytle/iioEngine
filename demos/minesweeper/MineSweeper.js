@@ -223,7 +223,7 @@ MineSweeper = function( app, settings ){
 	app.draw();
 
 	// define a function to be called when the grid is clicked
-	grid.onClick = function( event, pos, cell){
+	grid.onMouseUp = function( grid, event, pos, cell){
 
 		// handle right clicks
 		if( event.button == 2 ) {
@@ -267,7 +267,7 @@ MineSweeper = function( app, settings ){
 		for( c=1; c<grid.C; c++ )
 			for( r=1; r<grid.R; r++ )
 				if( grid.cells[c][r].objs[0].text == "0" ){
-					grid.onClick( {}, {}, grid.cells[c][r] );
+					grid.onMouseUp( grid, {}, {}, grid.cells[c][r] );
 					break;
 				}
 }

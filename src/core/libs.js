@@ -276,7 +276,7 @@ iio.canvas = {
       var ep = caller.parent.convert_event_pos(e);
       // App.handler
       if (caller.parent[handler]) 
-        caller.parent[handler](e, ep);
+        caller.parent[handler](caller.parent, e, ep);
       // App.objs.handler
       caller.parent.objs.forEach(function(obj, i) {
         if (i !== 0) ep = caller.parent.convert_event_pos(e);
@@ -284,8 +284,8 @@ iio.canvas = {
           if (obj[handler]) {
             if (obj.cellAt) {
               var c = obj.cellAt(ep);
-              obj[handler](e, ep, c, obj.cellCenter(c.c, c.r));
-            } else obj[handler](e, ep);
+              obj[handler](obj, e, ep, c, obj.cellCenter(c.c, c.r));
+            } else obj[handler](obj, e, ep);
           }
       }, caller)
     }

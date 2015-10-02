@@ -26,7 +26,7 @@ TicTacToe = function( app, settings ){
 	var xTurn = true;
 
 	// define a function to be called when the grid is clicked
-	grid.onClick = function( event, pos, cell ){
+	grid.onClick = function( grid, event, pos, cell ){
 
 		// if the clicked cell is empty
 		if(!cell.taken){
@@ -56,6 +56,6 @@ TicTacToe = function( app, settings ){
 	if( settings && settings.preview )
 		// generate 4 random selections
 		for( var i=0; i<4; i++ )
-			grid.onClick( null, null, grid.objs[iio.randomInt( 0,8 )] );
+			grid.onClick( grid, null, null, grid.objs[iio.randomInt( 0,8 )] );
 }
 

@@ -27,7 +27,7 @@ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABIL
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE.
-*/
+*/;
 iio = {};
 iio.apps = [];
 iio.scripts = iio.scripts || {};
@@ -619,7 +619,7 @@ iio.canvas = {
       var ep = caller.parent.convert_event_pos(e);
       // App.handler
       if (caller.parent[handler]) 
-        caller.parent[handler](e, ep);
+        caller.parent[handler](caller.parent, e, ep);
       // App.objs.handler
       caller.parent.objs.forEach(function(obj, i) {
         if (i !== 0) ep = caller.parent.convert_event_pos(e);
@@ -627,8 +627,8 @@ iio.canvas = {
           if (obj[handler]) {
             if (obj.cellAt) {
               var c = obj.cellAt(ep);
-              obj[handler](e, ep, c, obj.cellCenter(c.c, c.r));
-            } else obj[handler](e, ep);
+              obj[handler](obj, e, ep, c, obj.cellCenter(c.c, c.r));
+            } else obj[handler](obj, e, ep);
           }
       }, caller)
     }
@@ -812,7 +812,7 @@ iio.Color.prototype.Color = function(r,g,b,a) {
 iio.Color.random = function(){
 	return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
 }
-
+iio.Color.invert = function(c){ return new iio.Color(255-c.r,255-c.g,255-c.b,c.a) }
 iio.Color.hexToRgb = function(hex) {
 	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -827,7 +827,6 @@ iio.Color.hexToRgb = function(hex) {
 		b: parseInt(result[3], 16)
 	} : null;
 }
-
 iio.Color.rgbToHex = function(r, g, b) {
 	// TODO https://drafts.csswg.org/css-color/#hex-notation CSS4 will support 8 digit hex string (#RRGGBBAA)
 	function componentToHex(c) {
