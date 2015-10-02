@@ -28,7 +28,6 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 iio = {};
 iio.apps = [];
 iio.scripts = iio.scripts || {};
@@ -615,27 +614,27 @@ iio.canvas = {
     document.body.style.padding = 0;
   },
   prep_input: function(o) {
-    o.onmousedown = function(e) {
-
+    function route_input(caller, e, handler){
       // orient click position to canvas 0,0
-      var ep = this.parent.convert_event_pos(e);
-
-      // App.onClick
-      if (this.parent.onClick) 
-        this.parent.onClick(e, ep);
-
-      // App.objs.onClick
-      this.parent.objs.forEach(function(obj, i) {
-        if (i !== 0) ep = this.parent.convert_event_pos(e);
+      var ep = caller.parent.convert_event_pos(e);
+      // App.handler
+      if (caller.parent[handler]) 
+        caller.parent[handler](caller.parent, e, ep);
+      // App.objs.handler
+      caller.parent.objs.forEach(function(obj, i) {
+        if (i !== 0) ep = caller.parent.convert_event_pos(e);
         if (obj.contains && obj.contains(ep))
-          if (obj.onClick) {
+          if (obj[handler]) {
             if (obj.cellAt) {
               var c = obj.cellAt(ep);
-              obj.onClick(e, ep, c, obj.cellCenter(c.c, c.r));
-            } else obj.onClick(e, ep);
+              obj[handler](obj, e, ep, c, obj.cellCenter(c.c, c.r));
+            } else obj[handler](obj, e, ep);
           }
-      }, this)
+      }, caller)
     }
+    o.onclick = function(e){ route_input(this, e, 'onClick') }
+    o.onmousedown = function(e){ route_input(this, e, 'onMouseDown') }
+    o.onmouseup = function(e){ route_input(this, e, 'onMouseUp') }
   }
 }
 
@@ -813,7 +812,7 @@ iio.Color.prototype.Color = function(r,g,b,a) {
 iio.Color.random = function(){
 	return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
 }
-
+iio.Color.invert = function(c){ return new iio.Color(255-c.r,255-c.g,255-c.b,c.a) }
 iio.Color.hexToRgb = function(hex) {
 	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -828,7 +827,6 @@ iio.Color.hexToRgb = function(hex) {
 		b: parseInt(result[3], 16)
 	} : null;
 }
-
 iio.Color.rgbToHex = function(r, g, b) {
 	// TODO https://drafts.csswg.org/css-color/#hex-notation CSS4 will support 8 digit hex string (#RRGGBBAA)
 	function componentToHex(c) {
@@ -1776,11 +1774,11 @@ iio.Line.prototype.Line = function() {
 }
 
 //FUNCTIONS
-iio.Line.prototype.contains = function(v, y) {
+/*iio.Line.prototype.contains = function(v, y) {
   if (typeof(y) != 'undefined') v = {
     x: v,
     y: y
-  }
+  } 
   if (iio.is.between(v.x, this.pos.x, this.vs[1].x) && iio.is.between(v.y, this.vs[0].y, this.vs[1].y)) {
     var a = (this.vs[1].y - this.vs[0].y) / (this.vs[1].x - this.vs[0].x);
     if (!isFinite(a)) return true;
@@ -1788,7 +1786,7 @@ iio.Line.prototype.contains = function(v, y) {
     if (y == v.y) return true;
   }
   return false;
-}
+}*/
 iio.Line.prototype.prep_ctx_color = function(ctx){
   if(this.color instanceof iio.Gradient)
     ctx.strokeStyle = this.color.canvasGradient(ctx);
@@ -2152,7 +2150,7 @@ iio.Ellipse.prototype.contains = function(v, y) {
     if (this.rotation) {
       v.x -= this.pos.x;
       v.y -= this.pos.y;
-      v = iio.rotatePoint(v.x, v.y, -this.rotation);
+      v = iio.point.rotate(v.x, v.y, -this.rotation);
       v.x += this.pos.x;
       v.y += this.pos.y;
     }

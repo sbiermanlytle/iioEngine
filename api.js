@@ -350,15 +350,15 @@ var api = {
       ],
       'Functions': [
         {  // onClick
-          definition: 'onClick( '+kwd('Event')+' event, '+a('Vector')+' pos ) | ' + small('returns ') + kwd('boolean'),
+          definition: 'onClick( '+a('Drawable')+' this, '+kwd('Event')+' event, '+a('Vector')+' pos ) | ' + small('returns ') + kwd('boolean'),
           descriptions: [ 
             "Called when a face or edge of the object is clicked. "+kwd('Event')+' is a JavaScript Event object.',
             "Note that this function only runs by default on "+a('App')+' and App.'+a('objs')+'.'
           ],
           samples: [ 
-            "// detect when the app is clicked\napp.onClick = function( event, pos ){\n  // handle input...\n}",
-            "// detect when an object added to app is clicked\nvar obj = app.add( new iio.Rectangle({\n  //...\n  onClick: function( event, pos ){\n    // handle input...\n  })\n});",
-            "// simulate a click on the app\napp.onClick( null, app.center );"
+            "// detect when the app is clicked\napp.onClick = function( app, event, pos ){\n  // handle input...\n}",
+            "// detect when an object added to app is clicked\napp.add( new iio.Rectangle({\n  //...\n  onClick: function( rectangle, event, pos ){\n    // handle input...\n  })\n});",
+            "// simulate a click on the app\napp.onClick( app, null, app.center );"
           ]
         }
       ],
@@ -988,13 +988,13 @@ var api = {
       ],
       'Functions': [
         {  // onClick
-          definition: 'onClick( '+kwd('Event')+' event, '+a('Vector')+', pos '+a('Rectangle')+' cell ) | ' + small('returns ') + kwd('boolean'),
+          definition: 'onClick( '+a('Grid')+' this, '+kwd('Event')+' event, '+a('Vector')+', pos '+a('Rectangle')+' cell ) | ' + small('returns ') + kwd('boolean'),
           descriptions: [ 
             "Called when a face or edge of the Grid is clicked. "+kwd('Event')+' is a JavaScript Event object.',
             "Note that this function only runs by default on grids added directly to "+a('App')+'.'
           ],
           samples: [ 
-            "// detect when the grid is clicked\ngrid.onClick = function( event, pos, cell ){\n  // handle input...\n}",
+            "// detect when the grid is clicked\ngrid.onClick = function( grid, event, pos, cell ){\n  // handle input...\n}",
           ]
         }
       ],
