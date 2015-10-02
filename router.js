@@ -28,6 +28,7 @@ function goTo( hash ) {
 refresh = function(){
   current_hash = window.location.hash;
   page.empty();
+  $('#main').append(bg_glow);
   iio.stop();
   $('canvas').remove();
   $('#fullscreen_header').remove();
@@ -44,7 +45,7 @@ $(window).bind( 'hashchange', refresh );
 
 display_current = function(){
   // DISABLE ga FOR OFFLINE USE
-  ga('send', 'pageview', current_hash.substring(1) );
+  //ga('send', 'pageview', current_hash.substring(1) );
   var anchor;
 
   // MAIN ROUTER
@@ -125,6 +126,8 @@ display_current = function(){
       show_demo( MineSweeper, "MineSweeper" );
     else if( path == 'ColorLines' )
       show_demo( ColorLines, "ColorLines" );
+    else if( path == 'BezierCurves' )
+      show_demo( BezierCurves, "BezierCurves" );
 
   }
 

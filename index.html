@@ -14,18 +14,17 @@
 <body>
   <script>
     // DISABLE THIS SCRIPT FOR OFFLINE USE
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    // (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    // (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    // m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    // })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    ga('create', 'UA-63549716-1', 'auto');
-    ga('send', 'pageview');
+    // ga('create', 'UA-63549716-1', 'auto');
+    // ga('send', 'pageview');
 
   </script>
   <div class="colorbar top"></div>
   <div id="main">
-    <img id="bg_glow" src="img/bg_glow.jpg"/>
     <div id="content">
       <header id="header">
 
@@ -92,6 +91,7 @@
   <script type="text/javascript" src="demos/MineSweeper.js"></script>
   <script type="text/javascript" src="demos/ColorLines.js"></script>
   <script type="text/javascript" src="demos/ScrollShooter.js"></script>
+  <script type="text/javascript" src="demos/BezierCurves.js"></script>
 
   <!-- WEB PAGE CONTROLLER -->
   <script type="text/javascript">
@@ -102,6 +102,9 @@
   app_colors[0] = new iio.Color(101,176,66);
 
   var page = $('#page_content');
+
+  var bg_glow = '<img id="bg_glow" src="img/bg_glow.jpg"/>';
+  $('#main').append(bg_glow);
 
   // API menu 
   var toggle_ids = [];

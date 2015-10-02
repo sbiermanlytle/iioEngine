@@ -33,4 +33,5 @@ show_home = function(){
   add_demo_preview( iioApps2, Squares, "Squares" );
   add_demo_preview( iioApps2, Snow, "Snow" );
   add_demo_preview( iioApps2, TicTacToe, "TicTacToe" );
+  add_demo_preview( iioApps2, BezierCurves, "BezierCurves" );
 };

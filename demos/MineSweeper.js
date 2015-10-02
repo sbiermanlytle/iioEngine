@@ -230,7 +230,7 @@ MineSweeper = function( app, settings ){
       // mark the cover of the cell
       // if it exists
       if( cell.objs.length > 1 )
-        cell.objs[1].set({ color:'red' });
+        cell.objs[1].set({ color:'white' });
     } 
 
     // handle left clicks

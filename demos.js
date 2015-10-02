@@ -12,6 +12,7 @@ show_demo_index = function(){
   add_demo_preview( iioApps, Squares, "Squares" );
   add_demo_preview( iioApps, Snow, "Snow" );
   add_demo_preview( iioApps, TicTacToe, "TicTacToe" );
+  add_demo_preview( iioApps, BezierCurves, "BezierCurves" );
   page.append(clear);
 
   show_unit_test(page, iio.test.Line, 'Line', 0);
@@ -35,6 +36,7 @@ add_demo_preview = function( elem, app, title, settings ){
 }
 
 show_demo = function( app, title, settings){
+  $('#bg_glow').remove();
   $('#column').hide();
   $('#header').css({ 'left': 0, 'margin-left': 0 });
   $('#footer').css({ 'left': 0, 'margin-left': 0 });
