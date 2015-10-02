@@ -1,3 +1,10 @@
+/* BezierLine
+------------------
+iio.js version 1.4
+--------------------------------------------------------------
+iio.js is licensed under the BSD 2-clause Open Source license
+Copyright (c) 2015, iio inc. All rights reserved.
+*/
 BezierLine = function(app) {
 
   // padding from edge of view
