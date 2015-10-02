@@ -271,27 +271,27 @@ iio.canvas = {
     document.body.style.padding = 0;
   },
   prep_input: function(o) {
-    o.onmousedown = function(e) {
-
+    function route_input(caller, e, handler){
       // orient click position to canvas 0,0
-      var ep = this.parent.convert_event_pos(e);
-
-      // App.onClick
-      if (this.parent.onClick) 
-        this.parent.onClick(e, ep);
-
-      // App.objs.onClick
-      this.parent.objs.forEach(function(obj, i) {
-        if (i !== 0) ep = this.parent.convert_event_pos(e);
+      var ep = caller.parent.convert_event_pos(e);
+      // App.handler
+      if (caller.parent[handler]) 
+        caller.parent[handler](e, ep);
+      // App.objs.handler
+      caller.parent.objs.forEach(function(obj, i) {
+        if (i !== 0) ep = caller.parent.convert_event_pos(e);
         if (obj.contains && obj.contains(ep))
-          if (obj.onClick) {
+          if (obj[handler]) {
             if (obj.cellAt) {
               var c = obj.cellAt(ep);
-              obj.onClick(e, ep, c, obj.cellCenter(c.c, c.r));
-            } else obj.onClick(e, ep);
+              obj[handler](e, ep, c, obj.cellCenter(c.c, c.r));
+            } else obj[handler](e, ep);
           }
-      }, this)
+      }, caller)
     }
+    o.onclick = function(e){ route_input(this, e, 'onClick') }
+    o.onmousedown = function(e){ route_input(this, e, 'onMouseDown') }
+    o.onmouseup = function(e){ route_input(this, e, 'onMouseUp') }
   }
 }
 

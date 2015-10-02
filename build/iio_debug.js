@@ -614,27 +614,27 @@ iio.canvas = {
     document.body.style.padding = 0;
   },
   prep_input: function(o) {
-    o.onmousedown = function(e) {
-
+    function route_input(caller, e, handler){
       // orient click position to canvas 0,0
-      var ep = this.parent.convert_event_pos(e);
-
-      // App.onClick
-      if (this.parent.onClick) 
-        this.parent.onClick(e, ep);
-
-      // App.objs.onClick
-      this.parent.objs.forEach(function(obj, i) {
-        if (i !== 0) ep = this.parent.convert_event_pos(e);
+      var ep = caller.parent.convert_event_pos(e);
+      // App.handler
+      if (caller.parent[handler]) 
+        caller.parent[handler](e, ep);
+      // App.objs.handler
+      caller.parent.objs.forEach(function(obj, i) {
+        if (i !== 0) ep = caller.parent.convert_event_pos(e);
         if (obj.contains && obj.contains(ep))
-          if (obj.onClick) {
+          if (obj[handler]) {
             if (obj.cellAt) {
               var c = obj.cellAt(ep);
-              obj.onClick(e, ep, c, obj.cellCenter(c.c, c.r));
-            } else obj.onClick(e, ep);
+              obj[handler](e, ep, c, obj.cellCenter(c.c, c.r));
+            } else obj[handler](e, ep);
           }
-      }, this)
+      }, caller)
     }
+    o.onclick = function(e){ route_input(this, e, 'onClick') }
+    o.onmousedown = function(e){ route_input(this, e, 'onMouseDown') }
+    o.onmouseup = function(e){ route_input(this, e, 'onMouseUp') }
   }
 }
 
@@ -1775,11 +1775,11 @@ iio.Line.prototype.Line = function() {
 }
 
 //FUNCTIONS
-iio.Line.prototype.contains = function(v, y) {
+/*iio.Line.prototype.contains = function(v, y) {
   if (typeof(y) != 'undefined') v = {
     x: v,
     y: y
-  }
+  } 
   if (iio.is.between(v.x, this.pos.x, this.vs[1].x) && iio.is.between(v.y, this.vs[0].y, this.vs[1].y)) {
     var a = (this.vs[1].y - this.vs[0].y) / (this.vs[1].x - this.vs[0].x);
     if (!isFinite(a)) return true;
@@ -1787,7 +1787,7 @@ iio.Line.prototype.contains = function(v, y) {
     if (y == v.y) return true;
   }
   return false;
-}
+}*/
 iio.Line.prototype.prep_ctx_color = function(ctx){
   if(this.color instanceof iio.Gradient)
     ctx.strokeStyle = this.color.canvasGradient(ctx);
