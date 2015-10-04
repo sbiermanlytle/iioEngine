@@ -363,7 +363,19 @@ iio.Drawable.prototype.loop = function(fps, callback) {
   // return id of new loop
   return loop.id;
 }
+iio.Drawable.prototype.togglePause = function(c) {
+  this.unpause(c);
+  this.pause(c);
+}
 iio.Drawable.prototype.pause = function(c) {
+  if (!this.paused) {
+    iio.cancelLoops(this);
+    iio.cancelLoop(this.mainLoop.id);
+    this.paused = true;
+  }
+  return this;
+}
+iio.Drawable.prototype.unpause = function(c) {
   if (this.paused) {
     this.paused = false;
     var drawable = this;
@@ -380,10 +392,5 @@ iio.Drawable.prototype.pause = function(c) {
           iio.loop(loop);
         });
       });
-  } else {
-    iio.cancelLoops(this);
-    iio.cancelLoop(this.mainLoop.id);
-    this.paused = true;
   }
-  return this;
 }
