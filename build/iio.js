@@ -632,9 +632,15 @@ iio.canvas = {
           }
       }, caller)
     }
-    o.onclick = function(e){ route_input(this, e, 'onClick') }
-    o.onmousedown = function(e){ route_input(this, e, 'onMouseDown') }
-    o.onmouseup = function(e){ route_input(this, e, 'onMouseUp') }
+    function attach_input_hook(callback, router) {
+      if(o[callback]) {
+        o['_'+callback] = o[callback];
+        o[callback] = function(e){ router(e); this['_'+callback](e) }
+      } else o[callback] = router;
+    }
+    attach_input_hook('onclick', function(e){ route_input(o, e, 'onClick') });
+    attach_input_hook('onmousedown', function(e){ route_input(o, e, 'onMouseDown') });
+    attach_input_hook('onmouseup', function(e){ route_input(o, e, 'onMouseUp') });
   }
 }
 
