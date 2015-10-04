@@ -44,7 +44,7 @@ refresh = function(){
 $(window).bind( 'hashchange', refresh );
 
 display_current = function(){
-  if(ga) ga('send', 'pageview', current_hash.substring(1) );
+  if(typeof ga !== 'undefined') ga('send', 'pageview', current_hash.substring(1) );
   var anchor;
 
   // MAIN ROUTER
