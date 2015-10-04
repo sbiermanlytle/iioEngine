@@ -127,6 +127,8 @@ display_current = function(){
       show_demo( ColorLines, "ColorLines" );
     else if( path == 'BezierCurves' )
       show_demo( BezierCurves, "BezierCurves" );
+    else if( path == 'Panning' )
+      show_demo( Panning, "Panning" );
 
   }
 
