@@ -299,7 +299,7 @@ iio.Drawable.prototype.loop = function(fps, callback) {
 
       // define new mainLoop
       loop = this.app.mainLoop = {
-        fps: 60,
+        fps: 10,
         fn: this,
         af: this.rqAnimFrame,
         o: this.app
@@ -310,11 +310,10 @@ iio.Drawable.prototype.loop = function(fps, callback) {
       loop.id = this.app.mainLoop.id = iio.loop(this.app.mainLoop);
 
     } else {
-
       // loop given callback at 60fps
       if (!iio.is.number(fps)) {
         loop = {
-          fps: 60,
+          fps: 10,
           fn: fps,
           af: this.rqAnimFrame
         }
@@ -367,10 +366,14 @@ iio.Drawable.prototype.loop = function(fps, callback) {
 iio.Drawable.prototype.pause = function(c) {
   if (this.paused) {
     this.paused = false;
+    var drawable = this;
     this.loops.forEach(function(loop) {
-      iio.loop(loop);
+      if (drawable.mainLoop && loop.id === drawable.mainLoop.id) {
+        iio.loop(drawable.mainLoop);
+      } else {
+        iio.loop(loop);
+      }
     });
-    if (this.mainLoop) iio.loop(this.mainLoop);
     if (typeof c == 'undefined')
       this.objs.forEach(function(o) {
         o.loops.forEach(function(loop) {

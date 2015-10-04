@@ -158,7 +158,6 @@ iio.load = function(src, onload) {
   img.onload = onload;
   return img;
 }
-
 iio.read = function(url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
@@ -177,7 +176,7 @@ iio.loop = function(fps, caller, fn) {
     if (typeof(fps.af) != 'undefined' && typeof(fps.fps) == 'undefined') {
       fn = caller;
       caller = fps;
-      fps = 60
+      fps = 60;
     } else if (!iio.is.number(fps)) {
       caller = fps;
       fps = fps.fps;
