@@ -27,7 +27,7 @@ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABIL
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE.
-*/
+*/;
 iio = {};
 iio.apps = [];
 iio.scripts = iio.scripts || {};
@@ -1220,7 +1220,7 @@ iio.Drawable.prototype.loop = function(fps, callback) {
 
       // define new mainLoop
       loop = this.app.mainLoop = {
-        fps: 10,
+        fps: 60,
         fn: this,
         af: this.rqAnimFrame,
         o: this.app
@@ -1234,7 +1234,7 @@ iio.Drawable.prototype.loop = function(fps, callback) {
       // loop given callback at 60fps
       if (!iio.is.number(fps)) {
         loop = {
-          fps: 10,
+          fps: 60,
           fn: fps,
           af: this.rqAnimFrame
         }

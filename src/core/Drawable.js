@@ -299,7 +299,7 @@ iio.Drawable.prototype.loop = function(fps, callback) {
 
       // define new mainLoop
       loop = this.app.mainLoop = {
-        fps: 10,
+        fps: 60,
         fn: this,
         af: this.rqAnimFrame,
         o: this.app
@@ -313,7 +313,7 @@ iio.Drawable.prototype.loop = function(fps, callback) {
       // loop given callback at 60fps
       if (!iio.is.number(fps)) {
         loop = {
-          fps: 10,
+          fps: 60,
           fn: fps,
           af: this.rqAnimFrame
         }
