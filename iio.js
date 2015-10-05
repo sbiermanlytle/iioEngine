@@ -959,6 +959,25 @@ iio.Drawable.prototype.localFrameVector = function(v){
     v.y - this.pos.y
   )
 }
+iio.Drawable.prototype.localize = function(v,y){
+  if (typeof(y) !== 'undefined') v = { x:v, y:y }
+  if (this.pos){
+    v.x -= this.pos.x;
+    v.y -= this.pos.y;
+  }
+  if (this.rotation) {
+    if (this.origin){
+      v.x -= this.origin.x;
+      v.y -= this.origin.y;
+    }
+    v = iio.point.rotate(v.x, v.y, -this.rotation);
+    if (this.origin){
+      v.x += this.origin.x;
+      v.y += this.origin.y;
+    }
+  }
+  return v;
+}
 
 // OBJECT MANAGMENT FUNCTIONS
 //-------------------------------------------------------------------
@@ -1285,8 +1304,8 @@ iio.Drawable.prototype.loop = function(fps, callback) {
   return loop.id;
 }
 iio.Drawable.prototype.togglePause = function(c) {
-  this.unpause(c);
-  this.pause(c);
+  if(this.paused) this.unpause(c);
+  else this.pause(c);
 }
 iio.Drawable.prototype.pause = function(c) {
   if (!this.paused) {
@@ -1858,6 +1877,16 @@ iio.Polygon.prototype.draw_shape = function(ctx) {
   this.finish_path_shape(ctx);
 }
 iio.Polygon.prototype.contains = function(v, y) {
+  v = this.localize(v,y);
+  var i = j = c = 0;
+  for (i = 0, j = this.vs.length - 1; i < this.vs.length; j = i++) {
+    if (((this.vs[i].y > v.y) != (this.vs[j].y > v.y)) &&
+      (v.x < (this.vs[j].x - this.vs[i].x) * (v.y - this.vs[i].y) / (this.vs[j].y - this.vs[i].y) + this.vs[i].x))
+      c = !c;
+  }
+  return c;
+}
+iio.Polygon.prototype._contains = function(v, y) {
   y = (v.y || y);
   v = (v.x || v);
   var i = j = c = 0;
@@ -1928,13 +1957,54 @@ iio.Rectangle.prototype.Rectangle = function() {
 }
 
 //FUNCTIONS
+iio.Rectangle.prototype.draw_shape = function(ctx){
+  ctx.translate(-this.width / 2, -this.height / 2);
+  if (this.bezier) {
+    iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
+    this.finish_path_shape(ctx);
+  }
+  // } else if (this.type==iio.X) {
+  //   iio.draw.prep_x(ctx, this);
+  //   iio.draw.line(ctx, 0, 0, this.width, this.width);
+  //   iio.draw.line(ctx, this.width, 0, 0, this.width);
+  //   ctx.restore();
+  // } 
+  else if(this.round)
+    this.draw_rounded(ctx);
+  else{
+    if (this.color) ctx.fillRect(0, 0, this.width, this.height)
+    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
+    if (this.anims) ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+      this.anims[this.animKey].frames[this.animFrame].x,
+      this.anims[this.animKey].frames[this.animFrame].y,
+      this.anims[this.animKey].frames[this.animFrame].w,
+      this.anims[this.animKey].frames[this.animFrame].h,
+      0, 0, this.width, this.height);
+    if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
+  }
+}
+iio.Rectangle.prototype.draw_rounded = function(ctx){
+  ctx.beginPath();
+  ctx.moveTo(this.round[0], 0);
+  ctx.lineTo(this.width - this.round[1], 0);
+  ctx.quadraticCurveTo(this.width, 0, this.width, this.round[1]);
+  ctx.lineTo(this.width, this.height - this.round[2]);
+  ctx.quadraticCurveTo(this.width, this.height, this.width - this.round[2], this.height);
+  ctx.lineTo(this.round[3], this.height);
+  ctx.quadraticCurveTo(0, this.height, 0, this.height - this.round[3]);
+  ctx.lineTo(0, this.round[0]);
+  ctx.quadraticCurveTo(0, 0, this.round[0], 0);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fill();
+  ctx.clip();
+}
 iio.Rectangle.prototype.contains = function(v, y) {
-  if (this.rot) return iio.poly.contains(v, y);
-  y = v.y || y;
-  v = v.x || v;
-  v -= this.pos.x;
-  y -= this.pos.y;
-  if (v > -this.width / 2 && v < this.width / 2 && y > -this.width / 2 && y < this.width / 2)
+  v = this.localize(v,y);
+  if (v.x > -this.width / 2 
+   && v.x < this.width / 2
+   && v.y > -this.height / 2 
+   && v.y < this.height / 2)
     return true;
   return false;
 }
@@ -1964,49 +2034,7 @@ iio.Rectangle.prototype.setSize = function(w,h){ this.width = w; this.height = h
 iio.Rectangle.prototype.left = function(){ return this.pos.x - this.width/2 }
 iio.Rectangle.prototype.right = function(){ return this.pos.x + this.width/2 }
 iio.Rectangle.prototype.top = function(){ return this.pos.y - this.height/2 }
-iio.Rectangle.prototype.bottom = function(){ return this.pos.y + this.height/2 }
-iio.Rectangle.prototype.draw_rounded = function(ctx){
-  ctx.beginPath();
-  ctx.moveTo(this.round[0], 0);
-  ctx.lineTo(this.width - this.round[1], 0);
-  ctx.quadraticCurveTo(this.width, 0, this.width, this.round[1]);
-  ctx.lineTo(this.width, this.height - this.round[2]);
-  ctx.quadraticCurveTo(this.width, this.height, this.width - this.round[2], this.height);
-  ctx.lineTo(this.round[3], this.height);
-  ctx.quadraticCurveTo(0, this.height, 0, this.height - this.round[3]);
-  ctx.lineTo(0, this.round[0]);
-  ctx.quadraticCurveTo(0, 0, this.round[0], 0);
-  ctx.closePath();
-  ctx.stroke();
-  ctx.fill();
-  ctx.clip();
-}
-iio.Rectangle.prototype.draw_shape = function(ctx){
-  ctx.translate(-this.width / 2, -this.height / 2);
-  if (this.bezier) {
-    iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
-    this.finish_path_shape(ctx);
-  }
-  // } else if (this.type==iio.X) {
-  //   iio.draw.prep_x(ctx, this);
-  //   iio.draw.line(ctx, 0, 0, this.width, this.width);
-  //   iio.draw.line(ctx, this.width, 0, 0, this.width);
-  //   ctx.restore();
-  // } 
-  else if(this.round)
-    this.draw_rounded(ctx);
-  else{
-    if (this.color) ctx.fillRect(0, 0, this.width, this.height)
-    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
-    if (this.anims) ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
-      this.anims[this.animKey].frames[this.animFrame].x,
-      this.anims[this.animKey].frames[this.animFrame].y,
-      this.anims[this.animKey].frames[this.animFrame].w,
-      this.anims[this.animKey].frames[this.animFrame].h,
-      0, 0, this.width, this.height);
-    if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
-  }
-};
+iio.Rectangle.prototype.bottom = function(){ return this.pos.y + this.height/2 };
 
 //DEFINITION
 iio.Grid = function(){ this.Grid.apply(this, arguments) };
@@ -2156,20 +2184,12 @@ iio.Ellipse.prototype.draw_shape = function(ctx) {
   if (this.img) ctx.drawImage(this.img, -this.radius, -this.radius, this.radius*2, this.radius*2);
 }
 iio.Ellipse.prototype.contains = function(v, y) {
-  if (typeof(y) != 'undefined') v = { x:v, y:y }
-  if (iio.Vector.dist(v, this.pos) < this.radius)
+  if (typeof(y) !== 'undefined') v = { x:v, y:y }
+  if ((!this.vRadius || this.radius === this.vRadius) && iio.Vector.dist(v, this.pos) < this.radius)
     return true;
-  else {
-    if (this.rotation) {
-      v.x -= this.pos.x;
-      v.y -= this.pos.y;
-      v = iio.point.rotate(v.x, v.y, -this.rotation);
-      v.x += this.pos.x;
-      v.y += this.pos.y;
-    }
-    if (Math.pow(v.x - this.pos.x, 2) / Math.pow(this.radius, 2) + Math.pow(v.y - this.pos.y, 2) / Math.pow(this.vRadius, 2) <= 1)
-      return true;
-  }
+  v = this.localize(v);
+  if (Math.pow(v.x, 2) / Math.pow(this.radius, 2) + Math.pow(v.y, 2) / Math.pow(this.vRadius, 2) <= 1)
+    return true;
   return false;
 }
 iio.Ellipse.prototype.size = function(){ return this.radius }
@@ -2279,8 +2299,8 @@ iio.Text.prototype.draw_shape = function(ctx) {
 
   ctx.translate(0,this.height/2);
 
- /* ctx.strokeStyle = 'red';
-  ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );*/
+  // ctx.strokeStyle = 'red';
+  // ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
 
   ctx.font = this.size + 'px ' + this.font;
   ctx.textAlign = this.align;
@@ -2289,18 +2309,13 @@ iio.Text.prototype.draw_shape = function(ctx) {
   if (this.showCursor)
     this.cursor.pos.x = this.cursor.endPos.x = this.getX(this.cursor.index);
 }
-iio.Text.prototype.contains = function(x, y) {
-  if (typeof(y) == 'undefined') {
-    y = x.y;
-    x = x.x
-  }
-  x -= this.pos.x;
-  y -= this.pos.y;
-  if ((typeof(this.align) == 'undefined' || this.align == 'left') && x > 0 && x < this.width && y < 0 && y > -this.height)
+iio.Text.prototype.contains = function(v, y) {
+  v = this.localize(v,y);
+  if ((typeof(this.align) == 'undefined' || this.align == 'left') && v.x>0 && v.x<this.width && v.y<this.height/2 && v.y>-this.height/2)
     return true;
-  else if (this.align == 'center' && x > -this.width / 2 && x < this.width / 2 && y < 0 && y > -this.height)
+  else if (this.align == 'center' && v.x>-this.width/2 && v.x<this.width/2 && v.y<this.height/2 && v.y>-this.height/2)
     return true;
-  else if ((this.align == 'right' || this.align == 'end') && x > -this.width && x < 0 && y < 0 && y > -this.height)
+  else if ((this.align == 'right' || this.align == 'end') && v.x>-this.width && v.x<0 && v.y<this.height/2 && v.y>-this.height/2)
     return true;
   return false;
 }
