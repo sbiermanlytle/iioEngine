@@ -1314,7 +1314,8 @@ iio.Drawable.prototype.unpause = function(c) {
         });
       });
   }
-};
+}
+;
 
 //DEFINITION
 iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
@@ -1328,35 +1329,29 @@ iio.SpriteMap.prototype.SpriteMap = function(src, p) {
 }
 
 //FUNCTIONS
-iio.SpriteMap.prototype.sprite = function(w, h, a, x, y, n) {
-  var s = {};
-  if (iio.is.string(w)) {
-    s.tag = w;
-    w = h;
-    h = a;
-    a = x;
-    x = y;
-    y = n;
-  }
-  if (w instanceof Array) s.frames = w;
-  else if (a instanceof Array) s.frames = a;
-  else {
-    s.frames = [];
-    for (var i = 0; i < a; i++)
-      s.frames[i] = {
-        x: w * i,
-        y: y,
-        w: w,
-        h: h
+iio.SpriteMap.prototype.sprite = function() {
+  var args = iio.merge_args(arguments);
+  var anim = {};
+  anim.name = args.name;
+  args.origin = iio.convert.vector(args.origin);
+  if (!args.frames) {
+    anim.frames = [];
+    for (var i = 0; i < args.numFrames; i++)
+      anim.frames[i] = {
+        x: args.origin.x + args.width * i,
+        y: args.origin.y,
+        w: args.width,
+        h: args.height,
       };
-  }
-  s.frames.forEach(function(frame) {
+  } else anim.frames = args.frames;
+  anim.frames.forEach(function(frame) {
     if (typeof(frame.src) == 'undefined') frame.src = this.img;
-    if (typeof(frame.w) == 'undefined') frame.w = w;
-    if (typeof(frame.h) == 'undefined') frame.h = h;
+    if (typeof(frame.w) == 'undefined') frame.w = args.width;
+    if (typeof(frame.h) == 'undefined') frame.h = args.height;
   }, this);
-  return s;
-};
+  return anim;
+}
+;
 /* Drawable
 ------------------
 iio.js version 1.4
@@ -1441,7 +1436,12 @@ iio.Shape.prototype.convert_props = function(){
         if(this.app) this.app.draw()
       }
     }
-  } 
+  }
+
+  // handle anim attachment
+  if(this.anims){
+    this.animFrame = this.animFrame || 0;
+  }
 }
 
 //BOUNDS FUNCTIONS
@@ -1609,11 +1609,12 @@ iio.Shape.prototype.update_properties_deprecated = function(){
 }
 
 //ANIMATION FUNCTIONS
-iio.Shape.prototype.playAnim = function(fps, t, r, fn, s) {
-  if (iio.is.string(t)) {
+iio.Shape.prototype.playAnim = function() {
+  var args = iio.merge_args(arguments);
+  if (args.name) {
     var o = this;
     this.anims.some(function(anim, i) {
-      if (anim.tag == t) {
+      if (anim.name == args.name) {
         o.animKey = i;
         o.width = anim.frames[o.animFrame].w;
         o.height = anim.frames[o.animFrame].h;
@@ -1621,15 +1622,13 @@ iio.Shape.prototype.playAnim = function(fps, t, r, fn, s) {
       }
       return false;
     });
-  } else r = t;
-  this.animFrame = s || 0;
-  if (typeof(r) != 'undefined') {
-    this.repeat = r;
-    this.onanimstop = fn;
   }
+  this.animFrame = args.startFrame || 0;
+  this.animRepeat = args.repeat;
+  this.onAnimStop = args.onAnimStop;
   var loop;
-  if (fps > 0) loop = this.loop(fps, iio.anim.next);
-  else if (fps < 0) loop = this.loop(fps * -1, iio.anim.prev);
+  if (args.fps > 0) loop = this.loop(args.fps, this.nextFrame);
+  else if (args.fps < 0) loop = this.loop(args.fps * -1, this.prevFrame);
   else this.app.draw();
   return loop;
 }
@@ -1637,13 +1636,13 @@ iio.Shape.prototype.nextFrame = function(o) {
   o.animFrame++;
   if (o.animFrame >= o.anims[o.animKey].frames.length) {
     o.animFrame = 0;
-    if (typeof(o.repeat) != 'undefined') {
-      if (o.repeat <= 1) {
+    if (typeof(o.animRepeat) != 'undefined') {
+      if (o.animRepeat <= 1) {
         window.cancelAnimationFrame(id);
         window.clearTimeout(id);
-        if (o.onanimstop) o.onanimstop(id, o);
+        if (o.onAnimStop) o.onAnimStop(id, o);
         return;
-      } else o.repeat--;
+      } else o.animRepeat--;
     }
   }
 }
@@ -1674,7 +1673,6 @@ iio.Shape.prototype._fade = function(s, r) {
     else return true;
   }
 }
-
 
 //DRAW FUNCTIONS
 iio.Shape.prototype.orient_ctx = function(ctx){
@@ -2829,7 +2827,7 @@ iio.Line.prototype.Line = function() {
 };
 /*
    iio engine
-   Version 1.4.0 Working Version
+   Version 1.3- Working Version
 */
 iio_dependency_path = "http://iioengine.com/src/core/"
 iio_dependencies = [
