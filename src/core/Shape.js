@@ -82,7 +82,12 @@ iio.Shape.prototype.convert_props = function(){
         if(this.app) this.app.draw()
       }
     }
-  } 
+  }
+
+  // handle anim attachment
+  if(this.anims){
+    this.animFrame = this.animFrame || 0;
+  }
 }
 
 //BOUNDS FUNCTIONS
@@ -250,11 +255,12 @@ iio.Shape.prototype.update_properties_deprecated = function(){
 }
 
 //ANIMATION FUNCTIONS
-iio.Shape.prototype.playAnim = function(fps, t, r, fn, s) {
-  if (iio.is.string(t)) {
+iio.Shape.prototype.playAnim = function() {
+  var args = iio.merge_args(arguments);
+  if (args.name) {
     var o = this;
     this.anims.some(function(anim, i) {
-      if (anim.tag == t) {
+      if (anim.name == args.name) {
         o.animKey = i;
         o.width = anim.frames[o.animFrame].w;
         o.height = anim.frames[o.animFrame].h;
@@ -262,15 +268,13 @@ iio.Shape.prototype.playAnim = function(fps, t, r, fn, s) {
       }
       return false;
     });
-  } else r = t;
-  this.animFrame = s || 0;
-  if (typeof(r) != 'undefined') {
-    this.repeat = r;
-    this.onanimstop = fn;
   }
+  this.animFrame = args.startFrame || 0;
+  this.animRepeat = args.repeat;
+  this.onAnimStop = args.onAnimStop;
   var loop;
-  if (fps > 0) loop = this.loop(fps, iio.anim.next);
-  else if (fps < 0) loop = this.loop(fps * -1, iio.anim.prev);
+  if (args.fps > 0) loop = this.loop(args.fps, this.nextFrame);
+  else if (args.fps < 0) loop = this.loop(args.fps * -1, this.prevFrame);
   else this.app.draw();
   return loop;
 }
@@ -278,13 +282,13 @@ iio.Shape.prototype.nextFrame = function(o) {
   o.animFrame++;
   if (o.animFrame >= o.anims[o.animKey].frames.length) {
     o.animFrame = 0;
-    if (typeof(o.repeat) != 'undefined') {
-      if (o.repeat <= 1) {
+    if (typeof(o.animRepeat) != 'undefined') {
+      if (o.animRepeat <= 1) {
         window.cancelAnimationFrame(id);
         window.clearTimeout(id);
-        if (o.onanimstop) o.onanimstop(id, o);
+        if (o.onAnimStop) o.onAnimStop(id, o);
         return;
-      } else o.repeat--;
+      } else o.animRepeat--;
     }
   }
 }
@@ -315,7 +319,6 @@ iio.Shape.prototype._fade = function(s, r) {
     else return true;
   }
 }
-
 
 //DRAW FUNCTIONS
 iio.Shape.prototype.orient_ctx = function(ctx){

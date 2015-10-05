@@ -11,32 +11,25 @@ iio.SpriteMap.prototype.SpriteMap = function(src, p) {
 }
 
 //FUNCTIONS
-iio.SpriteMap.prototype.sprite = function(w, h, a, x, y, n) {
-  var s = {};
-  if (iio.is.string(w)) {
-    s.tag = w;
-    w = h;
-    h = a;
-    a = x;
-    x = y;
-    y = n;
-  }
-  if (w instanceof Array) s.frames = w;
-  else if (a instanceof Array) s.frames = a;
-  else {
-    s.frames = [];
-    for (var i = 0; i < a; i++)
-      s.frames[i] = {
-        x: w * i,
-        y: y,
-        w: w,
-        h: h
+iio.SpriteMap.prototype.sprite = function() {
+  var args = iio.merge_args(arguments);
+  var anim = {};
+  anim.name = args.name;
+  args.origin = iio.convert.vector(args.origin);
+  if (!args.frames) {
+    anim.frames = [];
+    for (var i = 0; i < args.numFrames; i++)
+      anim.frames[i] = {
+        x: args.origin.x + args.width * i,
+        y: args.origin.y,
+        w: args.width,
+        h: args.height,
       };
-  }
-  s.frames.forEach(function(frame) {
+  } else anim.frames = args.frames;
+  anim.frames.forEach(function(frame) {
     if (typeof(frame.src) == 'undefined') frame.src = this.img;
-    if (typeof(frame.w) == 'undefined') frame.w = w;
-    if (typeof(frame.h) == 'undefined') frame.h = h;
+    if (typeof(frame.w) == 'undefined') frame.w = args.width;
+    if (typeof(frame.h) == 'undefined') frame.h = args.height;
   }, this);
-  return s;
+  return anim;
 }

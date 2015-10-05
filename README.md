@@ -5,7 +5,7 @@ iio.js v1.4 BETA
 
 iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all published copies and working editions of iio.js.
 
-iio.js was formarly known as 'iio Engine'. The last version of iio Engine, v1.2.2, included Box2D compatability and tutorials. Visit the archive folder or visit iioEngine.com or the for the old versions source code, documentation, tutorials, and demos.
+iio.js was formarly known as 'iio Engine'. The last version of iio Engine, v1.2.2, included Box2D compatability and tutorials. Checkout the 1.2 branch or visit iioEngine.com or the for the old versions source code, documentation, tutorials, and demos.
 
 ## links
 Homepage: http://iio.js.org
