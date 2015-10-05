@@ -89,8 +89,8 @@ iio.Text.prototype.draw_shape = function(ctx) {
 
   ctx.translate(0,this.height/2);
 
- /* ctx.strokeStyle = 'red';
-  ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );*/
+  // ctx.strokeStyle = 'red';
+  // ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
 
   ctx.font = this.size + 'px ' + this.font;
   ctx.textAlign = this.align;
@@ -99,18 +99,13 @@ iio.Text.prototype.draw_shape = function(ctx) {
   if (this.showCursor)
     this.cursor.pos.x = this.cursor.endPos.x = this.getX(this.cursor.index);
 }
-iio.Text.prototype.contains = function(x, y) {
-  if (typeof(y) == 'undefined') {
-    y = x.y;
-    x = x.x
-  }
-  x -= this.pos.x;
-  y -= this.pos.y;
-  if ((typeof(this.align) == 'undefined' || this.align == 'left') && x > 0 && x < this.width && y < 0 && y > -this.height)
+iio.Text.prototype.contains = function(v, y) {
+  v = this.localize(v,y);
+  if ((typeof(this.align) == 'undefined' || this.align == 'left') && v.x>0 && v.x<this.width && v.y<this.height/2 && v.y>-this.height/2)
     return true;
-  else if (this.align == 'center' && x > -this.width / 2 && x < this.width / 2 && y < 0 && y > -this.height)
+  else if (this.align == 'center' && v.x>-this.width/2 && v.x<this.width/2 && v.y<this.height/2 && v.y>-this.height/2)
     return true;
-  else if ((this.align == 'right' || this.align == 'end') && x > -this.width && x < 0 && y < 0 && y > -this.height)
+  else if ((this.align == 'right' || this.align == 'end') && v.x>-this.width && v.x<0 && v.y<this.height/2 && v.y>-this.height/2)
     return true;
   return false;
 }

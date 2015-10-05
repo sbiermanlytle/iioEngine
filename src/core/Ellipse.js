@@ -32,20 +32,12 @@ iio.Ellipse.prototype.draw_shape = function(ctx) {
   if (this.img) ctx.drawImage(this.img, -this.radius, -this.radius, this.radius*2, this.radius*2);
 }
 iio.Ellipse.prototype.contains = function(v, y) {
-  if (typeof(y) != 'undefined') v = { x:v, y:y }
-  if (iio.Vector.dist(v, this.pos) < this.radius)
+  if (typeof(y) !== 'undefined') v = { x:v, y:y }
+  if ((!this.vRadius || this.radius === this.vRadius) && iio.Vector.dist(v, this.pos) < this.radius)
     return true;
-  else {
-    if (this.rotation) {
-      v.x -= this.pos.x;
-      v.y -= this.pos.y;
-      v = iio.point.rotate(v.x, v.y, -this.rotation);
-      v.x += this.pos.x;
-      v.y += this.pos.y;
-    }
-    if (Math.pow(v.x - this.pos.x, 2) / Math.pow(this.radius, 2) + Math.pow(v.y - this.pos.y, 2) / Math.pow(this.vRadius, 2) <= 1)
-      return true;
-  }
+  v = this.localize(v);
+  if (Math.pow(v.x, 2) / Math.pow(this.radius, 2) + Math.pow(v.y, 2) / Math.pow(this.vRadius, 2) <= 1)
+    return true;
   return false;
 }
 iio.Ellipse.prototype.size = function(){ return this.radius }

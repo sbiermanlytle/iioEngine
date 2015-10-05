@@ -11,13 +11,54 @@ iio.Rectangle.prototype.Rectangle = function() {
 }
 
 //FUNCTIONS
+iio.Rectangle.prototype.draw_shape = function(ctx){
+  ctx.translate(-this.width / 2, -this.height / 2);
+  if (this.bezier) {
+    iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
+    this.finish_path_shape(ctx);
+  }
+  // } else if (this.type==iio.X) {
+  //   iio.draw.prep_x(ctx, this);
+  //   iio.draw.line(ctx, 0, 0, this.width, this.width);
+  //   iio.draw.line(ctx, this.width, 0, 0, this.width);
+  //   ctx.restore();
+  // } 
+  else if(this.round)
+    this.draw_rounded(ctx);
+  else{
+    if (this.color) ctx.fillRect(0, 0, this.width, this.height)
+    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
+    if (this.anims) ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+      this.anims[this.animKey].frames[this.animFrame].x,
+      this.anims[this.animKey].frames[this.animFrame].y,
+      this.anims[this.animKey].frames[this.animFrame].w,
+      this.anims[this.animKey].frames[this.animFrame].h,
+      0, 0, this.width, this.height);
+    if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
+  }
+}
+iio.Rectangle.prototype.draw_rounded = function(ctx){
+  ctx.beginPath();
+  ctx.moveTo(this.round[0], 0);
+  ctx.lineTo(this.width - this.round[1], 0);
+  ctx.quadraticCurveTo(this.width, 0, this.width, this.round[1]);
+  ctx.lineTo(this.width, this.height - this.round[2]);
+  ctx.quadraticCurveTo(this.width, this.height, this.width - this.round[2], this.height);
+  ctx.lineTo(this.round[3], this.height);
+  ctx.quadraticCurveTo(0, this.height, 0, this.height - this.round[3]);
+  ctx.lineTo(0, this.round[0]);
+  ctx.quadraticCurveTo(0, 0, this.round[0], 0);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fill();
+  ctx.clip();
+}
 iio.Rectangle.prototype.contains = function(v, y) {
-  if (this.rot) return iio.poly.contains(v, y);
-  y = v.y || y;
-  v = v.x || v;
-  v -= this.pos.x;
-  y -= this.pos.y;
-  if (v > -this.width / 2 && v < this.width / 2 && y > -this.width / 2 && y < this.width / 2)
+  v = this.localize(v,y);
+  if (v.x > -this.width / 2 
+   && v.x < this.width / 2
+   && v.y > -this.height / 2 
+   && v.y < this.height / 2)
     return true;
   return false;
 }
@@ -48,45 +89,3 @@ iio.Rectangle.prototype.left = function(){ return this.pos.x - this.width/2 }
 iio.Rectangle.prototype.right = function(){ return this.pos.x + this.width/2 }
 iio.Rectangle.prototype.top = function(){ return this.pos.y - this.height/2 }
 iio.Rectangle.prototype.bottom = function(){ return this.pos.y + this.height/2 }
-iio.Rectangle.prototype.draw_rounded = function(ctx){
-  ctx.beginPath();
-  ctx.moveTo(this.round[0], 0);
-  ctx.lineTo(this.width - this.round[1], 0);
-  ctx.quadraticCurveTo(this.width, 0, this.width, this.round[1]);
-  ctx.lineTo(this.width, this.height - this.round[2]);
-  ctx.quadraticCurveTo(this.width, this.height, this.width - this.round[2], this.height);
-  ctx.lineTo(this.round[3], this.height);
-  ctx.quadraticCurveTo(0, this.height, 0, this.height - this.round[3]);
-  ctx.lineTo(0, this.round[0]);
-  ctx.quadraticCurveTo(0, 0, this.round[0], 0);
-  ctx.closePath();
-  ctx.stroke();
-  ctx.fill();
-  ctx.clip();
-}
-iio.Rectangle.prototype.draw_shape = function(ctx){
-  ctx.translate(-this.width / 2, -this.height / 2);
-  if (this.bezier) {
-    iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
-    this.finish_path_shape(ctx);
-  }
-  // } else if (this.type==iio.X) {
-  //   iio.draw.prep_x(ctx, this);
-  //   iio.draw.line(ctx, 0, 0, this.width, this.width);
-  //   iio.draw.line(ctx, this.width, 0, 0, this.width);
-  //   ctx.restore();
-  // } 
-  else if(this.round)
-    this.draw_rounded(ctx);
-  else{
-    if (this.color) ctx.fillRect(0, 0, this.width, this.height)
-    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
-    if (this.anims) ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
-      this.anims[this.animKey].frames[this.animFrame].x,
-      this.anims[this.animKey].frames[this.animFrame].y,
-      this.anims[this.animKey].frames[this.animFrame].w,
-      this.anims[this.animKey].frames[this.animFrame].h,
-      0, 0, this.width, this.height);
-    if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
-  }
-}

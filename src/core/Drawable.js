@@ -38,6 +38,25 @@ iio.Drawable.prototype.localFrameVector = function(v){
     v.y - this.pos.y
   )
 }
+iio.Drawable.prototype.localize = function(v,y){
+  if (typeof(y) !== 'undefined') v = { x:v, y:y }
+  if (this.pos){
+    v.x -= this.pos.x;
+    v.y -= this.pos.y;
+  }
+  if (this.rotation) {
+    if (this.origin){
+      v.x -= this.origin.x;
+      v.y -= this.origin.y;
+    }
+    v = iio.point.rotate(v.x, v.y, -this.rotation);
+    if (this.origin){
+      v.x += this.origin.x;
+      v.y += this.origin.y;
+    }
+  }
+  return v;
+}
 
 // OBJECT MANAGMENT FUNCTIONS
 //-------------------------------------------------------------------
@@ -364,8 +383,8 @@ iio.Drawable.prototype.loop = function(fps, callback) {
   return loop.id;
 }
 iio.Drawable.prototype.togglePause = function(c) {
-  this.unpause(c);
-  this.pause(c);
+  if(this.paused) this.unpause(c);
+  else this.pause(c);
 }
 iio.Drawable.prototype.pause = function(c) {
   if (!this.paused) {
