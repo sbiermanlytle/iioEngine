@@ -42,7 +42,7 @@ Panning = function( app, settings ){
 
   // add a mouse move event handler to the canvas
   iio.addEvent(app.canvas, 'mousemove', function(event){
-    var mousePos = app.convert_event_pos(event);
+    var mousePos = app.eventVector(event);
 
     // set the grid velocity if the mouse position is
     // past the panning distance on the given axis

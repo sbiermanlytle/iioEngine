@@ -129,6 +129,8 @@ display_current = function(){
       show_demo( BezierCurves, "BezierCurves" );
     else if( path == 'Panning' )
       show_demo( Panning, "Panning" );
+    else if( path == 'DragDrop' )
+      show_demo( DragDrop, "DragDrop" );
 
   }
 
