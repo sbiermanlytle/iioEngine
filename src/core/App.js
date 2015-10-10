@@ -94,7 +94,7 @@ iio.App.prototype.draw = function( noClear ) {
     for(var i=0; i<this.objs.length; i++)
       if (this.objs[i].draw) this.objs[i].draw(this.ctx);
 }
-iio.App.prototype.convert_event_pos = function(e) {
+iio.App.prototype.eventVector = function(e) {
   this.update_pos();
   return new iio.Vector( 
     e.clientX - this.pos.x, 

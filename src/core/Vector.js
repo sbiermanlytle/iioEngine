@@ -27,24 +27,28 @@ iio.Vector.prototype.Vector = function(v,y) {
 //STATIC FUNCTIONS
 //------------------------------------------------------------
 iio.Vector.add = function(v1, v2) {
+	var v = v1.clone();
 	for (var p in v2)
-	  if (v1[p]) v1[p] += v2[p];
-	return v1
+	  if (v[p]) v[p] += v2[p];
+	return v
 }
 iio.Vector.sub = function(v1, v2) {
+	var v = v1.clone();
 	for (var p in v2)
-	  if (v1[p]) v1[p] -= v2[p];
-	return v1
+	  if (v[p]) v[p] -= v2[p];
+	return v
 }
 iio.Vector.mult = function(v1, v2) {
+	var v = v1.clone();
 	for (var p in v2)
-	  if (v1[p]) v1[p] *= v2[p];
-	return v1
+	  if (v[p]) v[p] *= v2[p];
+	return v
 }
 iio.Vector.div = function(v1, v2) {
+	var v = v1.clone();
 	for (var p in v2)
-	  if (v1[p]) v1[p] /= v2[p];
-	return v1
+	  if (v[p]) v[p] /= v2[p];
+	return v
 }
 iio.Vector.dist = function(v1, v2) {
 	return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2))
@@ -54,6 +58,13 @@ iio.Vector.dist = function(v1, v2) {
 //------------------------------------------------------------
 iio.Vector.prototype.clone = function(){
 	return new iio.Vector(this.x,this.y)
+}
+iio.Vector.prototype.add = function( x, y ){
+	y = y || x.y;
+	x = x.x || x;
+	this.x += x;
+	this.y += y;
+	return this;
 }
 iio.Vector.prototype.sub = function( x, y ){
 	y = y || x.y;

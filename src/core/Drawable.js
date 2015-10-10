@@ -40,6 +40,7 @@ iio.Drawable.prototype.localFrameVector = function(v){
 }
 iio.Drawable.prototype.localize = function(v,y){
   if (typeof(y) !== 'undefined') v = { x:v, y:y }
+  else v = v.clone();
   if (this.pos){
     v.x -= this.pos.x;
     v.y -= this.pos.y;

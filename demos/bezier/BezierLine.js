@@ -41,7 +41,7 @@ BezierLine = function(app) {
   var selected;
   app.canvas.addEventListener('mousemove', function(event){
     if(selected) {
-      selected.pos.set(app.convert_event_pos(event));
+      selected.pos.set(app.eventVector(event));
       app.draw();
     }
   });

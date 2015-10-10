@@ -615,13 +615,13 @@ iio.canvas = {
   prep_input: function(o) {
     function route_input(caller, e, handler){
       // orient click position to canvas 0,0
-      var ep = caller.parent.convert_event_pos(e);
+      var ep = caller.parent.eventVector(e);
       // App.handler
       if (caller.parent[handler]) 
         caller.parent[handler](caller.parent, e, ep);
       // App.objs.handler
       caller.parent.objs.forEach(function(obj, i) {
-        if (i !== 0) ep = caller.parent.convert_event_pos(e);
+        if (i !== 0) ep = caller.parent.eventVector(e);
         if (obj.contains && obj.contains(ep))
           if (obj[handler]) {
             if (obj.cellAt) {
@@ -741,24 +741,28 @@ iio.Vector.prototype.Vector = function(v,y) {
 //STATIC FUNCTIONS
 //------------------------------------------------------------
 iio.Vector.add = function(v1, v2) {
+	var v = v1.clone();
 	for (var p in v2)
-	  if (v1[p]) v1[p] += v2[p];
-	return v1
+	  if (v[p]) v[p] += v2[p];
+	return v
 }
 iio.Vector.sub = function(v1, v2) {
+	var v = v1.clone();
 	for (var p in v2)
-	  if (v1[p]) v1[p] -= v2[p];
-	return v1
+	  if (v[p]) v[p] -= v2[p];
+	return v
 }
 iio.Vector.mult = function(v1, v2) {
+	var v = v1.clone();
 	for (var p in v2)
-	  if (v1[p]) v1[p] *= v2[p];
-	return v1
+	  if (v[p]) v[p] *= v2[p];
+	return v
 }
 iio.Vector.div = function(v1, v2) {
+	var v = v1.clone();
 	for (var p in v2)
-	  if (v1[p]) v1[p] /= v2[p];
-	return v1
+	  if (v[p]) v[p] /= v2[p];
+	return v
 }
 iio.Vector.dist = function(v1, v2) {
 	return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2))
@@ -768,6 +772,13 @@ iio.Vector.dist = function(v1, v2) {
 //------------------------------------------------------------
 iio.Vector.prototype.clone = function(){
 	return new iio.Vector(this.x,this.y)
+}
+iio.Vector.prototype.add = function( x, y ){
+	y = y || x.y;
+	x = x.x || x;
+	this.x += x;
+	this.y += y;
+	return this;
 }
 iio.Vector.prototype.sub = function( x, y ){
 	y = y || x.y;
@@ -961,6 +972,7 @@ iio.Drawable.prototype.localFrameVector = function(v){
 }
 iio.Drawable.prototype.localize = function(v,y){
   if (typeof(y) !== 'undefined') v = { x:v, y:y }
+  else v = v.clone();
   if (this.pos){
     v.x -= this.pos.x;
     v.y -= this.pos.y;
@@ -2521,7 +2533,7 @@ iio.App.prototype.draw = function( noClear ) {
     for(var i=0; i<this.objs.length; i++)
       if (this.objs[i].draw) this.objs[i].draw(this.ctx);
 }
-iio.App.prototype.convert_event_pos = function(e) {
+iio.App.prototype.eventVector = function(e) {
   this.update_pos();
   return new iio.Vector( 
     e.clientX - this.pos.x, 

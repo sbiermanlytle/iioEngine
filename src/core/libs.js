@@ -273,13 +273,13 @@ iio.canvas = {
   prep_input: function(o) {
     function route_input(caller, e, handler){
       // orient click position to canvas 0,0
-      var ep = caller.parent.convert_event_pos(e);
+      var ep = caller.parent.eventVector(e);
       // App.handler
       if (caller.parent[handler]) 
         caller.parent[handler](caller.parent, e, ep);
       // App.objs.handler
       caller.parent.objs.forEach(function(obj, i) {
-        if (i !== 0) ep = caller.parent.convert_event_pos(e);
+        if (i !== 0) ep = caller.parent.eventVector(e);
         if (obj.contains && obj.contains(ep))
           if (obj[handler]) {
             if (obj.cellAt) {
