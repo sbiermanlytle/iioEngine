@@ -67,16 +67,11 @@ iio.point = {
       y = x.y;
       x = x.x;
     }
-    if (typeof r == 'undefined' || r == 0) return {
-      x: x,
-      y: y
-    }
+    if (typeof r == 'undefined' || r == 0) 
+      return new iio.Vector(x,y);
     var newX = x * Math.cos(r) - y * Math.sin(r);
     var newY = y * Math.cos(r) + x * Math.sin(r);
-    return {
-      x: newX,
-      y: newY
-    };
+    return new iio.Vector(newX,newY);
   },
   vector: function(points) {
     var vecs = [];
@@ -303,8 +298,8 @@ iio.canvas = {
 
 iio.collision = {
   check: function(o1, o2) {
-    if (typeof(o1) == 'undefined' || typeof(o2) == 'undefined') return false;
-    if ( o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle ) {
+    if (!o1 || !o2) return false;
+    if (o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle){
       
       /*if (o1.simple) {
         if (o2.simple) return iio.collision.rectXrect(
@@ -315,13 +310,40 @@ iio.collision = {
           o2.left, o2.right, o2.top, o2.bottom);
       } else if (o2.simple) return iio.collision.rectXrect(o1.left, o1.right, o1.top, o1.bottom,
         o2.pos.x - o2.bbx[0], o2.pos.x + o2.bbx[0], o2.pos.y - (o2.bbx[1] || o2.bbx[0]), o2.pos.y + (o2.bbx[1] || o2.bbx[0]));
-      else */return iio.collision.rectXrect(o1.left(), o1.right(), o1.top(), o1.bottom(), o2.left(), o2.right(), o2.top(), o2.bottom())
+      else */
+      return iio.collision.rectXrect(o1.left(), o1.right(), o1.top(), o1.bottom(), o2.left(), o2.right(), o2.top(), o2.bottom())
+    } else if (o1 instanceof iio.Polygon && o2 instanceof iio.Polygon){
+      return iio.collision.polyXpoly(o1,o2)
     }
   },
-  rectXrect: function(r1L, r1R, r1T, r1B, r2L, r2R, r2T, r2B) {
+  rectXrect: function(r1L, r1R, r1T, r1B, r2L, r2R, r2T, r2B){
     if (r1L < r2R && r1R > r2L && r1T < r2B && r1B > r2T) return true;
     return false;
-  }
+  },
+  polyXpoly: function(o1,o2){
+    var i;
+    var v1=o1.globalVs();
+    var v2=o2.globalVs();
+    for (i=0;i<v1.length;i++)
+      if (o2.contains(v1[i]))
+        return true;
+    for (i=0;i<v2.length;i++)
+      if (o1.contains(v2[i]))
+        return true;
+    // var a,b,j;
+    // for(i = 0; i < v1.length; i++) {
+    //    a = iio.Vec.add(v1[i], p1.pos);
+    //    b = iio.Vec.add(v1[(i + 1) % v1.length], p1.pos);
+    //    for(j = 0; j < v2.length; j++) {
+    //       if(iio.lineXline(a, b,
+    //                             iio.Vec.add(v2[j], p2.pos),
+    //                             iio.Vec.add(v2[(j + 1) % v2.length], p2.pos))) {
+    //          return true;
+    //       }
+    //    }
+    // } 
+    return false;
+  },
 }
 
 iio.draw = {

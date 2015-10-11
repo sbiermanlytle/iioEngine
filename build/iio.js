@@ -409,16 +409,11 @@ iio.point = {
       y = x.y;
       x = x.x;
     }
-    if (typeof r == 'undefined' || r == 0) return {
-      x: x,
-      y: y
-    }
+    if (typeof r == 'undefined' || r == 0) 
+      return new iio.Vector(x,y);
     var newX = x * Math.cos(r) - y * Math.sin(r);
     var newY = y * Math.cos(r) + x * Math.sin(r);
-    return {
-      x: newX,
-      y: newY
-    };
+    return new iio.Vector(newX,newY);
   },
   vector: function(points) {
     var vecs = [];
@@ -645,8 +640,8 @@ iio.canvas = {
 
 iio.collision = {
   check: function(o1, o2) {
-    if (typeof(o1) == 'undefined' || typeof(o2) == 'undefined') return false;
-    if ( o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle ) {
+    if (!o1 || !o2) return false;
+    if (o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle){
       
       /*if (o1.simple) {
         if (o2.simple) return iio.collision.rectXrect(
@@ -657,13 +652,40 @@ iio.collision = {
           o2.left, o2.right, o2.top, o2.bottom);
       } else if (o2.simple) return iio.collision.rectXrect(o1.left, o1.right, o1.top, o1.bottom,
         o2.pos.x - o2.bbx[0], o2.pos.x + o2.bbx[0], o2.pos.y - (o2.bbx[1] || o2.bbx[0]), o2.pos.y + (o2.bbx[1] || o2.bbx[0]));
-      else */return iio.collision.rectXrect(o1.left(), o1.right(), o1.top(), o1.bottom(), o2.left(), o2.right(), o2.top(), o2.bottom())
+      else */
+      return iio.collision.rectXrect(o1.left(), o1.right(), o1.top(), o1.bottom(), o2.left(), o2.right(), o2.top(), o2.bottom())
+    } else if (o1 instanceof iio.Polygon && o2 instanceof iio.Polygon){
+      return iio.collision.polyXpoly(o1,o2)
     }
   },
-  rectXrect: function(r1L, r1R, r1T, r1B, r2L, r2R, r2T, r2B) {
+  rectXrect: function(r1L, r1R, r1T, r1B, r2L, r2R, r2T, r2B){
     if (r1L < r2R && r1R > r2L && r1T < r2B && r1B > r2T) return true;
     return false;
-  }
+  },
+  polyXpoly: function(o1,o2){
+    var i;
+    var v1=o1.globalVs();
+    var v2=o2.globalVs();
+    for (i=0;i<v1.length;i++)
+      if (o2.contains(v1[i]))
+        return true;
+    for (i=0;i<v2.length;i++)
+      if (o1.contains(v2[i]))
+        return true;
+    // var a,b,j;
+    // for(i = 0; i < v1.length; i++) {
+    //    a = iio.Vec.add(v1[i], p1.pos);
+    //    b = iio.Vec.add(v1[(i + 1) % v1.length], p1.pos);
+    //    for(j = 0; j < v2.length; j++) {
+    //       if(iio.lineXline(a, b,
+    //                             iio.Vec.add(v2[j], p2.pos),
+    //                             iio.Vec.add(v2[(j + 1) % v2.length], p2.pos))) {
+    //          return true;
+    //       }
+    //    }
+    // } 
+    return false;
+  },
 }
 
 iio.draw = {
@@ -970,13 +992,7 @@ iio.Drawable.prototype.localFrameVector = function(v){
     v.y - this.pos.y
   )
 }
-iio.Drawable.prototype.localize = function(v,y){
-  if (typeof(y) !== 'undefined') v = { x:v, y:y }
-  else v = v.clone();
-  if (this.pos){
-    v.x -= this.pos.x;
-    v.y -= this.pos.y;
-  }
+iio.Drawable.prototype.localizeRotation = function(v){
   if (this.rotation) {
     if (this.origin){
       v.x -= this.origin.x;
@@ -988,6 +1004,14 @@ iio.Drawable.prototype.localize = function(v,y){
       v.y += this.origin.y;
     }
   }
+}
+iio.Drawable.prototype.localize = function(v,y){
+  var v = new iio.Vector( v.x || v, v.y || y);
+  if (this.pos){
+    v.x -= this.pos.x;
+    v.y -= this.pos.y;
+  }
+  this.localizeRotation(v);
   return v;
 }
 
@@ -1862,69 +1886,12 @@ iio.Polygon.prototype.Polygon = function() {
   this._super.Shape.call(this,iio.merge_args(arguments));
 }
 
-//FUNCTIONS
-iio.Polygon.prototype.draw_shape = function(ctx) {
-  ctx.beginPath();
-  ctx.moveTo(this.vs[0].x, this.vs[0].y);
-  if (this.bezier) {
-    var _i = 0;
-    for (var i = 1; i < this.vs.length; i++)
-      ctx.this.bezierCurveTo(this.bezier[_i++] || this.vs[i - 1].x, 
-        this.bezier[_i++] || this.vs[i - 1].y, 
-        this.bezier[_i++] || this.vs[i].x, 
-        this.bezier[_i++] || this.vs[i].y,
-         this.vs[i].x, this.vs[i].y);
-    if (!this.open) {
-      i--;
-      ctx.this.bezierCurveTo(this.bezier[_i++] || this.vs[i].x,
-       this.bezier[_i++] || this.vs[i].y,
-       this.bezier[_i++] || 0,
-       this.bezier[_i++] || 0,
-       0, 0);
-    }
-  } else for(var i=1; i<this.vs.length; i++)
-    ctx.lineTo(this.vs[i].x, this.vs[i].y);
-  if (typeof(this.open) == 'undefined' || !this.open)
-    ctx.closePath();
-  this.finish_path_shape(ctx);
-}
-iio.Polygon.prototype.contains = function(v, y) {
-  v = this.localize(v,y);
-  var i = j = c = 0;
-  for (i = 0, j = this.vs.length - 1; i < this.vs.length; j = i++) {
-    if (((this.vs[i].y > v.y) != (this.vs[j].y > v.y)) &&
-      (v.x < (this.vs[j].x - this.vs[i].x) * (v.y - this.vs[i].y) / (this.vs[j].y - this.vs[i].y) + this.vs[i].x))
-      c = !c;
-  }
-  return c;
-}
-iio.Polygon.prototype._contains = function(v, y) {
-  y = (v.y || y);
-  v = (v.x || v);
-  var i = j = c = 0;
-  var vs = this.vs;
-  if (this.rotation) vs = this.globalVs();
-  for (i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-    if (((vs[i].y > y) != (vs[j].y > y)) &&
-      (v < (vs[j].x - vs[i].x) * (y - vs[i].y) / (vs[j].y - vs[i].y) + vs[i].x))
-      c = !c;
-  }
-  return c;
-}
-iio.Polygon.prototype.globalVs = function() {
-  var vList=[]; var x,y;
-  for(var i=0;i<this.vs.length;i++){
-     x=this.vs[i].x;
-     y=this.vs[i].y;
-     var v = iio.point.rotate(x,y,this.rotation);
-     v.x+=this.pos.x;
-     v.y+=this.pos.y;
-     vList[i]=v;
-  }
-  return vList;
-}
-iio.Polygon.prototype.size = function(){ 
+//POSITION FUNCTIONS
+iio.Polygon.prototype.width = function(){ 
   return this.right() - this.left() 
+}
+iio.Polygon.prototype.height = function(){ 
+  return this.bottom() - this.top() 
 }
 iio.Polygon.prototype.left = function(){ 
   return iio.specVec( this.globalVs(),
@@ -1955,6 +1922,57 @@ iio.Polygon.prototype.bottom = function(){
       if(v1.y<v2.y)
         return true;
       return false}).y
+}
+iio.Polygon.prototype.globalVs = function() {
+  var vs = [];
+  for(var i=0;i<this.vs.length;i++){
+    var v = this.vs[i].clone();
+    this.localizeRotation(v);
+    if(this.pos){
+      v.x += this.pos.x;
+      v.y += this.pos.y;
+    }
+    vs[i]=v;
+  }
+  return vs;
+}
+iio.Polygon.prototype.contains = function(v, y) {
+  v = this.localize(v,y);
+  var i = j = c = 0;
+  var vs = this.vs;
+  for (i = 0, j = this.vs.length - 1; i < this.vs.length; j = i++) {
+    if (((this.vs[i].y > v.y) != (this.vs[j].y > v.y)) &&
+      (v.x < (this.vs[j].x - this.vs[i].x) * (v.y - this.vs[i].y) / (this.vs[j].y - this.vs[i].y) + this.vs[i].x))
+      c = !c;
+  }
+  return c;
+}
+
+//FUNCTIONS
+iio.Polygon.prototype.draw_shape = function(ctx) {
+  ctx.beginPath();
+  ctx.moveTo(this.vs[0].x, this.vs[0].y);
+  if (this.bezier) {
+    var _i = 0;
+    for (var i = 1; i < this.vs.length; i++)
+      ctx.this.bezierCurveTo(this.bezier[_i++] || this.vs[i - 1].x, 
+        this.bezier[_i++] || this.vs[i - 1].y, 
+        this.bezier[_i++] || this.vs[i].x, 
+        this.bezier[_i++] || this.vs[i].y,
+         this.vs[i].x, this.vs[i].y);
+    if (!this.open) {
+      i--;
+      ctx.this.bezierCurveTo(this.bezier[_i++] || this.vs[i].x,
+       this.bezier[_i++] || this.vs[i].y,
+       this.bezier[_i++] || 0,
+       this.bezier[_i++] || 0,
+       0, 0);
+    }
+  } else for(var i=1; i<this.vs.length; i++)
+    ctx.lineTo(this.vs[i].x, this.vs[i].y);
+  if (typeof(this.open) == 'undefined' || !this.open)
+    ctx.closePath();
+  this.finish_path_shape(ctx);
 };
 
 //DEFINITION
@@ -1975,12 +1993,6 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
     iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
     this.finish_path_shape(ctx);
   }
-  // } else if (this.type==iio.X) {
-  //   iio.draw.prep_x(ctx, this);
-  //   iio.draw.line(ctx, 0, 0, this.width, this.width);
-  //   iio.draw.line(ctx, this.width, 0, 0, this.width);
-  //   ctx.restore();
-  // } 
   else if(this.round)
     this.draw_rounded(ctx);
   else{
@@ -2013,33 +2025,36 @@ iio.Rectangle.prototype.draw_rounded = function(ctx){
 }
 iio.Rectangle.prototype.contains = function(v, y) {
   v = this.localize(v,y);
-  if (v.x > -this.width / 2 
-   && v.x < this.width / 2
-   && v.y > -this.height / 2 
-   && v.y < this.height / 2)
+  if (v.x > -this.width/2 
+   && v.x <  this.width/2
+   && v.y > -this.height/2 
+   && v.y <  this.height/2)
     return true;
   return false;
 }
-iio.Rectangle.prototype.real_vertices = function() {
-  this.vs = [{
-    x: this.left,
-    y: this.top
-  }, {
-    x: this.right,
-    y: this.top
-  }, {
-    x: this.right,
-    y: this.bottom
-  }, {
-    x: this.left,
-    y: this.bottom
-  }];
-  return this.vs.map(function(_v) {
-    var v = iio.point.rotate(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
+iio.Rectangle.prototype.trueVertices = function() {
+  var vs = [
+    new iio.Vector(-this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, this.height/2),
+    new iio.Vector(-this.width/2, this.height/2),
+  ];
+  for(var i=0; i<vs.length; i++) {
+    if (this.rotation) {
+      if (this.origin) {
+        v.x -= this.origin.x;
+        v.y -= this.origin.y;
+      }
+      v = iio.point.rotate(v.x, v.y, -this.rotation);
+      if (this.origin){
+        v.x += this.origin.x;
+        v.y += this.origin.y;
+      }
+    }
     v.x += this.pos.x;
     v.y += this.pos.y;
-    return v;
-  }, this);
+  }
+  return vs;
 }
 iio.Rectangle.prototype.size = function(){ return this.width }
 iio.Rectangle.prototype.setSize = function(w,h){ this.width = w; this.height = h; }

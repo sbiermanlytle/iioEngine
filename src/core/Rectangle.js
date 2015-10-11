@@ -17,12 +17,6 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
     iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
     this.finish_path_shape(ctx);
   }
-  // } else if (this.type==iio.X) {
-  //   iio.draw.prep_x(ctx, this);
-  //   iio.draw.line(ctx, 0, 0, this.width, this.width);
-  //   iio.draw.line(ctx, this.width, 0, 0, this.width);
-  //   ctx.restore();
-  // } 
   else if(this.round)
     this.draw_rounded(ctx);
   else{
@@ -55,33 +49,36 @@ iio.Rectangle.prototype.draw_rounded = function(ctx){
 }
 iio.Rectangle.prototype.contains = function(v, y) {
   v = this.localize(v,y);
-  if (v.x > -this.width / 2 
-   && v.x < this.width / 2
-   && v.y > -this.height / 2 
-   && v.y < this.height / 2)
+  if (v.x > -this.width/2 
+   && v.x <  this.width/2
+   && v.y > -this.height/2 
+   && v.y <  this.height/2)
     return true;
   return false;
 }
-iio.Rectangle.prototype.real_vertices = function() {
-  this.vs = [{
-    x: this.left,
-    y: this.top
-  }, {
-    x: this.right,
-    y: this.top
-  }, {
-    x: this.right,
-    y: this.bottom
-  }, {
-    x: this.left,
-    y: this.bottom
-  }];
-  return this.vs.map(function(_v) {
-    var v = iio.point.rotate(_v.x - this.pos.x, _v.y - this.pos.y, this.rot);
+iio.Rectangle.prototype.trueVertices = function() {
+  var vs = [
+    new iio.Vector(-this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, this.height/2),
+    new iio.Vector(-this.width/2, this.height/2),
+  ];
+  for(var i=0; i<vs.length; i++) {
+    if (this.rotation) {
+      if (this.origin) {
+        v.x -= this.origin.x;
+        v.y -= this.origin.y;
+      }
+      v = iio.point.rotate(v.x, v.y, -this.rotation);
+      if (this.origin){
+        v.x += this.origin.x;
+        v.y += this.origin.y;
+      }
+    }
     v.x += this.pos.x;
     v.y += this.pos.y;
-    return v;
-  }, this);
+  }
+  return vs;
 }
 iio.Rectangle.prototype.size = function(){ return this.width }
 iio.Rectangle.prototype.setSize = function(w,h){ this.width = w; this.height = h; }

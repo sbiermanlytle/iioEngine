@@ -38,13 +38,7 @@ iio.Drawable.prototype.localFrameVector = function(v){
     v.y - this.pos.y
   )
 }
-iio.Drawable.prototype.localize = function(v,y){
-  if (typeof(y) !== 'undefined') v = { x:v, y:y }
-  else v = v.clone();
-  if (this.pos){
-    v.x -= this.pos.x;
-    v.y -= this.pos.y;
-  }
+iio.Drawable.prototype.localizeRotation = function(v){
   if (this.rotation) {
     if (this.origin){
       v.x -= this.origin.x;
@@ -56,6 +50,14 @@ iio.Drawable.prototype.localize = function(v,y){
       v.y += this.origin.y;
     }
   }
+}
+iio.Drawable.prototype.localize = function(v,y){
+  var v = new iio.Vector( v.x || v, v.y || y);
+  if (this.pos){
+    v.x -= this.pos.x;
+    v.y -= this.pos.y;
+  }
+  this.localizeRotation(v);
   return v;
 }
 

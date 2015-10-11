@@ -11,7 +11,7 @@
 var iioapps;
 var app_colors;
 iio.test = {};
-iio.test.setup_master = function(){
+iio.test.setup_master = function(doubleSize){
 
 	// DOM container for iio apps
 	iioapps = document.body;
@@ -21,7 +21,8 @@ iio.test.setup_master = function(){
 	app_colors[0] = new iio.Color.random();
 	app_colors[1] = app_colors[0].clone().invert();
 
-	iio.test.create_canvas_grid( 100, 5, 6 );
+	if (doubleSize) iio.test.create_canvas_grid( 200, 3, 3 );
+	else iio.test.create_canvas_grid( 100, 5, 6 );
 }
 iio.test.create_canvas_grid = function( SIZE, COLS, ROWS, ID ){
 	var canvas, clear;
@@ -81,8 +82,10 @@ iio.test.show_tests = function( test_class, class_name, id ){
 	run_test( test_class.origin, 
 		'tests/source-code/'+class_name+'/origin.html' );
 	
-	run_test( test_class.rectXrect, 
-		'tests/source-code/'+class_name+'/rectXrect.html' );
+	// run_test( test_class.rectXrect, 
+		// 'tests/source-code/'+class_name+'/rectXrect.html' );
+	run_test( test_class.polyXpoly, 
+		'tests/source-code/'+class_name+'/polyXpoly.html' );
 
 	next_row();
 

@@ -1,330 +1,131 @@
 iio.test.Collisions = {
-	rectXrect : function(app, settings){
-		var square_0;
-		var square_1;
+  rectXrect : function(app, settings){
+    var objWidth = 50;
 
-		function reverseX(o){ o.vel.x*=-1 }
+    function reverseX(o){ o.vel.x*=-1 }
+    function reverseY(o){ o.vel.y*=-1 }
 
-		var app_boundary = {
-			right: {
-				bound: app.width,
-				callback: reverseX
-			},
-			left: {
-				bound: 0,
-				callback: reverseX
-			}
-		}
+    var common = {
+      width: objWidth,
+      lineWidth: 2,
+      bounds: {
+        left: {
+          bound: 0,
+          callback: reverseX
+        },
+        right: {
+          bound: app.width,
+          callback: reverseX
+        },
+        top: {
+          bound: 0,
+          callback: reverseY
+        },
+        bottom: {
+          bound: app.height,
+          callback: reverseY
+        },
+      }
+    }
 
-		square_0 = app.add(new iio.Rectangle({
-			width: 20,
-			outline: 'red',
-			lineWidth: 2,
-			vel: [ 1, 0 ],
-			bounds: app_boundary,
-			pos: [
-				app.width/3,
-				app.center.y
-			]
-		}));
+    var square0 = app.add(new iio.Rectangle(common,{
+      outline: 'red',
+      vel: [ 1, .5 ],
+      rVel: 0.05,
+      pos: [
+        app.width/3,
+        app.center.y
+      ]
+    }));
 
-		square_1 = app.add(new iio.Rectangle({
-			width: 20,
-			outline: 'blue',
-			lineWidth: 2,
-			vel: [ -1, 0 ],
-			bounds: app_boundary,
-			pos: [
-				app.width*2/3,
-				app.center.y
-			]
-		}));
+    var square1 = app.add(new iio.Rectangle(common,{
+      outline: 'blue',
+      vel: [ -1, 1 ],
+      rVel: -0.05,
+      pos: [
+        app.width*2/3,
+        app.center.y
+      ]
+    }));
 
-		app.collision( square_0, square_1, function(s0,s1){
-			s0.vel.x*=-1;
-			s1.vel.x*=-1;
-		});
-	},
-	/*rotation : function(app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			color: settings.color,
-			radius: 25,
-			rotation: Math.PI/2
-		}));
-	},
-	origin : function(app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			origin: [ 8, -8 ],
-			color: settings.color,
-			radius: 25,
-			rVel: .02
-		}));
-	},
-	vel_bounds : function( app, settings ){
+    app.collision( square0, square1, function(s0,s1){
+      s0.vel.x*=-1;
+      s1.vel.x*=-1;
+      s0.rVel*=-1;
+      s1.rVel*=-1;
+    });
+  },
+  polyXpoly : function(app, settings){
+    var oWidth = 15;
+    var speed = .8;
 
-		var speed = 1;
+    function reverse(o,p){ o[p]*=-1 }
+    function reverseX(o){
+      reverse(o.vel,'x')
+    }
+    function reverseY(o){ 
+      reverse(o.vel,'y');
+    }
 
-		function reverse(o){ o.vel.x *= -1 }
+    var common = {
+      bounds: {
+        left: {
+          bound: 0,
+          callback: reverseX
+        },
+        right: {
+          bound: app.width,
+          callback: reverseX
+        },
+        top: {
+          bound: 0,
+          callback: reverseY
+        },
+        bottom: {
+          bound: app.height,
+          callback: reverseY
+        },
+      }
+    }
 
-		app.add(new iio.Ellipse({
-			pos: app.center.clone(),
-			color: settings.color,
-			radius: 25,
-			vel: [ speed,0 ],
-			bounds: {
-				right: {
-					bound: app.width,
-					callback: reverse
-				},
-				left: {
-					bound: 0,
-					callback: reverse
-				}
-			}
-		}));
-	},
-	acc_bounds : function( app, settings ){
+    var square0 = app.add(new iio.Polygon(common,{
+      color: 'red',
+      vel: [ speed, speed/2 ],
+      rVel: 0.02,
+      pos: [
+        app.width/3,
+        app.center.y
+      ],
+      vs: [
+        [-oWidth, -oWidth],
+        [oWidth, -oWidth],
+        [oWidth, oWidth],
+        [-oWidth, oWidth],
+      ],
+    }));
 
-		var speed = 1;
+    var square1 = app.add(new iio.Polygon(common,{
+      color: 'blue',
+      vel: [ -speed, -speed/2 ],
+      rVel: -0.02,
+      pos: [
+        app.width*2/3,
+        app.center.y + 4
+      ],
+      vs: [
+        [-oWidth, -oWidth],
+        [oWidth, -oWidth],
+        [oWidth, oWidth],
+        [-oWidth, oWidth],
+      ],
+    }));
 
-		app.add(new iio.Ellipse({
-			pos: app.center.clone(),
-			color: settings.color,
-			radius: 25,
-			vel: [ speed, 0 ],
-			acc: [ .01, 0 ],
-			bounds: {
-				right: {
-					bound: app.width, 
-					callback: function(o){
-						o.vel.x = -speed;
-					}
-				}
-			}
-		}));
-	},
-	rVel_bounds : function( app, settings ){
-
-		function reverse(o){ o.rVel *= -1 }
-
-		app.add(new iio.Ellipse({
-			pos: app.center.clone(),
-			origin: [ 12, -12 ],
-			color: settings.color,
-			radius: 25,
-			rVel: .02,
-			bounds: {
-				rightRotation: {
-					bound: Math.PI/2, 
-					callback: reverse
-				},
-				leftRotation: {
-					bound: 0, 
-					callback: reverse
-				}
-			}
-		}));
-	},
-	rAcc_bounds : function( app, settings ){
-
-		app.add(new iio.Ellipse({
-			pos: app.center.clone(),
-			origin: [ 12, -12 ],
-			color: settings.color,
-			radius: 25,
-			rAcc: .0015,
-			bounds: {
-				rightRotation: {
-					bound: Math.PI/2, 
-					callback: function(o){
-						o.rAcc *= -1; 
-						o.rVel = -.01;
-					}
-				},
-				leftRotation: {
-					bound: -Math.PI/2,
-					callback: function(o){
-						o.rAcc *= -1; 
-						o.rVel = .01;
-					}
-				}
-			}
-		}));
-	},
-	hidden : function( app, settings ){
-
-		app.loop(1);
-
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			color: settings.color,
-			radius: 25,
-			hidden: false,
-			onUpdate: function(){
-				this.hidden = !this.hidden;
-			}
-		}));
-	},
-	alpha : function( app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			color: settings.color,
-			radius: 25,
-			fade: {
-				speed: .03,
-				lowerBound: .2,
-				callback: function(o){
-					o.fade.speed *= -1;
-				}
-			}
-		}));
-	},
-	color : function( app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			color: settings.color.clone(),
-			radius: 25,
-			cycle: 0,
-			onUpdate: iio.test.color
-		}));
-	},
-	outline : function( app, settings ){
-
-		app.loop(10);
-
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			radius: 25,
-			outline: settings.color.clone(),
-			lineWidth: 1,
-			growing: true,
-			onUpdate: iio.test.outline
-		}));
-	},
-	shrink : function( app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			color: settings.color,
-			radius: 25,
-			shrink: {
-				speed: .03,
-				upperBound: 25,
-				lowerBound: 4,
-				callback: function(o){
-					if(o.radius < o.shrink.lowerBound)
-						o.shrink.speed = -.03;
-					else o.shrink.speed = .03;
-				}
-			}
-		}));
-	},
-	dash : function ( app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			radius: 25,
-			outline: settings.color,
-			lineWidth: 10,
-			dash: [ 10, 3 ]
-		}));
-	},
-	dash_rounded : function ( app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			radius: 25,
-			outline: settings.color,
-			lineWidth: 10,
-			dash: [ .1, 17.2 ],
-			dashOffset: 10,
-			lineCap: 'round'
-		}));
-	},
-	gradient : function( app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			radius: 25,
-			color: new iio.Gradient({
-				start: [ 0, -25 ],
-				end: [ 0, 25 ],
-				stops: [
-					[ 0, settings.color ],
-					[ 1, 'black' ]
-				]
-			})
-		}));
-	},
-	radial_gradient : function( app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			radius: 25,
-			color: new iio.Gradient({
-				start: [ 0,0 ],
-				startRadius: 1,
-				end: [ 0,0 ],
-				endRadius: 40,
-				stops: [
-					[ 0, 'transparent' ],
-					[ 0.4, settings.color ],
-					[ 1, settings.color ]
-				]
-			})
-		}));
-	},
-	shadow : function( app, settings ){
-
-		app.set({color:'white'})
-
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			outline: settings.color,
-			lineWidth: 5,
-			dash: 20,
-			radius: 25,
-			shadow: new iio.Color( 0,0,0,.5 ),
-			shadowBlur: 5,
-			shadowOffset: [ 4,4 ],
-		}));
-	},
-	child : function( app, settings ){
-
-		var props = {
-			outline: settings.color,
-			lineWidth: 5
-		}
-
-		app.add( new iio.Ellipse(props,{
-			pos: app.center,
-			origin: [ 8, -8 ],
-			radius: 25,
-			rVel: .02
-		})).add( new iio.Ellipse(props,{
-			radius: 12
-		}))
-	},
-	img : function( app, settings ){
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			radius: app.width/2.5,
-			clip: true,
-			img: 'http://iioengine.com/img/staryNight.jpg'
-		}));
-	},
-	flip : function( app, settings ){
-
-		app.loop(1);
-
-		app.add(new iio.Ellipse({
-			pos: app.center,
-			radius: app.width/2.5,
-			clip: true,
-			img: 'http://iioengine.com/img/flip.png',
-			flip: 'x',
-			onUpdate: function(){
-				if(this.flip == 'x')
-					this.flip = false;
-				else this.flip = 'x';
-			}
-		}));
-	}*/
+    app.collision( square0, square1, function(s0,s1){
+      var temp = square0.vel;
+      square0.vel = square1.vel;
+      square1.vel = temp;
+      reverse(s0,'rVel');
+      reverse(s1,'rVel');
+    });
+  },
 }
