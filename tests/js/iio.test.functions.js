@@ -68,7 +68,7 @@ iio.test.show_tests = function( test_class, class_name, id ){
 		c = 0;
 		r++;
 	}
-
+	
 	run_test( test_class.constructor,
 		'tests/source-code/'+class_name+'/constructor.html' );
 	run_test( test_class.constructor_no_pos, 

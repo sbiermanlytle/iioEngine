@@ -40,16 +40,13 @@ iio.Drawable.prototype.localFrameVector = function(v){
 }
 iio.Drawable.prototype.localizeRotation = function(v){
   if (this.rotation) {
-    if (this.origin){
-      v.x -= this.origin.x;
-      v.y -= this.origin.y;
-    }
+    if (this.origin)
+      v.sub(this.origin);
     v = iio.point.rotate(v.x, v.y, -this.rotation);
-    if (this.origin){
-      v.x += this.origin.x;
-      v.y += this.origin.y;
-    }
+    if (this.origin)
+      v.add(this.origin);
   }
+  return v;
 }
 iio.Drawable.prototype.localize = function(v,y){
   var v = new iio.Vector( v.x || v, v.y || y);
@@ -57,8 +54,7 @@ iio.Drawable.prototype.localize = function(v,y){
     v.x -= this.pos.x;
     v.y -= this.pos.y;
   }
-  this.localizeRotation(v);
-  return v;
+  return this.localizeRotation(v);
 }
 
 // OBJECT MANAGMENT FUNCTIONS
