@@ -44,8 +44,8 @@ iio.Ellipse.prototype.size = function(){ return this.radius }
 iio.Ellipse.prototype.setSize = function(s){ this.radius = s/2 }
 iio.Ellipse.prototype.left = function(){ return this.pos.x - this.radius }
 iio.Ellipse.prototype.right = function(){ return this.pos.x + this.radius }
-iio.Ellipse.prototype.top = function(){ return this.pos.y - this.vRadius }
-iio.Ellipse.prototype.bottom = function(){ return this.pos.y + this.vRadius }
+iio.Ellipse.prototype.top = function(){ return this.pos.y - (this.vRadius || this.radius) }
+iio.Ellipse.prototype.bottom = function(){ return this.pos.y + (this.vRadius || this.radius) }
 iio.Ellipse.prototype._shrink = function(s, r) {
   this.radius *= 1 - s;
   if (this.vRadius) this.vRadius *= 1 - s;

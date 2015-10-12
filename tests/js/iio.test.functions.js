@@ -68,7 +68,7 @@ iio.test.show_tests = function( test_class, class_name, id ){
 		c = 0;
 		r++;
 	}
-	
+
 	run_test( test_class.constructor,
 		'tests/source-code/'+class_name+'/constructor.html' );
 	run_test( test_class.constructor_no_pos, 
@@ -86,6 +86,8 @@ iio.test.show_tests = function( test_class, class_name, id ){
 		// 'tests/source-code/'+class_name+'/rectXrect.html' );
 	run_test( test_class.polyXpoly, 
 		'tests/source-code/'+class_name+'/polyXpoly.html' );
+	run_test( test_class.circleXcircle, 
+		'tests/source-code/'+class_name+'/circleXcircle.html' );
 
 	next_row();
 

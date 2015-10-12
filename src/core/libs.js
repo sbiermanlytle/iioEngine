@@ -314,10 +314,19 @@ iio.collision = {
       return iio.collision.rectXrect(o1.left(), o1.right(), o1.top(), o1.bottom(), o2.left(), o2.right(), o2.top(), o2.bottom())
     } else if (o1 instanceof iio.Polygon && o2 instanceof iio.Polygon){
       return iio.collision.polyXpoly(o1,o2)
+    } else if (o1 instanceof iio.Ellipse && o2 instanceof iio.Ellipse){
+      if ((!o1.vRadius||o1.radius === o1.vRadius) && (!o2.vRadius||o2.radius === o2.vRadius) )
+        return iio.collision.circleXcircle(o1,o2)
+      //else http://yehar.com/blog/?p=2926
     }
   },
   rectXrect: function(r1L, r1R, r1T, r1B, r2L, r2R, r2T, r2B){
     if (r1L < r2R && r1R > r2L && r1T < r2B && r1B > r2T) return true;
+    return false;
+  },
+  circleXcircle: function(o1,o2){
+    if (o1.pos.distance(o2.pos) < o1.radius+o2.radius)
+      return true;
     return false;
   },
   polyXpoly: function(o1,o2){

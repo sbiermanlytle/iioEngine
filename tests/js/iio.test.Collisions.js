@@ -128,4 +128,62 @@ iio.test.Collisions = {
       reverse(s1,'rVel');
     });
   },
+  circleXcircle : function(app, settings){
+    var oWidth = 20;
+    var speed = .8;
+
+    function reverse(o,p){ o[p]*=-1 }
+    function reverseX(o){
+      reverse(o.vel,'x')
+    }
+    function reverseY(o){ 
+      reverse(o.vel,'y');
+    }
+
+    var common = {
+      radius: oWidth,
+      bounds: {
+        left: {
+          bound: 0,
+          callback: reverseX
+        },
+        right: {
+          bound: app.width,
+          callback: reverseX
+        },
+        top: {
+          bound: 0,
+          callback: reverseY
+        },
+        bottom: {
+          bound: app.height,
+          callback: reverseY
+        },
+      }
+    }
+
+    var o0 = app.add(new iio.Ellipse(common,{
+      color: 'red',
+      vel: [ speed, speed/2 ],
+      pos: [
+        app.width/3,
+        app.center.y
+      ],
+    }));
+
+    var o1 = app.add(new iio.Ellipse(common,{
+      color: 'blue',
+      vel: [ -speed, -speed/2 ],
+      pos: [
+        app.width*2/3,
+        app.center.y + 4
+      ],
+    }));
+
+    app.collision( o0, o1, function(s0,s1){
+      var temp = o0.vel;
+      o0.vel = o1.vel;
+      o1.vel = temp;
+    });
+  },
 }
