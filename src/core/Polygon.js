@@ -45,25 +45,18 @@ iio.Polygon.prototype.contains = function(v, y) {
   }
   return c;
 }
-
-iio.Polygon.prototype.globalVs = function() {
-  var vList=[];
-  for(var i=0;i<this.vs.length;i++){
-    var v = this.localizeRotation(this.vs[i].clone());
-    v.x+=this.pos.x;
-    v.y+=this.pos.y;
-    vList[i]=v;
+iio.Polygon.prototype.trueVs = function() {
+  var vs=[];
+  for(var v,i=0;i<this.vs.length;i++){
+    v = this.localizeRotation(this.vs[i].clone());
+    v.x += this.pos.x;
+    v.y += this.pos.y;
+    vs[i]=v;
   }
-  return vList;
-}
-iio.Polygon.prototype.width = function(){ 
-  return this.right() - this.left() 
-}
-iio.Polygon.prototype.height = function(){ 
-  return this.bottom() - this.top() 
+  return vs;
 }
 iio.Polygon.prototype.left = function(){ 
-  return iio.specVec( this.globalVs(),
+  return iio.specVec( this.trueVs(),
     function(v1,v2){
       if(v1.x>v2.x)
         return true;
@@ -71,7 +64,7 @@ iio.Polygon.prototype.left = function(){
     }).x 
 }
 iio.Polygon.prototype.right = function(){ 
-  return iio.specVec( this.globalVs(),
+  return iio.specVec( this.trueVs(),
     function(v1,v2){
       if(v1.x<v2.x)
         return true;
@@ -79,14 +72,14 @@ iio.Polygon.prototype.right = function(){
     }).x 
 }
 iio.Polygon.prototype.top = function(){ 
-  return iio.specVec( this.globalVs(),
+  return iio.specVec( this.trueVs(),
     function(v1,v2){
       if(v1.y>v2.y)
         return true;
       return false}).y
 }
 iio.Polygon.prototype.bottom = function(){ 
-  return iio.specVec( this.globalVs(),
+  return iio.specVec( this.trueVs(),
     function(v1,v2){
       if(v1.y<v2.y)
         return true;

@@ -66,7 +66,7 @@ ScrollShooter = function( app, s ){
   // properties and fill the given array
   function createScrollObjects(num, arr, props){
     for ( var i=0; i<num; i++ )
-      arr.push( app.add( new iio.Rectangle({
+      arr.push( app.add( new iio.Quad({
         z: props.z,
         img: props.img, 
         health: props.health,
@@ -155,7 +155,7 @@ ScrollShooter = function( app, s ){
     var playerImg = assets.player;
     var playerLeftImg = assets.playerLeft;
     var playerRightImg = assets.playerRight;
-    var player = app.add(new iio.Rectangle({
+    var player = app.add(new iio.Quad({
       pos: [
         app.center.x,
         app.height-100
@@ -226,7 +226,7 @@ ScrollShooter = function( app, s ){
     var laser = assets.laser;
     var laserFlash = assets.laserFlash;
     fireLaser = function(x,y,s){
-      lasers.push(app.add(new iio.Rectangle({
+      lasers.push(app.add(new iio.Quad({
         pos: [ x, y ],
         z: 50,
         img: laser,
@@ -286,7 +286,7 @@ ScrollShooter = function( app, s ){
           // blow up meteor
           // create random debris particles
           for ( var i=0; i<5; i++ )
-            meteors.push( app.add( new iio.Rectangle({
+            meteors.push( app.add( new iio.Quad({
               pos: [
                 iio.random( meteor.pos.x-30, meteor.pos.x+30 ),
                 iio.random( meteor.pos.y-30, meteor.pos.y+30 )
@@ -311,7 +311,7 @@ ScrollShooter = function( app, s ){
       } else app.rmv(meteor)
 
       // add laser flash
-      app.add(new iio.Rectangle({
+      app.add(new iio.Quad({
         z: 75,
         pos: [
           laser.pos.x,

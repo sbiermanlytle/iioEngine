@@ -1,20 +1,26 @@
 
 //DEFINITION
 iio.Rectangle = function(){ this.Rectangle.apply(this, arguments) };
-iio.inherit(iio.Rectangle, iio.Shape);
-iio.Rectangle.prototype._super = iio.Shape.prototype;
+iio.inherit(iio.Rectangle, iio.Polygon);
+iio.Rectangle.prototype._super = iio.Polygon.prototype;
 
 //CONSTRUCTOR
 iio.Rectangle.prototype.Rectangle = function() {
-  this._super.Shape.call(this,iio.merge_args(arguments));
+  this._super.Polygon.call(this,iio.merge_args(arguments));
   this.height = this.height || this.width;
+  this.vs = [
+    new iio.Vector(-this.width/2,-this.height/2),
+    new iio.Vector(this.width/2,-this.height/2),
+    new iio.Vector(this.width/2,this.height/2),
+    new iio.Vector(-this.width/2,this.height/2),
+  ];
 }
 
 //FUNCTIONS
 iio.Rectangle.prototype.draw_shape = function(ctx){
   ctx.translate(-this.width / 2, -this.height / 2);
   if (this.bezier) {
-    iio.draw.poly(ctx, this.getTrueVertices(), this.bezier);
+    iio.draw.poly(ctx, this.trueVs(), this.bezier);
     this.finish_path_shape(ctx);
   }
   else if(this.round)
@@ -56,33 +62,8 @@ iio.Rectangle.prototype.contains = function(v, y) {
     return true;
   return false;
 }
-iio.Rectangle.prototype.trueVertices = function() {
-  var vs = [
-    new iio.Vector(-this.width/2, -this.height/2),
-    new iio.Vector(this.width/2, -this.height/2),
-    new iio.Vector(this.width/2, this.height/2),
-    new iio.Vector(-this.width/2, this.height/2),
-  ];
-  for(var i=0; i<vs.length; i++) {
-    if (this.rotation) {
-      if (this.origin) {
-        v.x -= this.origin.x;
-        v.y -= this.origin.y;
-      }
-      v = iio.point.rotate(v.x, v.y, -this.rotation);
-      if (this.origin){
-        v.x += this.origin.x;
-        v.y += this.origin.y;
-      }
-    }
-    v.x += this.pos.x;
-    v.y += this.pos.y;
-  }
-  return vs;
-}
 iio.Rectangle.prototype.size = function(){ return this.width }
-iio.Rectangle.prototype.setSize = function(w,h){ this.width = w; this.height = h; }
-iio.Rectangle.prototype.left = function(){ return this.pos.x - this.width/2 }
-iio.Rectangle.prototype.right = function(){ return this.pos.x + this.width/2 }
-iio.Rectangle.prototype.top = function(){ return this.pos.y - this.height/2 }
-iio.Rectangle.prototype.bottom = function(){ return this.pos.y + this.height/2 }
+iio.Rectangle.prototype.setSize = function(w,h){
+  this.width = w;
+  this.height = h||w;
+}

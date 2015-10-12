@@ -24,7 +24,7 @@ Squares = function( app, settings ){
 
 	// add new squares to the app
 	for(var i=0; i<num; i++)
-		app.add( new iio.Rectangle({
+		app.add( new iio.Quad({
 			// set random position within app view
 			pos: [ 
 				iio.random(0,app.width),

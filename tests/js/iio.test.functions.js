@@ -82,12 +82,10 @@ iio.test.show_tests = function( test_class, class_name, id ){
 	run_test( test_class.origin, 
 		'tests/source-code/'+class_name+'/origin.html' );
 	
-	// run_test( test_class.rectXrect, 
-		// 'tests/source-code/'+class_name+'/rectXrect.html' );
-	run_test( test_class.polyXpoly, 
-		'tests/source-code/'+class_name+'/polyXpoly.html' );
 	run_test( test_class.circleXcircle, 
 		'tests/source-code/'+class_name+'/circleXcircle.html' );
+	run_test( test_class.polyXpoly, 
+		'tests/source-code/'+class_name+'/polyXpoly.html' );
 
 	next_row();
 
@@ -99,6 +97,9 @@ iio.test.show_tests = function( test_class, class_name, id ){
 		'tests/source-code/'+class_name+'/vels.html' );
 	run_test( test_class.accs,
 		'tests/source-code/'+class_name+'/accs.html' );
+
+	run_test( test_class.rectXrect, 
+		'tests/source-code/'+class_name+'/rectXrect.html' );
 
 	next_row();
 

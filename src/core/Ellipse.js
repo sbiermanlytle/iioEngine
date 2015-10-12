@@ -11,7 +11,6 @@ iio.Ellipse.prototype.Ellipse = function() {
 
 //FUNCTIONS
 iio.Ellipse.prototype.draw_shape = function(ctx) {
-  
   ctx.beginPath();
   if (this.vRadius !== undefined) {
     if (ctx.ellipse) {

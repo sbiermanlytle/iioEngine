@@ -299,20 +299,10 @@ iio.canvas = {
 iio.collision = {
   check: function(o1, o2) {
     if (!o1 || !o2) return false;
-    if (o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle){
-      
-      /*if (o1.simple) {
-        if (o2.simple) return iio.collision.rectXrect(
-          o1.pos.x - o1.bbx[0], o1.pos.x + o1.bbx[0], o1.pos.y - (o1.bbx[1] || o1.bbx[0]), o1.pos.y + (o1.bbx[1] || o1.bbx[0]),
-          o2.pos.x - o2.bbx[0], o2.pos.x + o2.bbx[0], o2.pos.y - (o2.bbx[1] || o2.bbx[0]), o2.pos.y + (o2.bbx[1] || o2.bbx[0]));
-        else return iio.collision.rectXrect(
-          o1.pos.x - o1.bbx[0], o1.pos.x + o1.bbx[0], o1.pos.y - (o1.bbx[1] || o1.bbx[0]), o1.pos.y + (o1.bbx[1] || o1.bbx[0]),
-          o2.left, o2.right, o2.top, o2.bottom);
-      } else if (o2.simple) return iio.collision.rectXrect(o1.left, o1.right, o1.top, o1.bottom,
-        o2.pos.x - o2.bbx[0], o2.pos.x + o2.bbx[0], o2.pos.y - (o2.bbx[1] || o2.bbx[0]), o2.pos.y + (o2.bbx[1] || o2.bbx[0]));
-      else */
-      return iio.collision.rectXrect(o1.left(), o1.right(), o1.top(), o1.bottom(), o2.left(), o2.right(), o2.top(), o2.bottom())
-    } else if (o1 instanceof iio.Polygon && o2 instanceof iio.Polygon){
+    if (o1 instanceof iio.Quad && o2 instanceof iio.Quad){
+      return iio.collision.rectXrect(o1,o2)
+    } else if ((o1 instanceof iio.Polygon && o2 instanceof iio.Polygon)
+      || (o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle)){
       return iio.collision.polyXpoly(o1,o2)
     } else if (o1 instanceof iio.Ellipse && o2 instanceof iio.Ellipse){
       if ((!o1.vRadius||o1.radius === o1.vRadius) && (!o2.vRadius||o2.radius === o2.vRadius) )
@@ -320,8 +310,10 @@ iio.collision = {
       //else http://yehar.com/blog/?p=2926
     }
   },
-  rectXrect: function(r1L, r1R, r1T, r1B, r2L, r2R, r2T, r2B){
-    if (r1L < r2R && r1R > r2L && r1T < r2B && r1B > r2T) return true;
+  rectXrect: function(o1,o2){
+    if (o1.left() < o2.right() && o1.right() > o2.left()
+     && o1.top() < o2.bottom() && o1.bottom() > o2.top()) 
+      return true;
     return false;
   },
   circleXcircle: function(o1,o2){
@@ -331,8 +323,8 @@ iio.collision = {
   },
   polyXpoly: function(o1,o2){
     var i;
-    var v1=o1.globalVs();
-    var v2=o2.globalVs();
+    var v1=o1.trueVs();
+    var v2=o2.trueVs();
     for (i=0;i<v1.length;i++)
       if (o2.contains(v1[i]))
         return true;

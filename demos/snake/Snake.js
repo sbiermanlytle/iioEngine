@@ -62,7 +62,7 @@ Snake = function( app, settings ){
 		app.set({ color: shared_props.color.clone().invert() });
 
 		// create snake head
-		snake.head = app.add( new iio.Rectangle( shared_props, {
+		snake.head = app.add( new iio.Quad( shared_props, {
 			pos: snake.initial_pos.clone()
 			// pass true to supress app draw
 		}), true );
@@ -72,7 +72,7 @@ Snake = function( app, settings ){
 
 		// create snake body
 		for(var i = 0; i < snake.initial_body_length-1; i++)
-			snake.body[i] = app.add( new iio.Rectangle( shared_props, {
+			snake.body[i] = app.add( new iio.Quad( shared_props, {
 				pos:[
 					snake.initial_pos.x - snake.width * (i+1),
 					snake.initial_pos.y
@@ -99,7 +99,7 @@ Snake = function( app, settings ){
 		);
 
 		// create food object
-		food = app.add( new iio.Rectangle( shared_props, {
+		food = app.add( new iio.Quad( shared_props, {
 			pos: randomPos
 			// pass true to supress app draw
 		}), true );
