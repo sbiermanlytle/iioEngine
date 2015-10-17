@@ -38,11 +38,11 @@ iio.Drawable.prototype.localFrameVector = function(v){
     v.y - this.pos.y
   )
 }
-iio.Drawable.prototype.localizeRotation = function(v){
+iio.Drawable.prototype.localizeRotation = function(v,n){
   if (this.rotation) {
     if (this.origin)
       v.sub(this.origin);
-    v = iio.point.rotate(v.x, v.y, -this.rotation);
+    v = iio.point.rotate(v.x, v.y, (n ? this.rotation : -this.rotation));
     if (this.origin)
       v.add(this.origin);
   }
@@ -284,15 +284,15 @@ iio.Drawable.prototype._update = function(o,dt){
   var nuFPS;
   if (this.update)
     nuFPS = this.update(dt);
-  if (this.objs && this.objs.length > 0)
-    this.objs.forEach(function(obj) {
-      if (obj.update && obj.update(o, dt)) this.rmv(obj);
-    }, this);
   if (this.collisions && this.collisions.length > 0) {
     this.collisions.forEach(function(collision) {
       this.cCollisions(collision[0], collision[1], collision[2]);
     }, this);
   }
+  if (this.objs && this.objs.length > 0)
+    this.objs.forEach(function(obj) {
+      if (obj.update && obj.update(o, dt)) this.rmv(obj);
+    }, this);
   //this.draw();
   return nuFPS;
 }

@@ -1,5 +1,5 @@
 iio.test.Grid = {
-	constructor : function( app, settings ){
+	constructor_default : function( app, settings ){
 		app.add(new iio.Grid({
 			pos: app.center,
 			color: settings.color,

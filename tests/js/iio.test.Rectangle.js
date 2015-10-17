@@ -1,5 +1,5 @@
 iio.test.Rectangle = {
-	constructor : function( app, settings ){
+	constructor_default : function( app, settings ){
 		app.add(new iio.Rectangle({
 			pos: app.center.clone(),
 			color: settings.color,

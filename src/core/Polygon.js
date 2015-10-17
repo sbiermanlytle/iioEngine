@@ -46,9 +46,9 @@ iio.Polygon.prototype.contains = function(v, y) {
   return c;
 }
 iio.Polygon.prototype.trueVs = function() {
-  var vs=[];
+  var vs = [];
   for(var v,i=0;i<this.vs.length;i++){
-    v = this.localizeRotation(this.vs[i].clone());
+    v = this.localizeRotation(this.vs[i].clone(),true);
     v.x += this.pos.x;
     v.y += this.pos.y;
     vs[i]=v;

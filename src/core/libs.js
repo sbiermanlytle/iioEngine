@@ -310,6 +310,44 @@ iio.collision = {
       //else http://yehar.com/blog/?p=2926
     }
   },
+  lineXline: function(v1, v2, v3, v4){
+    var a1 = (v2.y - v1.y) / (v2.x - v1.x);
+    var a2 = (v4.y - v3.y) / (v4.x - v3.x);
+    var a = a1;
+    var x1 = v1.x;
+    var y1 = v1.y;
+    var i1 = !isFinite(a1);
+    var i2 = !isFinite(a2);
+    var x;
+    if(i1 || i2) {
+       if(i1 && i2) {
+          return v1.x === v3.x &&
+                (iio.is.between(v1.y, v3.y, v4.y) || iio.is.between(v2.y, v3.y, v4.y) ||
+                 iio.is.between(v3.y, v1.y, v2.y) || iio.is.between(v4.y, v1.y, v2.y));
+       }
+       if(i1) {
+          x = v1.x;
+          a = a2;
+          x1 = v3.x;
+          y1 = v3.y;
+       } else {
+          x = v3.x;
+       }
+    } else {
+       x = (a1*v1.x - a2*v3.x - v1.y + v3.y) / (a1 - a2);
+       if(!isFinite(x)) {
+          return (iio.is.between(v1.x, v3.x, v4.x) && iio.is.between(v1.y, v3.y, v4.y) ||
+                  iio.is.between(v2.x, v3.x, v4.x) && iio.is.between(v2.y, v3.y, v4.y) ||
+                  iio.is.between(v3.x, v1.x, v2.x) && iio.is.between(v3.y, v1.y, v2.y) ||
+                  iio.is.between(v4.x, v1.x, v2.x) && iio.is.between(v4.y, v1.y, v2.y));
+       }
+    }
+    var y = a * (x - x1) + y1;
+    if(iio.is.between(x, v1.x, v2.x) && iio.is.between(x, v3.x, v4.x) && iio.is.between(y, v1.y, v2.y) && iio.is.between(y, v3.y, v4.y)) {
+       return true;
+    }
+    return false;
+  },
   rectXrect: function(o1,o2){
     if (o1.left() < o2.right() && o1.right() > o2.left()
      && o1.top() < o2.bottom() && o1.bottom() > o2.top()) 
@@ -331,18 +369,18 @@ iio.collision = {
     for (i=0;i<v2.length;i++)
       if (o1.contains(v2[i]))
         return true;
-    // var a,b,j;
-    // for(i = 0; i < v1.length; i++) {
-    //    a = iio.Vec.add(v1[i], p1.pos);
-    //    b = iio.Vec.add(v1[(i + 1) % v1.length], p1.pos);
-    //    for(j = 0; j < v2.length; j++) {
-    //       if(iio.lineXline(a, b,
-    //                             iio.Vec.add(v2[j], p2.pos),
-    //                             iio.Vec.add(v2[(j + 1) % v2.length], p2.pos))) {
-    //          return true;
-    //       }
-    //    }
-    // } 
+    var a,b,j;
+    for(i = 0; i < v1.length; i++) {
+       a = iio.Vector.add(v1[i], o1.pos);
+       b = iio.Vector.add(v1[(i + 1) % v1.length], o1.pos);
+       for(j = 0; j < v2.length; j++) {
+          if(iio.collision.lineXline(a, b,
+            iio.Vector.add(v2[j], o2.pos),
+            iio.Vector.add(v2[(j + 1) % v2.length], o2.pos))) {
+             return true;
+          }
+       }
+    } 
     return false;
   },
 }
