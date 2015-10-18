@@ -33,6 +33,8 @@ iio.test.functions = [
 		'accs',
 		// Collisions
 		'rectXrect',
+		'gridXgrid',
+		'textXtext',
 	],[
 		// Radial Movement
 		'rVel_bounds',

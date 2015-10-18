@@ -299,10 +299,13 @@ iio.canvas = {
 iio.collision = {
   check: function(o1, o2) {
     if (!o1 || !o2) return false;
-    if (o1 instanceof iio.Quad && o2 instanceof iio.Quad){
+    if ((o1 instanceof iio.Quad && o2 instanceof iio.Quad)
+      ||(o1 instanceof iio.QuadGrid && o2 instanceof iio.QuadGrid)){
       return iio.collision.rectXrect(o1,o2)
     } else if ((o1 instanceof iio.Polygon && o2 instanceof iio.Polygon)
-      || (o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle)){
+      || (o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle)
+      || (o1 instanceof iio.Grid && o2 instanceof iio.Grid)
+      || (o1 instanceof iio.Text && o2 instanceof iio.Text)){
       return iio.collision.polyXpoly(o1,o2)
     } else if (o1 instanceof iio.Ellipse && o2 instanceof iio.Ellipse){
       if ((!o1.vRadius||o1.radius === o1.vRadius) && (!o2.vRadius||o2.radius === o2.vRadius) )

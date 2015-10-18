@@ -1,12 +1,12 @@
 
 //DEFINITION
 iio.Text = function(){ this.Text.apply(this, arguments) };
-iio.inherit(iio.Text, iio.Shape);
-iio.Text.prototype._super = iio.Shape.prototype;
+iio.inherit(iio.Text, iio.Polygon);
+iio.Text.prototype._super = iio.Polygon.prototype;
 
 //CONSTRUCTOR
 iio.Text.prototype.Text = function() {
-  this._super.Shape.call(this,iio.merge_args(arguments));
+  this._super.Polygon.call(this,iio.merge_args(arguments));
   this.size = this.size || 40;
   if(!this.outline)
     this.color = this.color || new iio.Color();
@@ -62,18 +62,28 @@ iio.Text.prototype.inferSize = function(ctx){
   this.app.ctx.font = this.size + 'px ' + this.font;
   this.width = this.app.ctx.measureText(this.text).width;
   this.height = this.app.ctx.measureText("H").width;
-}
-iio.Text.prototype.left = function(){
-  return this.pos.x - this.width / 2;
-}
-iio.Text.prototype.right = function(){
-  return this.pos.x + this.width / 2;
-}
-iio.Text.prototype.top = function(){
-  return this.pos.y - this.height / 2;
-}
-iio.Text.prototype.bottom = function(){
-  return this.pos.y + this.height / 2;
+  if (!this.align || this.align === 'left'){
+    this.vs = [
+      new iio.Vector(0,-this.height/2),
+      new iio.Vector(this.width,-this.height/2),
+      new iio.Vector(this.width,this.height/2),
+      new iio.Vector(0,this.height/2),
+    ]
+  } else if (this.align === 'center') {
+    this.vs = [
+      new iio.Vector(-this.width/2,-this.height/2),
+      new iio.Vector(this.width/2,-this.height/2),
+      new iio.Vector(this.width/2,this.height/2),
+      new iio.Vector(-this.width/2,this.height/2),
+    ];
+  } else {
+    this.vs = [
+      new iio.Vector(-this.width,-this.height/2),
+      new iio.Vector(0,-this.height/2),
+      new iio.Vector(0,this.height/2),
+      new iio.Vector(-this.width,this.height/2),
+    ]
+  }
 }
 iio.Text.prototype._shrink = function(s, r) {
   this.size *= 1 - s;
@@ -89,8 +99,8 @@ iio.Text.prototype.draw_shape = function(ctx) {
 
   ctx.translate(0,this.height/2);
 
-  // ctx.strokeStyle = 'red';
-  // ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
+  //ctx.strokeStyle = 'red';
+  //ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
 
   ctx.font = this.size + 'px ' + this.font;
   ctx.textAlign = this.align;
@@ -101,11 +111,14 @@ iio.Text.prototype.draw_shape = function(ctx) {
 }
 iio.Text.prototype.contains = function(v, y) {
   v = this.localize(v,y);
-  if ((typeof(this.align) == 'undefined' || this.align == 'left') && v.x>0 && v.x<this.width && v.y<this.height/2 && v.y>-this.height/2)
+  if ((typeof(this.align) == 'undefined' || this.align == 'left')
+    && v.x>0 && v.x<this.width && v.y<this.height/2 && v.y>-this.height/2)
     return true;
-  else if (this.align == 'center' && v.x>-this.width/2 && v.x<this.width/2 && v.y<this.height/2 && v.y>-this.height/2)
+  else if (this.align == 'center'
+    && v.x>-this.width/2 && v.x<this.width/2 && v.y<this.height/2 && v.y>-this.height/2)
     return true;
-  else if ((this.align == 'right' || this.align == 'end') && v.x>-this.width && v.x<0 && v.y<this.height/2 && v.y>-this.height/2)
+  else if ((this.align == 'right' || this.align == 'end')
+    && v.x>-this.width && v.x<0 && v.y<this.height/2 && v.y>-this.height/2)
     return true;
   return false;
 }

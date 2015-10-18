@@ -7,7 +7,11 @@ iio.Grid.prototype._super = iio.Rectangle.prototype;
 //CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
   this._super.Rectangle.call(this,iio.merge_args(arguments));
+  this.init();
+}
 
+//FUNCTIONS
+iio.Grid.prototype.init = function(){
   // set res if undefined
   this.res = this.res || new iio.Vector(
     this.width/this.C,
@@ -17,12 +21,10 @@ iio.Grid.prototype.Grid = function() {
   // set width/height if undefined
   this.width = this.width || this.C * this.res.x;
   this.height = this.height || this.R * this.res.y;
-
+  
   // initialize cells
   this.init_cells();
 }
-
-//FUNCTIONS
 iio.Grid.prototype.init_cells = function(){
   this.cells = [];
   var x = -this.res.x * (this.C - 1) / 2;
@@ -30,7 +32,7 @@ iio.Grid.prototype.init_cells = function(){
   for (var c = 0; c < this.C; c++) {
     this.cells[c] = [];
     for (var r = 0; r < this.R; r++) {
-      this.cells[c][r] = this.add(new iio.Rectangle({
+      this.cells[c][r] = this.add(new iio.Quad({
         pos: new iio.Vector( x,y ),
         c: c,
         r: r,

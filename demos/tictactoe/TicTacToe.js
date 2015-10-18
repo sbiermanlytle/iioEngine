@@ -12,7 +12,7 @@ TicTacToe = function( app, settings ){
 	app.set({ color: 'black' });
 				
 	// add a 3x3 grid to app center
-	var grid = app.add( new iio.Grid({
+	var grid = app.add( new iio.QuadGrid({
 		pos: app.center,
 		// make the grid as big as the smaller screen dimension
 		width: ( app.height < app.width ) ? app.height : app.width,
