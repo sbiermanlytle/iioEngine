@@ -311,9 +311,15 @@ iio.collision = {
       if ((!o1.vRadius||o1.radius === o1.vRadius) && (!o2.vRadius||o2.radius === o2.vRadius) )
         return iio.collision.circleXcircle(o1,o2)
       //else http://yehar.com/blog/?p=2926
-    }
+    } else if (o1 instanceof iio.Line && o2 instanceof iio.Line)
+      return iio.collision.lineXline(o1,o2)
   },
-  lineXline: function(v1, v2, v3, v4){
+  lineXline: function(o1,o2){
+    var vs1 = o1.trueVs();
+    var vs2 = o2.trueVs();
+    return iio.collision.lineCline(vs1[0],vs1[1],vs2[0],vs2[1]);
+  },
+  lineCline: function(v1, v2, v3, v4){
     var a1 = (v2.y - v1.y) / (v2.x - v1.x);
     var a2 = (v4.y - v3.y) / (v4.x - v3.x);
     var a = a1;
@@ -377,7 +383,7 @@ iio.collision = {
        a = iio.Vector.add(v1[i], o1.pos);
        b = iio.Vector.add(v1[(i + 1) % v1.length], o1.pos);
        for(j = 0; j < v2.length; j++) {
-          if(iio.collision.lineXline(a, b,
+          if(iio.collision.lineCline(a, b,
             iio.Vector.add(v2[j], o2.pos),
             iio.Vector.add(v2[(j + 1) % v2.length], o2.pos))) {
              return true;

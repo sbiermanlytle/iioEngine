@@ -182,6 +182,81 @@ iio.test.Collisions = {
       reverse(t1,'rVel');
     });
   },
+  lineXline : function(app, settings){
+    var oWidth = 8;
+    var oLength = 40;
+    var speed = 1;
+
+    function reverse(o,p){ o[p]*=-1 }
+    function reverseX(o){
+      reverse(o.vel,'x');
+      reverse(o,'rVel');
+    }
+    function reverseY(o){ 
+      reverse(o.vel,'y');
+      reverse(o,'rVel');
+    }
+
+    var common = {
+      width: oWidth,
+      bounds: {
+        left: {
+          bound: 0,
+          callback: reverseX
+        },
+        right: {
+          bound: app.width,
+          callback: reverseX
+        },
+        top: {
+          bound: 0,
+          callback: reverseY
+        },
+        bottom: {
+          bound: app.height,
+          callback: reverseY
+        },
+      }
+    }
+
+    var line0 = app.add(new iio.Line(common,{
+      color: 'red',
+      vel: [ speed, speed/2 ],
+      rotation: Math.PI/4,
+      rVel: 0.02,
+      pos: [
+        app.width/3,
+        app.center.y
+      ],
+      vs: [
+        new iio.Vector(0,-oLength),
+        new iio.Vector(0,oLength),
+      ]
+    }));
+
+    var line1 = app.add(new iio.Line(common,{
+      color: 'iioblue',
+      vel: [ -speed, -speed/2 ],
+      rotation: Math.PI/4,
+      rVel: -0.02,
+      pos: [
+        app.width*2/3,
+        app.center.y + 4
+      ],
+      vs: [
+        new iio.Vector(0,-oLength),
+        new iio.Vector(0,oLength),
+      ]
+    }));
+
+    app.collision( line0, line1, function(s0,s1){
+      var temp = s0.vel;
+      s0.vel = s1.vel;
+      s1.vel = temp;
+      reverse(s0,'rVel');
+      reverse(s1,'rVel');
+    });
+  },
   rectXrect : function(app, settings){
     var oWidth = 15;
     var speed = .8;

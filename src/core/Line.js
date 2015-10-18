@@ -9,6 +9,13 @@ iio.Line.prototype.Line = function() {
   this._super.Shape.call(this,iio.merge_args(arguments));
 }
 
+//SHARED WITH POLYGON
+iio.Line.prototype.trueVs = iio.Polygon.prototype.trueVs;
+iio.Line.prototype.left = iio.Polygon.prototype.left;
+iio.Line.prototype.right = iio.Polygon.prototype.right;
+iio.Line.prototype.top = iio.Polygon.prototype.top;
+iio.Line.prototype.bottom = iio.Polygon.prototype.bottom;
+
 //FUNCTIONS
 /*iio.Line.prototype.contains = function(v, y) {
   if (typeof(y) != 'undefined') v = {

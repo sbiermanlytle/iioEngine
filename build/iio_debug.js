@@ -653,9 +653,15 @@ iio.collision = {
       if ((!o1.vRadius||o1.radius === o1.vRadius) && (!o2.vRadius||o2.radius === o2.vRadius) )
         return iio.collision.circleXcircle(o1,o2)
       //else http://yehar.com/blog/?p=2926
-    }
+    } else if (o1 instanceof iio.Line && o2 instanceof iio.Line)
+      return iio.collision.lineXline(o1,o2)
   },
-  lineXline: function(v1, v2, v3, v4){
+  lineXline: function(o1,o2){
+    var vs1 = o1.trueVs();
+    var vs2 = o2.trueVs();
+    return iio.collision.lineCline(vs1[0],vs1[1],vs2[0],vs2[1]);
+  },
+  lineCline: function(v1, v2, v3, v4){
     var a1 = (v2.y - v1.y) / (v2.x - v1.x);
     var a2 = (v4.y - v3.y) / (v4.x - v3.x);
     var a = a1;
@@ -719,7 +725,7 @@ iio.collision = {
        a = iio.Vector.add(v1[i], o1.pos);
        b = iio.Vector.add(v1[(i + 1) % v1.length], o1.pos);
        for(j = 0; j < v2.length; j++) {
-          if(iio.collision.lineXline(a, b,
+          if(iio.collision.lineCline(a, b,
             iio.Vector.add(v2[j], o2.pos),
             iio.Vector.add(v2[(j + 1) % v2.length], o2.pos))) {
              return true;
@@ -1874,51 +1880,6 @@ iio.Shape.prototype.draw_line = function(ctx, x1, y1, x2, y2){
 };
 
 //DEFINITION
-iio.Line = function(){ this.Line.apply(this, arguments) };
-iio.inherit(iio.Line, iio.Shape);
-iio.Line.prototype._super = iio.Shape.prototype;
-
-//CONSTRUCTOR
-iio.Line.prototype.Line = function() {
-  this._super.Shape.call(this,iio.merge_args(arguments));
-}
-
-//FUNCTIONS
-/*iio.Line.prototype.contains = function(v, y) {
-  if (typeof(y) != 'undefined') v = {
-    x: v,
-    y: y
-  } 
-  if (iio.is.between(v.x, this.pos.x, this.vs[1].x) && iio.is.between(v.y, this.vs[0].y, this.vs[1].y)) {
-    var a = (this.vs[1].y - this.vs[0].y) / (this.vs[1].x - this.vs[0].x);
-    if (!isFinite(a)) return true;
-    var y = a * (this.vs[1].x - this.vs[0].x) + this.vs[0].y;
-    if (y == v.y) return true;
-  }
-  return false;
-}*/
-iio.Line.prototype.prep_ctx_color = function(ctx){
-  if(this.color instanceof iio.Gradient)
-    ctx.strokeStyle = this.color.canvasGradient(ctx);
-  else ctx.strokeStyle = this.color.rgbaString();
-  ctx = this.prep_ctx_lineWidth(ctx);
-  return ctx;
-}
-iio.Line.prototype.prep_ctx_lineWidth = function(ctx){
-  ctx.lineWidth = this.width || 1;
-  return ctx;
-}
-
-iio.Line.prototype.draw_shape = function(ctx) {
-  ctx.beginPath();
-  ctx.moveTo(this.vs[0].x, this.vs[0].y);
-  if (this.bezier)
-    ctx.bezierCurveTo(this.bezier[0].x, this.bezier[0].y, this.bezier[1].x, this.bezier[1].y, this.vs[1].x, this.vs[1].y);
-  else ctx.lineTo(this.vs[1].x, this.vs[1].y);
-  ctx.stroke();
-};
-
-//DEFINITION
 iio.Ellipse = function(){ this.Ellipse.apply(this, arguments) };
 iio.inherit(iio.Ellipse, iio.Shape);
 iio.Ellipse.prototype._super = iio.Shape.prototype;
@@ -2060,6 +2021,58 @@ iio.Polygon.prototype.bottom = function(){
       if(v1.y<v2.y)
         return true;
       return false}).y
+};
+
+//DEFINITION
+iio.Line = function(){ this.Line.apply(this, arguments) };
+iio.inherit(iio.Line, iio.Shape);
+iio.Line.prototype._super = iio.Shape.prototype;
+
+//CONSTRUCTOR
+iio.Line.prototype.Line = function() {
+  this._super.Shape.call(this,iio.merge_args(arguments));
+}
+
+//SHARED WITH POLYGON
+iio.Line.prototype.trueVs = iio.Polygon.prototype.trueVs;
+iio.Line.prototype.left = iio.Polygon.prototype.left;
+iio.Line.prototype.right = iio.Polygon.prototype.right;
+iio.Line.prototype.top = iio.Polygon.prototype.top;
+iio.Line.prototype.bottom = iio.Polygon.prototype.bottom;
+
+//FUNCTIONS
+/*iio.Line.prototype.contains = function(v, y) {
+  if (typeof(y) != 'undefined') v = {
+    x: v,
+    y: y
+  } 
+  if (iio.is.between(v.x, this.pos.x, this.vs[1].x) && iio.is.between(v.y, this.vs[0].y, this.vs[1].y)) {
+    var a = (this.vs[1].y - this.vs[0].y) / (this.vs[1].x - this.vs[0].x);
+    if (!isFinite(a)) return true;
+    var y = a * (this.vs[1].x - this.vs[0].x) + this.vs[0].y;
+    if (y == v.y) return true;
+  }
+  return false;
+}*/
+iio.Line.prototype.prep_ctx_color = function(ctx){
+  if(this.color instanceof iio.Gradient)
+    ctx.strokeStyle = this.color.canvasGradient(ctx);
+  else ctx.strokeStyle = this.color.rgbaString();
+  ctx = this.prep_ctx_lineWidth(ctx);
+  return ctx;
+}
+iio.Line.prototype.prep_ctx_lineWidth = function(ctx){
+  ctx.lineWidth = this.width || 1;
+  return ctx;
+}
+
+iio.Line.prototype.draw_shape = function(ctx) {
+  ctx.beginPath();
+  ctx.moveTo(this.vs[0].x, this.vs[0].y);
+  if (this.bezier)
+    ctx.bezierCurveTo(this.bezier[0].x, this.bezier[0].y, this.bezier[1].x, this.bezier[1].y, this.vs[1].x, this.vs[1].y);
+  else ctx.lineTo(this.vs[1].x, this.vs[1].y);
+  ctx.stroke();
 };
 
 //DEFINITION

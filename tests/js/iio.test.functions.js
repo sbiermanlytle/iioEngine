@@ -34,13 +34,15 @@ iio.test.functions = [
 		// Collisions
 		'rectXrect',
 		'gridXgrid',
-		'textXtext',
+		'lineXline',
 	],[
 		// Radial Movement
 		'rVel_bounds',
 		'rVel_bounds_no_pos',
 		'rAcc_bounds',
 		'rAcc_bounds_no_pos',
+		// Collisions
+		'textXtext',
 	],[
 		// Display
 		'hidden',
