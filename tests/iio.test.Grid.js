@@ -1,5 +1,5 @@
 iio.test.Grid = {
-	constructor : function( app, settings ){
+	constructor_default : function( app, settings ){
 		app.add(new iio.Grid({
 			pos: app.center,
 			color: settings.color,
@@ -384,7 +384,7 @@ iio.test.Grid = {
 			rVel: .02
 		})).add( new iio.Grid( props, {
 			rotation: Math.PI/4,
-			color: settings.color.clone().invert()
+			color: new iio.Color(101,176,66),
 		}))
 	}
 }

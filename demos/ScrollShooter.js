@@ -28,7 +28,7 @@ ScrollShooter = function( app, s ){
 
 	function createScrollObjects(num, arr, props){
 		for ( var i=0; i<num; i++ )
-			arr.push( app.add( new iio.Rectangle({
+			arr.push( app.add( new iio.Quad({
 				z: props.z,
 				img: props.img, 
 				health: props.health,
@@ -114,7 +114,7 @@ ScrollShooter = function( app, s ){
 	var leftImg = iio.load( imgPath+'playerLeft.png' );
 	var rightImg = iio.load( imgPath+'playerRight.png' );
 	var playerImg = iio.load( imgPath+'player.png', function(){
-		player = app.add(new iio.Rectangle({
+		player = app.add(new iio.Quad({
 			pos: [
 				app.center.x,
 				app.height-100
@@ -168,7 +168,7 @@ ScrollShooter = function( app, s ){
 	});
 
 	fireLaser = function(x,y,s){
-		lasers.push( app.add(new iio.Rectangle({
+		lasers.push( app.add(new iio.Quad({
 			pos: [ x, y ],
 			z: 50,
 			img: laserImg,
@@ -216,7 +216,7 @@ ScrollShooter = function( app, s ){
 			if( meteor.health > 0 ) meteor.health--;
 			else {
 				for ( var i=0; i<5; i++ )
-					meteors.push( app.add( new iio.Rectangle({
+					meteors.push( app.add( new iio.Quad({
 						pos: [
 							iio.random( meteor.pos.x-30, meteor.pos.x+30 ),
 							iio.random( meteor.pos.y-30, meteor.pos.y+30 )
@@ -240,7 +240,7 @@ ScrollShooter = function( app, s ){
 			}
 		} else app.rmv(meteor)
 
-		app.add(new iio.Rectangle({
+		app.add(new iio.Quad({
 			z: 75,
 			pos: [
 				lasor.pos.x,

@@ -76,32 +76,36 @@ display_current = function(){
       show_api( api.Loader );
     else if( path == 'Sound' )
       show_api( api.Sound );
-    else if( path == 'Interface' ) 
+    else if( path == 'Interface' )
       show_api( api.Interface );
-    else if( path == 'Vector' ) 
+    else if( path == 'Vector' )
       show_api( api.Vector );
-    else if( path == 'Color' ) 
+    else if( path == 'Color' )
       show_api( api.Color );
-    else if( path == 'Gradient' ) 
+    else if( path == 'Gradient' )
       show_api( api.Gradient );
-    else if( path == 'Drawable' ) 
+    else if( path == 'Drawable' )
       show_api( api.Drawable );
-    else if( path == 'App' ) 
+    else if( path == 'App' )
       show_api( api.App );
-    else if( path == 'Shape' ) 
+    else if( path == 'Shape' )
       show_api( api.Shape );
-    else if( path == 'Line' ) 
+    else if( path == 'Line' )
       show_api( api.Line );
-    else if( path == 'Text' ) 
+    else if( path == 'Text' )
       show_api( api.Text );
-    else if( path == 'Ellipse' ) 
+    else if( path == 'Ellipse' )
       show_api( api.Ellipse );
-    else if( path == 'Polygon' ) 
+    else if( path == 'Polygon' )
       show_api( api.Polygon );
-    else if( path == 'Rectangle' ) 
+    else if( path == 'Rectangle' )
       show_api( api.Rectangle );
-    else if( path == 'Grid' ) 
+    else if( path == 'Grid' )
       show_api( api.Grid );
+    else if( path == 'Quad' )
+      show_api( api.Quad );
+    else if( path == 'QuadGrid' )
+      show_api( api.QuadGrid );
   } 
 
   // DEMO ROUTER

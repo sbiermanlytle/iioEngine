@@ -1,5 +1,5 @@
 iio.test.Polygon = {
-	constructor : function(app, settings){
+	constructor_default : function(app, settings){
 		app.add(new iio.Polygon({
 			pos: app.center,
 			color: settings.color,
@@ -311,7 +311,7 @@ iio.test.Polygon = {
 				end: [ 0, 20 ],
 				stops: [
 					[ 0, settings.color ],
-					[ 1, 'transparent' ]
+					[ 1, 'black' ]
 				]
 			})
 		}));

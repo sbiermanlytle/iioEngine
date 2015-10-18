@@ -39,7 +39,7 @@ MineSweeper = function( app, settings ){
 
   // create new cell cover
   function cellCover(){
-    return new iio.Rectangle({
+    return new iio.Quad({
       width: grid.cells[0][0].height/1.2,
       color: game_color
     });
@@ -120,7 +120,7 @@ MineSweeper = function( app, settings ){
   // originating at the given coordinates
   function explosion( x, y ){
     for(var i=0; i<100; i++)
-      app.add( new iio.Rectangle({
+      app.add( new iio.Quad({
         pos: [x,y],
         color: game_color,
         width: 5,
@@ -149,7 +149,7 @@ MineSweeper = function( app, settings ){
   app.canvas.oncontextmenu = function(){ return false };
 
   // create the game grid
-  var grid = app.add( new iio.Grid({
+  var grid = app.add( new iio.QuadGrid({
     pos: app.center,
     color: game_color,
     lineWidth: ( settings.preview ) ? 1 : 4,

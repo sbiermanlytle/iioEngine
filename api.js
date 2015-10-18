@@ -252,7 +252,7 @@ var api = {
       ]
     }
   },
-    Sound: {
+  Sound: {
       classname: 'Sound',
       inherits: [ 'Interface' ],
       overview: [ "Represents a sound buffer. Similar fashion to JavaScript's native Image class." ],
@@ -684,6 +684,43 @@ var api = {
         // shrink
     }
   },
+  Quad: {
+    classname: 'Quad',
+    inherits: [ 'Shape','Drawable','Interface' ],
+    overview: [ "A simplified rectangle shape defined by a position, width, and height. All functions are as precise as "+a('iio.Rectangle')+", except for collision detection - "+kwd('Quads do not account for rotation in collisions')+'. Quads use fewer calculations than any other Shape, so they should be used whenever possible.'],
+    unitTests: iio.test.Quad,
+    data: {
+      'Constructor': [
+        {
+          definition: 'Quad( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... )',
+          descriptions: [ "Create a quad with the properties of any number of given objects." ],
+          samples: [ 
+            "// create a new quad\nvar quad = new iio.Quad({\n\tpos: app.center,\n\twidth: 40,\n\theight: 60,\n\tcolor: 'red'\n});",
+            "// add the quad to the app\napp.add( quad );"
+            ]
+        }
+      ],
+      'Properties': [
+        {  // width
+          definition: kwd('float')+' width',
+          descriptions: [ "The width of a quad or the size of a square." ],
+          samples: [
+            "// access the width\nvar width = quad.width;",
+            "// set the width\nquad.width = 40;"
+          ],
+          divider: true
+        },
+        {  // height
+          definition: kwd('float')+' height',
+          descriptions: [ "The height." ],
+          samples: [
+            "// access the height\nvar height = quad.height;",
+            "// set the height\nquad.height = 60;"
+          ]
+        }
+      ]
+    }
+  },
   Line: {
     classname: 'Line',
     inherits: [ 'Shape','Drawable','Interface' ],
@@ -767,63 +804,6 @@ var api = {
       ]
     }
   },
-  Text: {
-    classname: 'Text',
-    inherits: [ 'Shape','Drawable','Interface' ],
-    overview: [ "A text object defined by a position and text string." ],
-    unitTests: iio.test.Text,
-    data: {
-      'Constructor': [
-        {
-          definition: 'Text( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... )',
-          descriptions: [ "Create text with the properties of any number of given objects." ],
-          samples: [ 
-            "// create a new text object\nvar textObj = new iio.Text({\n\tpos: app.center,\n\ttext: 'Hello World',\n\tcolor: 'red',\n\tsize: 40,\n\tfont: 'Arial',\n\talign: 'center'\n});",
-            "// add the text object to the app\napp.add( textObj );"
-            ]
-        }
-      ],
-      'Properties': [
-        {  // text
-          definition: kwd('String')+' text',
-          descriptions: [ "A string identifying the text object's printed characters." ],
-          samples: [
-            "// access the text string\nvar text_string = textObj.text;",
-            "// set the text string\ntextObj.text = 'new text value';"
-          ],
-          divider: true
-        },
-        { // size
-          definition: kwd('float')+' size',
-          descriptions: [ "The font size." ],
-          samples: [
-            "// access font size\nvar font_size = textObj.size;",
-            "// set the font size\ntextObj.size = 60;"
-          ],
-          divider: true
-        },
-        { // font
-          definition: kwd('String')+' font',
-          descriptions: [ "The font of the printed text." ],
-          samples: [
-            "// access font\nvar font = textObj.font;",
-            "// set the font\ntextObj.font = 'Arial';"
-          ],
-          divider: true
-        },
-        { // align
-          definition: kwd('String')+' align',
-          descriptions: [ "A string keyword indicating the alignmet of the printed text.",
-            "Possible values are: "+kwd("'center'")+', '+kwd("'left'")+', '+kwd("'right'")+', '+kwd("'start'")+', or '+kwd("'end'")+'.' ],
-          samples: [
-            "// access text alignment\nvar alignment = textObj.align;",
-            "// set the text alignment\ntextObj.align = 'center';"
-          ],
-          divider: true
-        }
-      ]
-    }
-  },
   Ellipse: {
     classname: 'Ellipse',
     inherits: [ 'Shape','Drawable','Interface' ],
@@ -891,9 +871,66 @@ var api = {
       ]
     }
   },
+  Text: {
+    classname: 'Text',
+    inherits: [ 'Polygon','Shape','Drawable','Interface' ],
+    overview: [ "A text object defined by a position and text string." ],
+    unitTests: iio.test.Text,
+    data: {
+      'Constructor': [
+        {
+          definition: 'Text( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... )',
+          descriptions: [ "Create text with the properties of any number of given objects." ],
+          samples: [ 
+            "// create a new text object\nvar textObj = new iio.Text({\n\tpos: app.center,\n\ttext: 'Hello World',\n\tcolor: 'red',\n\tsize: 40,\n\tfont: 'Arial',\n\talign: 'center'\n});",
+            "// add the text object to the app\napp.add( textObj );"
+            ]
+        }
+      ],
+      'Properties': [
+        {  // text
+          definition: kwd('String')+' text',
+          descriptions: [ "A string identifying the text object's printed characters." ],
+          samples: [
+            "// access the text string\nvar text_string = textObj.text;",
+            "// set the text string\ntextObj.text = 'new text value';"
+          ],
+          divider: true
+        },
+        { // size
+          definition: kwd('float')+' size',
+          descriptions: [ "The font size." ],
+          samples: [
+            "// access font size\nvar font_size = textObj.size;",
+            "// set the font size\ntextObj.size = 60;"
+          ],
+          divider: true
+        },
+        { // font
+          definition: kwd('String')+' font',
+          descriptions: [ "The font of the printed text." ],
+          samples: [
+            "// access font\nvar font = textObj.font;",
+            "// set the font\ntextObj.font = 'Arial';"
+          ],
+          divider: true
+        },
+        { // align
+          definition: kwd('String')+' align',
+          descriptions: [ "A string keyword indicating the alignmet of the printed text.",
+            "Possible values are: "+kwd("'center'")+', '+kwd("'left'")+', '+kwd("'right'")+', '+kwd("'start'")+', or '+kwd("'end'")+'.' ],
+          samples: [
+            "// access text alignment\nvar alignment = textObj.align;",
+            "// set the text alignment\ntextObj.align = 'center';"
+          ],
+          divider: true
+        }
+      ]
+    }
+  },
   Rectangle: {
     classname: 'Rectangle',
-    inherits: [ 'Shape','Drawable','Interface' ],
+    inherits: [ 'Polygon','Shape','Drawable','Interface' ],
     overview: [ "A rectangle shape defined by a position, width, and height." ],
     unitTests: iio.test.Rectangle,
     data: {
@@ -930,7 +967,7 @@ var api = {
   },
   Grid: {
     classname: 'Grid',
-    inherits: [ 'Shape','Drawable','Interface' ],
+    inherits: [ 'Rectangle','Polygon','Shape','Drawable','Interface' ],
     overview: [ "A grid shape defined by a position, number of columns, number of rows, and either a cell resolution vector or a width and height." ],
     unitTests: iio.test.Grid,
     data: {
@@ -1008,5 +1045,11 @@ var api = {
         }
       ]
     }
+  },
+  QuadGrid: {
+    classname: 'QuadGrid',
+    inherits: [ 'Quad','Shape','Drawable','Interface' ],
+    overview: [ "A simplified grid shape defined by a position, number of columns, number of rows, and either a cell resolution vector or a width and height. All functions are as precise as "+a('iio.Grid')+", except for collision detection - "+kwd('QuadGrids do not account for rotation in collisions')+". QuadGrids use fewer calculations than Grids, so they should be used whenever possible. QuadGrids share all functions and properties with Grid." ],
+    unitTests: iio.test.QuadGrid,
   }
 }

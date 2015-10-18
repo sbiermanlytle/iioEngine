@@ -1,5 +1,5 @@
 iio.test.Text = {
-	constructor : function(app, settings){
+	constructor_default : function(app, settings){
 		app.add(new iio.Text({
 			pos: app.center,
 			color: settings.color,

@@ -1,5 +1,5 @@
 iio.test.Rectangle = {
-	constructor : function( app, settings ){
+	constructor_default : function( app, settings ){
 		app.add(new iio.Rectangle({
 			pos: app.center.clone(),
 			color: settings.color,
@@ -7,16 +7,6 @@ iio.test.Rectangle = {
 			height: 60
 		}));
 	},
-	/*constructor_no_pos : function( app, settings ){
-		app.add(new iio.Rectangle({
-			color: settings.color.clone(),
-			width: 30,
-			vs:[
-				[ 20, 20 ],
-				[ app.width-20, app.height-20 ]
-			]
-		}));
-	},*/
 	rotation : function( app, settings ){
 		app.add(new iio.Rectangle({
 			pos: app.center.clone(),
@@ -26,18 +16,6 @@ iio.test.Rectangle = {
 			rotation: Math.PI/4
 		}));
 	},
-	/*rotation_no_pos : function( app, settings ){
-		app.add(new iio.Rectangle({
-			color: settings.color.clone(),
-			width: 30,
-			rotation: Math.PI/2,
-			origin: app.center,
-			vs:[
-				[ 20, 20 ],
-				[ app.width-20, app.height-20 ]
-			]
-		}));
-	},*/
 	origin : function( app, settings ){
 		app.add(new iio.Rectangle({
 			pos: app.center.clone(),
@@ -308,8 +286,8 @@ iio.test.Rectangle = {
 			width: 30,
 			height: 60,
 			outline: settings.color.clone(),
-			lineWidth: 5,
-			dash: [ .1, 10 ],
+			lineWidth: 10,
+			dash: [ .1, 15 ],
 			dashOffset: 10,
 			lineCap: 'round'
 		}));
@@ -461,7 +439,7 @@ iio.test.Rectangle = {
 		})).add( new iio.Rectangle(props,{
 			radius: _radius/2
 		}))
-	},
+	},*/
 	img : function( app, settings ){
 		app.add(new iio.Rectangle({
 			pos: app.center,

@@ -11,7 +11,64 @@
 var iioapps;
 var app_colors;
 iio.test = {};
-iio.test.setup_master = function(){
+iio.test.functions = [
+	[
+		// Constructors
+		'constructor_default',
+		'constructor_no_pos',
+		'constructor_res',
+		// Rotation
+		'rotation',
+		'rotation_no_pos',
+		'origin',
+		// Collisions
+		'quadXquad',
+		'circleXcircle',
+		'polyXpoly',
+	],[
+		// Movement
+		'vel_bounds',
+		'acc_bounds',
+		'vels',
+		'accs',
+		// Collisions
+		'rectXrect',
+		'gridXgrid',
+		'lineXline',
+	],[
+		// Radial Movement
+		'rVel_bounds',
+		'rVel_bounds_no_pos',
+		'rAcc_bounds',
+		'rAcc_bounds_no_pos',
+		// Collisions
+		'textXtext',
+	],[
+		// Display
+		'hidden',
+		'alpha',
+		'color',
+		'width',
+		'outline',
+		'shrink',
+	],[
+		'lineCap',
+		'dash',
+		'dash_rounded',
+		'gradient',
+		'radial_gradient',
+		'shadow',
+	],[
+		// Attachemnts
+		'child',
+		'bezier',
+		'bezierVels',
+		'bezierAccs',
+		'img',
+		'flip',
+	]
+];
+iio.test.setup_master = function(doubleSize){
 
 	// DOM container for iio apps
 	iioapps = document.body;
@@ -21,7 +78,19 @@ iio.test.setup_master = function(){
 	app_colors[0] = new iio.Color.random();
 	app_colors[1] = app_colors[0].clone().invert();
 
-	iio.test.create_canvas_grid( 100, 5, 6 );
+	iio.test.C = 5;
+	iio.test.R = 6;
+	iio.test.size = 100;
+	if(doubleSize){
+		iio.test.C = 3;
+		iio.test.R = 3;
+		iio.test.size = 200;
+	}
+	iio.test.create_canvas_grid(
+		iio.test.size,
+		iio.test.C,
+		iio.test.R
+	);
 }
 iio.test.create_canvas_grid = function( SIZE, COLS, ROWS, ID ){
 	var canvas, clear;
@@ -45,111 +114,29 @@ iio.test.create_canvas_grid = function( SIZE, COLS, ROWS, ID ){
 }
 iio.test.show_tests = function( test_class, class_name, id ){
 
-	var r = 0;
-	var c = 0;
 	var color = 0;
+	var c = 0;
 
 	function switch_color(){
 		if(color == 0) color = 1;
 		else color = 0;
 	}
-
-	function run_test(test_function,source_code_url){
-		if(test_function){
-			document.getElementById(id+'c'+r+''+c).codeurl = source_code_url;
-			iio.start([test_function, { color:app_colors[color] }], id+'c'+r+''+c);
-			switch_color();
-			c++;
-		}
+	function run_test(r,test_function,source_code_url){
+		document.getElementById(id+'c'+r+''+c).codeurl = source_code_url;
+		iio.start([test_function, { color:app_colors[color] }], id+'c'+r+''+c);
+		switch_color();
+		c++;
 	}
 
-	function next_row(){
+	for (var row=0; row<iio.test.functions.length; row++){
+		iio.test.functions[row].forEach(function(fn){
+			if (test_class[fn])
+				run_test(row, test_class[fn],
+					'tests/source-code/'+class_name+'/'+fn.replace(/_/g,'-')+'.html');
+
+		});
 		c = 0;
-		r++;
 	}
-
-	run_test( test_class.constructor,
-		'tests/source-code/'+class_name+'/constructor.html' );
-	run_test( test_class.constructor_no_pos, 
-		'tests/source-code/'+class_name+'/constructor-no-pos.html' );
-	run_test( test_class.constructor_res, 
-		'tests/source-code/'+class_name+'/constructor-res.html' );
-	run_test( test_class.rotation, 
-		'tests/source-code/'+class_name+'/rotation.html' );
-	run_test( test_class.rotation_no_pos, 
-		'tests/source-code/'+class_name+'/rotation-no-pos.html' );
-	run_test( test_class.origin, 
-		'tests/source-code/'+class_name+'/origin.html' );
-	
-	run_test( test_class.rectXrect, 
-		'tests/source-code/'+class_name+'/rectXrect.html' );
-
-	next_row();
-
-	run_test( test_class.vel_bounds,
-		'tests/source-code/'+class_name+'/vel-bounds.html' );
-	run_test( test_class.acc_bounds,
-		'tests/source-code/'+class_name+'/acc-bounds.html' );
-	run_test( test_class.vels,
-		'tests/source-code/'+class_name+'/vels.html' );
-	run_test( test_class.accs,
-		'tests/source-code/'+class_name+'/accs.html' );
-
-	next_row();
-
-	run_test( test_class.rVel_bounds,
-	 	'tests/source-code/'+class_name+'/rVel-bounds.html' );
-	run_test( test_class.rVel_bounds_no_pos,
-		'tests/source-code/'+class_name+'/rVel-bounds-no-pos.html' );
-	run_test( test_class.rAcc_bounds,
-		'tests/source-code/'+class_name+'/rAcc-bounds.html' );
-	run_test( test_class.rAcc_bounds_no_pos,
-		'tests/source-code/'+class_name+'/rAcc-bounds.html' );
-
-	next_row();
-
-	run_test( test_class.hidden,
-		'tests/source-code/'+class_name+'/hidden.html' );
-	run_test( test_class.alpha,
-		'tests/source-code/'+class_name+'/alpha.html' );
-	run_test( test_class.color,
-		'tests/source-code/'+class_name+'/color.html' );
-	run_test( test_class.width,	
-		'tests/source-code/'+class_name+'/width.html' );
-	run_test( test_class.outline,
-		'tests/source-code/'+class_name+'/outline.html' );
-	run_test( test_class.shrink,
-		'tests/source-code/'+class_name+'/shrink.html' );
-
-	next_row();
-
-	run_test( test_class.lineCap,
-		'tests/source-code/'+class_name+'/lineCap.html' );
-	run_test( test_class.dash,
-		'tests/source-code/'+class_name+'/dash.html' );
-	run_test( test_class.dash_rounded,
-		'tests/source-code/'+class_name+'/dash-rounded.html' );
-	run_test( test_class.gradient,
-		'tests/source-code/'+class_name+'/gradient.html' );
-	run_test( test_class.radial_gradient,
-		'tests/source-code/'+class_name+'/radial-gradient.html' );
-	run_test( test_class.shadow,
-		'tests/source-code/'+class_name+'/shadow.html' );
-
-	next_row();
-
-	run_test( test_class.child,
-		'tests/source-code/'+class_name+'/child.html' );
-	run_test( test_class.bezier,
-		'tests/source-code/'+class_name+'/bezier.html' );
-	run_test( test_class.bezierVels,
-		'tests/source-code/'+class_name+'/bezierVels.html' );
-	run_test( test_class.bezierAccs,
-		'tests/source-code/'+class_name+'/bezierAccs.html' );
-	run_test( test_class.img, 
-		'tests/source-code/'+class_name+'/img.html' );
-	run_test( test_class.flip, 
-		'tests/source-code/'+class_name+'/flip.html' );
 }
 iio.test.color = function(){
 	switch(this.cycle){

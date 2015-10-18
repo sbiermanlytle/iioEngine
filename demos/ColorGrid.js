@@ -23,12 +23,12 @@ ColorGrid = function( app, settings ){
     // create a grid of squares
     for( var c=w/2; c<app.width;  c+=w )
     for( var r=w/2; r<app.height; r+=w )
-      app.add( new iio.Rectangle({
+      app.add( new iio.Quad({
         // set position relative to row and column
         pos: [c,r],
-        // set rectangle width
+        // set quad width
         width: w,
-        // set rectangle color
+        // set quad color
         color: 'white',
         // define shrink animation with speed and callback
         shrink:{
@@ -36,10 +36,10 @@ ColorGrid = function( app, settings ){
           speed: iio.random(.05,.2),
           // when the shape is too small to be visible,
           // reset its properties and randomize the color
-          callback: function( rectangle ){
-            rectangle.width = w;
-            rectangle.height = w;
-            rectangle.color = iio.Color.random();
+          callback: function( quad ){
+            quad.width = w;
+            quad.height = w;
+            quad.color = iio.Color.random();
           }
         }
       // include true to prevent automatic drawing after add()

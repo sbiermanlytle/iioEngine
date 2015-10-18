@@ -45,12 +45,14 @@ show_docs_menu = function(){
   append_api_item_sub('objects', api.App );
   append_api_item_sub('objects', api.Shape );
 
+  append_api_item_sub('shapes', api.Quad );
   append_api_item_sub('shapes', api.Line );
-  append_api_item_sub('shapes', api.Text );
   append_api_item_sub('shapes', api.Ellipse );
   append_api_item_sub('shapes', api.Polygon );
+  append_api_item_sub('shapes', api.Text );
   append_api_item_sub('shapes', api.Rectangle );
   append_api_item_sub('shapes', api.Grid );
+  append_api_item_sub('shapes', api.QuadGrid );
 }
 
 show_unit_test = function( parent, test_function, test_class, id ){
@@ -59,7 +61,9 @@ show_unit_test = function( parent, test_function, test_class, id ){
   iioapps = document.createElement('div');
   iioapps.className = 'iioapps';
   parent.append(iioapps);
-  iio.test.create_canvas_grid( 100, 5, 6, id );
+  if (test_class === 'Collisions')
+    iio.test.create_canvas_grid( 200, 3, 3, id );
+  else iio.test.create_canvas_grid( 100, 5, 6, id );
   iio.test.show_tests( test_function, test_class, id );
 }
 

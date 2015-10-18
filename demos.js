@@ -17,12 +17,13 @@ show_demo_index = function(){
   add_demo_preview( iioApps, Snow, "Snow" );
   page.append(clear);
 
-  show_unit_test(page, iio.test.Line, 'Line', 0);
-  show_unit_test(page, iio.test.Text, 'Text', 1);
-  show_unit_test(page, iio.test.Ellipse, 'Ellipse', 2);
-  show_unit_test(page, iio.test.Rectangle, 'Rectangle', 3);
-  show_unit_test(page, iio.test.Polygon, 'Polygon', 4);
-  show_unit_test(page, iio.test.Grid, 'Grid', 5);
+  show_unit_test(page, iio.test.Collisions, 'Collisions', 0);
+  show_unit_test(page, iio.test.Line, 'Line', 1);
+  show_unit_test(page, iio.test.Quad, 'Quad', 2);
+  show_unit_test(page, iio.test.QuadGrid, 'QuadGrid', 3);
+  show_unit_test(page, iio.test.Ellipse, 'Ellipse', 4);
+  show_unit_test(page, iio.test.Polygon, 'Polygon', 5);
+  show_unit_test(page, iio.test.Text, 'Text', 6);
 }
 
 add_demo_preview = function( elem, app, title, settings ){
