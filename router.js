@@ -51,7 +51,7 @@ display_current = function(){
   if( current_hash == '#download' || current_hash == '' ){
     current = HOME;
     show_home();
-  } else if( current_hash.indexOf('#demos') > -1 ){
+  } else if( current_hash === '#demos' || current_has.indexOf('#demos.') > -1 ){
     current = DEMOS;
     show_demo_index();
   } else if( current_hash == '#tests' ){
