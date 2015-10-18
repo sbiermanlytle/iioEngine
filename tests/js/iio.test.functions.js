@@ -23,8 +23,8 @@ iio.test.functions = [
 		'origin',
 		// Collisions
 		'quadXquad',
-		'circleXcircle',
-		'polyXpoly',
+		'quadXpoly',
+		'quadXcircle',
 	],[
 		// Movement
 		'vel_bounds',
@@ -32,9 +32,9 @@ iio.test.functions = [
 		'vels',
 		'accs',
 		// Collisions
-		'rectXrect',
-		'gridXgrid',
 		'lineXline',
+		'circleXline',
+		'polyXline',
 	],[
 		// Radial Movement
 		'rVel_bounds',
@@ -42,9 +42,9 @@ iio.test.functions = [
 		'rAcc_bounds',
 		'rAcc_bounds_no_pos',
 		// Collisions
-		'textXtext',
+		'circleXcircle',
+		'polyXpoly',
 		'polyXcircle',
-		'circleXline',
 	],[
 		// Display
 		'hidden',
@@ -54,9 +54,9 @@ iio.test.functions = [
 		'outline',
 		'shrink',
 		// Collisions
-		'quadXpoly',
-		'quadXcircle',
-		'polyXline',
+		'rectXrect',
+		'gridXgrid',
+		'textXtext',
 	],[
 		'lineCap',
 		'dash',
