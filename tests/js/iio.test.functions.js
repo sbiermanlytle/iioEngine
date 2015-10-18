@@ -43,6 +43,8 @@ iio.test.functions = [
 		'rAcc_bounds_no_pos',
 		// Collisions
 		'textXtext',
+		'polyXcircle',
+		'circleXline',
 	],[
 		// Display
 		'hidden',
@@ -51,6 +53,10 @@ iio.test.functions = [
 		'width',
 		'outline',
 		'shrink',
+		// Collisions
+		'quadXpoly',
+		'quadXcircle',
+		'polyXline',
 	],[
 		'lineCap',
 		'dash',
@@ -83,7 +89,7 @@ iio.test.setup_master = function(doubleSize){
 	iio.test.size = 100;
 	if(doubleSize){
 		iio.test.C = 3;
-		iio.test.R = 3;
+		iio.test.R = 4;
 		iio.test.size = 200;
 	}
 	iio.test.create_canvas_grid(

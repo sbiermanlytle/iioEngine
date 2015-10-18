@@ -28,6 +28,25 @@ iio.is = {
       max = tmp;
     }
     return (val >= min && val <= max);
+  },
+  Polygon: function(o){
+    if (o instanceof iio.Polygon
+     || o instanceof iio.Rectangle
+     || o instanceof iio.Grid
+     || o instanceof iio.Text)
+      return true;
+    return false;
+  },
+  Circle: function(o){
+    if (o instanceof iio.Ellipse && (!o.vRadius || o.radius === o.vRadius))
+      return true;
+    return false;
+  },
+  Quad: function(o){
+    if (o instanceof iio.Quad
+     || o instanceof iio.QuadGrid)
+      return true;
+    return false;
   }
 }
 
@@ -299,20 +318,31 @@ iio.canvas = {
 iio.collision = {
   check: function(o1, o2) {
     if (!o1 || !o2) return false;
-    if ((o1 instanceof iio.Quad && o2 instanceof iio.Quad)
-      ||(o1 instanceof iio.QuadGrid && o2 instanceof iio.QuadGrid)){
-      return iio.collision.rectXrect(o1,o2)
-    } else if ((o1 instanceof iio.Polygon && o2 instanceof iio.Polygon)
-      || (o1 instanceof iio.Rectangle && o2 instanceof iio.Rectangle)
-      || (o1 instanceof iio.Grid && o2 instanceof iio.Grid)
-      || (o1 instanceof iio.Text && o2 instanceof iio.Text)){
-      return iio.collision.polyXpoly(o1,o2)
-    } else if (o1 instanceof iio.Ellipse && o2 instanceof iio.Ellipse){
-      if ((!o1.vRadius||o1.radius === o1.vRadius) && (!o2.vRadius||o2.radius === o2.vRadius) )
-        return iio.collision.circleXcircle(o1,o2)
-      else return iio.collision.ellipseXellipse(o1,o2)
-    } else if (o1 instanceof iio.Line && o2 instanceof iio.Line)
-      return iio.collision.lineXline(o1,o2)
+    if (iio.is.Quad(o1)){
+      if (iio.is.Quad(o2)) return iio.collision.rectXrect(o1,o2);
+      else if (iio.is.Polygon(o2)) return iio.collision.polyXpoly(o1,o2);
+      else if (o2 instanceof iio.Line) return iio.collision.polyXline(o1,o2);
+      else if (iio.is.Circle(o2)) return iio.collision.polyXcircle(o1,o2);
+    } else if (iio.is.Polygon(o1)) {
+      if (iio.is.Polygon(o2)) return iio.collision.polyXpoly(o1,o2);
+      else if (iio.is.Quad(o2)) return iio.collision.polyXpoly(o1,o2);
+      else if(o2 instanceof iio.Line) return iio.collision.polyXline(o2,o1);
+      else if(iio.is.Circle(o2)) return iio.collision.polyXcircle(o1,o2);
+    } else if (iio.is.Circle(o1)) {
+      if (iio.is.Circle(o2))  return iio.collision.circleXcircle(o1,o2);
+      else if (o2 instanceof iio.Ellipse) return iio.collision.ellipseXellipse(o1,o2);
+      else if (iio.is.Polygon(o2)
+       || iio.is.Quad(o2)) return iio.collision.polyXcircle(o2,o1);
+      else if (o2 instanceof iio.Line) return iio.collision.circleXline(o1,o2);
+    } else if (o1 instanceof iio.Ellipse){
+      if (o2 instanceof iio.Ellipse 
+       || iio.is.Circle(o2)) return iio.collision.ellipseXellipse(o1,o2);
+    } else if (o1 instanceof iio.Line) {
+      if (o2 instanceof iio.Line) return iio.collision.lineXline(o1,o2);
+      else if (o2 instanceof iio.Polygon) return iio.collision.polyXline(o2,o1);
+      else if (iio.is.Polygon(o2)) return iio.collision.polyXline(o2,o1);
+      else if (iio.is.Circle(o2)) return iio.collision.circleXline(o2,o1);
+    }
   },
   lineXline: function(o1,o2){
     var vs1 = o1.trueVs();
@@ -392,25 +422,54 @@ iio.collision = {
     } 
     return false;
   },
+  polyXcircle: function(poly,circle){
+    var vs = poly.trueVs();
+    for (var i=0; i<vs.length; i++)
+      if (circle.contains(vs[i]))
+        return true;
+    for(var j=1,i=0; i<vs.length; i++,j=i+1){
+      if(j===vs.length) j=0;
+      if(iio.collision.circleCline(circle, vs[i], vs[j]))
+        return true;
+    }
+    return false;
+  },
+  polyXline: function(poly,line){
+    var polyVs = poly.trueVs();
+    var lineVs = line.trueVs();
+    for ( var i=0,b1,b2,inter; i<polyVs.length; i++ ) {
+        b1 = polyVs[i];
+        b2 = polyVs[(i+1) % polyVs.length];
+        if(iio.collision.lineCline(lineVs[0], lineVs[1], b1, b2))
+          return true;
+    }
+    return false;
+  },
+  circleXline: function(circle,line){
+    var vs = line.trueVs();
+    return iio.collision.circleCline(circle, vs[0], vs[1]);
+  },
+  circleCline: function(circle,v1,v2){
+    var a = (v2.x - v1.x) * (v2.x - v1.x) + (v2.y - v1.y) * (v2.y - v1.y);
+    var b = 2 * ((v2.x - v1.x) * (v1.x - circle.pos.x) + (v2.y - v1.y) * (v1.y - circle.pos.y));
+    var cc = circle.pos.x * circle.pos.x + circle.pos.y * circle.pos.y + v1.x * v1.x + v1.y * v1.y
+    - 2 * (circle.pos.x * v1.x + circle.pos.y * v1.y) - circle.radius * circle.radius;
+    var deter = b * b - 4 * a * cc;
+    if(deter > 0) {
+      var e = Math.sqrt(deter);
+      var u1 = (-b + e) / (2 * a);
+      var u2 = (-b - e) / (2 * a);
+      if(!((u1 < 0 || u1 > 1) && (u2 < 0 || u2 > 1)))
+        return true;
+    }
+    return false;
+  },
   /* Ellipse collision detection
    * based on script by Olli Niemitalo in 2012-08-06.
    * This work is placed in the public domain.
    * http://yehar.com/blog/?p=2926
    */
-  ellipseXellipse: function(o1,o2){
-    var x0 = o1.pos.x;
-    var y0 = o1.pos.y;
-    var x1 = o2.pos.x;
-    var y1 = o2.pos.y;
-    var w0 = o1.localizeRotation(new iio.Vector(o1.radius, 0),true);
-    var w1 = o2.localizeRotation(new iio.Vector(o2.radius, 0),true);
-    var wx0 = w0.x;
-    var wy0 = w0.y;
-    var wx1 = w1.x;
-    var wy1 = w1.y;
-    var hw0 = o1.vRadius / o1.radius;
-    var hw1 = o2.vRadius / o2.radius;
-
+  ellipse_options: function(o1,o2){
     var maxIterations = o1.maxCollisionIterations || 10;
     if (o2.maxCollisionIterations 
       && o2.maxCollisionIterations > maxIterations)
@@ -425,11 +484,27 @@ iio.collision = {
       innerPolyCoef[t] = 0.5/Math.cos(4*Math.acos(0.0)/numNodes);
       outerPolyCoef[t] = 0.5/(Math.cos(2*Math.acos(0.0)/numNodes)*Math.cos(2*Math.acos(0.0)/numNodes));
     }
-    var options = {
+    return {
       maxIterations: maxIterations,
       innerPolyCoef: innerPolyCoef,
       outerPolyCoef: outerPolyCoef,
     };
+  },
+  ellipseXellipse: function(o1,o2){
+    var x0 = o1.pos.x;
+    var y0 = o1.pos.y;
+    var x1 = o2.pos.x;
+    var y1 = o2.pos.y;
+    var w0 = o1.localizeRotation(new iio.Vector(o1.radius, 0),true);
+    var w1 = o2.localizeRotation(new iio.Vector(o2.radius, 0),true);
+    var wx0 = w0.x;
+    var wy0 = w0.y;
+    var wx1 = w1.x;
+    var wy1 = w1.y;
+    var hw0 = (o1.vRadius || o1.radius) / o1.radius;
+    var hw1 = (o2.vRadius || o2.radius) / o2.radius;
+
+    var options = iio.collision.ellipse_options(o1,o2);
 
     var rr = hw1*hw1*(wx1*wx1 + wy1*wy1)*(wx1*wx1 + wy1*wy1)*(wx1*wx1 + wy1*wy1);
     var x = hw1*wx1*(wy1*(y1 - y0) + wx1*(x1 - x0)) - wy1*(wx1*(y1 - y0) - wy1*(x1 - x0));

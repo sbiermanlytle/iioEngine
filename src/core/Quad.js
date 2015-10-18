@@ -26,6 +26,16 @@ iio.Quad.prototype.trueVs = function() {
     new iio.Vector(this.width/2, this.height/2),
     new iio.Vector(-this.width/2, this.height/2),
   ];
+  if (!this.rotateVs) {
+    var vs = [];
+    for(var v,i=0;i<this.vs.length;i++){
+      v = this.vs[i].clone();
+      v.x += this.pos.x;
+      v.y += this.pos.y;
+      vs[i]=v;
+    }
+    return vs;
+  }
   return this._trueVs()
 }
 iio.Quad.prototype.left = function(){ return this.pos.x - this.width/2 }
