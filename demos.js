@@ -17,12 +17,19 @@ show_demo_index = function(){
   add_demo_preview( iioApps, Snow, "Snow" );
   page.append(clear);
 
+  page.append('<span id="demos.Collisions"></span>');
   show_unit_test(page, iio.test.Collisions, 'Collisions', 0);
+  page.append('<span id="demos.Line"></span>');
   show_unit_test(page, iio.test.Line, 'Line', 1);
+  page.append('<span id="demos.Quad"></span>');
   show_unit_test(page, iio.test.Quad, 'Quad', 2);
+  page.append('<span id="demos.QuadGrid"></span>');
   show_unit_test(page, iio.test.QuadGrid, 'QuadGrid', 3);
+  page.append('<span id="demos.Ellipse"></span>');
   show_unit_test(page, iio.test.Ellipse, 'Ellipse', 4);
+  page.append('<span id="demos.Polygon"></span>');
   show_unit_test(page, iio.test.Polygon, 'Polygon', 5);
+  page.append('<span id="demos.Text"></span>');
   show_unit_test(page, iio.test.Text, 'Text', 6);
 }
 
