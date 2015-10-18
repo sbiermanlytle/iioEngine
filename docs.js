@@ -62,7 +62,7 @@ show_unit_test = function( parent, test_function, test_class, id ){
   iioapps.className = 'iioapps';
   parent.append(iioapps);
   if (test_class === 'Collisions')
-    iio.test.create_canvas_grid( 200, 3, 3, id );
+    iio.test.create_canvas_grid( 200, 3, 4, id );
   else iio.test.create_canvas_grid( 100, 5, 6, id );
   iio.test.show_tests( test_function, test_class, id );
 }

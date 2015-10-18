@@ -9,75 +9,76 @@
 </head>
 <body onload="prettyPrint()">
   <pre class="prettyprint linenums:1">// define a new iio app
-QuadXQuad = function( app, settings ){
+QuadXPoly = function( app, settings ){
 
-  // quad width
+  // object width
   var oWidth = 15;
-  // quad speed
-  var oSpeed = .8;
+  // object speed
+  var speed = .8;
 
   // reverse the given velocity
   function reverse(o,p){ o[p]*=-1 }
 
   // reverse x velocity
   function reverseX(o){
-    reverse(o.vel,'x')
-  }
-  // reverse y velocity
-  function reverseY(o){ 
-    reverse(o.vel,'y');
+    reverse(o.vel,'x');
   }
 
   // common object properties
   var common = {
-    width: oWidth*2,
     bounds: {
       left: {
         bound: 0,
-        callback: reverseX,
+        callback: reverseX
       },
       right: {
         bound: app.width,
-        callback: reverseX,
+        callback: reverseX
       },
     }
   }
 
-  // add a red quad
-  var square0 = app.add(new iio.Quad(common,{
+  // add a red square
+  var square = app.add(new iio.Quad(common,{
+    width: oWidth*2,
     color: 'red',
-    vel: [ oSpeed, 0 ],
+    vel: [ speed, 0 ],
     pos: [
       app.width/3,
-      app.center.y,
+      app.center.y
     ],
   }));
 
-  // add a blue quad
-  var square1 = app.add(new iio.Quad(common,{
+  // add a blue triangle
+  var triangle = app.add(new iio.Polygon(common,{
     color: 'iioblue',
-    vel: [ -oSpeed, 0 ],
+    vel: [ -speed, 0 ],
+    rVel: 0.02,
     pos: [
       app.width*2/3,
-      app.center.y + 4,
+      app.center.y + 4
+    ],
+    vs: [
+      [0, -oWidth],
+      [oWidth, oWidth],
+      [-oWidth, oWidth],
     ],
   }));
 
   // add a collision callback
-  app.collision( square0, square1,
-    function(s0,s1){
+  app.collision( square, triangle,
+    function(s,t){
       // switch object velocities
-      var temp = s0.vel;
-      s0.vel = s1.vel;
-      s1.vel = temp;
-      // reverse rotational velocities
-      reverse(s0,'rVel');
-      reverse(s1,'rVel');
+      var temp = s.vel;
+      s.vel = t.vel;
+      t.vel = temp;
+      // reverse triangles rotational velocity
+      reverse(t,'rVel');
     });
 }
 
 // start the app on an existing canvas
-iio.start( QuadXQuad, 'canvasId' );</pre>
+iio.start( QuadXPoly, 'canvasId' );</pre>
 <script type="text/javascript" src="../../../js/prettify.js"></script>
 </body>
 </html>

@@ -23,8 +23,8 @@ iio.test.functions = [
 		'origin',
 		// Collisions
 		'quadXquad',
-		'circleXcircle',
-		'polyXpoly',
+		'quadXpoly',
+		'quadXcircle',
 	],[
 		// Movement
 		'vel_bounds',
@@ -32,9 +32,9 @@ iio.test.functions = [
 		'vels',
 		'accs',
 		// Collisions
-		'rectXrect',
-		'gridXgrid',
 		'lineXline',
+		'circleXline',
+		'polyXline',
 	],[
 		// Radial Movement
 		'rVel_bounds',
@@ -42,7 +42,9 @@ iio.test.functions = [
 		'rAcc_bounds',
 		'rAcc_bounds_no_pos',
 		// Collisions
-		'textXtext',
+		'circleXcircle',
+		'polyXpoly',
+		'polyXcircle',
 	],[
 		// Display
 		'hidden',
@@ -51,6 +53,10 @@ iio.test.functions = [
 		'width',
 		'outline',
 		'shrink',
+		// Collisions
+		'rectXrect',
+		'gridXgrid',
+		'textXtext',
 	],[
 		'lineCap',
 		'dash',
@@ -83,7 +89,7 @@ iio.test.setup_master = function(doubleSize){
 	iio.test.size = 100;
 	if(doubleSize){
 		iio.test.C = 3;
-		iio.test.R = 3;
+		iio.test.R = 4;
 		iio.test.size = 200;
 	}
 	iio.test.create_canvas_grid(

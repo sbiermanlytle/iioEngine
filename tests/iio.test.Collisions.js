@@ -47,8 +47,6 @@ iio.test.Collisions = {
       var temp = square0.vel;
       square0.vel = square1.vel;
       square1.vel = temp;
-      reverse(s0,'rVel');
-      reverse(s1,'rVel');
     });
   },
   circleXcircle : function(app, settings){
@@ -447,6 +445,320 @@ iio.test.Collisions = {
       t1.vel = temp;
       reverse(t0,'rVel');
       reverse(t1,'rVel');
+    });
+  },
+  polyXcircle : function(app, settings){
+    var oRadius = 20;
+    var speed = .8;
+
+    function reverse(o,p){ o[p]*=-1 }
+    function reverseX(o){
+      reverse(o.vel,'x');
+      reverse(o,'rVel');
+    }
+    function reverseY(o){ 
+      reverse(o.vel,'y');
+      reverse(o,'rVel');
+    }
+
+    var common = {
+      bounds: {
+        left: {
+          bound: 0,
+          callback: reverseX
+        },
+        right: {
+          bound: app.width,
+          callback: reverseX
+        },
+        top: {
+          bound: 0,
+          callback: reverseY
+        },
+        bottom: {
+          bound: app.height,
+          callback: reverseY
+        },
+      }
+    }
+
+    var triangle = app.add(new iio.Polygon(common,{
+      color: 'red',
+      vel: [ speed, speed/2 ],
+      rVel: 0.02,
+      pos: [
+        app.width/3,
+        app.center.y
+      ],
+      vs: [
+        [0, -oRadius],
+        [oRadius, oRadius],
+        [-oRadius, oRadius],
+      ],
+    }));
+
+    var circle = app.add(new iio.Ellipse(common,{
+      radius: oRadius,
+      color: 'iioblue',
+      vel: [ -speed, -speed/2 ],
+      pos: [
+        app.width*2/3,
+        app.center.y + 4
+      ],
+    }));
+
+    app.collision( triangle, circle, function(s,c){
+      var temp = s.vel;
+      s.vel = c.vel;
+      c.vel = temp;
+      reverse(s,'rVel');
+    });
+  },
+  circleXline : function(app, settings){
+    var oWidth = 8;
+    var oLength = 40;
+    var speed = 1;
+
+    function reverse(o,p){ o[p]*=-1 }
+    function reverseX(o){
+      reverse(o.vel,'x');
+      reverse(o,'rVel');
+    }
+    function reverseY(o){ 
+      reverse(o.vel,'y');
+      reverse(o,'rVel');
+    }
+
+    var common = {
+      width: oWidth,
+      bounds: {
+        left: {
+          bound: 0,
+          callback: reverseX
+        },
+        right: {
+          bound: app.width,
+          callback: reverseX
+        },
+        top: {
+          bound: 0,
+          callback: reverseY
+        },
+        bottom: {
+          bound: app.height,
+          callback: reverseY
+        },
+      }
+    }
+
+    var line = app.add(new iio.Line(common,{
+      color: 'red',
+      vel: [ speed, speed/2 ],
+      rotation: Math.PI/4,
+      rVel: 0.02,
+      pos: [
+        app.width/3,
+        app.center.y
+      ],
+      vs: [
+        new iio.Vector(0,-oLength),
+        new iio.Vector(0,oLength),
+      ]
+    }));
+
+    var circle = app.add(new iio.Ellipse(common,{
+      color: 'iioblue',
+      radius: oLength/2,
+      vel: [ -speed, -speed/2 ],
+      rotation: Math.PI/4,
+      pos: [
+        app.width*2/3,
+        app.center.y + 4
+      ]
+    }));
+
+    app.collision( line, circle, function(line,circle){
+      var temp = line.vel;
+      line.vel = circle.vel;
+      circle.vel = temp;
+      reverse(line,'rVel');
+    });
+  },
+  quadXpoly : function(app, settings){
+    var oWidth = 15;
+    var speed = .8;
+
+    function reverse(o,p){ o[p]*=-1 }
+    function reverseX(o){
+      reverse(o.vel,'x');
+    }
+
+    var common = {
+      bounds: {
+        left: {
+          bound: 0,
+          callback: reverseX
+        },
+        right: {
+          bound: app.width,
+          callback: reverseX
+        },
+      }
+    }
+
+    var square = app.add(new iio.Quad(common,{
+      width: oWidth*2,
+      color: 'red',
+      vel: [ speed, 0 ],
+      pos: [
+        app.width/3,
+        app.center.y
+      ],
+    }));
+
+    var triangle = app.add(new iio.Polygon(common,{
+      color: 'iioblue',
+      vel: [ -speed, 0 ],
+      rVel: 0.02,
+      pos: [
+        app.width*2/3,
+        app.center.y + 4
+      ],
+      vs: [
+        [0, -oWidth],
+        [oWidth, oWidth],
+        [-oWidth, oWidth],
+      ],
+    }));
+
+    app.collision( square, triangle, function(s,t){
+      var temp = s.vel;
+      s.vel = t.vel;
+      t.vel = temp;
+      reverse(t,'rVel');
+    });
+  },
+  quadXcircle : function(app, settings){
+    var oWidth = 40;
+    var speed = .8;
+
+    function reverse(o,p){ o[p]*=-1 }
+    function reverseX(o){
+      reverse(o.vel,'x');
+    }
+
+    var common = {
+      bounds: {
+        left: {
+          bound: 0,
+          callback: reverseX
+        },
+        right: {
+          bound: app.width,
+          callback: reverseX
+        },
+      }
+    }
+
+    var square = app.add(new iio.Quad(common,{
+      width: oWidth,
+      color: 'red',
+      vel: [ speed, 0 ],
+      pos: [
+        app.width/3,
+        app.center.y
+      ],
+    }));
+
+    var circle = app.add(new iio.Ellipse(common,{
+      radius: oWidth/2,
+      color: 'iioblue',
+      vel: [ -speed, 0 ],
+      pos: [
+        app.width*2/3,
+        app.center.y + 4
+      ],
+    }));
+
+    app.collision( square, circle, function(s,t){
+      var temp = s.vel;
+      s.vel = t.vel;
+      t.vel = temp;
+    });
+  },
+  polyXline : function(app, settings){
+    var oWidth = 8;
+    var oLength = 50;
+    var speed = 1;
+
+    function reverse(o,p){ o[p]*=-1 }
+    function reverseX(o){
+      reverse(o.vel,'x');
+      reverse(o,'rVel');
+    }
+    function reverseY(o){ 
+      reverse(o.vel,'y');
+      reverse(o,'rVel');
+    }
+
+    var common = {
+      bounds: {
+        left: {
+          bound: 0,
+          callback: reverseX
+        },
+        right: {
+          bound: app.width,
+          callback: reverseX
+        },
+        top: {
+          bound: 0,
+          callback: reverseY
+        },
+        bottom: {
+          bound: app.height,
+          callback: reverseY
+        },
+      }
+    }
+
+    var triangle = app.add(new iio.Polygon(common,{
+      color: 'red',
+      vel: [ speed, speed/2 ],
+      rVel: 0.02,
+      pos: [
+        app.width/3,
+        app.center.y
+      ],
+      vs: [
+        [0, -oLength/2],
+        [oLength/2, oLength/2],
+        [-oLength/2, oLength/2],
+      ],
+    }));
+
+    var line = app.add(new iio.Line(common,{
+      width: oWidth,
+      color: 'iioblue',
+      vel: [ -speed, -speed/2 ],
+      rotation: Math.PI/4,
+      rVel: -0.02,
+      pos: [
+        app.width*2/3,
+        app.center.y + 4
+      ],
+      vs: [
+        new iio.Vector(0,-oLength),
+        new iio.Vector(0,oLength),
+      ]
+    }));
+
+    app.collision( triangle, line, function(s0,s1){
+      var temp = s0.vel;
+      s0.vel = s1.vel;
+      s1.vel = temp;
+      reverse(s0,'rVel');
+      reverse(s1,'rVel');
     });
   },
 }
