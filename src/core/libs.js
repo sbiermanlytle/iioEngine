@@ -395,7 +395,7 @@ iio.collision = {
     return false;
   },
   circleXcircle: function(o1,o2){
-    if (o1.pos.distance(o2.pos) < o1.radius+o2.radius)
+    if (o1.pos.dist(o2.pos) < o1.radius+o2.radius)
       return true;
     return false;
   },
