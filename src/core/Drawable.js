@@ -13,6 +13,7 @@ iio.Drawable.prototype._super = iio.Interface.prototype;
 // CONSTRUCTOR
 iio.Drawable.prototype.Drawable = function() {
   iio.Drawable.prototype._super.Interface.call(this, arguments[0]);
+  this.pos = this.pos || new iio.Vector(0,0);
   this.objs = [];
   this.collisions = [];
   this.loops = [];
@@ -55,6 +56,18 @@ iio.Drawable.prototype.localize = function(v,y){
     v.y -= this.pos.y;
   }
   return this.localizeRotation(v);
+}
+iio.Drawable.prototype.localLeft = function(){
+  return this.left() - this.pos.x;
+}
+iio.Drawable.prototype.localRight = function(){
+  return this.right() - this.pos.x;
+}
+iio.Drawable.prototype.localTop = function(){
+  return this.top() - this.pos.y;
+}
+iio.Drawable.prototype.localBottom = function(){
+  return this.bottom() - this.pos.y;
 }
 
 // OBJECT MANAGMENT FUNCTIONS

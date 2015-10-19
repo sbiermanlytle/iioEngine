@@ -77,6 +77,18 @@ iio.App.prototype.stop = function() {
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
   this.clear();
 }
+iio.Quad.prototype.trueVs = function() {
+  this.vs = [
+    new iio.Vector(-this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, this.height/2),
+    new iio.Vector(-this.width/2, this.height/2),
+  ];
+  var vs = [];
+  for(var i=0; i<this.vs.length; i++)
+   vs[i] = this.vs[i].clone();
+  return vs;
+}
 iio.App.prototype.draw = function( noClear ) {
 
   // clear canvas
@@ -92,7 +104,10 @@ iio.App.prototype.draw = function( noClear ) {
   // draw child objects
   if (this.objs.length > 0)
     for(var i=0; i<this.objs.length; i++)
-      if (this.objs[i].draw) this.objs[i].draw(this.ctx);
+      if (!this.clipObjs
+       || (this.objs[i].right() > 0 && this.objs[i].left() < this.width
+        && this.objs[i].bottom() > 0 && this.objs[i].top() < this.height))
+        if (this.objs[i].draw) this.objs[i].draw(this.ctx);
 }
 iio.App.prototype.eventVector = function(e) {
   this.update_pos();

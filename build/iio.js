@@ -386,6 +386,7 @@ iio.is = {
   },
   Quad: function(o){
     if (o instanceof iio.Quad
+     || o instanceof iio.App
      || o instanceof iio.QuadGrid)
       return true;
     return false;
@@ -1260,6 +1261,7 @@ iio.Drawable.prototype._super = iio.Interface.prototype;
 // CONSTRUCTOR
 iio.Drawable.prototype.Drawable = function() {
   iio.Drawable.prototype._super.Interface.call(this, arguments[0]);
+  this.pos = this.pos || new iio.Vector(0,0);
   this.objs = [];
   this.collisions = [];
   this.loops = [];
@@ -1302,6 +1304,18 @@ iio.Drawable.prototype.localize = function(v,y){
     v.y -= this.pos.y;
   }
   return this.localizeRotation(v);
+}
+iio.Drawable.prototype.localLeft = function(){
+  return this.left() - this.pos.x;
+}
+iio.Drawable.prototype.localRight = function(){
+  return this.right() - this.pos.x;
+}
+iio.Drawable.prototype.localTop = function(){
+  return this.top() - this.pos.y;
+}
+iio.Drawable.prototype.localBottom = function(){
+  return this.bottom() - this.pos.y;
 }
 
 // OBJECT MANAGMENT FUNCTIONS
@@ -2103,8 +2117,13 @@ iio.Shape.prototype.draw = function(ctx){
       if (!drawnSelf && this.objs[i].z >= this.z) {
         this.draw_obj(ctx);
         drawnSelf = true;
-      } 
-      if (this.objs[i].draw) 
+      }
+      if (this.objs[i].draw
+       && (!this.clipObjs 
+        || (this.objs[i].right() > this.localLeft()
+         && this.objs[i].left() < this.localRight()
+         && this.objs[i].bottom() > this.localTop()
+         && this.objs[i].top() < this.localBottom()))) 
         this.objs[i].draw(ctx);
     }
     if (!drawnSelf) this.draw_obj(ctx);
@@ -2885,6 +2904,18 @@ iio.App.prototype.stop = function() {
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
   this.clear();
 }
+iio.Quad.prototype.trueVs = function() {
+  this.vs = [
+    new iio.Vector(-this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, this.height/2),
+    new iio.Vector(-this.width/2, this.height/2),
+  ];
+  var vs = [];
+  for(var i=0; i<this.vs.length; i++)
+   vs[i] = this.vs[i].clone();
+  return vs;
+}
 iio.App.prototype.draw = function( noClear ) {
 
   // clear canvas
@@ -2900,7 +2931,10 @@ iio.App.prototype.draw = function( noClear ) {
   // draw child objects
   if (this.objs.length > 0)
     for(var i=0; i<this.objs.length; i++)
-      if (this.objs[i].draw) this.objs[i].draw(this.ctx);
+      if (!this.clipObjs
+       || (this.objs[i].right() > 0 && this.objs[i].left() < this.width
+        && this.objs[i].bottom() > 0 && this.objs[i].top() < this.height))
+        if (this.objs[i].draw) this.objs[i].draw(this.ctx);
 }
 iio.App.prototype.eventVector = function(e) {
   this.update_pos();

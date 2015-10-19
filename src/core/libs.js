@@ -44,6 +44,7 @@ iio.is = {
   },
   Quad: function(o){
     if (o instanceof iio.Quad
+     || o instanceof iio.App
      || o instanceof iio.QuadGrid)
       return true;
     return false;

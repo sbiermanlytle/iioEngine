@@ -405,8 +405,13 @@ iio.Shape.prototype.draw = function(ctx){
       if (!drawnSelf && this.objs[i].z >= this.z) {
         this.draw_obj(ctx);
         drawnSelf = true;
-      } 
-      if (this.objs[i].draw) 
+      }
+      if (this.objs[i].draw
+       && (!this.clipObjs 
+        || (this.objs[i].right() > this.localLeft()
+         && this.objs[i].left() < this.localRight()
+         && this.objs[i].bottom() > this.localTop()
+         && this.objs[i].top() < this.localBottom()))) 
         this.objs[i].draw(ctx);
     }
     if (!drawnSelf) this.draw_obj(ctx);
