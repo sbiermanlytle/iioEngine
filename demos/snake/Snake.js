@@ -49,7 +49,7 @@ Snake = function( app, settings ){
 		width: shared_props.width
 	} 
 	
-	// define a function to be run when the app is resized
+	// restart the game
 	function reset(){
 
 		// clear all objects and loops from app
@@ -107,7 +107,7 @@ Snake = function( app, settings ){
 
 	// keypress handling
 	// sets snake direction depending on key value
-	this.keyDown = function( event, key ){ 
+	this.onKeyDown = function( event, key ){ 
 
 		// if snake isn't moving down
 		if( snake.direction != DOWN 

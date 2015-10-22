@@ -18,7 +18,7 @@ ColorGrid = function( app, settings ){
 		w = settings.w;
 
 	// define a function to be run when the app is resized
-	this.resize = function(){
+	this.onResize = function(){
 
 		// clear all objects and loops from app
 		app.clear();
@@ -50,5 +50,5 @@ ColorGrid = function( app, settings ){
 	}
 
 	// initialize the app
-	this.resize();
+	this.onResize();
 }

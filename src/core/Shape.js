@@ -326,11 +326,23 @@ iio.Shape.prototype.orient_ctx = function(ctx){
   ctx.save();
 
   //translate & rotate
-  if (this.pos) ctx.translate(this.pos.x, this.pos.y);
+  if (this.pos) {
+    if (this.pixelRounding)
+      ctx.translate(Math.floor(this.pos.x), Math.floor(this.pos.y));
+    else ctx.translate(this.pos.x, this.pos.y);
+  }
   if(this.rotation){
-    if (this.origin) ctx.translate(this.origin.x, this.origin.y);
+    if (this.origin) {
+      if (this.pixelRounding)
+        ctx.translate(Math.floor(this.origin.x), Math.floor(this.origin.y));
+      else ctx.translate(this.origin.x, this.origin.y);
+    }
     ctx.rotate(this.rotation);
-    if (this.origin) ctx.translate(-this.origin.x, -this.origin.y);
+    if (this.origin) {
+      if (this.pixelRounding)
+        ctx.translate(Math.floor(-this.origin.x), Math.floor(-this.origin.y));
+      else ctx.translate(-this.origin.x, -this.origin.y);
+    }
   }
   if(this.flip){
     if(this.flip.indexOf('x') > -1)
@@ -375,7 +387,19 @@ iio.Shape.prototype.prep_ctx_dash = function(ctx){
 }
 iio.Shape.prototype.finish_path_shape = function(ctx){
   if (this.color) ctx.fill();
-  if (this.img) ctx.drawImage(this.img, -this.width / 2, -this.height / 2, this.width, this.height);
+  if (this.img) {
+    if (this.noImageRounding)
+      ctx.drawImage(this.img,
+        -this.width/2,
+        -this.height/2,
+        this.width,
+        this.height);
+    else ctx.drawImage(this.img,
+        Math.floor(-this.width/2),
+        Math.floor(-this.height/2),
+        Math.floor(this.width),
+        Math.floor(this.height));
+  }
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
 } 
@@ -389,6 +413,10 @@ iio.Shape.prototype.draw_obj = function(ctx){
   if (this.outline) {
     ctx = this.prep_ctx_outline(ctx);
     ctx = this.prep_ctx_lineWidth(ctx);
+  }
+  if ((this.img || this.anims) && !this.noImageSmoothing) {
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
   }
   if(this.draw_shape) this.draw_shape(ctx);
   ctx.restore();

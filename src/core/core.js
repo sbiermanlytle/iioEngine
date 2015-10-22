@@ -259,7 +259,7 @@ iio.resize = function() {
     app.height = app.canvas.height;
     app.center.x = app.canvas.width / 2;
     app.center.y = app.canvas.height / 2;
-    if (app.script && app.script.resize) app.script.resize();
+    if (app.script && app.script.onResize) app.script.onResize();
     app.draw();
   });
 }
@@ -268,15 +268,15 @@ iio.prep_input = function() {
   iio.addEvent(window, 'keydown', function(e) {
     var k = iio.key.string(e);
     iio.apps.forEach(function(app) {
-      if (app.script && app.script.keyDown)
-        app.script.keyDown(e, k);
+      if (app.script && app.script.onKeyDown)
+        app.script.onKeyDown(e, k);
     });
   });
   iio.addEvent(window, 'keyup', function(e) {
     var k = iio.key.string(e);
     iio.apps.forEach(function(app) {
-      if (app.script&& app.script.keyUp)
-        app.script.keyUp(e, k);
+      if (app.script&& app.script.onKeyUp)
+        app.script.onKeyUp(e, k);
     });
   });
   iio.addEvent(window, 'scroll', function(event) {
@@ -286,6 +286,8 @@ iio.prep_input = function() {
         x: p.left,
         y: p.top
       };
+      if (app.script&& app.script.onScroll)
+        app.script.onScroll(e, k);
     });
   });
 }

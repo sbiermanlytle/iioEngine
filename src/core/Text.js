@@ -97,7 +97,9 @@ iio.Text.prototype._shrink = function(s, r) {
 }
 iio.Text.prototype.draw_shape = function(ctx) {
 
-  ctx.translate(0,this.height/2);
+  if (this.pixelRounding)
+    ctx.translate(0, Math.floor(this.height/2));
+  else ctx.translate(0, this.height/2); 
 
   //ctx.strokeStyle = 'red';
   //ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
@@ -138,11 +140,11 @@ iio.Text.prototype.getX = function(i) {
     return x + this.app.ctx.measureText(this.text.substring(0, i)).width;
   }
 }
-iio.Text.prototype.keyUp = function(k) {
+iio.Text.prototype.onKeyUp = function(k) {
   if (k == 'shift')
     this.cursor.shift = false;
 }
-iio.Text.prototype.keyDown = function(key, cI, shift, fn) {
+iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
   if (!iio.is.number(cI)) {
     fn = cI;
     cI = this.cursor.index;

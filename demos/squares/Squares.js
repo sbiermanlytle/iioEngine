@@ -59,7 +59,7 @@ Squares = function( app, settings ){
 		}), true);
 
 	// define a function to be run when the app is resized
-	this.resize = function(){
+	this.onResize = function(){
 
 		// set bounds on each object, relative to the new size
 		// use callbacks to make squares bounce off app boundaries
@@ -97,5 +97,5 @@ Squares = function( app, settings ){
 	}; 
 
 	// set the initial bounds
-	this.resize();
+	this.onResize();
 }

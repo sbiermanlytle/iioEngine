@@ -18,7 +18,9 @@ iio.Rectangle.prototype.Rectangle = function() {
 
 //FUNCTIONS
 iio.Rectangle.prototype.draw_shape = function(ctx){
-  ctx.translate(-this.width / 2, -this.height / 2);
+  if (this.pixelRounding)
+    ctx.translate(Math.floor(-this.width/2),Math.floor(-this.height/2));
+  else ctx.translate(-this.width/2,-this.height/2);
   if (this.bezier) {
     iio.draw.poly(ctx, this.trueVs(), this.bezier);
     this.finish_path_shape(ctx);
@@ -27,13 +29,24 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
     this.draw_rounded(ctx);
   else{
     if (this.color) ctx.fillRect(0, 0, this.width, this.height)
-    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
-    if (this.anims) ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
-      this.anims[this.animKey].frames[this.animFrame].x,
-      this.anims[this.animKey].frames[this.animFrame].y,
-      this.anims[this.animKey].frames[this.animFrame].w,
-      this.anims[this.animKey].frames[this.animFrame].h,
-      0, 0, this.width, this.height);
+    if (this.img) {
+      if (this.noImageRounding)
+        ctx.drawImage(this.img, 0, 0, this.width, this.height);
+      else ctx.drawImage(this.img, 0, 0, Math.floor(this.width), Math.floor(this.height));
+    }
+    if (this.anims)
+      ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+        this.anims[this.animKey].frames[this.animFrame].x,
+        this.anims[this.animKey].frames[this.animFrame].y,
+        this.anims[this.animKey].frames[this.animFrame].w,
+        this.anims[this.animKey].frames[this.animFrame].h,
+        0, 0,
+        this.noImageRounding
+          ? this.width
+          : Math.floor(this.width),
+        this.noImageRounding
+          ? this.height
+          : Math.floor(this.height));
     if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
   }
 }

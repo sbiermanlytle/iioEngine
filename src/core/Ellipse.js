@@ -17,7 +17,9 @@ iio.Ellipse.prototype.draw_shape = function(ctx) {
       ctx.ellipse(0,0, this.radius, this.vRadius, 0, 0,2*Math.PI, false)
     } else {
       ctx.save();
-      ctx.translate(-this.radius, -this.vRadius);
+      if (this.pixelRounding)
+        ctx.translate(Math.floor(-this.radius), Math.floor(-this.vRadius));
+      else ctx.translate(-this.radius, -this.vRadius);
       ctx.scale(this.radius, this.vRadius);
       ctx.arc(1, 1, 1, 0, 2 * Math.PI, false);
       ctx.restore();
@@ -28,7 +30,19 @@ iio.Ellipse.prototype.draw_shape = function(ctx) {
   if (this.color) ctx.fill();
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
-  if (this.img) ctx.drawImage(this.img, -this.radius, -this.radius, this.radius*2, this.radius*2);
+  if (this.img) {
+    if (this.noImageRounding)
+      ctx.drawImage(this.img,
+        -this.radius,
+        -(this.vRadius||this.radius),
+        this.radius*2,
+        (this.vRadius||this.radius)*2);
+    else ctx.drawImage(this.img,
+      Math.floor(-this.radius),
+      Math.floor(-(this.vRadius||this.radius)),
+      Math.floor(this.radius*2),
+      Math.floor((this.vRadius||this.radius)*2));
+  }
 }
 iio.Ellipse.prototype.contains = function(v, y) {
   if (typeof(y) !== 'undefined') v = { x:v, y:y }
