@@ -257,14 +257,14 @@ ScrollShooter = function( app, s ){
     }));
 
     // For updating direction on key presses
-    user.keyDown = function(e,k){ 
+    user.onKeyDown = function(e,k){ 
       updateController(k,true) 
     }
-    user.keyUp = function(e,k){ 
+    user.onKeyUp = function(e,k){ 
       updateController(k,false) 
     }
 
-    user.resize=function(){
+    user.onResize=function(){
       if(playerObj.right &gt; app.width)
         playerObj.pos.x = app.width - playerObj.width/2
     }

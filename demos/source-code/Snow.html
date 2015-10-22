@@ -68,7 +68,7 @@ function Snow( app, settings ){
     }), true);
 
   // define a function to be run when the app is resized
-  this.resize=function(){
+  this.onResize = function(){
 
     // set bounds on each object, relative to the new size
     for(var i=0; i&lt;app.objs.length; i++)
@@ -102,7 +102,7 @@ function Snow( app, settings ){
   }; 
 
   // set the initial bounds
-  this.resize();
+  this.onResize();
 }
 
 // start the app on an existing canvas

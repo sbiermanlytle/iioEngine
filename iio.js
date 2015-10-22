@@ -289,7 +289,7 @@ iio.resize = function() {
     app.height = app.canvas.height;
     app.center.x = app.canvas.width / 2;
     app.center.y = app.canvas.height / 2;
-    if (app.script && app.script.resize) app.script.resize();
+    if (app.script && app.script.onResize) app.script.onResize();
     app.draw();
   });
 }
@@ -298,15 +298,15 @@ iio.prep_input = function() {
   iio.addEvent(window, 'keydown', function(e) {
     var k = iio.key.string(e);
     iio.apps.forEach(function(app) {
-      if (app.script && app.script.keyDown)
-        app.script.keyDown(e, k);
+      if (app.script && app.script.onKeyDown)
+        app.script.onKeyDown(e, k);
     });
   });
   iio.addEvent(window, 'keyup', function(e) {
     var k = iio.key.string(e);
     iio.apps.forEach(function(app) {
-      if (app.script&& app.script.keyUp)
-        app.script.keyUp(e, k);
+      if (app.script&& app.script.onKeyUp)
+        app.script.onKeyUp(e, k);
     });
   });
   iio.addEvent(window, 'scroll', function(event) {
@@ -316,6 +316,8 @@ iio.prep_input = function() {
         x: p.left,
         y: p.top
       };
+      if (app.script&& app.script.onScroll)
+        app.script.onScroll(e, k);
     });
   });
 }
@@ -386,6 +388,7 @@ iio.is = {
   },
   Quad: function(o){
     if (o instanceof iio.Quad
+     || o instanceof iio.App
      || o instanceof iio.QuadGrid)
       return true;
     return false;
@@ -736,7 +739,7 @@ iio.collision = {
     return false;
   },
   circleXcircle: function(o1,o2){
-    if (o1.pos.distance(o2.pos) < o1.radius+o2.radius)
+    if (o1.pos.dist(o2.pos) < o1.radius+o2.radius)
       return true;
     return false;
   },
@@ -1036,7 +1039,7 @@ iio.inherit(iio.Vector, iio.Interface);
 iio.Vector.prototype._super = iio.Interface.prototype;
 
 //CONSTRUCTOR
-iio.Vector.prototype.Vector = function(v,y) {
+iio.Vector.prototype.Vector = function( v,y ) {
   if(v instanceof Array){
     this.x = v[0] || 0;
     this.y = v[1] || 0;
@@ -1051,32 +1054,56 @@ iio.Vector.prototype.Vector = function(v,y) {
 
 //STATIC FUNCTIONS
 //------------------------------------------------------------
-iio.Vector.add = function(v1, v2) {
+iio.Vector.add = function( v1,v2 ){
   var v = v1.clone();
   for (var p in v2)
     if (v[p]) v[p] += v2[p];
   return v
 }
-iio.Vector.sub = function(v1, v2) {
+iio.Vector.sub = function( v1,v2 ){
   var v = v1.clone();
   for (var p in v2)
     if (v[p]) v[p] -= v2[p];
   return v
 }
-iio.Vector.mult = function(v1, v2) {
+iio.Vector.mult = function( v1,f ){
   var v = v1.clone();
-  for (var p in v2)
-    if (v[p]) v[p] *= v2[p];
+  for (var p in v1)
+    v[p] *= f;
   return v
 }
-iio.Vector.div = function(v1, v2) {
+iio.Vector.div = function( v1,v2 ){
   var v = v1.clone();
   for (var p in v2)
     if (v[p]) v[p] /= v2[p];
   return v
 }
-iio.Vector.dist = function(v1, v2) {
+iio.Vector.length = function( v,y ){
+  if (typeof v.x !== 'undefined')
+     return Math.sqrt(v.x*v.x+v.y*v.y);
+  else return Math.sqrt(v*v+y*y);
+}
+iio.Vector.normalized = function( v,y ){
+  return new iio.Vector(v,y).normalize();
+}
+iio.Vector.dot = function ( v1,v2,x2,y2 ){
+  if (typeof v1.x != 'undefined'){
+    if (typeof v2.x != 'undefined')
+      return v1.x*v2.x+v1.y*v2.y;
+    else return v1.x*v2+v1.y*x2;
+  } else {
+    if (typeof x2.x != 'undefined')
+      return v1*x2.x+v2*x2.y;
+    else return v1*x2+v2*y2;
+  }
+}
+iio.Vector.dist = function( v1,v2 ){
   return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2))
+}
+iio.Vector.lerp = function( v1,v2,x2,y2,p ){
+  if (typeof v1.x != 'undefined')
+    return new iio.Vector(v1).lerp(v2,x2,y2);
+  else return new iio.Vector(v1,v2).lerp(x2, y2, p);
 }
 
 // MEMBER FUNCTIONS
@@ -1084,27 +1111,66 @@ iio.Vector.dist = function(v1, v2) {
 iio.Vector.prototype.clone = function(){
   return new iio.Vector(this.x,this.y)
 }
-iio.Vector.prototype.add = function( x, y ){
-  y = y || x.y;
-  x = x.x || x;
-  this.x += x;
-  this.y += y;
+iio.Vector.prototype.add = function( v,y ){
+  if (typeof v.x !== 'undefined'){
+    this.x += v.x;
+    this.y += v.y;
+  } else {
+    this.x += v;
+    this.y += y;
+  }
   return this;
 }
-iio.Vector.prototype.sub = function( x, y ){
-  y = y || x.y;
-  x = x.x || x;
-  this.x -= x;
-  this.y -= y;
+iio.Vector.prototype.sub = function( v,y ){
+  if (typeof v.x !== 'undefined'){
+    this.x -= v.x;
+    this.y -= v.y;
+  } else {
+    this.x -= v;
+    this.y -= y;
+  }
   return this;
 }
-iio.Vector.prototype.equals = function( x, y ){
-  if( x.x ) return this.x === x.x && this.y === x.y;
-  else return this.x === x && this.y === y;
+iio.Vector.prototype.mult = function( f ){
+  this.x *= f;
+  this.y *= f;
+  return this;
 }
-iio.Vector.prototype.distance = function(v,y){
-  v = new iio.Vector(v.x||v,v.y||y)
-  return Math.sqrt((v.x-this.x)*(v.x-this.x)+(v.y-this.y)*(v.y-this.y));
+iio.Vector.prototype.div = function( v,y ){
+  if (typeof v.x !== 'undefined'){
+    this.x /= v.x;
+    this.y /= v.y;
+  } else {
+    this.x /= v;
+    this.y /= y;
+  }
+  return this;
+}
+iio.Vector.prototype.length = function(){
+  return Math.sqrt(this.x*this.x+this.y*this.y);
+}
+iio.Vector.prototype.normalize = function (){
+  return this.div(this.length());
+}
+iio.Vector.prototype.dot = function ( v,y ){
+  if (typeof v.x !== 'undefined')
+    return this.x*v.x+this.y*v.y;
+  return this.x*v+this.y*y;
+}
+iio.Vector.prototype.equals = function( v,y ){
+  if( v.x ) return this.x === v.x && this.y === v.y;
+  return this.x === x && this.y === y;
+}
+iio.Vector.prototype.dist = function( v,y ){
+  if (typeof v.x !== 'undefined')
+    return Math.sqrt((v.x-this.x)*(v.x-this.x)+(v.y-this.y)*(v.y-this.y));
+  return Math.sqrt((x-this.x)*(x-this.x)+(y-this.y)*(y-this.y));
+}
+iio.Vector.prototype.lerp = function( v,y,p ){
+  if (typeof v.x !== 'undefined')
+    this.add(iio.Vector.sub(v,this).mult(y));
+  else this.add(iio.Vector.sub(v,y,this).mult(p));
+  return this;
 };
 /* Color
 ------------------
@@ -1260,6 +1326,7 @@ iio.Drawable.prototype._super = iio.Interface.prototype;
 // CONSTRUCTOR
 iio.Drawable.prototype.Drawable = function() {
   iio.Drawable.prototype._super.Interface.call(this, arguments[0]);
+  this.pos = this.pos || new iio.Vector(0,0);
   this.objs = [];
   this.collisions = [];
   this.loops = [];
@@ -1302,6 +1369,18 @@ iio.Drawable.prototype.localize = function(v,y){
     v.y -= this.pos.y;
   }
   return this.localizeRotation(v);
+}
+iio.Drawable.prototype.localLeft = function(){
+  return this.left() - this.pos.x;
+}
+iio.Drawable.prototype.localRight = function(){
+  return this.right() - this.pos.x;
+}
+iio.Drawable.prototype.localTop = function(){
+  return this.top() - this.pos.y;
+}
+iio.Drawable.prototype.localBottom = function(){
+  return this.bottom() - this.pos.y;
 }
 
 // OBJECT MANAGMENT FUNCTIONS
@@ -2024,11 +2103,23 @@ iio.Shape.prototype.orient_ctx = function(ctx){
   ctx.save();
 
   //translate & rotate
-  if (this.pos) ctx.translate(this.pos.x, this.pos.y);
+  if (this.pos) {
+    if (this.pixelRounding)
+      ctx.translate(Math.floor(this.pos.x), Math.floor(this.pos.y));
+    else ctx.translate(this.pos.x, this.pos.y);
+  }
   if(this.rotation){
-    if (this.origin) ctx.translate(this.origin.x, this.origin.y);
+    if (this.origin) {
+      if (this.pixelRounding)
+        ctx.translate(Math.floor(this.origin.x), Math.floor(this.origin.y));
+      else ctx.translate(this.origin.x, this.origin.y);
+    }
     ctx.rotate(this.rotation);
-    if (this.origin) ctx.translate(-this.origin.x, -this.origin.y);
+    if (this.origin) {
+      if (this.pixelRounding)
+        ctx.translate(Math.floor(-this.origin.x), Math.floor(-this.origin.y));
+      else ctx.translate(-this.origin.x, -this.origin.y);
+    }
   }
   if(this.flip){
     if(this.flip.indexOf('x') > -1)
@@ -2073,7 +2164,19 @@ iio.Shape.prototype.prep_ctx_dash = function(ctx){
 }
 iio.Shape.prototype.finish_path_shape = function(ctx){
   if (this.color) ctx.fill();
-  if (this.img) ctx.drawImage(this.img, -this.width / 2, -this.height / 2, this.width, this.height);
+  if (this.img) {
+    if (this.noImageRounding)
+      ctx.drawImage(this.img,
+        -this.width/2,
+        -this.height/2,
+        this.width,
+        this.height);
+    else ctx.drawImage(this.img,
+        Math.floor(-this.width/2),
+        Math.floor(-this.height/2),
+        Math.floor(this.width),
+        Math.floor(this.height));
+  }
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
 } 
@@ -2087,6 +2190,10 @@ iio.Shape.prototype.draw_obj = function(ctx){
   if (this.outline) {
     ctx = this.prep_ctx_outline(ctx);
     ctx = this.prep_ctx_lineWidth(ctx);
+  }
+  if ((this.img || this.anims) && !this.noImageSmoothing) {
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
   }
   if(this.draw_shape) this.draw_shape(ctx);
   ctx.restore();
@@ -2103,8 +2210,13 @@ iio.Shape.prototype.draw = function(ctx){
       if (!drawnSelf && this.objs[i].z >= this.z) {
         this.draw_obj(ctx);
         drawnSelf = true;
-      } 
-      if (this.objs[i].draw) 
+      }
+      if (this.objs[i].draw
+       && (!this.clipObjs 
+        || (this.objs[i].right() > this.localLeft()
+         && this.objs[i].left() < this.localRight()
+         && this.objs[i].bottom() > this.localTop()
+         && this.objs[i].top() < this.localBottom()))) 
         this.objs[i].draw(ctx);
     }
     if (!drawnSelf) this.draw_obj(ctx);
@@ -2138,7 +2250,9 @@ iio.Ellipse.prototype.draw_shape = function(ctx) {
       ctx.ellipse(0,0, this.radius, this.vRadius, 0, 0,2*Math.PI, false)
     } else {
       ctx.save();
-      ctx.translate(-this.radius, -this.vRadius);
+      if (this.pixelRounding)
+        ctx.translate(Math.floor(-this.radius), Math.floor(-this.vRadius));
+      else ctx.translate(-this.radius, -this.vRadius);
       ctx.scale(this.radius, this.vRadius);
       ctx.arc(1, 1, 1, 0, 2 * Math.PI, false);
       ctx.restore();
@@ -2149,7 +2263,19 @@ iio.Ellipse.prototype.draw_shape = function(ctx) {
   if (this.color) ctx.fill();
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
-  if (this.img) ctx.drawImage(this.img, -this.radius, -this.radius, this.radius*2, this.radius*2);
+  if (this.img) {
+    if (this.noImageRounding)
+      ctx.drawImage(this.img,
+        -this.radius,
+        -(this.vRadius||this.radius),
+        this.radius*2,
+        (this.vRadius||this.radius)*2);
+    else ctx.drawImage(this.img,
+      Math.floor(-this.radius),
+      Math.floor(-(this.vRadius||this.radius)),
+      Math.floor(this.radius*2),
+      Math.floor((this.vRadius||this.radius)*2));
+  }
 }
 iio.Ellipse.prototype.contains = function(v, y) {
   if (typeof(y) !== 'undefined') v = { x:v, y:y }
@@ -2422,7 +2548,9 @@ iio.Text.prototype._shrink = function(s, r) {
 }
 iio.Text.prototype.draw_shape = function(ctx) {
 
-  ctx.translate(0,this.height/2);
+  if (this.pixelRounding)
+    ctx.translate(0, Math.floor(this.height/2));
+  else ctx.translate(0, this.height/2); 
 
   //ctx.strokeStyle = 'red';
   //ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
@@ -2463,11 +2591,11 @@ iio.Text.prototype.getX = function(i) {
     return x + this.app.ctx.measureText(this.text.substring(0, i)).width;
   }
 }
-iio.Text.prototype.keyUp = function(k) {
+iio.Text.prototype.onKeyUp = function(k) {
   if (k == 'shift')
     this.cursor.shift = false;
 }
-iio.Text.prototype.keyDown = function(key, cI, shift, fn) {
+iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
   if (!iio.is.number(cI)) {
     fn = cI;
     cI = this.cursor.index;
@@ -2573,7 +2701,9 @@ iio.Rectangle.prototype.Rectangle = function() {
 
 //FUNCTIONS
 iio.Rectangle.prototype.draw_shape = function(ctx){
-  ctx.translate(-this.width / 2, -this.height / 2);
+  if (this.pixelRounding)
+    ctx.translate(Math.floor(-this.width/2),Math.floor(-this.height/2));
+  else ctx.translate(-this.width/2,-this.height/2);
   if (this.bezier) {
     iio.draw.poly(ctx, this.trueVs(), this.bezier);
     this.finish_path_shape(ctx);
@@ -2582,13 +2712,24 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
     this.draw_rounded(ctx);
   else{
     if (this.color) ctx.fillRect(0, 0, this.width, this.height)
-    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
-    if (this.anims) ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
-      this.anims[this.animKey].frames[this.animFrame].x,
-      this.anims[this.animKey].frames[this.animFrame].y,
-      this.anims[this.animKey].frames[this.animFrame].w,
-      this.anims[this.animKey].frames[this.animFrame].h,
-      0, 0, this.width, this.height);
+    if (this.img) {
+      if (this.noImageRounding)
+        ctx.drawImage(this.img, 0, 0, this.width, this.height);
+      else ctx.drawImage(this.img, 0, 0, Math.floor(this.width), Math.floor(this.height));
+    }
+    if (this.anims)
+      ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+        this.anims[this.animKey].frames[this.animFrame].x,
+        this.anims[this.animKey].frames[this.animFrame].y,
+        this.anims[this.animKey].frames[this.animFrame].w,
+        this.anims[this.animKey].frames[this.animFrame].h,
+        0, 0,
+        this.noImageRounding
+          ? this.width
+          : Math.floor(this.width),
+        this.noImageRounding
+          ? this.height
+          : Math.floor(this.height));
     if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
   }
 }
@@ -2885,6 +3026,18 @@ iio.App.prototype.stop = function() {
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
   this.clear();
 }
+iio.Quad.prototype.trueVs = function() {
+  this.vs = [
+    new iio.Vector(-this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, this.height/2),
+    new iio.Vector(-this.width/2, this.height/2),
+  ];
+  var vs = [];
+  for(var i=0; i<this.vs.length; i++)
+   vs[i] = this.vs[i].clone();
+  return vs;
+}
 iio.App.prototype.draw = function( noClear ) {
 
   // clear canvas
@@ -2900,7 +3053,10 @@ iio.App.prototype.draw = function( noClear ) {
   // draw child objects
   if (this.objs.length > 0)
     for(var i=0; i<this.objs.length; i++)
-      if (this.objs[i].draw) this.objs[i].draw(this.ctx);
+      if (!this.clipObjs
+       || (this.objs[i].right() > 0 && this.objs[i].left() < this.width
+        && this.objs[i].bottom() > 0 && this.objs[i].top() < this.height))
+        if (this.objs[i].draw) this.objs[i].draw(this.ctx);
 }
 iio.App.prototype.eventVector = function(e) {
   this.update_pos();
