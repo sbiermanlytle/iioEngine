@@ -1,3 +1,6 @@
+/* Ellipse
+------------------
+*/
 
 //DEFINITION
 iio.Ellipse = function(){ this.Ellipse.apply(this, arguments) };

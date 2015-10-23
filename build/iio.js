@@ -341,8 +341,10 @@ iio.createGradient = function(ctx, g) {
   return gradient;
 }
 
-;
-//UTIL LIBRARIES
+
+/* Libraries
+------------------
+*/
 iio.is = {
   fn: function(fn) {
     return typeof fn === 'function'
@@ -987,12 +989,9 @@ iio.draw = {
     ctx.lineTo(x2,y2);
     ctx.stroke();
   }
-};
+}
 /* Interface
 ------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 // DEFINITION
@@ -1025,12 +1024,9 @@ iio.Interface.prototype.toString = function() {
   		str += p + ' = ' + this[p] + '\n';
   }
   return str;
-};
+}
 /* Vector
 ------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 //DEFINITION
@@ -1171,12 +1167,9 @@ iio.Vector.prototype.lerp = function( v,y,p ){
     this.add(iio.Vector.sub(v,this).mult(y));
   else this.add(iio.Vector.sub(v,y,this).mult(p));
   return this;
-};
+}
 /* Color
 ------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 // DEFINITION
@@ -1274,12 +1267,9 @@ iio.Color.aqua = function(){ return new iio.Color(0,255,255,1) }
 iio.Color.fuchsia = function(){ return new iio.Color(255,0,255,1) }
 iio.Color.maroon = function(){ return new iio.Color(128,0,0,1) }
 iio.Color.navy = function(){ return new iio.Color(0,0,128,1) }
-iio.Color.olive = function(){ return new iio.Color(128,128,0,1) };
+iio.Color.olive = function(){ return new iio.Color(128,128,0,1) }
 /* Gradient
 ------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 //DEFINITION
@@ -1310,12 +1300,9 @@ iio.Gradient.prototype.canvasGradient = function(ctx){
   for(var i=0; i<this.stops.length; i++)
     gradient.addColorStop(this.stops[i][0],this.stops[i][1].rgbaString());
   return gradient;
-};
+}
 /* Drawable
 ------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 // DEFINITION
@@ -1738,7 +1725,10 @@ iio.Drawable.prototype.unpause = function(c) {
       });
   }
 }
-;
+
+/* SpriteMap
+------------------
+*/
 
 //DEFINITION
 iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
@@ -1774,12 +1764,9 @@ iio.SpriteMap.prototype.sprite = function() {
   }, this);
   return anim;
 }
-;
-/* Drawable
+
+/* Shape
 ------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 //DEFINITION
@@ -2230,7 +2217,10 @@ iio.Shape.prototype.draw_line = function(ctx, x1, y1, x2, y2){
   ctx.moveTo(x, y);
   ctx.lineTo(x1, y1);
   ctx.stroke();
-};
+}
+/* Ellipse
+------------------
+*/
 
 //DEFINITION
 iio.Ellipse = function(){ this.Ellipse.apply(this, arguments) };
@@ -2309,7 +2299,10 @@ iio.Ellipse.prototype._shrink = function(s, r) {
     if (r) return r(this);
     return true;
   }
-};
+}
+/* Polygon
+------------------
+*/
 
 //DEFINITION
 iio.Polygon = function(){ this.Polygon.apply(this, arguments) };
@@ -2396,7 +2389,10 @@ iio.Polygon.prototype.bottom = function(){
       if(v1.y<v2.y)
         return true;
       return false}).y
-};
+}
+/* Line
+------------------
+*/
 
 //DEFINITION
 iio.Line = function(){ this.Line.apply(this, arguments) };
@@ -2448,7 +2444,10 @@ iio.Line.prototype.draw_shape = function(ctx) {
     ctx.bezierCurveTo(this.bezier[0].x, this.bezier[0].y, this.bezier[1].x, this.bezier[1].y, this.vs[1].x, this.vs[1].y);
   else ctx.lineTo(this.vs[1].x, this.vs[1].y);
   ctx.stroke();
-};
+}
+/* Text
+------------------
+*/
 
 //DEFINITION
 iio.Text = function(){ this.Text.apply(this, arguments) };
@@ -2680,7 +2679,10 @@ iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
   this.cursor.index = cI;
   this.app.draw();
   return cI;
-};
+}
+/* Rectangle
+------------------
+*/
 
 //DEFINITION
 iio.Rectangle = function(){ this.Rectangle.apply(this, arguments) };
@@ -2762,7 +2764,10 @@ iio.Rectangle.prototype.size = function(){ return this.width }
 iio.Rectangle.prototype.setSize = function(w,h){
   this.width = w;
   this.height = h||w;
-};
+}
+/* Grid
+------------------
+*/
 
 //DEFINITION
 iio.Grid = function(){ this.Grid.apply(this, arguments) };
@@ -2879,7 +2884,10 @@ iio.Grid.prototype.draw_shape = function(ctx) {
         this.width / 2, -this.height / 2 + r * this.res.y
       );
   }
-};
+}
+/* Quad
+------------------
+*/
 
 //DEFINITION
 iio.Quad = function(){ this.Quad.apply(this, arguments) };
@@ -2923,7 +2931,10 @@ iio.Quad.prototype.trueVs = function() {
 iio.Quad.prototype.left = function(){ return this.pos.x - this.width/2 }
 iio.Quad.prototype.right = function(){ return this.pos.x + this.width/2 }
 iio.Quad.prototype.top = function(){ return this.pos.y - this.height/2 }
-iio.Quad.prototype.bottom = function(){ return this.pos.y + this.height/2 };
+iio.Quad.prototype.bottom = function(){ return this.pos.y + this.height/2 }
+/* QuadGrid
+------------------
+*/
 
 //DEFINITION
 iio.QuadGrid = function(){ this.QuadGrid.apply(this, arguments) };
@@ -2946,12 +2957,9 @@ iio.QuadGrid.prototype.cellAt = iio.Grid.prototype.cellAt;
 iio.QuadGrid.prototype.setSize = iio.Grid.prototype.setSize;
 iio.QuadGrid.prototype._shrink = iio.Grid.prototype._shrink;
 iio.QuadGrid.prototype.prep_ctx_color = iio.Grid.prototype.prep_ctx_color;
-iio.QuadGrid.prototype.draw_shape = iio.Grid.prototype.draw_shape;;
+iio.QuadGrid.prototype.draw_shape = iio.Grid.prototype.draw_shape;
 /* App
 ------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 // DEFINITION
@@ -3065,12 +3073,9 @@ iio.App.prototype.eventVector = function(e) {
     e.clientY - this.pos.y
   )
 }
-;
+
 /* Sound
 ------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 // Single AudioContext shared across all iio apps
@@ -3115,7 +3120,11 @@ iio.Sound.prototype.play = function(delay, properties) {
   source.start(delay || 0);
 }
 
-;
+
+/* Loader
+------------------
+*/
+
 iio.loadSound = function(url, onLoad, onError) {
   var sound = new iio.Sound(url, onLoad, onError);
   return sound;

@@ -1,3 +1,6 @@
+/* QuadGrid
+------------------
+*/
 
 //DEFINITION
 iio.QuadGrid = function(){ this.QuadGrid.apply(this, arguments) };

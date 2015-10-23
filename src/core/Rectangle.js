@@ -1,3 +1,6 @@
+/* Rectangle
+------------------
+*/
 
 //DEFINITION
 iio.Rectangle = function(){ this.Rectangle.apply(this, arguments) };

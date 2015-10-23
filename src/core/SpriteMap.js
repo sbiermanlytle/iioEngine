@@ -1,3 +1,6 @@
+/* SpriteMap
+------------------
+*/
 
 //DEFINITION
 iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }

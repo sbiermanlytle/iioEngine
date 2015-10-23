@@ -1,8 +1,5 @@
 /* App
 ------------------
-iio.js version 1.4
---------------------------------------------------------------
-iio.js is licensed under the BSD 2-clause Open Source license
 */
 
 // DEFINITION

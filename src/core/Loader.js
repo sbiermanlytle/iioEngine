@@ -1,3 +1,7 @@
+/* Loader
+------------------
+*/
+
 iio.loadSound = function(url, onLoad, onError) {
   var sound = new iio.Sound(url, onLoad, onError);
   return sound;

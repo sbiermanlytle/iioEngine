@@ -1,3 +1,6 @@
+/* Line
+------------------
+*/
 
 //DEFINITION
 iio.Line = function(){ this.Line.apply(this, arguments) };

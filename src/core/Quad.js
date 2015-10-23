@@ -1,3 +1,6 @@
+/* Quad
+------------------
+*/
 
 //DEFINITION
 iio.Quad = function(){ this.Quad.apply(this, arguments) };

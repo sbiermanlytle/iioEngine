@@ -1,4 +1,6 @@
-//UTIL LIBRARIES
+/* Libraries
+------------------
+*/
 iio.is = {
   fn: function(fn) {
     return typeof fn === 'function'

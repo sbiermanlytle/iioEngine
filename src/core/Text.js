@@ -1,3 +1,6 @@
+/* Text
+------------------
+*/
 
 //DEFINITION
 iio.Text = function(){ this.Text.apply(this, arguments) };

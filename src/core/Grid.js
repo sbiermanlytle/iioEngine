@@ -1,3 +1,6 @@
+/* Grid
+------------------
+*/
 
 //DEFINITION
 iio.Grid = function(){ this.Grid.apply(this, arguments) };

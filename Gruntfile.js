@@ -29,7 +29,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     concat: {
       options: {
-        separator: ';\n'
+        separator: '\n'
       },
       iio: {
         src: coreSrc,
@@ -44,6 +44,9 @@ module.exports = function(grunt) {
     },
     uglify: {
       iio: {
+        options: {
+          preserveComments: require('uglify-save-license')
+        },
         files: {
           'build/iio.min.js': ['<%= concat.iio.dest %>']
         }

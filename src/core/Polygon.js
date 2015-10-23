@@ -1,3 +1,6 @@
+/* Polygon
+------------------
+*/
 
 //DEFINITION
 iio.Polygon = function(){ this.Polygon.apply(this, arguments) };
