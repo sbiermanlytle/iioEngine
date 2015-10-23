@@ -21,11 +21,11 @@ Twitter: @iioinc
 ## loading iio.js
 To use the library, load an iio.js build file from a local folder or the iio.js URL:
 
-	<script type="text/javascript" src="http://iio.js.org/iio.min.js"></script>
+    <script type="text/javascript" src="http://iio.js.org/iio.min.js"></script>
 
 iio_debug.js has a debugging version with extra features:
 
-	<script type="text/javascript" src="http://iio.js.org/iio_debug.js"></script>
+    <script type="text/javascript" src="http://iio.js.org/iio_debug.js"></script>
 
 ## building Source Files (optional)
 If you would like to edit iio.js source code files, use Grunt to re-build. Grunt depends on nodejs and npm.

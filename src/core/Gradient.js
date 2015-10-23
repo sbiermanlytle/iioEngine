@@ -18,19 +18,19 @@ iio.Gradient.prototype.Gradient = function() {
 // MEMBER FUNCTIONS
 //------------------------------------------------------------
 iio.Gradient.prototype.convert_props = function(){
-	iio.convert.property.vector(this, "start");
+  iio.convert.property.vector(this, "start");
   iio.convert.property.vector(this, "end");
   for(var i=0; i<this.stops.length; i++)
-  	if(iio.is.string(this.stops[i][1]))
-  		this.stops[i][1] = iio.convert.color(this.stops[i][1]);
+    if(iio.is.string(this.stops[i][1]))
+      this.stops[i][1] = iio.convert.color(this.stops[i][1]);
 }
 iio.Gradient.prototype.canvasGradient = function(ctx){
-	var gradient;
-	if(this.startRadius)
-		gradient = ctx.createRadialGradient(this.start.x,this.start.y,this.startRadius,
-											 this.end.x,this.end.y,this.endRadius);
-	else gradient = ctx.createLinearGradient(this.start.x,this.start.y,this.end.x,this.end.y);
-	for(var i=0; i<this.stops.length; i++)
-		gradient.addColorStop(this.stops[i][0],this.stops[i][1].rgbaString());
-	return gradient;
+  var gradient;
+  if(this.startRadius)
+    gradient = ctx.createRadialGradient(this.start.x,this.start.y,this.startRadius,
+                                        this.end.x,this.end.y,this.endRadius);
+  else gradient = ctx.createLinearGradient(this.start.x,this.start.y,this.end.x,this.end.y);
+  for(var i=0; i<this.stops.length; i++)
+    gradient.addColorStop(this.stops[i][0],this.stops[i][1].rgbaString());
+  return gradient;
 }

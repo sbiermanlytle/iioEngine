@@ -1186,77 +1186,77 @@ iio.Color.prototype._super = iio.Interface.prototype;
 
 // CONSTRUCTOR
 iio.Color.prototype.Color = function(r,g,b,a) {
-	// Input of hex color: new iio.Color("#FFF", 0.5)
-	if (typeof(r)==='string' && b === undefined && a === undefined) {
-		var hex = iio.Color.hexToRgb(r);
-		a = g;
-		r = hex.r;
-		g = hex.g;
-		b = hex.b;
-	}
+  // Input of hex color: new iio.Color("#FFF", 0.5)
+  if (typeof(r)==='string' && b === undefined && a === undefined) {
+    var hex = iio.Color.hexToRgb(r);
+    a = g;
+    r = hex.r;
+    g = hex.g;
+    b = hex.b;
+  }
 
-	// Input of RGBA color: new iio.Color(255, 255, 255, 1)
-	this.r = r || 0;
-	this.g = g || 0;
-	this.b = b || 0;
-	this.a = a || 1;
+  // Input of RGBA color: new iio.Color(255, 255, 255, 1)
+  this.r = r || 0;
+  this.g = g || 0;
+  this.b = b || 0;
+  this.a = a || 1;
 
-	return this;
+  return this;
 }
 
 // STATIC FUNCTIONS
 //------------------------------------------------------------
 iio.Color.random = function(){
-	return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
+  return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
 }
 iio.Color.invert = function(c){ return new iio.Color(255-c.r,255-c.g,255-c.b,c.a) }
 iio.Color.hexToRgb = function(hex) {
-	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-	hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-		return r + r + g + g + b + b;
-	});
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+    return r + r + g + g + b + b;
+  });
 
-	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	return result ? {
-		r: parseInt(result[1], 16),
-		g: parseInt(result[2], 16),
-		b: parseInt(result[3], 16)
-	} : null;
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
 }
 iio.Color.rgbToHex = function(r, g, b) {
-	// TODO https://drafts.csswg.org/css-color/#hex-notation CSS4 will support 8 digit hex string (#RRGGBBAA)
-	function componentToHex(c) {
-		var hex = c.toString(16);
-		return hex.length == 1 ? "0" + hex : hex;
-	}
+  // TODO https://drafts.csswg.org/css-color/#hex-notation CSS4 will support 8 digit hex string (#RRGGBBAA)
+  function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
 
-	return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 // MEMBER FUNCTIONS
 //------------------------------------------------------------
 iio.Color.prototype.clone = function() {
-	return new iio.Color( this.r, this.g, this.b, this.a );
+  return new iio.Color( this.r, this.g, this.b, this.a );
 }
 iio.Color.prototype.rgbaString = function(){
-	return 'rgba('+this.r+','+this.g+','+this.b+','+this.a+')';
+  return 'rgba('+this.r+','+this.g+','+this.b+','+this.a+')';
 }
 iio.Color.prototype.hexString = function() {
-	return iio.Color.rgbToHex(this.r, this.g, this.b);
+  return iio.Color.rgbToHex(this.r, this.g, this.b);
 }
 iio.Color.prototype.invert = function(){
-	this.r = 255-this.r;
-	this.g = 255-this.g;
-	this.b = 255-this.b;
-	return this;
+  this.r = 255-this.r;
+  this.g = 255-this.g;
+  this.b = 255-this.b;
+  return this;
 }
 iio.Color.prototype.randomize = function(alpha){
-	this.r = iio.randomInt(0,255);
-	this.g = iio.randomInt(0,255);
-	this.b = iio.randomInt(0,255);
-	if(alpha) this.a = iio.random();
-	return this;
+  this.r = iio.randomInt(0,255);
+  this.g = iio.randomInt(0,255);
+  this.b = iio.randomInt(0,255);
+  if(alpha) this.a = iio.random();
+  return this;
 }
 
 // COLOR CONSTANTS
@@ -1295,21 +1295,21 @@ iio.Gradient.prototype.Gradient = function() {
 // MEMBER FUNCTIONS
 //------------------------------------------------------------
 iio.Gradient.prototype.convert_props = function(){
-	iio.convert.property.vector(this, "start");
+  iio.convert.property.vector(this, "start");
   iio.convert.property.vector(this, "end");
   for(var i=0; i<this.stops.length; i++)
-  	if(iio.is.string(this.stops[i][1]))
-  		this.stops[i][1] = iio.convert.color(this.stops[i][1]);
+    if(iio.is.string(this.stops[i][1]))
+      this.stops[i][1] = iio.convert.color(this.stops[i][1]);
 }
 iio.Gradient.prototype.canvasGradient = function(ctx){
-	var gradient;
-	if(this.startRadius)
-		gradient = ctx.createRadialGradient(this.start.x,this.start.y,this.startRadius,
-											 this.end.x,this.end.y,this.endRadius);
-	else gradient = ctx.createLinearGradient(this.start.x,this.start.y,this.end.x,this.end.y);
-	for(var i=0; i<this.stops.length; i++)
-		gradient.addColorStop(this.stops[i][0],this.stops[i][1].rgbaString());
-	return gradient;
+  var gradient;
+  if(this.startRadius)
+    gradient = ctx.createRadialGradient(this.start.x,this.start.y,this.startRadius,
+                                        this.end.x,this.end.y,this.endRadius);
+  else gradient = ctx.createLinearGradient(this.start.x,this.start.y,this.end.x,this.end.y);
+  for(var i=0; i<this.stops.length; i++)
+    gradient.addColorStop(this.stops[i][0],this.stops[i][1].rgbaString());
+  return gradient;
 };
 /* Drawable
 ------------------
@@ -3306,76 +3306,76 @@ iio.Log.SUCCESS = 1;
 iio.Log.FAILURE = 2;
 iio.Log.WARNING = 3;
 iio.Log.prototype.Log = function() {
-	if(iio.is.string(arguments[0])){
-		this.msg = arguments[0];
-		this.type = arguments[1] || 0;
-	} else for (var p in arguments[0]) this[p] = arguments[0][p];
+  if(iio.is.string(arguments[0])){
+    this.msg = arguments[0];
+    this.type = arguments[1] || 0;
+  } else for (var p in arguments[0]) this[p] = arguments[0][p];
 }
 
 iio.log = function(){
-	iio.add_log(new iio.Log(arguments[0],arguments[1]));
+  iio.add_log(new iio.Log(arguments[0],arguments[1]));
 }
 
 iio.show_logs = function(){
-	iio.logDiv = document.createElement('div');
-	iio.logDiv.id = 'iio_log';
-	iio.logDiv.style.position = 'fixed';
-	iio.logDiv.style.bottom = '0';
-	iio.logDiv.style.right = '0';
-	document.body.appendChild(iio.logDiv);
-	for(var i=0; i<iio.logs.length; i++)
-		iio.add_log(iio.logs[i]);
+  iio.logDiv = document.createElement('div');
+  iio.logDiv.id = 'iio_log';
+  iio.logDiv.style.position = 'fixed';
+  iio.logDiv.style.bottom = '0';
+  iio.logDiv.style.right = '0';
+  document.body.appendChild(iio.logDiv);
+  for(var i=0; i<iio.logs.length; i++)
+    iio.add_log(iio.logs[i]);
 }
 
 iio.add_log = function(log){
-	var p = document.createElement('p');
-	p.innerHTML = log.msg;
-	if(log.type == iio.Log.SUCCESS) p.style.color = 'green';
-	if(log.type == iio.Log.FAILURE) p.style.color = 'red';
-	if(log.type == iio.Log.WARNING) p.style.color = 'yellow';
-	p.style.fontFamily = 'monospace';
-	iio.logDiv.appendChild(p);
-	iio.logs.push(log);
-	return log;
+  var p = document.createElement('p');
+  p.innerHTML = log.msg;
+  if(log.type == iio.Log.SUCCESS) p.style.color = 'green';
+  if(log.type == iio.Log.FAILURE) p.style.color = 'red';
+  if(log.type == iio.Log.WARNING) p.style.color = 'yellow';
+  p.style.fontFamily = 'monospace';
+  iio.logDiv.appendChild(p);
+  iio.logs.push(log);
+  return log;
 }
 
 //STACK TRACING
 iio._start = iio.start;
 iio.start = function(app, id, d){
-	iio.log('START: '+app.name);
-	return iio._start(app, id, d)
+  iio.log('START: '+app.name);
+  return iio._start(app, id, d)
 }
 
 //constructors
 iio.App.prototype._App = iio.App.prototype.App;
 iio.App.prototype.App = function(view, app, s) {
-	iio.log('enter CONSTRUCTOR: App');
-	this._App(view, app, s);
-	iio.log('- App.pos: '+this.pos.x+','+this.pos.y);
-	iio.log('- App.width: '+this.width);
-	iio.log('- App.height: '+this.height);
-	iio.log('end CONSTRUCTOR: App');
+  iio.log('enter CONSTRUCTOR: App');
+  this._App(view, app, s);
+  iio.log('- App.pos: '+this.pos.x+','+this.pos.y);
+  iio.log('- App.width: '+this.width);
+  iio.log('- App.height: '+this.height);
+  iio.log('end CONSTRUCTOR: App');
 }
 iio.Obj.prototype._Obj = iio.Obj.prototype.Obj;
 iio.Obj.prototype.Obj = function() {
-	iio.log('enter CONSTRUCTOR: Obj');
-	this._Obj(arguments[0]);
-	if(this.pos) iio.log('- Obj.pos: '+this.pos.x+','+this.pos.y);
-	if(this.color) iio.log('- Obj.color: '+this.color.toString());
-	iio.log('end CONSTRUCTOR: Obj');
+  iio.log('enter CONSTRUCTOR: Obj');
+  this._Obj(arguments[0]);
+  if(this.pos) iio.log('- Obj.pos: '+this.pos.x+','+this.pos.y);
+  if(this.color) iio.log('- Obj.color: '+this.color.toString());
+  iio.log('end CONSTRUCTOR: Obj');
 }
 iio.Drawable.prototype._Drawable = iio.Drawable.prototype.Drawable;
 iio.Drawable.prototype.Drawable = function() {
-	iio.log('enter CONSTRUCTOR: Drawable');
-	this._Drawable(arguments[0]);
-	iio.log('end CONSTRUCTOR: Drawable');
+  iio.log('enter CONSTRUCTOR: Drawable');
+  this._Drawable(arguments[0]);
+  iio.log('end CONSTRUCTOR: Drawable');
 }
 iio.Line.prototype._Line = iio.Line.prototype.Line;
 iio.Line.prototype.Line = function() {
-	iio.log('enter CONSTRUCTOR: Line');
-	this._Line(arguments[0]);
-	if(this.vs) iio.log('- Line.vs: ['+this.vs[0].x+','+this.vs[0].y+'] ['+this.vs[1].x+','+this.vs[1].y+']');
-	iio.log('end CONSTRUCTOR: Line');
+  iio.log('enter CONSTRUCTOR: Line');
+  this._Line(arguments[0]);
+  if(this.vs) iio.log('- Line.vs: ['+this.vs[0].x+','+this.vs[0].y+'] ['+this.vs[1].x+','+this.vs[1].y+']');
+  iio.log('end CONSTRUCTOR: Line');
 };
 /*
    iio engine
