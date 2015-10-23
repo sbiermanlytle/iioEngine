@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; unit test</title>
   <meta name="description" content="iio.js unit test">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,31 +8,31 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestAlpha = function( app, settings ){
 
-	// add a new text to the app
-	app.add(new iio.Text({
-		// set position to app center
-		pos: app.center,
-		// set color to green
-		color: 'green',
-		// set text to iio
-		text: 'iio',
-		// define fade animation
-		fade: {
-			// set fade speed
-			// to .03 alpha / update
-			speed: .03,
-			// set lower bound for alpha
-			lowerBound: .2,
-			// callback when alpha = 0 or 1
-			callback: function(o){
-				// reverse fade direction
-				o.fade.speed *= -1;
-			}
-		}
-	}));
+  // add a new text to the app
+  app.add(new iio.Text({
+    // set position to app center
+    pos: app.center,
+    // set color to green
+    color: 'green',
+    // set text to iio
+    text: 'iio',
+    // define fade animation
+    fade: {
+      // set fade speed
+      // to .03 alpha / update
+      speed: .03,
+      // set lower bound for alpha
+      lowerBound: .2,
+      // callback when alpha = 0 or 1
+      callback: function(o){
+        // reverse fade direction
+        o.fade.speed *= -1;
+      }
+    }
+  }));
 }
 
 // start the app on an existing canvas

@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; Test &middot; Line</title>
   <meta name="description" content="iio.Line unit tests">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,60 +8,60 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestLineCap = function( app, settings ){
 
-	// define shared line properties
-	var line_props = {
-		// set width to 8px
-		width: 8,
-		// set color to green
-		color: 'green',
-		// set vertices
-		vs:[
-			// start vertex position
-			[ 0,-30 ],
-			// end vertex position
-			[ 0, 30 ]
-		]
-	}
+  // define shared line properties
+  var line_props = {
+    // set width to 8px
+    width: 8,
+    // set color to green
+    color: 'green',
+    // set vertices
+    vs:[
+      // start vertex position
+      [ 0,-30 ],
+      // end vertex position
+      [ 0, 30 ]
+    ]
+  }
 
-	// add a new line to the app
-	// with the shared properties
-	app.add(new iio.Line( line_props, {
-		// set position 
-		pos: [ 
-			// pos.x
-			app.center.x - line_props.width*2, 
-			// pos.y
-			app.center.y 
-		],
-		// set line cap
-		lineCap: 'butt',
-	}));
+  // add a new line to the app
+  // with the shared properties
+  app.add(new iio.Line( line_props, {
+    // set position 
+    pos: [ 
+      // pos.x
+      app.center.x - line_props.width*2, 
+      // pos.y
+      app.center.y 
+    ],
+    // set line cap
+    lineCap: 'butt',
+  }));
 
-	// add a new line to the app
-	// with the shared properties
-	app.add(new iio.Line( line_props, {
-		// set position to app center
-		pos: app.center.clone(),
-		// set line cap
-		lineCap: 'round'
-	}));
+  // add a new line to the app
+  // with the shared properties
+  app.add(new iio.Line( line_props, {
+    // set position to app center
+    pos: app.center.clone(),
+    // set line cap
+    lineCap: 'round'
+  }));
 
-	// add a new line to the app
-	// with the shared properties
-	app.add(new iio.Line( line_props, {
-		// set position 
-		pos: [ 
-			// pos.x
-			app.center.x + line_props.width*2,
-			// pos.y
-			app.center.y 
-		],
-		// set line cap
-		lineCap: 'square'
-	}));
+  // add a new line to the app
+  // with the shared properties
+  app.add(new iio.Line( line_props, {
+    // set position 
+    pos: [ 
+      // pos.x
+      app.center.x + line_props.width*2,
+      // pos.y
+      app.center.y 
+    ],
+    // set line cap
+    lineCap: 'square'
+  }));
 }
 
 // start the app on an existing canvas

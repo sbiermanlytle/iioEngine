@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; unit test</title>
   <meta name="description" content="iio.js unit test">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,21 +8,21 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestRotation = function( app, settings ){
 
-	// add a new quad to the app
-	app.add(new iio.Quad({
-		// set position to app center
-		pos: app.center.clone(),
-		// set color to green
-		color: 'blue',
-		// set dimensions to 30x60px
-		width: 30,
-		height: 60,
-		// set rotation 90 degrees
-		rotation: Math.PI/2
-	}));
+  // add a new quad to the app
+  app.add(new iio.Quad({
+    // set position to app center
+    pos: app.center.clone(),
+    // set color to green
+    color: 'blue',
+    // set dimensions to 30x60px
+    width: 30,
+    height: 60,
+    // set rotation 90 degrees
+    rotation: Math.PI/2
+  }));
 }
 
 // start the app on an existing canvas

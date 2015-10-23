@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; unit test</title>
   <meta name="description" content="iio.js unit test">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,28 +8,28 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestDashRounded = function( app, settings ){
 
-	// define shared Quad properties
-	app.add(new iio.Quad({
-		// set position to app center
-		pos: app.center.clone(),
-		// set dimensions to 30x60px
-		width: 30,
-		height: 60,
-		// set outline color to green
-		outline: 'green',
-		// set line width to 10px
-		lineWidth: 5,
-		// set dash with .1px length, 10px spacing
-		dash: [ .1, 10 ],
-		// a round line cap and small dash length
-		// creates a dotted effect
-		lineCap: 'round',
-		// set a dash offset of 10px
-		dashOffset: 10
-	}));
+  // define shared Quad properties
+  app.add(new iio.Quad({
+    // set position to app center
+    pos: app.center.clone(),
+    // set dimensions to 30x60px
+    width: 30,
+    height: 60,
+    // set outline color to green
+    outline: 'green',
+    // set line width to 10px
+    lineWidth: 5,
+    // set dash with .1px length, 10px spacing
+    dash: [ .1, 10 ],
+    // a round line cap and small dash length
+    // creates a dotted effect
+    lineCap: 'round',
+    // set a dash offset of 10px
+    dashOffset: 10
+  }));
 }
 
 // start the app on an existing canvas

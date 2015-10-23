@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; Test &middot; Line</title>
   <meta name="description" content="iio.Line unit tests">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,44 +8,44 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestrVelBounds = function( app, settings ){
 
-	// reverse rotational velocity
-	function reverse(o){ o.rVel *= -1 }
+  // reverse rotational velocity
+  function reverse(o){ o.rVel *= -1 }
 
-	// add a new line to the app
-	app.add(new iio.Line({
-		// set position to app center
-		pos: app.center.clone(),
-		// set color to green
-		color: 'green',
-		// set width to 10px
-		width: 10,
-		// set rotational velocity
-		// to .02 radians / update
-		rVel: .02,
-		// set vertices relative to pos
-		vs:[
-			// start vertex position
-			[ -30,-30 ],
-			// end vertex position
-			[  30, 30 ]
-		],
-		// set bounds for movement
-		bounds: {
-			// define rotation upper limit and callback
-			rightRotation: {
-				bound: Math.PI/2,
-				callback: reverse
-			},
-			// define rotation lower limit and callback
-			leftRotation: {
-				bound: 0,
-				callback: reverse
-			}
-		}
-	}));
+  // add a new line to the app
+  app.add(new iio.Line({
+    // set position to app center
+    pos: app.center.clone(),
+    // set color to green
+    color: 'green',
+    // set width to 10px
+    width: 10,
+    // set rotational velocity
+    // to .02 radians / update
+    rVel: .02,
+    // set vertices relative to pos
+    vs:[
+      // start vertex position
+      [ -30,-30 ],
+      // end vertex position
+      [  30, 30 ]
+    ],
+    // set bounds for movement
+    bounds: {
+      // define rotation upper limit and callback
+      rightRotation: {
+        bound: Math.PI/2,
+        callback: reverse
+      },
+      // define rotation lower limit and callback
+      leftRotation: {
+        bound: 0,
+        callback: reverse
+      }
+    }
+  }));
 }
 
 // start the app on an existing canvas

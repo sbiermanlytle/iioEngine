@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; unit test</title>
   <meta name="description" content="iio.js unit test">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,33 +8,33 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestFlip = function( app, settings ){
-	
-	// set the app update rate to 1 fps
-	app.loop(1);
+  
+  // set the app update rate to 1 fps
+  app.loop(1);
 
-	// add a new circle to the app
-	app.add(new iio.Circle({
-		// set position to app center
-		pos: app.center.clone(),
-		// set radius
-		radius: app.width/2.5,
-		// clip the image to a circle shape
-		clip: true,
-		// attach an image from a URL
-		img: 'http://iioengine.com/img/staryNight.jpg',
-		// flip the circle horizontally
-		flip: 'x',
-		// flip the image on each update
-		onUpdate: function(){
-			if(this.flip == 'x')
-				// no flip
-				this.flip = false;
-				// horizontal flip
-			else this.flip = 'x';
-		}
-	}));
+  // add a new circle to the app
+  app.add(new iio.Circle({
+    // set position to app center
+    pos: app.center.clone(),
+    // set radius
+    radius: app.width/2.5,
+    // clip the image to a circle shape
+    clip: true,
+    // attach an image from a URL
+    img: 'http://iioengine.com/img/staryNight.jpg',
+    // flip the circle horizontally
+    flip: 'x',
+    // flip the image on each update
+    onUpdate: function(){
+      if(this.flip == 'x')
+        // no flip
+        this.flip = false;
+        // horizontal flip
+      else this.flip = 'x';
+    }
+  }));
 }
 
 // start the app on an existing canvas

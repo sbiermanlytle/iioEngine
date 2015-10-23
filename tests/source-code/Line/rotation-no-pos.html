@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; Test &middot; Line</title>
   <meta name="description" content="iio.Line unit tests">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,26 +8,26 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestRotationNoPos = function( app, settings ){
 
-	// add a new line to the app
-	app.add(new iio.Line({
-		// set position to app center
-		origin: app.center.clone(),
-		// set color to blue
-		color: 'blue',
-		// set width to 10px
-		width: 10,
-		rotation: Math.PI/2,
-		// set vertices relative to app 0,0
-		vs:[
-			// start vertex position
-			[ 20, 20 ],
-			// end vertex position
-			[ app.width-20, app.height-20 ]
-		]
-	}));
+  // add a new line to the app
+  app.add(new iio.Line({
+    // set position to app center
+    origin: app.center.clone(),
+    // set color to blue
+    color: 'blue',
+    // set width to 10px
+    width: 10,
+    rotation: Math.PI/2,
+    // set vertices relative to app 0,0
+    vs:[
+      // start vertex position
+      [ 20, 20 ],
+      // end vertex position
+      [ app.width-20, app.height-20 ]
+    ]
+  }));
 }
 
 // start the app on an existing canvas

@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; unit test</title>
   <meta name="description" content="iio.js unit test">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,32 +8,32 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestChild = function( app, settings ){
 
-	// add a new text to the app
-	app.add(new iio.Text({
-		// set position relative to app center
-		pos: app.center.clone().sub(0,18),
-		// set color to green
-		color: 'green',
-		// set origin relative to pos
-		origin: [ 8, -8 ],
-		// set text to iio
-		text: 'iio',
-		// set rotational velocity
-		// to .01 radians / update
-		rVel: .01
+  // add a new text to the app
+  app.add(new iio.Text({
+    // set position relative to app center
+    pos: app.center.clone().sub(0,18),
+    // set color to green
+    color: 'green',
+    // set origin relative to pos
+    origin: [ 8, -8 ],
+    // set text to iio
+    text: 'iio',
+    // set rotational velocity
+    // to .01 radians / update
+    rVel: .01
 
-		// add a new text to the text
-	})).add(new iio.Text({
-		// set child pos relative to parent pos
-		pos: [0, 36],
-		// set color to blue
-		color: 'blue',
-		// set text to iio
-		text: 'iio',
-	}));
+    // add a new text to the text
+  })).add(new iio.Text({
+    // set child pos relative to parent pos
+    pos: [0, 36],
+    // set color to blue
+    color: 'blue',
+    // set text to iio
+    text: 'iio',
+  }));
 }
 
 // start the app on an existing canvas

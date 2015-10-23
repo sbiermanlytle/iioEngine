@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; unit test</title>
   <meta name="description" content="iio.js unit test">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,23 +8,23 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestOrigin = function( app, settings ){
 
-	// add a new text to the app
-	app.add(new iio.Text({
-		// set position relative to app center
-		pos: app.center.clone().sub(18,18),
-		// set origin of rotation
-		origin: [ 18, 18 ],
-		// set color to green
-		color: 'green',
-		// set text to iio
-		text: 'iio',
-		// set rotational velocity
-		// to .02 radians / update
-		rVel: .02
-	}));
+  // add a new text to the app
+  app.add(new iio.Text({
+    // set position relative to app center
+    pos: app.center.clone().sub(18,18),
+    // set origin of rotation
+    origin: [ 18, 18 ],
+    // set color to green
+    color: 'green',
+    // set text to iio
+    text: 'iio',
+    // set rotational velocity
+    // to .02 radians / update
+    rVel: .02
+  }));
 }
 
 // start the app on an existing canvas

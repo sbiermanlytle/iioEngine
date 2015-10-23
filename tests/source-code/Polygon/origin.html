@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>iio.js &middot; unit test</title>
   <meta name="description" content="iio.js unit test">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,25 +8,25 @@
   <link rel="stylesheet" type="text/css" href="../../../css/style.css">
 </head>
 <body onload="prettyPrint()">
-	<pre class="prettyprint linenums:1">// define a new iio app
+  <pre class="prettyprint linenums:1">// define a new iio app
 TestOrigin = function( app, settings ){
 
-	// add a new triangle to the app
-	app.add(new iio.Polygon({
-		// set origin of rotation
-		origin: app.center,
-		// set color to green
-		color: 'green',
-		// set rotational velocity
-		// to .02 radians / update
-		rVel: .02,
-		// set vertices relative to app 0,0
-		vs:[
-			[ 30, 15 ],
-			[ 15, 45 ],
-			[ 45, 45 ]
-		]
-	}));
+  // add a new triangle to the app
+  app.add(new iio.Polygon({
+    // set origin of rotation
+    origin: app.center,
+    // set color to green
+    color: 'green',
+    // set rotational velocity
+    // to .02 radians / update
+    rVel: .02,
+    // set vertices relative to app 0,0
+    vs:[
+      [ 30, 15 ],
+      [ 15, 45 ],
+      [ 45, 45 ]
+    ]
+  }));
 }
 
 // start the app on an existing canvas
