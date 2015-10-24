@@ -18,38 +18,54 @@ Platformer = function( app, settings ){
       var common = {
         width: w,
         height: h,
-        numFrames: 3,
       }
       mario = app.add(new iio.Quad({
+        pixelRounding: true,
         pos: app.center,
+        walking: false,
         anims:[
-          map.sprite(common,{ name:'normal', origin: [0,0] }),
-          map.sprite(common,{ name:'red', origin: [0,48] }),
-          map.sprite(common,{ name:'green', origin: [0,192] }),
+          map.sprite(common,{ name:'standing', origin: [w*6,0] }),
+          map.sprite(common,{ name:'jumping',  origin: [w*4,0] }),
+          map.sprite(common,{ name:'ducking',  origin: [w*5,0] }),
+          map.sprite(common,{ name:'walking',  origin: [0,0],   numFrames: 3 }),
+          map.sprite(common,{ name:'red',      origin: [0,h*2], numFrames: 3 }),
+          map.sprite(common,{ name:'green',    origin: [0,h*6], numFrames: 3 }),
         ]
       }),true);
 
-      animLoop = mario.playAnim({ fps:6, name:'normal' })
+      mario.playAnim({ fps:6, name:'standing' })
 
     }
   });
   
-  var animLoop;
-  this.keyDown = function( event, key ){
-    if( key == 'up arrow' || key == 'w' )
-      ;//direction = UP;
+  this.onKeyDown = function( event, key ){
+    if (!mario.walking) {
+      if( key == 'up arrow' || key == 'w' ) {
+        mario.walking = false;
+        mario.setSprite('jumping');
+      }
 
-    else if( key == 'right arrow' || key == 'd' ) 
-      mario.flip = false;
+      else if( key == 'right arrow' || key == 'd' ) {
+        mario.flip = false;
+        mario.walking = true;
+        mario.playAnim({ fps:6, name: 'walking' });
+      }
 
-    else if( key == 'down arrow' || key == 's' ) 
-      ;//direction = DOWN;
+      else if( key == 'down arrow' || key == 's' ) {
+        mario.walking = false;
+        mario.setSprite('ducking');
+      }
 
-    else if( key == 'left arrow' || key == 'a' ) 
-      mario.flip = 'x';
+      else if( key == 'left arrow' || key == 'a' ) {
+        mario.flip = 'x';
+        mario.walking = true;
+        mario.playAnim({ fps:6, name: 'walking' });
+      }
+    }
   }
 
-  this.keyUp = function( event, key ){
-    iio.cancelLoop(animLoop);
+  this.onKeyUp = function( event, key ){
+    mario.walking = false;
+    mario.setSprite('standing');
   }
 }

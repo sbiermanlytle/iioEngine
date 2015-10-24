@@ -18,10 +18,11 @@ iio.SpriteMap.prototype.sprite = function() {
   var args = iio.merge_args(arguments);
   var anim = {};
   anim.name = args.name;
+  anim.numFrames = args.numFrames || 1;
   args.origin = iio.convert.vector(args.origin);
   if (!args.frames) {
     anim.frames = [];
-    for (var i = 0; i < args.numFrames; i++)
+    for (var i = 0; i < anim.numFrames; i++)
       anim.frames[i] = {
         x: args.origin.x + args.width * i,
         y: args.origin.y,

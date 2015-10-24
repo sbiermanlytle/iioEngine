@@ -1746,10 +1746,11 @@ iio.SpriteMap.prototype.sprite = function() {
   var args = iio.merge_args(arguments);
   var anim = {};
   anim.name = args.name;
+  anim.numFrames = args.numFrames || 1;
   args.origin = iio.convert.vector(args.origin);
   if (!args.frames) {
     anim.frames = [];
-    for (var i = 0; i < args.numFrames; i++)
+    for (var i = 0; i < anim.numFrames; i++)
       anim.frames[i] = {
         x: args.origin.x + args.width * i,
         y: args.origin.y,
@@ -2021,18 +2022,7 @@ iio.Shape.prototype.update_properties_deprecated = function(){
 //ANIMATION FUNCTIONS
 iio.Shape.prototype.playAnim = function() {
   var args = iio.merge_args(arguments);
-  if (args.name) {
-    var o = this;
-    this.anims.some(function(anim, i) {
-      if (anim.name == args.name) {
-        o.animKey = i;
-        o.width = anim.frames[o.animFrame].w;
-        o.height = anim.frames[o.animFrame].h;
-        return true;
-      }
-      return false;
-    });
-  }
+  if (args.name) this.setSprite(args.name);
   this.animFrame = args.startFrame || 0;
   this.animRepeat = args.repeat;
   this.onAnimStop = args.onAnimStop;
@@ -2041,6 +2031,35 @@ iio.Shape.prototype.playAnim = function() {
   else if (args.fps < 0) loop = this.loop(args.fps * -1, this.prevFrame);
   else this.app.draw();
   return loop;
+}
+iio.Shape.prototype.stopAnim = function() {
+  iio.cancelLoops(this);
+  return this;
+}
+iio.Shape.prototype.setSprite = function(s, noDraw) {
+  iio.cancelLoops(this);
+  if (iio.is.string(s)) {
+    var o = this;
+    this.anims.some(function(anim, i) {
+      if (anim.name == s) {
+        o.animFrame = 0;
+        o.animKey = i;
+        o.width = anim.frames[o.animFrame].w;
+        o.height = anim.frames[o.animFrame].h;
+        return true;
+      }
+      return false;
+    });
+  } else {
+    this.anims.splice(0,0,s);
+    this.animKey = 0;
+    this.animFrame = 0;
+    this.width = s.frames[0].w;
+    this.height = s.frames[0].h;
+  }
+  if(noDraw);
+  else o.app.draw();
+  return this;
 }
 iio.Shape.prototype.nextFrame = function(o) {
   o.animFrame++;
