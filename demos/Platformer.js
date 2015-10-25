@@ -20,7 +20,7 @@ Platformer = function( app, settings ){
 
   // physical constants
   var gravity = 0.1;
-  var groundPos = app.center.y + 62;
+  var groundPos = app.center.y+62;
 
   // add level background image
   var background = app.add(new iio.Quad({
