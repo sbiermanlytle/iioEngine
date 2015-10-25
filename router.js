@@ -22,10 +22,10 @@ function goTo( hash ) {
       window.location.href = hash;
   }
   current_hash = window.location.hash;
-  refresh();
 }
 
 refresh = function(){
+  console.log('refresh');
   current_hash = window.location.hash;
   page.empty();
   $('#main').append(bg_glow);
