@@ -11,22 +11,38 @@ Platformer = function( app, settings ){
   // set background color to black
   app.set({ color:'black' });
 
+  // Sound does not work offline
+  var soundOn = true;
+
+  // disable sound in preview
+  if (settings && settings.preview)
+    soundOn = false;
+
   // physical constants
   var gravity = 0.1;
-  var groundPos = app.center.y + 62;
+  var groundPos = app.center.y;
 
   // add level background image
   var background = app.add(new iio.Quad({
-    pos: [0, app.center.y-10 ],
-    img: 'img/world1-1.png',
+    pos: [0, groundPos-72 ],
+    img: 'assets/images/world1-1.png',
   }));
+
+  // load sounds
+  // add them to app to allow proper termination on app stop
+  if (soundOn) { 
+    var jumpSound = app.add(iio.loadSound('assets/sounds/mario_jump.mp3'));
+    var themeSong = app.add(iio.loadSound('assets/sounds/mario_theme.mp3', function(){
+      themeSong.play();
+    }));
+  }
 
   // create mario
   var mario;
   var w = 16; // sprite width
   var h = 32; // sprite height
   // load mario spritemap
-  var map = new iio.SpriteMap('img/mariobros_cmp.png',{
+  var map = new iio.SpriteMap('assets/images/mariobros_cmp.png',{
     // when load is complete
     onLoad:function(){
       // width and height are common sprite properties
@@ -63,6 +79,8 @@ Platformer = function( app, settings ){
         },
         // make mario jump
         jump: function(){
+          if (soundOn)
+            jumpSound.play({ gain: 0.5 });
           this.walking = false;
           this.jumping = true;
           this.vel.y = -this.jumpSpeed;
@@ -70,6 +88,7 @@ Platformer = function( app, settings ){
         },
         // make mario duck
         duck: function(){
+          app.stop();
           this.set({
             walking: false,
             vel: [0.0],
