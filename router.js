@@ -135,6 +135,8 @@ display_current = function(){
       show_demo( Panning, "Panning" );
     else if( path == 'DragDrop' )
       show_demo( DragDrop, "DragDrop" );
+    else if( path == 'Platformer' )
+      show_demo( Platformer, "Platformer" );
 
   }
 

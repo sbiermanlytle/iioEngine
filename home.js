@@ -1,6 +1,6 @@
 show_home = function(){
   page.append(
-    h1('iio.JS is a Framework for HTML5 Canvas')
+    h1('iio.js is a framework for HTML5 Canvas')
   );
 
   //page.append('<h1>iio.js App Demos</h1>');
@@ -28,10 +28,10 @@ show_home = function(){
   var iioApps2 = document.createElement('div');
   iioApps2.className = 'iioapps';
   page.append(iioApps2);
-  add_demo_preview( iioApps2, ColorLines, "ColorLines", { lineWidth:20 } );
+  add_demo_preview( iioApps2, Platformer, "Platformer" );
   add_demo_preview( iioApps2, MineSweeper, "MineSweeper", { color: new iio.Color(255,255,255) } );
+  add_demo_preview( iioApps2, ColorLines, "ColorLines", { lineWidth:20 } );
   add_demo_preview( iioApps2, Squares, "Squares" );
-  add_demo_preview( iioApps2, Snow, "Snow" );
   add_demo_preview( iioApps2, DragDrop, "DragDrop" );
-  add_demo_preview( iioApps2, Panning, "Panning" );
+  add_demo_preview( iioApps2, Snow, "Snow" );
 };

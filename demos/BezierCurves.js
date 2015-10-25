@@ -32,7 +32,7 @@ BezierCurves = function(app, settings) {
       color: color,
       size: 18,
     }));
-  } 
+  }
 
   // add bezier curve
   var line = app.add(new iio.Line({
