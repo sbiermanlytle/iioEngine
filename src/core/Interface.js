@@ -15,6 +15,7 @@ iio.Interface.prototype.Interface = function() {
 iio.Interface.prototype.set = function() {
   for (var p in arguments[0]) this[p] = arguments[0][p];
   if( this.convert_props ) this.convert_props();
+  return this;
 }
 iio.Interface.prototype.clone = function() {
 	return new this.constructor( this );

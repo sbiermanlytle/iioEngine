@@ -22,6 +22,7 @@ iio.Drawable.prototype.set = function() {
   iio.Drawable.prototype._super.set.call(this, arguments[0]);
   if (arguments[arguments.length-1] === true);
   else if(this.app) this.app.draw();
+  return this;
 }
 iio.Drawable.prototype.convert_props = function(){
   iio.convert.property.color(this,"color");

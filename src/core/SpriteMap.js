@@ -9,7 +9,7 @@ iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
 iio.SpriteMap.prototype.SpriteMap = function(src, p) {
   this.img = new Image();
   this.img.src = src;
-  this.img.onload = p.onload;
+  this.img.onload = p.onLoad;
   return this;
 }
 

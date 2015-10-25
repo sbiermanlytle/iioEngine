@@ -1007,6 +1007,7 @@ iio.Interface.prototype.Interface = function() {
 iio.Interface.prototype.set = function() {
   for (var p in arguments[0]) this[p] = arguments[0][p];
   if( this.convert_props ) this.convert_props();
+  return this;
 }
 iio.Interface.prototype.clone = function() {
 	return new this.constructor( this );
@@ -1325,6 +1326,7 @@ iio.Drawable.prototype.set = function() {
   iio.Drawable.prototype._super.set.call(this, arguments[0]);
   if (arguments[arguments.length-1] === true);
   else if(this.app) this.app.draw();
+  return this;
 }
 iio.Drawable.prototype.convert_props = function(){
   iio.convert.property.color(this,"color");
@@ -1737,7 +1739,7 @@ iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
 iio.SpriteMap.prototype.SpriteMap = function(src, p) {
   this.img = new Image();
   this.img.src = src;
-  this.img.onload = p.onload;
+  this.img.onload = p.onLoad;
   return this;
 }
 
@@ -3053,7 +3055,7 @@ iio.App.prototype.stop = function() {
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
   this.clear();
 }
-iio.Quad.prototype.trueVs = function() {
+iio.App.prototype.trueVs = function() {
   this.vs = [
     new iio.Vector(-this.width/2, -this.height/2),
     new iio.Vector(this.width/2, -this.height/2),

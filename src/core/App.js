@@ -74,7 +74,7 @@ iio.App.prototype.stop = function() {
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
   this.clear();
 }
-iio.Quad.prototype.trueVs = function() {
+iio.App.prototype.trueVs = function() {
   this.vs = [
     new iio.Vector(-this.width/2, -this.height/2),
     new iio.Vector(this.width/2, -this.height/2),
