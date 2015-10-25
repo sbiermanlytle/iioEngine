@@ -33,7 +33,7 @@ Platformer = function( app, settings ){
   if (soundOn) { 
     var jumpSound = app.add(iio.loadSound('assets/sounds/mario_jump.mp3'));
     var themeSong = app.add(iio.loadSound('assets/sounds/mario_theme.mp3', function(){
-      themeSong.play();
+      themeSong.play({ loop:true });
     }));
   }
 
