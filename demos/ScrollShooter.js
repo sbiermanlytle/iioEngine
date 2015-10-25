@@ -8,6 +8,7 @@ ScrollShooter = function( app, s ){
   var lasers = [];
   var player;
   var imgPath = 'img/';
+  var soundPath = 'assets/sounds/'
 
   var numSmallStars = 50;
   var numBigStars = 26;
@@ -107,7 +108,7 @@ ScrollShooter = function( app, s ){
   });
 
     if (soundOn)
-      var laserSound = iio.loadSound('sounds/laser.wav');
+      var laserSound = iio.loadSound( soundPath+'laser.wav');
   
   var laserFlashImg = iio.load( imgPath+'laserRedShot.png' );
   var laserImg = iio.load( imgPath+'laserRed.png' );
