@@ -88,7 +88,6 @@ Platformer = function( app, settings ){
         },
         // make mario duck
         duck: function(){
-          app.stop();
           this.set({
             walking: false,
             vel: [0.0],
