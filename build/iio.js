@@ -76,7 +76,7 @@ iio.start = function(app, id, d) {
 iio.stop = function( app ){
   if(!app)
     for(var i=0; i<iio.apps.length; i++)
-      iio.cancelLoops(iio.apps[i]);
+      iio.apps[i].stop();
 }
 
 iio.script = function() {
