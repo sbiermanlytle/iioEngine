@@ -107,8 +107,11 @@ ScrollShooter = function( app, s ){
     }, meteorProps));
   });
 
-    if (soundOn)
-      var laserSound = iio.loadSound( soundPath+'laser.wav');
+  if (soundOn){
+    var laserSound = iio.loadSound( soundPath+'lasers.mp3');
+    var smallExplodeSound = iio.loadSound( soundPath+'explosion-small.mp3' );
+    var bigExplodeSound = iio.loadSound( soundPath+'explosion-big.mp3' );
+  }
   
   var laserFlashImg = iio.load( imgPath+'laserRedShot.png' );
   var laserImg = iio.load( imgPath+'laserRed.png' );
@@ -156,6 +159,7 @@ ScrollShooter = function( app, s ){
             player.pos.y + 10, this.laserSpeed );
           fireLaser( player.pos.x + player.width/3,
             player.pos.y + 10, this.laserSpeed );
+          if (soundOn) laserSound.play();
           this.laserTimer--;
         } 
         else if( this.laserTimer < 20 ){
@@ -177,8 +181,6 @@ ScrollShooter = function( app, s ){
       vel: [ 0, -s ],
       bounds: { top: -100 }
     })));
-
-    if (soundOn) laserSound.play();
   }
 
   var controller = { 
@@ -238,9 +240,13 @@ ScrollShooter = function( app, s ){
               }
             }
           })));
+        bigExplodeSound.play();
         app.rmv(meteor);
       }
-    } else app.rmv(meteor)
+    } else {
+      smallExplodeSound.play();
+      app.rmv(meteor);
+    }
 
     app.add(new iio.Quad({
       z: 75,
