@@ -1,6 +1,7 @@
 ScrollShooter = function( app, s ){
 
-  var soundOn = document.URL.indexOf('file://') > 0;
+  // Sound do now work with a local connection
+  var soundOn = true;
 
   var meteors = [];
   var stars = [];
