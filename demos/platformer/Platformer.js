@@ -11,6 +11,13 @@ Platformer = function( app, settings ){
   // set background color to black
   app.set({ color:'black' });
 
+  // Sound does not work offline
+  var soundOn = false;
+
+  // disable sound in preview
+  if (settings && settings.preview)
+    soundOn = false;
+
   // physical constants
   var gravity = 0.1;
   var groundPos = app.center.y;
@@ -20,6 +27,15 @@ Platformer = function( app, settings ){
     pos: [0, groundPos-72 ],
     img: 'img/world1-1.png',
   }));
+
+  // load sounds
+  // add them to app to allow proper termination on app stop
+  if (soundOn) { 
+    var jumpSound = app.add(iio.loadSound('sounds/mario_jump.mp3'));
+    var themeSong = app.add(iio.loadSound('sounds/mario_theme.mp3', function(){
+      themeSong.play();
+    }));
+  }
 
   // create mario
   var mario;
@@ -63,6 +79,8 @@ Platformer = function( app, settings ){
         },
         // make mario jump
         jump: function(){
+          if (soundOn)
+            jumpSound.play({ gain: 0.5 });
           this.walking = false;
           this.jumping = true;
           this.vel.y = -this.jumpSpeed;
@@ -70,6 +88,7 @@ Platformer = function( app, settings ){
         },
         // make mario duck
         duck: function(){
+          app.stop();
           this.set({
             walking: false,
             vel: [0.0],

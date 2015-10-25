@@ -68,7 +68,9 @@ iio.App.prototype.update_pos = function(){
 }
 iio.App.prototype.stop = function() {
   this.objs.forEach(function(obj) {
-    iio.cancelLoops(obj);
+    if (obj instanceof iio.Sound)
+      obj.stop();
+    else iio.cancelLoops(obj);
   });
   iio.cancelLoops(this);
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);

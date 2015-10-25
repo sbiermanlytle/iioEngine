@@ -30,17 +30,22 @@ iio.Sound.prototype.Sound = function(url, onLoad, onError) {
   xhr.send();
 }
 
-iio.Sound.prototype.play = function(delay, properties) {
-  if (properties) this.set(properties);
+iio.Sound.prototype.play = function() {
+  this.set(iio.merge_args(arguments), true);
   if (this.buffer === undefined) return;
-  var source = iio.audioCtx.createBufferSource();
-  source.buffer = this.buffer;
+  this.source = iio.audioCtx.createBufferSource();
+  this.source.buffer = this.buffer;
   if (this.loop)
-    source.loop = true;
-
+    this.source.loop = true;
   if (this.gain)
     this.gainNode.gain.value = this.gain;
-  source.connect(this.gainNode);
-  source.start(delay || 0);
+  this.source.connect(this.gainNode);
+  this.source.start(this.delay || 0);
+  return this;
 }
 
+iio.Sound.prototype.stop = function() {
+  if (this.source)
+    this.source.disconnect();
+  return this;
+}
