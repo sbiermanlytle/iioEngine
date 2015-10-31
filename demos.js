@@ -6,7 +6,7 @@ show_demo_index = function(){
   page.append(iioApps);
   add_demo_preview( iioApps, ScrollShooter, "ScrollShooter" );
   add_demo_preview( iioApps, Snake, "Snake" );
-  add_demo_preview( iioApps, Box2dDemo, "Box2D" );
+  add_demo_preview( iioApps, Box2dDemo, "Box2d" );
   add_demo_preview( iioApps, Platformer, "Platformer" );
   add_demo_preview( iioApps, ColorGrid, "ColorGrid", {w:20} );
   add_demo_preview( iioApps, MineSweeper, "MineSweeper", { color: new iio.Color(255,255,255) } );
