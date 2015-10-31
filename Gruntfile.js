@@ -22,7 +22,8 @@ coreSrc = [
   'QuadGrid.js',
   'App.js',
   'Sound.js',
-  'Loader.js'
+  'Loader.js',
+  'AttachBox2d.js'
 ].map(function(filename) { return srcPath + '/' + filename });
 
 module.exports = function(grunt) {

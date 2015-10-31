@@ -12,6 +12,11 @@ iio.Ellipse.prototype.Ellipse = function() {
   this._super.Shape.call(this,iio.merge_args(arguments));
 }
 
+iio.Ellipse.prototype.convert_props = function(){
+  iio.Ellipse.prototype._super.convert_props.call(this, iio.merge_args(arguments));
+  iio.convert.property.color(this,"refLine");
+}
+
 //FUNCTIONS
 iio.Ellipse.prototype.draw_shape = function(ctx) {
   ctx.beginPath();
@@ -45,6 +50,20 @@ iio.Ellipse.prototype.draw_shape = function(ctx) {
       Math.floor(-(this.vRadius||this.radius)),
       Math.floor(this.radius*2),
       Math.floor((this.vRadius||this.radius)*2));
+  }
+  if(this.refLine){
+    ctx.save();
+    ctx.lineWidth = this.refLineWidth || this.lineWidth || 1;
+    if (this.refLine instanceof iio.Color)
+      ctx.strokeStyle = this.refLine.rgbaString();
+    else if (this.color)
+      ctx.strokeStyle = this.color.rgbaString();
+    else ctx.strokeStyle = this.outline.rgbaString();
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(0,this.radius);
+    ctx.stroke();
+    ctx.restore();
   }
 }
 iio.Ellipse.prototype.contains = function(v, y) {

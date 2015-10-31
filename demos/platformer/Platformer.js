@@ -174,7 +174,7 @@ Platformer = function( app, settings ){
   }
   
   // handle key down event
-  this.onKeyDown = function( event, key ){
+  app.onKeyDown = function( event, key ){
     // update input states
     input.update(key, true);
 
@@ -200,7 +200,7 @@ Platformer = function( app, settings ){
   }
 
   // handle key up event
-  this.onKeyUp = function( event, key ){
+  app.onKeyUp = function( event, key ){
     // update input states
     input.update(key, false);
 

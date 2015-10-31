@@ -130,7 +130,7 @@ iio.set = function(os, p) {
 }
 iio.random = function(min, max) {
   min = min || 0;
-  max = (max === 0 || typeof(max) != 'undefined') ? max : 1;
+  max = (max === 0 || typeof(max) !== 'undefined') ? max : 1;
   return Math.random() * (max - min) + min;
 }
 iio.randomInt = function(min, max) {
@@ -242,6 +242,15 @@ iio.cancelLoops = function(o, c) {
       iio.cancelLoops(obj);
     });
 }
+iio.requestTimeout = function(fps,lastTime,callback,callbackParams){
+  //Callback method by Erik Möller, Paul Irish, Tino Zijdel
+  //https://gist.github.com/1579671
+  var currTime = new Date().getTime();
+  var timeToCall = Math.max(0, (1000/fps) - (currTime - lastTime));
+  callbackParams[0].fsID = setTimeout(function() { callback(currTime + timeToCall, callbackParams); }, 
+    timeToCall);
+  lastTime = currTime + timeToCall;
+}
 
 //INPUT LISTENERS
 iio.resize = function() {
@@ -259,7 +268,7 @@ iio.resize = function() {
     app.height = app.canvas.height;
     app.center.x = app.canvas.width / 2;
     app.center.y = app.canvas.height / 2;
-    if (app.script && app.script.onResize) app.script.onResize();
+    if (app.script.onResize) app.onResize();
     app.draw();
   });
 }
@@ -268,15 +277,15 @@ iio.prep_input = function() {
   iio.addEvent(window, 'keydown', function(e) {
     var k = iio.key.string(e);
     iio.apps.forEach(function(app) {
-      if (app.script && app.script.onKeyDown)
-        app.script.onKeyDown(e, k);
+      if (app.onKeyDown)
+        app.onKeyDown(e, k);
     });
   });
   iio.addEvent(window, 'keyup', function(e) {
     var k = iio.key.string(e);
     iio.apps.forEach(function(app) {
-      if (app.script&& app.script.onKeyUp)
-        app.script.onKeyUp(e, k);
+      if (app.onKeyUp)
+        app.onKeyUp(e, k);
     });
   });
   iio.addEvent(window, 'scroll', function(event) {
@@ -286,8 +295,8 @@ iio.prep_input = function() {
         x: p.left,
         y: p.top
       };
-      if (app.script&& app.script.onScroll)
-        app.script.onScroll(e, k);
+      if (app.onScroll)
+        app.onScroll(e, k);
     });
   });
 }

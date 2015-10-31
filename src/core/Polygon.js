@@ -13,6 +13,40 @@ iio.Polygon.prototype.Polygon = function() {
 }
 
 //FUNCTIONS
+iio.Polygon.prototype.finish_path_shape = function(ctx){
+  if (this.color) ctx.fill();
+  if (this.img) {
+    if (this.noImageRounding)
+      ctx.drawImage(this.img,
+        iio.specVec( this.vs,
+          function(v1,v2){if(v1.x>v2.x)return true;return false}).x,
+        iio.specVec( this.vs,
+          function(v1,v2){if(v1.y>v2.y)return true;return false}).y,
+        iio.specVec( this.vs,
+          function(v1,v2){if(v1.x<v2.x)return true;return false}).x
+        - iio.specVec( this.vs,
+          function(v1,v2){if(v1.x>v2.x)return true;return false}).x,
+        iio.specVec( this.vs,
+          function(v1,v2){if(v1.y>v2.y)return true;return false}).y
+        - iio.specVec( this.vs,
+          function(v1,v2){if(v1.y<v2.y)return true;return false}).y);
+    else ctx.drawImage(this.img,
+        Math.floor(iio.specVec( this.vs,
+          function(v1,v2){if(v1.x>v2.x)return true;return false}).x),
+        Math.floor(iio.specVec( this.vs,
+          function(v1,v2){if(v1.y>v2.y)return true;return false}).y),
+        Math.floor(iio.specVec( this.vs,
+          function(v1,v2){if(v1.x<v2.x)return true;return false}).x
+        - iio.specVec( this.vs,
+          function(v1,v2){if(v1.x>v2.x)return true;return false}).x),
+       Math.floor( iio.specVec( this.vs,
+          function(v1,v2){if(v1.y>v2.y)return true;return false}).y
+        - iio.specVec( this.vs,
+          function(v1,v2){if(v1.y<v2.y)return true;return false}).y));
+  }
+  if (this.outline) ctx.stroke();
+  if (this.clip) ctx.clip();
+}
 iio.Polygon.prototype.draw_shape = function(ctx) {
   ctx.beginPath();
   ctx.moveTo(this.vs[0].x, this.vs[0].y);
@@ -64,7 +98,7 @@ iio.Polygon.prototype.left = function(){
       if(v1.x>v2.x)
         return true;
       return false
-    }).x 
+    }).x
 }
 iio.Polygon.prototype.right = function(){ 
   return iio.specVec( this.trueVs(),

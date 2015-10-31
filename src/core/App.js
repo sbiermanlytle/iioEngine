@@ -54,8 +54,8 @@ iio.App.prototype.App = function(view, script, settings) {
 //-------------------------------------------------------------------
 iio.App.prototype.update = function(){
   var nuFPS;
-  if(this.script.onUpdate) 
-    nuFPS = this.script.onUpdate();
+  if(this.onUpdate) 
+    nuFPS = this.onUpdate();
   this.draw();
   return nuFPS;
 }

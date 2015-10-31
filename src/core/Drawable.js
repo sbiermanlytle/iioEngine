@@ -26,6 +26,7 @@ iio.Drawable.prototype.set = function() {
 }
 iio.Drawable.prototype.convert_props = function(){
   iio.convert.property.color(this,"color");
+  iio.convert.property.color(this,"outline");
 }
 
 

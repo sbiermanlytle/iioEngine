@@ -107,7 +107,7 @@ Snake = function( app, settings ){
 
   // keypress handling
   // sets snake direction depending on key value
-  this.onKeyDown = function( event, key ){ 
+  app.onKeyDown = function( event, key ){ 
 
     // if snake isn't moving down
     if( snake.direction != DOWN 
@@ -132,7 +132,7 @@ Snake = function( app, settings ){
 
   // define a function to be called on every update
   // THE GAME LOOP
-  this.onUpdate = function(){
+  app.onUpdate = function(){
 
     // if not preview, reset the game if the snake's head
     // overlaps with the snake body

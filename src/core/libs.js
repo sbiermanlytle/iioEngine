@@ -289,7 +289,7 @@ iio.canvas = {
   },
   prep_input: function(o) {
     function route_input(caller, e, handler){
-      // orient click position to canvas 0,0
+      // orient position to canvas 0,0
       var ep = caller.parent.eventVector(e);
       // App.handler
       if (caller.parent[handler]) 
