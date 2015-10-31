@@ -203,14 +203,14 @@ ScrollShooter = function( app, s ){
       controller.SPACE = bool;
   }
 
-  this.onKeyDown = function(e,k){ 
+  app.onKeyDown = function(e,k){ 
     updateController(k,true) 
   }
-  this.onKeyUp = function(e,k){ 
+  app.onKeyUp = function(e,k){ 
     updateController(k,false) 
   }
 
-  this.onResize=function(){
+  app.onResize=function(){
     if(player.right > app.width)
       player.pos.x = app.width - player.width/2
   }

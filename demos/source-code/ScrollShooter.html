@@ -15,9 +15,6 @@
  * iio.js version 1.4
  */
 ScrollShooter = function( app, s ){
-  // For namespace of the new Object passed to here.
-  // User defined functions can go in here, such as onUpdate
-  var user = this;
 
   // Arrays for holding references to objects created
   var meteors = [];
@@ -257,14 +254,14 @@ ScrollShooter = function( app, s ){
     }));
 
     // For updating direction on key presses
-    user.onKeyDown = function(e,k){ 
+    app.onKeyDown = function(e,k){ 
       updateController(k,true) 
     }
-    user.onKeyUp = function(e,k){ 
+    app.onKeyUp = function(e,k){ 
       updateController(k,false) 
     }
 
-    user.onResize=function(){
+    app.onResize=function(){
       if(playerObj.right &gt; app.width)
         playerObj.pos.x = app.width - playerObj.width/2
     }
