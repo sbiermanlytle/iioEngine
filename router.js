@@ -137,6 +137,8 @@ display_current = function(){
       show_demo( DragDrop, "DragDrop" );
     else if( path == 'Platformer' )
       show_demo( Platformer, "Platformer" );
+    else if( path == 'Box2d' )
+      show_demo( Box2dDemo, "Box2d" );
 
   }
 

@@ -7,9 +7,6 @@ Copyright (c) 2015, iio inc. All rights reserved.
 */
 ColorGrid = function( app, settings ){
 
-  // set the background color to black
-  app.set({ color:'black' });
-
   // set default width value
   var w = 20;
 

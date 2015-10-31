@@ -9,7 +9,7 @@ show_home = function(){
   page.append(iioApps1);
   add_demo_preview( iioApps1, ScrollShooter, "ScrollShooter" );
   add_demo_preview( iioApps1, Snake, "Snake" );
-  add_demo_preview( iioApps1, ColorGrid, "ColorGrid", {w:20} );
+  add_demo_preview( iioApps1, Box2dDemo, "Box2d" );
 
   page.append('<div class="col_two">' +
       h2('lightweight, efficient, with zero dependencies') +
@@ -29,9 +29,9 @@ show_home = function(){
   iioApps2.className = 'iioapps';
   page.append(iioApps2);
   add_demo_preview( iioApps2, Platformer, "Platformer" );
+  add_demo_preview( iioApps2, ColorGrid, "ColorGrid", {w:20} );
   add_demo_preview( iioApps2, MineSweeper, "MineSweeper", { color: new iio.Color(255,255,255) } );
-  add_demo_preview( iioApps2, ColorLines, "ColorLines", { lineWidth:20 } );
   add_demo_preview( iioApps2, Squares, "Squares" );
-  add_demo_preview( iioApps2, DragDrop, "DragDrop" );
+  add_demo_preview( iioApps2, ColorLines, "ColorLines", { lineWidth:20 } );
   add_demo_preview( iioApps2, Snow, "Snow" );
 };
