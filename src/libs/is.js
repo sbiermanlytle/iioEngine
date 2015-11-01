@@ -3,18 +3,17 @@
 */
 iio.is = {
   fn: function(fn) {
-    return typeof fn === 'function'
+    return typeof fn === 'function';
   },
   number: function(o) {
-    if (typeof o === 'number') return true;
-    //return (o - 0) == o && o.length > 0;
+    return typeof o === 'number';
   },
   string: function(s) {
-    return typeof s == 'string' || s instanceof String
+    return typeof s === 'string' || s instanceof String;
   },
   filetype: function(file, extensions) {
     return extensions.some(function(ext) {
-      return (file.indexOf('.' + ext) != -1)
+      return (file.indexOf('.' + ext) !== -1);
     });
   },
   image: function(file) {

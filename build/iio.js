@@ -356,18 +356,17 @@ iio.createGradient = function(ctx, g) {
 */
 iio.is = {
   fn: function(fn) {
-    return typeof fn === 'function'
+    return typeof fn === 'function';
   },
   number: function(o) {
-    if (typeof o === 'number') return true;
-    //return (o - 0) == o && o.length > 0;
+    return typeof o === 'number';
   },
   string: function(s) {
-    return typeof s == 'string' || s instanceof String
+    return typeof s === 'string' || s instanceof String;
   },
   filetype: function(file, extensions) {
     return extensions.some(function(ext) {
-      return (file.indexOf('.' + ext) != -1)
+      return (file.indexOf('.' + ext) !== -1);
     });
   },
   image: function(file) {
@@ -966,18 +965,6 @@ iio.collision = {
     // Out of iterations so it is unsure if there was a collision.
     return false;
   }
-}
-
-/* iio.draw
-------------------
-*/
-iio.draw = {
-  line: function( ctx, x1, y1, x2, y2 ){
-    ctx.beginPath();
-    ctx.moveTo(x1,y1);
-    ctx.lineTo(x2,y2);
-    ctx.stroke();
-  },
 }
 
 /* Interface
@@ -2964,27 +2951,17 @@ iio.Grid.prototype._shrink = function(s, r) {
 //DRAW FUNCTIONS
 iio.Grid.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;
 iio.Grid.prototype.draw_shape = function(ctx) {
-  //ctx.translate(-this.width / 2, -this.height / 2);
-  /*iio.draw.rect(ctx, this.width, this.height, {
-    c: this.color,
-    o: this.outline
-  }, {
-    img: this.img,
-    anims: this.anims,
-    mov: this.mov,
-    round: this.round
-  });*/
   if (this.color) {
-    for (var c = 1; c < this.C; c++) 
-      iio.draw.line(ctx, 
-        -this.width / 2 + c * this.res.x, -this.height / 2, 
-        -this.width / 2 + c * this.res.x, this.height / 2
-      );
-    for (var r = 1; r < this.R; r++) 
-      iio.draw.line(ctx, 
-        -this.width / 2, -this.height / 2 + r * this.res.y,
-        this.width / 2, -this.height / 2 + r * this.res.y
-      );
+    ctx.beginPath();
+    for (var c = 1; c < this.C; c++){
+      ctx.moveTo(-this.width / 2 + c * this.res.x, -this.height / 2);
+      ctx.lineTo(-this.width / 2 + c * this.res.x, this.height / 2);
+    }
+    for (var r = 1; r < this.R; r++){
+      ctx.moveTo(-this.width / 2, -this.height / 2 + r * this.res.y);
+      ctx.lineTo(this.width / 2, -this.height / 2 + r * this.res.y);
+    }
+    ctx.stroke();
   }
 }
 /* Quad

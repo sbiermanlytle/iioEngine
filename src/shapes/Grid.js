@@ -95,26 +95,16 @@ iio.Grid.prototype._shrink = function(s, r) {
 //DRAW FUNCTIONS
 iio.Grid.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;
 iio.Grid.prototype.draw_shape = function(ctx) {
-  //ctx.translate(-this.width / 2, -this.height / 2);
-  /*iio.draw.rect(ctx, this.width, this.height, {
-    c: this.color,
-    o: this.outline
-  }, {
-    img: this.img,
-    anims: this.anims,
-    mov: this.mov,
-    round: this.round
-  });*/
   if (this.color) {
-    for (var c = 1; c < this.C; c++) 
-      iio.draw.line(ctx, 
-        -this.width / 2 + c * this.res.x, -this.height / 2, 
-        -this.width / 2 + c * this.res.x, this.height / 2
-      );
-    for (var r = 1; r < this.R; r++) 
-      iio.draw.line(ctx, 
-        -this.width / 2, -this.height / 2 + r * this.res.y,
-        this.width / 2, -this.height / 2 + r * this.res.y
-      );
+    ctx.beginPath();
+    for (var c = 1; c < this.C; c++){
+      ctx.moveTo(-this.width / 2 + c * this.res.x, -this.height / 2);
+      ctx.lineTo(-this.width / 2 + c * this.res.x, this.height / 2);
+    }
+    for (var r = 1; r < this.R; r++){
+      ctx.moveTo(-this.width / 2, -this.height / 2 + r * this.res.y);
+      ctx.lineTo(this.width / 2, -this.height / 2 + r * this.res.y);
+    }
+    ctx.stroke();
   }
 }
