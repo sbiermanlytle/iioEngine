@@ -104,8 +104,11 @@ iio.Drawable.prototype.add = function() {
       }
 
     // infer size if Text object
-    if (arguments[0] instanceof iio.Text)
+    if (arguments[0] instanceof iio.Text){
       arguments[0].inferSize();
+      if (arguments[0].showCursor)
+        arguments[0].init_cursor();
+    }
 
     // set default z index
     if (typeof(arguments[0].z) == 'undefined') 

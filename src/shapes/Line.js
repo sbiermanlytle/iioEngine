@@ -2,24 +2,24 @@
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Line = function(){ this.Line.apply(this, arguments) };
 iio.inherit(iio.Line, iio.Shape);
 iio.Line.prototype._super = iio.Shape.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Line.prototype.Line = function() {
   this._super.Shape.call(this,iio.merge_args(arguments));
 }
 
-//SHARED WITH POLYGON
+// SHARED POLYGON FUNCTIONS
 iio.Line.prototype.trueVs = iio.Polygon.prototype.trueVs;
 iio.Line.prototype.left = iio.Polygon.prototype.left;
 iio.Line.prototype.right = iio.Polygon.prototype.right;
 iio.Line.prototype.top = iio.Polygon.prototype.top;
 iio.Line.prototype.bottom = iio.Polygon.prototype.bottom;
 
-//FUNCTIONS
+// OVERRIDE FUNCTIONS
 iio.Line.prototype.prep_ctx_color = function(ctx){
   if(this.color instanceof iio.Gradient)
     ctx.strokeStyle = this.color.canvasGradient(ctx);
@@ -31,6 +31,8 @@ iio.Line.prototype.prep_ctx_lineWidth = function(ctx){
   ctx.lineWidth = this.width || 1;
   return ctx;
 }
+
+// IMPLEMENT ABSTRACT FUNCTIONS
 iio.Line.prototype.draw_shape = function(ctx) {
   ctx.beginPath();
   ctx.moveTo(this.vs[0].x, this.vs[0].y);

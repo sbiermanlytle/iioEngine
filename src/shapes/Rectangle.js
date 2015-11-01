@@ -2,12 +2,12 @@
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Rectangle = function(){ this.Rectangle.apply(this, arguments) };
 iio.inherit(iio.Rectangle, iio.Polygon);
 iio.Rectangle.prototype._super = iio.Polygon.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Rectangle.prototype.Rectangle = function() {
   this._super.Polygon.call(this,iio.merge_args(arguments));
   this.height = this.height || this.width;
@@ -19,7 +19,21 @@ iio.Rectangle.prototype.Rectangle = function() {
   ];
 }
 
-//FUNCTIONS
+// IMPLEMENT ABSTRACT FUNCTIONS
+iio.Rectangle.prototype.size = function(){ return this.width }
+iio.Rectangle.prototype.setSize = function(w,h){
+  this.width = w;
+  this.height = h||w;
+}
+iio.Rectangle.prototype.contains = function(v, y) {
+  v = this.localize(v,y);
+  if (v.x > -this.width/2 
+   && v.x <  this.width/2
+   && v.y > -this.height/2 
+   && v.y <  this.height/2)
+    return true;
+  return false;
+}
 iio.Rectangle.prototype.draw_shape = function(ctx){
   if (this.imageRounding)
     ctx.translate(Math.floor(-this.width/2), Math.floor(-this.height/2));
@@ -43,6 +57,8 @@ iio.Rectangle.prototype.draw_shape = function(ctx){
     if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
   }
 }
+
+// RECTANGLE FUNCTIONS
 iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.beginPath();
   ctx.moveTo(this.round[0], 0);
@@ -58,18 +74,4 @@ iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.stroke();
   ctx.fill();
   ctx.clip();
-}
-iio.Rectangle.prototype.contains = function(v, y) {
-  v = this.localize(v,y);
-  if (v.x > -this.width/2 
-   && v.x <  this.width/2
-   && v.y > -this.height/2 
-   && v.y <  this.height/2)
-    return true;
-  return false;
-}
-iio.Rectangle.prototype.size = function(){ return this.width }
-iio.Rectangle.prototype.setSize = function(w,h){
-  this.width = w;
-  this.height = h||w;
 }

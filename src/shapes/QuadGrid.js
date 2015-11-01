@@ -2,18 +2,18 @@
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.QuadGrid = function(){ this.QuadGrid.apply(this, arguments) };
 iio.inherit(iio.QuadGrid, iio.Quad);
 iio.QuadGrid.prototype._super = iio.Quad.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.QuadGrid.prototype.QuadGrid = function() {
   this._super.Quad.call(this,iio.merge_args(arguments));
   this.init();
 }
 
-//FUNCTIONS SHARED WITH GRID
+// SHARED GRID FUNCTIONS
 iio.QuadGrid.prototype.init = iio.Grid.prototype.init;
 iio.QuadGrid.prototype.init_cells = iio.Grid.prototype.init_cells;
 iio.QuadGrid.prototype.infer_res = iio.Grid.prototype.infer_res;

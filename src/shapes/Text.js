@@ -2,12 +2,12 @@
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Text = function(){ this.Text.apply(this, arguments) };
 iio.inherit(iio.Text, iio.Polygon);
 iio.Text.prototype._super = iio.Polygon.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Text.prototype.Text = function() {
   this._super.Polygon.call(this,iio.merge_args(arguments));
   this.size = this.size || 40;
@@ -15,53 +15,67 @@ iio.Text.prototype.Text = function() {
     this.color = this.color || new iio.Color();
   this.font = this.font || 'Arial';
   this.align = this.align || 'center';
-
-  /*var tX = this.getX(this.text.length);
-  this.cursor = this.add([tX, 10, tX, -this.size * .8], '2 ' + (this.color || this.outline), {
-    index: this.text.length,
-    shift: false
-  });
-  if (this.showCursor) {
-    this.loop(2, function(o) {
-      this.cursor.hidden = !this.cursor.hidden;
-    })
-  } else this.cursor.hidden = true;*/
 }
 
-iio.Text.getFontHeight = function(font) {
-
-  var text = $('<span>Hg</span>').css({ fontFamily: font });
-  var block = $('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
-
-  var div = $('<div></div>');
-  div.append(text, block);
-
-  var body = $('body');
-  body.append(div);
-
-  try {
-
-    var result = {};
-
-    block.css({ verticalAlign: 'baseline' });
-    result.ascent = block.offset().top - text.offset().top;
-
-    block.css({ verticalAlign: 'bottom' });
-    result.height = block.offset().top - text.offset().top;
-
-    result.descent = result.height - result.ascent;
-
-  } finally {
-    div.remove();
+// OVERRIDE FUNCTIONS
+iio.Text.prototype._shrink = function( s,r ) {
+  this.size *= 1-s;
+  this.inferSize();
+  if (this.size < .02 
+    || this.size < this.shrink.lowerBound 
+    || this.size > this.shrink.upperBound) {
+    if (r) return r(this);
+    else return true;
   }
+}
 
-  return result;
-};
+// IMPLEMENT ABSTRACT FUNCTIONS
+iio.Text.prototype.contains = function( v,y ) {
+  v = this.localize(v,y);
+  if ( (!this.align || this.align === 'left')
+    && v.x>0 && v.x<this.width && v.y<this.height/2 && v.y>-this.height/2)
+    return true;
+  else if (this.align === 'center'
+    && v.x>-this.width/2 && v.x<this.width/2 && v.y<this.height/2 && v.y>-this.height/2)
+    return true;
+  else if ( (this.align === 'right' || this.align === 'end')
+    && v.x>-this.width && v.x<0 && v.y<this.height/2 && v.y>-this.height/2)
+    return true;
+  return false;
+}
+iio.Text.prototype.draw_shape = function(ctx) {
+  ctx.translate(0, this.height/2); 
+  //ctx.strokeStyle = 'red';
+  //ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
+  ctx.font = this.size + 'px ' + this.font;
+  ctx.textAlign = this.align;
+  if (this.color) ctx.fillText(this.text, 0, 0);
+  if (this.outline) ctx.strokeText(this.text, 0, 0);
+  if (this.showCursor)
+    this.cursor.vs[0].x = this.cursor.vs[1].x = this.getX(this.cursor.index);
+}
 
-//FUNCTIONS
+// TEXT FUNCTIONS
+iio.Text.prototype.init_cursor = function(){
+  var tX = this.getX(this.text.length);
+  this.cursor = this.add(new iio.Line({
+    vs: [
+      [tX, this.size/2],
+      [tX, -this.size/2]
+    ],
+    width:2,
+    color: this.color || this.outline,
+    index: this.text.length,
+    shift: false
+  }));
+  if (this.showCursor) {
+    this.loop(2, function(o) {
+      o.cursor.hidden = !o.cursor.hidden;
+    })
+  } else this.cursor.hidden = true;
+}
 iio.Text.prototype.inferSize = function(ctx){
   this.ctx = ctx || this.ctx;
-
   this.app.ctx.font = this.size + 'px ' + this.font;
   this.width = this.app.ctx.measureText(this.text).width;
   this.height = this.app.ctx.measureText("H").width;
@@ -88,58 +102,43 @@ iio.Text.prototype.inferSize = function(ctx){
     ]
   }
 }
-iio.Text.prototype._shrink = function(s, r) {
-  this.size *= 1 - s;
-  this.inferSize();
-  if (this.size < .02 
-    || this.size < this.shrink.lowerBound 
-    || this.size > this.shrink.upperBound) {
-    if (r) return r(this);
-    else return true;
+iio.Text.getFontHeight = function(font) {
+  var text = $('<span>Hg</span>').css({ fontFamily: font });
+  var block = $('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
+  var div = $('<div></div>');
+  div.append(text, block);
+  var body = $('body');
+  body.append(div);
+  try {
+    var result = {};
+    block.css({ verticalAlign: 'baseline' });
+    result.ascent = block.offset().top - text.offset().top;
+    block.css({ verticalAlign: 'bottom' });
+    result.height = block.offset().top - text.offset().top;
+    result.descent = result.height - result.ascent;
+  } finally {
+    div.remove();
   }
-}
-iio.Text.prototype.draw_shape = function(ctx) {
-  ctx.translate(0, this.height/2); 
-  //ctx.strokeStyle = 'red';
-  //ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
-  ctx.font = this.size + 'px ' + this.font;
-  ctx.textAlign = this.align;
-  if (this.color) ctx.fillText(this.text, 0, 0);
-  if (this.outline) ctx.strokeText(this.text, 0, 0);
-  if (this.showCursor)
-    this.cursor.pos.x = this.cursor.endPos.x = this.getX(this.cursor.index);
-}
-iio.Text.prototype.contains = function(v, y) {
-  v = this.localize(v,y);
-  if ((typeof(this.align) == 'undefined' || this.align == 'left')
-    && v.x>0 && v.x<this.width && v.y<this.height/2 && v.y>-this.height/2)
-    return true;
-  else if (this.align == 'center'
-    && v.x>-this.width/2 && v.x<this.width/2 && v.y<this.height/2 && v.y>-this.height/2)
-    return true;
-  else if ((this.align == 'right' || this.align == 'end')
-    && v.x>-this.width && v.x<0 && v.y<this.height/2 && v.y>-this.height/2)
-    return true;
-  return false;
+  return result;
 }
 iio.Text.prototype.charWidth = function(i) {
-  i = i || 0;
-  this.app.ctx.font = this.size + 'px ' + this.font;
+  i = i||0;
+  this.app.ctx.font = this.size+'px '+this.font;
   return this.app.ctx.measureText(this.text.charAt(i)).width;
 }
 iio.Text.prototype.getX = function(i) {
-  this.app.ctx.font = this.size + 'px ' + this.font;
-  if (typeof(this.align) == 'undefined' || this.align == 'left')
+  this.app.ctx.font = this.size+'px '+this.font;
+  if (!this.align || this.align === 'left')
     return this.app.ctx.measureText(this.text.substring(0, i)).width;
-  if (this.align == 'right' || this.align == 'end')
+  if (this.align === 'right' || this.align === 'end')
     return -this.app.ctx.measureText(this.text.substring(0, this.text.length - i)).width;
-  if (this.align == 'center') {
+  if (this.align === 'center') {
     var x = -Math.floor(this.app.ctx.measureText(this.text).width / 2);
     return x + this.app.ctx.measureText(this.text.substring(0, i)).width;
   }
 }
 iio.Text.prototype.onKeyUp = function(k) {
-  if (k == 'shift')
+  if (k === 'shift')
     this.cursor.shift = false;
 }
 iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
