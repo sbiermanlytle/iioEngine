@@ -42,7 +42,7 @@ iio.Drawable.prototype.localizeRotation = function(v,n){
   if (this.rotation) {
     if (this.origin)
       v.sub(this.origin);
-    v = iio.point.rotate(v.x, v.y, (n ? this.rotation : -this.rotation));
+    v.rotate( n ? this.rotation : -this.rotation );
     if (this.origin)
       v.add(this.origin);
   }

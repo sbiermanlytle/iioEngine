@@ -351,7 +351,7 @@ iio.createGradient = function(ctx, g) {
 }
 
 
-/* Libraries
+/* iio.is
 ------------------
 */
 iio.is = {
@@ -406,6 +406,9 @@ iio.is = {
   }
 }
 
+/* iio.convert
+------------------
+*/
 iio.convert = {
   property: {
     color: function(o,c){
@@ -435,139 +438,9 @@ iio.convert = {
   }
 }
 
-iio.point = {
-  rotate: function(x, y, r) {
-    if (typeof x.x != 'undefined') {
-      r = y;
-      y = x.y;
-      x = x.x;
-    }
-    if (typeof r == 'undefined' || r == 0) 
-      return new iio.Vector(x,y);
-    var newX = x * Math.cos(r) - y * Math.sin(r);
-    var newY = y * Math.cos(r) + x * Math.sin(r);
-    return new iio.Vector(newX,newY);
-  },
-  vector: function(points) {
-    var vecs = [];
-    if (!(points instanceof Array)) points = [points];
-    for (var i = 0; i < points.length; i++) {
-      if (typeof points[i].x != 'undefined')
-        vecs.push(points[i]);
-      else {
-        vecs.push({
-          x: points[i],
-          y: points[i + 1]
-        });
-        i++;
-      }
-    }
-    return vecs;
-  }
-}
-
-iio.keys = {
-      8: 'backspace',
-      9: 'tab',
-      13: 'enter',
-      16: 'shift',
-      17: 'ctrl',
-      18: 'alt',
-      19: 'pause',
-      20: 'caps lock',
-      27: 'escape',
-      32: 'space',
-      33: 'page up',
-      34: 'page down',
-      35: 'end',
-      36: 'home',
-      37: 'left arrow',
-      38: 'up arrow',
-      39: 'right arrow',
-      40: 'down arrow',
-      45: 'insert',
-      46: 'delete',
-      48: '0',
-      49: '1',
-      50: '2',
-      51: '3',
-      52: '4',
-      53: '5',
-      54: '6',
-      55: '7',
-      56: '8',
-      57: '9',
-      65: 'a',
-      66: 'b',
-      67: 'c',
-      68: 'd',
-      69: 'e',
-      70: 'f',
-      71: 'g',
-      72: 'h',
-      73: 'i',
-      74: 'j',
-      75: 'k',
-      76: 'l',
-      77: 'm',
-      78: 'n',
-      79: 'o',
-      80: 'p',
-      81: 'q',
-      82: 'r',
-      83: 's',
-      84: 't',
-      85: 'u',
-      86: 'v',
-      87: 'w',
-      88: 'x',
-      89: 'y',
-      90: 'z',
-      91: 'left window',
-      92: 'right window',
-      93: 'select key',
-      96: 'n0',
-      97: 'n1',
-      98: 'n2',
-      99: 'n3',
-      100: 'n4',
-      101: 'n5',
-      102: 'n6',
-      103: 'n7',
-      104: 'n8',
-      105: 'n9',
-      106: 'multiply',
-      107: 'add',
-      109: 'subtract',
-      110: 'dec',
-      111: 'divide',
-      112: 'f1',
-      113: 'f2',
-      114: 'f3',
-      115: 'f4',
-      116: 'f5',
-      117: 'f6',
-      118: 'f7',
-      119: 'f8',
-      120: 'f9',
-      121: 'f10',
-      122: 'f11',
-      123: 'f12',
-      144: 'num lock',
-      156: 'scroll lock',
-      186: 'semi-colon',
-      187: 'equal',
-      188: 'comma',
-      189: 'dash',
-      190: 'period',
-      191: 'forward slash',
-      192: 'grave accent',
-      219: 'open bracket',
-      220: 'back slash',
-      221: 'close bracket',
-      222: 'single quote'
-}
-
+/* iio.key
+------------------
+*/
 iio.key = {
   string: function(e) {
     return iio.keys[e.keyCode];
@@ -580,17 +453,119 @@ iio.key = {
     });
   }
 }
+iio.keys = {
+  8: 'backspace',
+  9: 'tab',
+  13: 'enter',
+  16: 'shift',
+  17: 'ctrl',
+  18: 'alt',
+  19: 'pause',
+  20: 'caps lock',
+  27: 'escape',
+  32: 'space',
+  33: 'page up',
+  34: 'page down',
+  35: 'end',
+  36: 'home',
+  37: 'left arrow',
+  38: 'up arrow',
+  39: 'right arrow',
+  40: 'down arrow',
+  45: 'insert',
+  46: 'delete',
+  48: '0',
+  49: '1',
+  50: '2',
+  51: '3',
+  52: '4',
+  53: '5',
+  54: '6',
+  55: '7',
+  56: '8',
+  57: '9',
+  65: 'a',
+  66: 'b',
+  67: 'c',
+  68: 'd',
+  69: 'e',
+  70: 'f',
+  71: 'g',
+  72: 'h',
+  73: 'i',
+  74: 'j',
+  75: 'k',
+  76: 'l',
+  77: 'm',
+  78: 'n',
+  79: 'o',
+  80: 'p',
+  81: 'q',
+  82: 'r',
+  83: 's',
+  84: 't',
+  85: 'u',
+  86: 'v',
+  87: 'w',
+  88: 'x',
+  89: 'y',
+  90: 'z',
+  91: 'left window',
+  92: 'right window',
+  93: 'select key',
+  96: 'n0',
+  97: 'n1',
+  98: 'n2',
+  99: 'n3',
+  100: 'n4',
+  101: 'n5',
+  102: 'n6',
+  103: 'n7',
+  104: 'n8',
+  105: 'n9',
+  106: 'multiply',
+  107: 'add',
+  109: 'subtract',
+  110: 'dec',
+  111: 'divide',
+  112: 'f1',
+  113: 'f2',
+  114: 'f3',
+  115: 'f4',
+  116: 'f5',
+  117: 'f6',
+  118: 'f7',
+  119: 'f8',
+  120: 'f9',
+  121: 'f10',
+  122: 'f11',
+  123: 'f12',
+  144: 'num lock',
+  156: 'scroll lock',
+  186: 'semi-colon',
+  187: 'equal',
+  188: 'comma',
+  189: 'dash',
+  190: 'period',
+  191: 'forward slash',
+  192: 'grave accent',
+  219: 'open bracket',
+  220: 'back slash',
+  221: 'close bracket',
+  222: 'single quote'
+}
 
+/* iio.canvas
+------------------
+*/
 iio.canvas = {
   create: function(w, h) {
     var c = document.createElement('canvas');
-
     //create with size
     if (w) {
       c.width = w;
       c.height = h;
     }
-
     //create fullscreen
     else {
       c.margin = 0;
@@ -607,7 +582,6 @@ iio.canvas = {
         c.height = window.innerHeight;
       }
     }
-
     return c;
   },
   prep: function(id, d) {
@@ -671,6 +645,9 @@ iio.canvas = {
   }
 }
 
+/* iio.collision
+------------------
+*/
 iio.collision = {
   check: function(o1, o2) {
     if (!o1 || !o2) return false;
@@ -991,14 +968,18 @@ iio.collision = {
   }
 }
 
+/* iio.draw
+------------------
+*/
 iio.draw = {
   line: function( ctx, x1, y1, x2, y2 ){
     ctx.beginPath();
     ctx.moveTo(x1,y1);
     ctx.lineTo(x2,y2);
     ctx.stroke();
-  }
+  },
 }
+
 /* Interface
 ------------------
 */
@@ -1060,6 +1041,22 @@ iio.Vector.prototype.Vector = function( v,y ) {
 
 //STATIC FUNCTIONS
 //------------------------------------------------------------
+iio.Vector.vs = function ( points ){
+  var vs = [];
+  if (!(points instanceof Array)) points = [points];
+  for (var i = 0; i < points.length; i++) {
+    if (typeof points[i].x != 'undefined')
+      vs.push(points[i]);
+    else {
+      vs.push({
+        x: points[i],
+        y: points[i + 1]
+      });
+      i++;
+    }
+  }
+  return vs;
+}
 iio.Vector.add = function( v1,v2 ){
   var v = v1.clone();
   for (var p in v2)
@@ -1110,6 +1107,18 @@ iio.Vector.lerp = function( v1,v2,x2,y2,p ){
   if (typeof v1.x != 'undefined')
     return new iio.Vector(v1).lerp(v2,x2,y2);
   else return new iio.Vector(v1,v2).lerp(x2, y2, p);
+}
+iio.Vector.rotate = function( x,y,r ){
+  if (typeof x.x != 'undefined') {
+    r = y;
+    y = x.y;
+    x = x.x;
+  }
+  if (typeof r == 'undefined' || r == 0) 
+    return new iio.Vector(x,y);
+  var newX = x * Math.cos(r) - y * Math.sin(r);
+  var newY = y * Math.cos(r) + x * Math.sin(r);
+  return new iio.Vector(newX,newY);
 }
 
 // MEMBER FUNCTIONS
@@ -1176,6 +1185,15 @@ iio.Vector.prototype.lerp = function( v,y,p ){
   if (typeof v.x !== 'undefined')
     this.add(iio.Vector.sub(v,this).mult(y));
   else this.add(iio.Vector.sub(v,y,this).mult(p));
+  return this;
+}
+iio.Vector.prototype.rotate = function( r ){
+  if (typeof r == 'undefined' || r == 0) 
+    return this;
+  var x = this.x;
+  var y = this.y;
+  this.x = x * Math.cos(r) - y * Math.sin(r);
+  this.y = y * Math.cos(r) + x * Math.sin(r);
   return this;
 }
 /* Color
@@ -1355,7 +1373,7 @@ iio.Drawable.prototype.localizeRotation = function(v,n){
   if (this.rotation) {
     if (this.origin)
       v.sub(this.origin);
-    v = iio.point.rotate(v.x, v.y, (n ? this.rotation : -this.rotation));
+    v.rotate( n ? this.rotation : -this.rotation );
     if (this.origin)
       v.add(this.origin);
   }
@@ -3385,7 +3403,7 @@ iio.Loader.prototype.load = function(assets, onComplete) {
 };
 
 
-/* Attach iio to Box2dWeb
+/* Attach iio to box2dWeb
 -------------------------
 */
 if (typeof Box2D != 'undefined'){

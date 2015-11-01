@@ -1,29 +1,34 @@
-srcPath = 'src/core';
+srcPath = 'src';
 
 // Files will be concatenated in the following order
 coreSrc = [
-  'license',
-  'core.js',
-  'libs.js',
-  'Interface.js',
-  'Vector.js',
-  'Color.js',
-  'Gradient.js',
-  'Drawable.js',
-  'SpriteMap.js',
-  'Shape.js',
-  'Ellipse.js',
-  'Polygon.js',
-  'Line.js',
-  'Text.js',
-  'Rectangle.js',
-  'Grid.js',
-  'Quad.js',
-  'QuadGrid.js',
-  'App.js',
-  'Sound.js',
-  'Loader.js',
-  'AttachBox2d.js'
+  'core/license',
+  'core/core.js',
+  'libs/is.js',
+  'libs/convert.js',
+  'libs/key.js',
+  'libs/canvas.js',
+  'libs/collision.js',
+  'libs/draw.js',
+  'data/Interface.js',
+  'data/Vector.js',
+  'data/Color.js',
+  'data/Gradient.js',
+  'core/Drawable.js',
+  'data/SpriteMap.js',
+  'core/Shape.js',
+  'shapes/Ellipse.js',
+  'shapes/Polygon.js',
+  'shapes/Line.js',
+  'shapes/Text.js',
+  'shapes/Rectangle.js',
+  'shapes/Grid.js',
+  'shapes/Quad.js',
+  'shapes/QuadGrid.js',
+  'core/App.js',
+  'data/Sound.js',
+  'core/Loader.js',
+  'extras/box2dweb_iio.js'
 ].map(function(filename) { return srcPath + '/' + filename });
 
 module.exports = function(grunt) {
