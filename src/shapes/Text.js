@@ -149,9 +149,9 @@ iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
   var str;
   var pre = this.text.substring(0, cI);
   var suf = this.text.substring(cI);
-  if (typeof fn != 'undefined') {
+  if (typeof fn !== 'undefined') {
     str = fn(key, shift, pre, suf);
-    if (str != false) {
+    if (str !== false) {
       this.text = pre + str + suf;
       this.cursor.index = cI + 1;
       if (this.showCursor) this.cursor.hidden = false;
@@ -160,58 +160,58 @@ iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
     }
   }
   if (key.length > 1) {
-    if (key == 'space') {
+    if (key === 'space') {
       this.text = pre + " " + suf;
       cI++;
-    } else if (key == 'backspace' && cI > 0) {
+    } else if (key === 'backspace' && cI > 0) {
       this.text = pre.substring(0, pre.length - 1) + suf;
       cI--;
-    } else if (key == 'delete' && cI < this.text.length)
+    } else if (key === 'delete' && cI < this.text.length)
       this.text = pre + suf.substring(1);
-    else if (key == 'left arrow' && cI > 0) cI--;
-    else if (key == 'right arrow' && cI < this.text.length) cI++;
-    else if (key == 'shift') this.cursor.shift = true;
-    else if (key == 'semi-colon') {
+    else if (key === 'left arrow' && cI > 0) cI--;
+    else if (key === 'right arrow' && cI < this.text.length) cI++;
+    else if (key === 'shift') this.cursor.shift = true;
+    else if (key === 'semi-colon') {
       if (shift) this.text = pre + ':' + suf;
       else this.text = pre + ';' + suf;
       cI++;
-    } else if (key == 'equal') {
+    } else if (key === 'equal') {
       if (shift) this.text = pre + '+' + suf;
       else this.text = pre + '=' + suf;
       cI++;
-    } else if (key == 'comma') {
+    } else if (key === 'comma') {
       if (shift) this.text = pre + '<' + suf;
       else this.text = pre + ',' + suf;
       cI++;
-    } else if (key == 'dash') {
+    } else if (key === 'dash') {
       if (shift) this.text = pre + '_' + suf;
       else this.text = pre + '-' + suf;
       cI++;
-    } else if (key == 'period') {
+    } else if (key === 'period') {
       if (shift) this.text = pre + '>' + suf;
       else this.text = pre + '.' + suf;
       cI++;
-    } else if (key == 'forward slash') {
+    } else if (key === 'forward slash') {
       if (shift) this.text = pre + '?' + suf;
       else this.text = pre + '/' + suf;
       cI++;
-    } else if (key == 'grave accent') {
+    } else if (key === 'grave accent') {
       if (shift) this.text = pre + '~' + suf;
       else this.text = pre + '`' + suf;
       cI++;
-    } else if (key == 'open bracket') {
+    } else if (key === 'open bracket') {
       if (shift) this.text = pre + '{' + suf;
       else this.text = pre + '[' + suf;
       cI++;
-    } else if (key == 'back slash') {
+    } else if (key === 'back slash') {
       if (shift) this.text = pre + '|' + suf;
       else this.text = pre + "/" + suf;
       cI++;
-    } else if (key == 'close bracket') {
+    } else if (key === 'close bracket') {
       if (shift) this.text = pre + '}' + suf;
       else this.text = pre + ']' + suf;
       cI++;
-    } else if (key == 'single quote') {
+    } else if (key === 'single quote') {
       if (shift) this.text = pre + '"' + suf;
       else this.text = pre + "'" + suf;
       cI++;

@@ -979,30 +979,30 @@ iio.Interface.prototype.Interface = function() {
   this.set(arguments[0], true);
 }
 
-// FUNCTIONS
-//-------------------------------------------------------------------
+// INTERFACE FUNCTIONS
 iio.Interface.prototype.set = function() {
   for (var p in arguments[0]) this[p] = arguments[0][p];
   if( this.convert_props ) this.convert_props();
   return this;
 }
 iio.Interface.prototype.clone = function() {
-	return new this.constructor( this );
+  return new this.constructor( this );
 }
 iio.Interface.prototype.toString = function() {
-	var str = '';
+  var str = '';
   for (var p in this) {
-  	/*if( typeof this[p] === 'function')
-  		str += p + ' = function\n ';
-  	else str += p + ' = ' + this[p] + '\n';*/
-  	if (this[p] instanceof Array)
-  		str += p + ' = Array['+this[p].length+']\n'
-  	else if( typeof this[p] !== 'function' 
-  		&& p != '_super' )
-  		str += p + ' = ' + this[p] + '\n';
+    /*if( typeof this[p] === 'function')
+      str += p + ' = function\n ';
+    else str += p + ' = ' + this[p] + '\n';*/
+    if (this[p] instanceof Array)
+      str += p + ' = Array['+this[p].length+']\n'
+    else if( typeof this[p] !== 'function' 
+      && p != '_super' )
+      str += p + ' = ' + this[p] + '\n';
   }
   return str;
 }
+
 /* Vector
 ------------------
 */
@@ -1802,18 +1802,17 @@ iio.SpriteMap.prototype.sprite = function() {
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Shape = function(){ this.Shape.apply(this, arguments) }
 iio.inherit(iio.Shape, iio.Drawable);
 iio.Shape.prototype._super = iio.Drawable.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Shape.prototype.Shape = function() {
   iio.Shape.prototype._super.Drawable.call(this,arguments[0]);
 }
 
-//OVERRIDE FUNCTIONS
-//-------------------------------------------------------------------
+// OVERRIDE FUNCTIONS
 iio.Shape.prototype.convert_props = function(){
   iio.Shape.prototype._super.convert_props.call(this, iio.merge_args(arguments));
 
@@ -1840,18 +1839,23 @@ iio.Shape.prototype.convert_props = function(){
   iio.convert.property.vectors(this,"bezierAccs");
 
   // set required properties
-  if(typeof this.fade != 'undefined' && typeof this.alpha == 'undefined')
+  if(typeof this.fade !== 'undefined' && typeof this.alpha === 'undefined')
     this.alpha = 1;
-  if(typeof this.rAcc != 'undefined' && !this.rVel) 
+  if(typeof this.rAcc !== 'undefined' && !this.rVel) 
     this.rVel = 0;
-  if(typeof this.rVel != 'undefined' && !this.rotation) 
+  if(typeof this.rVel !== 'undefined' && !this.rotation) 
     this.rotation = 0;
-  if(typeof this.bezierAccs != 'undefined' && !this.bezierVels){
+  if(this.accs && !this.vels){
+    this.vels = [];
+    for(var i=0; i<this.accs.length; i++)
+      this.vels.push(new iio.Vector);
+  }
+  if(this.bezierAccs && !this.bezierVels){
     this.bezierVels = [];
     for(var i=0; i<this.bezierAccs.length; i++)
       this.bezierVels.push(new iio.Vector);
   }
-  if(typeof this.bezierVels != 'undefined' && !this.bezier){
+  if(this.bezierVels && !this.bezier){
     this.bezier = [];
     for(var i=0; i<this.bezierVels.length; i++)
       this.bezier.push(new iio.Vector);
@@ -1887,28 +1891,43 @@ iio.Shape.prototype.convert_props = function(){
   }
 }
 
-//BOUNDS FUNCTIONS
+// BOUNDS FUNCTIONS
 //-------------------------------------------------------------------
-iio.Shape.prototype.left = function(){ if(this.pos) return this.pos.x; else return 0 }
-iio.Shape.prototype.right = function(){ if(this.pos) return this.pos.x; else return 0 }
-iio.Shape.prototype.top = function(){ if(this.pos) return this.pos.y; else return 0 }
-iio.Shape.prototype.bottom = function(){ if(this.pos) return this.pos.y; else return 0 }
+iio.Shape.prototype.left = function(){
+  if (this.pos) return this.pos.x; 
+  else return 0
+}
+iio.Shape.prototype.right = function(){
+  if (this.pos) return this.pos.x;
+  else return 0
+}
+iio.Shape.prototype.top = function(){
+  if (this.pos) return this.pos.y;
+  else return 0
+}
+iio.Shape.prototype.bottom = function(){
+  if (this.pos) return this.pos.y;
+  else return 0
+}
 iio.Shape.prototype.resolve = function(b, c) {
   if (b.callback) return b.callback(c);
   return true;
 }
 iio.Shape.prototype.over_upper_limit = function(bnd, val, c) {
-  if (iio.is.number(bnd) && val > bnd || typeof bnd.bound != 'undefined' && val > bnd.bound ) 
+  if ( iio.is.number(bnd) && val > bnd 
+   || typeof bnd.bound !== 'undefined' && val > bnd.bound ) 
     return this.resolve(bnd, c);
   return false;
 }
 iio.Shape.prototype.below_lower_limit = function(bnd, val, c) {
-  if (iio.is.number(bnd) && val < bnd || typeof bnd.bound != 'undefined' && val < bnd.bound ) 
+  if ( iio.is.number(bnd) && val < bnd
+   || typeof bnd.bound !== 'undefined' && val < bnd.bound ) 
     return this.resolve(bnd, c);
   return false;
 }
 
-//UPDATE FUNCTIONS
+// UPDATE FUNCTIONS
+//-------------------------------------------------------------------
 iio.Shape.prototype.update = function() {
 
   // transform and remove Shapeect if necessary
@@ -1924,66 +1943,53 @@ iio.Shape.prototype.update = function() {
   if (this.rAcc) this.rVel += this.rAcc;
   if (this.rVel) this.update_rotation();
   if (this.accs) this.update_accs();
-  if (this.vels) this.update_vels();
+  if (this.vels && this.vs) this.update_vels();
   if (this.bezierAccs) this.update_bezier_accs();
   if (this.bezierVels) this.update_bezier_vels();
 
   if (this.onUpdate) this.onUpdate();
-
-  /*if (this.objs && this.objs.length > 0)
-      this.objs.forEach(function(obj) {
-        if (obj.update && obj.update()) this.rmv(obj);
-      }, this);*/
 }
 iio.Shape.prototype.update_vel = function(){
   if(this.pos){
     if (this.vel.x) this.pos.x += this.vel.x;
     if (this.vel.y) this.pos.y += this.vel.y;
-  } else if(this.vs) {
+  } else if(this.vs)
     for(var i=0; i<this.vs.length; i++){
       if (this.vel.x) this.vs[i].x += this.vel.x;
       if (this.vel.y) this.vs[i].y += this.vel.y;
     }
-  }
 }
 iio.Shape.prototype.update_vels = function(){
-  if(this.vs){
-    for(var i=0; i<this.vels.length; i++){
-      if (this.vels[i].x) this.vs[i].x += this.vels[i].x;
-      if (this.vels[i].y) this.vs[i].y += this.vels[i].y;
-    }
+  for(var i=0; i<this.vels.length; i++){
+    if (this.vels[i].x) this.vs[i].x += this.vels[i].x;
+    if (this.vels[i].y) this.vs[i].y += this.vels[i].y;
   }
 }
 iio.Shape.prototype.update_bezier_vels = function(){
-  if(this.bezier){
-    for(var i=0; i<this.bezierVels.length; i++){
-      if (this.bezierVels[i].x) this.bezier[i].x += this.bezierVels[i].x;
-      if (this.bezierVels[i].y) this.bezier[i].y += this.bezierVels[i].y;
-    }
+  for(var i=0; i<this.bezierVels.length; i++){
+    if (this.bezierVels[i].x) this.bezier[i].x += this.bezierVels[i].x;
+    if (this.bezierVels[i].y) this.bezier[i].y += this.bezierVels[i].y;
   }
 }
 iio.Shape.prototype.update_bezier_accs = function(){
-  if(this.bezierVels){
-    for(var i=0; i<this.bezierAccs.length; i++){
-      if (this.bezierAccs[i].x) this.bezierVels[i].x += this.bezierAccs[i].x;
-      if (this.bezierAccs[i].y) this.bezierVels[i].y += this.bezierAccs[i].y;
-    }
+  for(var i=0; i<this.bezierAccs.length; i++){
+    if (this.bezierAccs[i].x) this.bezierVels[i].x += this.bezierAccs[i].x;
+    if (this.bezierAccs[i].y) this.bezierVels[i].y += this.bezierAccs[i].y;
   }
 }
 iio.Shape.prototype.update_rotation = function(){
   this.rotation += this.rVel;
-  if(this.rotation > 6283 || this.rotation < -6283) this.rotation = 0;
+  if(this.rotation > 6283 || this.rotation < -6283)
+    this.rotation = 0;
 }
 iio.Shape.prototype.update_acc = function(){
   this.vel.x += this.acc.x;
   this.vel.y += this.acc.y;
 }
 iio.Shape.prototype.update_accs = function(){
-  if(this.vels){
-    for(var i=0; i<this.accs.length; i++){
-      if (this.accs[i].x) this.vels[i].x += this.accs[i].x;
-      if (this.accs[i].y) this.vels[i].y += this.accs[i].y;
-    }
+  for(var i=0; i<this.accs.length; i++){
+    if (this.accs[i].x) this.vels[i].x += this.accs[i].x;
+    if (this.accs[i].y) this.vels[i].y += this.accs[i].y;
   }
 }
 iio.Shape.prototype.update_shrink = function(){
@@ -2051,7 +2057,8 @@ iio.Shape.prototype.update_properties_deprecated = function(){
   }
 }
 
-//ANIMATION FUNCTIONS
+// ANIMATION FUNCTIONS
+//-------------------------------------------------------------------
 iio.Shape.prototype.playAnim = function() {
   var args = iio.merge_args(arguments);
   if (args.name) this.setSprite(args.name);
@@ -2135,7 +2142,8 @@ iio.Shape.prototype._fade = function(s, r) {
   }
 }
 
-//DRAW FUNCTIONS
+// DRAW FUNCTIONS
+//-------------------------------------------------------------------
 iio.Shape.prototype.orient_ctx = function(ctx){
   ctx = ctx || this.app.ctx;
   ctx.save();
@@ -2411,6 +2419,17 @@ iio.Polygon.prototype.finish_path_shape = function(ctx){
 }
 
 // IMPLEMENT ABSTRACT FUNCTIONS
+iio.Polygon.prototype.trueVs = function() {
+  var vs = [];
+  for(var v,i=0; i<this.vs.length; i++){
+    v = this.localizeRotation(this.vs[i].clone(),true);
+    v.x += this.pos.x;
+    v.y += this.pos.y;
+    vs[i]=v;
+  }
+  return vs;
+}
+
 iio.Polygon.prototype.contains = function(v, y) {
   v = this.localize(v,y);
   var i=j=c=0;
@@ -2449,17 +2468,6 @@ iio.Polygon.prototype.draw_shape = function(ctx) {
   this.finish_path_shape(ctx);
 }
 
-// POLYGON FUNCTIONS
-iio.Polygon.prototype.trueVs = function() {
-  var vs = [];
-  for(var v,i=0; i<this.vs.length; i++){
-    v = this.localizeRotation(this.vs[i].clone(),true);
-    v.x += this.pos.x;
-    v.y += this.pos.y;
-    vs[i]=v;
-  }
-  return vs;
-}
 /* Line
 ------------------
 */
@@ -2668,9 +2676,9 @@ iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
   var str;
   var pre = this.text.substring(0, cI);
   var suf = this.text.substring(cI);
-  if (typeof fn != 'undefined') {
+  if (typeof fn !== 'undefined') {
     str = fn(key, shift, pre, suf);
-    if (str != false) {
+    if (str !== false) {
       this.text = pre + str + suf;
       this.cursor.index = cI + 1;
       if (this.showCursor) this.cursor.hidden = false;
@@ -2679,58 +2687,58 @@ iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
     }
   }
   if (key.length > 1) {
-    if (key == 'space') {
+    if (key === 'space') {
       this.text = pre + " " + suf;
       cI++;
-    } else if (key == 'backspace' && cI > 0) {
+    } else if (key === 'backspace' && cI > 0) {
       this.text = pre.substring(0, pre.length - 1) + suf;
       cI--;
-    } else if (key == 'delete' && cI < this.text.length)
+    } else if (key === 'delete' && cI < this.text.length)
       this.text = pre + suf.substring(1);
-    else if (key == 'left arrow' && cI > 0) cI--;
-    else if (key == 'right arrow' && cI < this.text.length) cI++;
-    else if (key == 'shift') this.cursor.shift = true;
-    else if (key == 'semi-colon') {
+    else if (key === 'left arrow' && cI > 0) cI--;
+    else if (key === 'right arrow' && cI < this.text.length) cI++;
+    else if (key === 'shift') this.cursor.shift = true;
+    else if (key === 'semi-colon') {
       if (shift) this.text = pre + ':' + suf;
       else this.text = pre + ';' + suf;
       cI++;
-    } else if (key == 'equal') {
+    } else if (key === 'equal') {
       if (shift) this.text = pre + '+' + suf;
       else this.text = pre + '=' + suf;
       cI++;
-    } else if (key == 'comma') {
+    } else if (key === 'comma') {
       if (shift) this.text = pre + '<' + suf;
       else this.text = pre + ',' + suf;
       cI++;
-    } else if (key == 'dash') {
+    } else if (key === 'dash') {
       if (shift) this.text = pre + '_' + suf;
       else this.text = pre + '-' + suf;
       cI++;
-    } else if (key == 'period') {
+    } else if (key === 'period') {
       if (shift) this.text = pre + '>' + suf;
       else this.text = pre + '.' + suf;
       cI++;
-    } else if (key == 'forward slash') {
+    } else if (key === 'forward slash') {
       if (shift) this.text = pre + '?' + suf;
       else this.text = pre + '/' + suf;
       cI++;
-    } else if (key == 'grave accent') {
+    } else if (key === 'grave accent') {
       if (shift) this.text = pre + '~' + suf;
       else this.text = pre + '`' + suf;
       cI++;
-    } else if (key == 'open bracket') {
+    } else if (key === 'open bracket') {
       if (shift) this.text = pre + '{' + suf;
       else this.text = pre + '[' + suf;
       cI++;
-    } else if (key == 'back slash') {
+    } else if (key === 'back slash') {
       if (shift) this.text = pre + '|' + suf;
       else this.text = pre + "/" + suf;
       cI++;
-    } else if (key == 'close bracket') {
+    } else if (key === 'close bracket') {
       if (shift) this.text = pre + '}' + suf;
       else this.text = pre + ']' + suf;
       cI++;
-    } else if (key == 'single quote') {
+    } else if (key === 'single quote') {
       if (shift) this.text = pre + '"' + suf;
       else this.text = pre + "'" + suf;
       cI++;
@@ -2746,6 +2754,7 @@ iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
   this.app.draw();
   return cI;
 }
+
 /* Rectangle
 ------------------
 */
@@ -2969,7 +2978,7 @@ iio.Quad.prototype.right = function(){ return this.pos.x + this.width/2 }
 iio.Quad.prototype.top = function(){ return this.pos.y - this.height/2 }
 iio.Quad.prototype.bottom = function(){ return this.pos.y + this.height/2 }
 
-// QUAD FUNCTIONS
+// IMPLEMENT ABSTRACT FUNCTIONS
 iio.Quad.prototype.trueVs = function() {
   this.vs = [
     new iio.Vector(-this.width/2, -this.height/2),
@@ -2989,6 +2998,7 @@ iio.Quad.prototype.trueVs = function() {
   }
   return this._trueVs()
 }
+
 /* QuadGrid
 ------------------
 */
@@ -3015,20 +3025,20 @@ iio.QuadGrid.prototype.setSize = iio.Grid.prototype.setSize;
 iio.QuadGrid.prototype._shrink = iio.Grid.prototype._shrink;
 iio.QuadGrid.prototype.prep_ctx_color = iio.Grid.prototype.prep_ctx_color;
 iio.QuadGrid.prototype.draw_shape = iio.Grid.prototype.draw_shape;
+
 /* App
 ------------------
 */
 
 // DEFINITION
-iio.App =  function() { 
-  this.App.apply(this, arguments) 
+iio.App =  function() {
+  this.App.apply(this, arguments)
 }
 iio.inherit(iio.App, iio.Drawable);
 iio.App.prototype._super = iio.Drawable.prototype;
 
 // CONSTRUCTOR
 iio.App.prototype.App = function(view, script, settings) {
-
   this._super.Drawable.call(this);
 
   //set app reference for shared functions
@@ -3067,14 +3077,56 @@ iio.App.prototype.App = function(view, script, settings) {
   this.script = new script(this, settings);
 }
 
-// FUNCTIONS
-//-------------------------------------------------------------------
+// IMPLEMENT ABSTRACT FUNCTIONS
 iio.App.prototype.update = function(){
   var nuFPS;
   if(this.onUpdate) 
     nuFPS = this.onUpdate();
   this.draw();
   return nuFPS;
+}
+iio.App.prototype.trueVs = function() {
+  // set this.vs with correct values
+  this.vs = [
+    new iio.Vector(-this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, this.height/2),
+    new iio.Vector(-this.width/2, this.height/2),
+  ];
+  // return clone of this.vs
+  var vs = [];
+  for(var i=0; i<this.vs.length; i++)
+   vs[i] = this.vs[i].clone();
+  return vs;
+}
+iio.App.prototype.draw = function( noClear ) {
+
+  // clear canvas
+  if( !this.keepDraws )
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+  // draw background color
+  if (this.color) {
+    this.ctx.fillStyle = this.color.rgbaString();
+    this.ctx.fillRect(0, 0, this.width, this.height);
+  }
+
+  // draw child objects
+  if (this.objs.length > 0)
+    for(var i=0; i<this.objs.length; i++)
+      if (!this.clipObjs
+       || (this.objs[i].right() > 0 && this.objs[i].left() < this.width
+        && this.objs[i].bottom() > 0 && this.objs[i].top() < this.height))
+        if (this.objs[i].draw) this.objs[i].draw(this.ctx);
+}
+
+// APP FUNCTIONS
+iio.App.prototype.eventVector = function(e) {
+  this.update_pos();
+  return new iio.Vector( 
+    e.clientX - this.pos.x, 
+    e.clientY - this.pos.y
+  )
 }
 iio.App.prototype.update_pos = function(){
   var offset = this.canvas.getBoundingClientRect();
@@ -3092,45 +3144,6 @@ iio.App.prototype.stop = function() {
   iio.cancelLoops(this);
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
   this.clear();
-}
-iio.App.prototype.trueVs = function() {
-  this.vs = [
-    new iio.Vector(-this.width/2, -this.height/2),
-    new iio.Vector(this.width/2, -this.height/2),
-    new iio.Vector(this.width/2, this.height/2),
-    new iio.Vector(-this.width/2, this.height/2),
-  ];
-  var vs = [];
-  for(var i=0; i<this.vs.length; i++)
-   vs[i] = this.vs[i].clone();
-  return vs;
-}
-iio.App.prototype.draw = function( noClear ) {
-
-  // clear canvas
-  if( !noClear )
-    this.ctx.clearRect(0, 0, this.width, this.height);
-
-  // draw background color
-  if (this.color) {
-    this.ctx.fillStyle = this.color.rgbaString();
-    this.ctx.fillRect(0, 0, this.width, this.height);
-  }
-
-  // draw child objects
-  if (this.objs.length > 0)
-    for(var i=0; i<this.objs.length; i++)
-      if (!this.clipObjs
-       || (this.objs[i].right() > 0 && this.objs[i].left() < this.width
-        && this.objs[i].bottom() > 0 && this.objs[i].top() < this.height))
-        if (this.objs[i].draw) this.objs[i].draw(this.ctx);
-}
-iio.App.prototype.eventVector = function(e) {
-  this.update_pos();
-  return new iio.Vector( 
-    e.clientX - this.pos.x, 
-    e.clientY - this.pos.y
-  )
 }
 
 /* Sound

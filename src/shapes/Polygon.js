@@ -45,6 +45,17 @@ iio.Polygon.prototype.finish_path_shape = function(ctx){
 }
 
 // IMPLEMENT ABSTRACT FUNCTIONS
+iio.Polygon.prototype.trueVs = function() {
+  var vs = [];
+  for(var v,i=0; i<this.vs.length; i++){
+    v = this.localizeRotation(this.vs[i].clone(),true);
+    v.x += this.pos.x;
+    v.y += this.pos.y;
+    vs[i]=v;
+  }
+  return vs;
+}
+
 iio.Polygon.prototype.contains = function(v, y) {
   v = this.localize(v,y);
   var i=j=c=0;
@@ -81,16 +92,4 @@ iio.Polygon.prototype.draw_shape = function(ctx) {
   if (!this.open)
     ctx.closePath();
   this.finish_path_shape(ctx);
-}
-
-// POLYGON FUNCTIONS
-iio.Polygon.prototype.trueVs = function() {
-  var vs = [];
-  for(var v,i=0; i<this.vs.length; i++){
-    v = this.localizeRotation(this.vs[i].clone(),true);
-    v.x += this.pos.x;
-    v.y += this.pos.y;
-    vs[i]=v;
-  }
-  return vs;
 }

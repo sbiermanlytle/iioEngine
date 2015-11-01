@@ -27,7 +27,7 @@ iio.Quad.prototype.right = function(){ return this.pos.x + this.width/2 }
 iio.Quad.prototype.top = function(){ return this.pos.y - this.height/2 }
 iio.Quad.prototype.bottom = function(){ return this.pos.y + this.height/2 }
 
-// QUAD FUNCTIONS
+// IMPLEMENT ABSTRACT FUNCTIONS
 iio.Quad.prototype.trueVs = function() {
   this.vs = [
     new iio.Vector(-this.width/2, -this.height/2),
