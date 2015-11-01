@@ -341,23 +341,11 @@ iio.Shape.prototype.orient_ctx = function(ctx){
   ctx.save();
 
   //translate & rotate
-  if (this.pos) {
-    if (this.pixelRounding)
-      ctx.translate(Math.floor(this.pos.x), Math.floor(this.pos.y));
-    else ctx.translate(this.pos.x, this.pos.y);
-  }
+  if (this.pos) ctx.translate(this.pos.x, this.pos.y);
   if(this.rotation){
-    if (this.origin) {
-      if (this.pixelRounding)
-        ctx.translate(Math.floor(this.origin.x), Math.floor(this.origin.y));
-      else ctx.translate(this.origin.x, this.origin.y);
-    }
+    if (this.origin) ctx.translate(this.origin.x, this.origin.y);
     ctx.rotate(this.rotation);
-    if (this.origin) {
-      if (this.pixelRounding)
-        ctx.translate(Math.floor(-this.origin.x), Math.floor(-this.origin.y));
-      else ctx.translate(-this.origin.x, -this.origin.y);
-    }
+    if (this.origin) ctx.translate(-this.origin.x, -this.origin.y);
   }
   if(this.flip){
     if(this.flip.indexOf('x') > -1)

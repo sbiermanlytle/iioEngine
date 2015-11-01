@@ -99,10 +99,7 @@ iio.Text.prototype._shrink = function(s, r) {
   }
 }
 iio.Text.prototype.draw_shape = function(ctx) {
-
-  if (this.pixelRounding)
-    ctx.translate(0, Math.floor(this.height/2));
-  else ctx.translate(0, this.height/2); 
+  ctx.translate(0, this.height/2); 
 
   //ctx.strokeStyle = 'red';
   //ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );

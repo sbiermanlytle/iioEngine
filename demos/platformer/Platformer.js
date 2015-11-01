@@ -53,8 +53,6 @@ Platformer = function( app, settings ){
       // create and add mario
       mario = app.add(new iio.Quad({
         pos: [150, groundPos],
-        // prevent off center rendering
-        pixelRounding: true,
         walking: false,
         jumping: false,
         speed: 1,

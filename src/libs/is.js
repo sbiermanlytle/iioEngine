@@ -3,24 +3,24 @@
 */
 iio.is = {
   fn: function(fn) {
-    return typeof fn === 'function';
+    return typeof fn === 'function'
   },
   number: function(o) {
-    return typeof o === 'number';
+    return typeof o === 'number'
   },
   string: function(s) {
-    return typeof s === 'string' || s instanceof String;
+    return typeof s === 'string' || s instanceof String
   },
   filetype: function(file, extensions) {
     return extensions.some(function(ext) {
-      return (file.indexOf('.' + ext) !== -1);
+      return (file.indexOf('.' + ext) !== -1)
     });
   },
   image: function(file) {
-    return this.filetype(file, ['png', 'jpg', 'gif', 'tiff']);
+    return this.filetype(file, ['png', 'jpg', 'gif', 'tiff'])
   },
   sound: function(file) {
-    return this.filetype(file, ['wav', 'mp3', 'aac', 'ogg']);
+    return this.filetype(file, ['wav', 'mp3', 'aac', 'ogg'])
   },
   between: function(val, min, max) {
     if (max < min) {
@@ -28,7 +28,7 @@ iio.is = {
       min = max;
       max = tmp;
     }
-    return (val >= min && val <= max);
+    return (val >= min && val <= max)
   },
   Polygon: function(o){
     if (o instanceof iio.Polygon

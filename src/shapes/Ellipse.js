@@ -12,29 +12,24 @@ iio.Ellipse.prototype.Ellipse = function() {
   this._super.Shape.call(this,iio.merge_args(arguments));
 }
 
+//FUNCTIONS
 iio.Ellipse.prototype.convert_props = function(){
   iio.Ellipse.prototype._super.convert_props.call(this, iio.merge_args(arguments));
   iio.convert.property.color(this,"refLine");
 }
-
-//FUNCTIONS
 iio.Ellipse.prototype.draw_shape = function(ctx) {
   ctx.beginPath();
   if (this.vRadius !== undefined) {
     if (ctx.ellipse) {
-      ctx.ellipse(0,0, this.radius, this.vRadius, 0, 0,2*Math.PI, false)
+      ctx.ellipse(0,0, this.radius,this.vRadius, 0, 0,2*Math.PI, false)
     } else {
       ctx.save();
-      if (this.pixelRounding)
-        ctx.translate(Math.floor(-this.radius), Math.floor(-this.vRadius));
-      else ctx.translate(-this.radius, -this.vRadius);
+      ctx.translate(-this.radius, -this.vRadius);
       ctx.scale(this.radius, this.vRadius);
       ctx.arc(1, 1, 1, 0, 2 * Math.PI, false);
       ctx.restore();
     }
-  } else {
-    ctx.arc(0,0, this.radius, 0,2*Math.PI, false);
-  }
+  } else ctx.arc(0,0, this.radius, 0,2*Math.PI, false);
   if (this.color) ctx.fill();
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();

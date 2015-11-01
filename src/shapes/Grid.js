@@ -58,31 +58,35 @@ iio.Grid.prototype.clear = function(noDraw){
   if(noDraw);
   else this.app.draw();
 }
-iio.Grid.prototype.cellCenter = function(c, r) {
-  return {
-    x: -this.width / 2 + c * this.res.x + this.res.x / 2,
-    y: -this.height / 2 + r * this.res.y + this.res.y / 2
-  }
+iio.Grid.prototype.cellCenter = function( c,r ) {
+  return new iio.Vector(
+    -this.width / 2 + c * this.res.x + this.res.x / 2,
+    -this.height / 2 + r * this.res.y + this.res.y / 2
+  );
 }
-iio.Grid.prototype.cellAt = function(x, y) {
-  if (x.x) return this.cells[Math.floor((x.x - this.left()) / this.res.x)][Math.floor((x.y - this.top()) / this.res.y)];
-  else return this.cells[Math.floor((x - this.left()) / this.res.x)][Math.floor((y - this.top()) / this.res.y)];
+iio.Grid.prototype.cellAt = function( x,y ) {
+  if (x.x) return this.cells
+    [Math.floor((x.x - this.left()) / this.res.x)]
+    [Math.floor((x.y - this.top()) / this.res.y)];
+  else return this.cells
+    [Math.floor((x - this.left()) / this.res.x)]
+    [Math.floor((y - this.top()) / this.res.y)];
 }
 iio.Grid.prototype.foreachCell = function(fn, p) {
   for (var c = 0; c < this.C; c++)
     for (var r = 0; r < this.R; r++)
       if (fn(this.cells[c][r], p) === false)
-        return [r, c];
+        return [r,c];
 }
-iio.Grid.prototype.setSize = function(w,h){
+iio.Grid.prototype.setSize = function( w,h ){
   this.width = w;
-  this.height = h;
+  this.height = h || w;
   this.infer_res();
 }
-iio.Grid.prototype._shrink = function(s, r) {
+iio.Grid.prototype._shrink = function( s,r ) {
   this.setSize( 
-    this.width * (1 - s),
-    this.height * (1 - s)
+    this.width * (1-s),
+    this.height * (1-s)
   );
   if (this.width < .02 
     || this.width < this.shrink.lowerBound 
