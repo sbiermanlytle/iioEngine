@@ -30,21 +30,20 @@ iio.Grid.prototype.init = function(){
 }
 iio.Grid.prototype.init_cells = function(){
   this.cells = [];
-  var x = -this.res.x * (this.C - 1) / 2;
-  var y = -this.res.y * (this.R - 1) / 2;
-  for (var c = 0; c < this.C; c++) {
+  var x = -this.res.x * (this.C-1) / 2;
+  var y = -this.res.y * (this.R-1) / 2;
+  for (var r,c=0; c<this.C; c++) {
     this.cells[c] = [];
-    for (var r = 0; r < this.R; r++) {
+    for (r = 0; r<this.R; r++) {
       this.cells[c][r] = this.add(new iio.Quad({
         pos: new iio.Vector( x,y ),
-        c: c,
-        r: r,
+        c: c, r: r,
         width: this.res.x,
         height: this.res.y
       }));
       y += this.res.y;
     }
-    y = -this.res.y * (this.R - 1) / 2;
+    y = -this.res.y * (this.R-1) / 2;
     x += this.res.x;
   }
 }
@@ -60,8 +59,8 @@ iio.Grid.prototype.clear = function(noDraw){
 }
 iio.Grid.prototype.cellCenter = function( c,r ) {
   return new iio.Vector(
-    -this.width / 2 + c * this.res.x + this.res.x / 2,
-    -this.height / 2 + r * this.res.y + this.res.y / 2
+    -this.width/2 + c*this.res.x + this.res.x/2,
+    -this.height/2 + r*this.res.y + this.res.y/2
   );
 }
 iio.Grid.prototype.cellAt = function( x,y ) {
@@ -80,7 +79,7 @@ iio.Grid.prototype.foreachCell = function(fn, p) {
 }
 iio.Grid.prototype.setSize = function( w,h ){
   this.width = w;
-  this.height = h || w;
+  this.height = h||w;
   this.infer_res();
 }
 iio.Grid.prototype._shrink = function( s,r ) {
@@ -101,13 +100,13 @@ iio.Grid.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;
 iio.Grid.prototype.draw_shape = function(ctx) {
   if (this.color) {
     ctx.beginPath();
-    for (var c = 1; c < this.C; c++){
-      ctx.moveTo(-this.width / 2 + c * this.res.x, -this.height / 2);
-      ctx.lineTo(-this.width / 2 + c * this.res.x, this.height / 2);
+    for (var c=1; c<this.C; c++){
+      ctx.moveTo(-this.width/2 + c*this.res.x, -this.height/2);
+      ctx.lineTo(-this.width/2 + c*this.res.x, this.height/2);
     }
-    for (var r = 1; r < this.R; r++){
-      ctx.moveTo(-this.width / 2, -this.height / 2 + r * this.res.y);
-      ctx.lineTo(this.width / 2, -this.height / 2 + r * this.res.y);
+    for (var r=1; r<this.R; r++){
+      ctx.moveTo(-this.width/2, -this.height/2 + r*this.res.y);
+      ctx.lineTo(this.width/2, -this.height/2 + r*this.res.y);
     }
     ctx.stroke();
   }

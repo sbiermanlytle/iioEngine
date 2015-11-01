@@ -20,6 +20,25 @@ iio.Line.prototype.top = iio.Polygon.prototype.top;
 iio.Line.prototype.bottom = iio.Polygon.prototype.bottom;
 
 //FUNCTIONS
+iio.Line.prototype.prep_ctx_color = function(ctx){
+  if(this.color instanceof iio.Gradient)
+    ctx.strokeStyle = this.color.canvasGradient(ctx);
+  else ctx.strokeStyle = this.color.rgbaString();
+  ctx = this.prep_ctx_lineWidth(ctx);
+  return ctx;
+}
+iio.Line.prototype.prep_ctx_lineWidth = function(ctx){
+  ctx.lineWidth = this.width || 1;
+  return ctx;
+}
+iio.Line.prototype.draw_shape = function(ctx) {
+  ctx.beginPath();
+  ctx.moveTo(this.vs[0].x, this.vs[0].y);
+  if (this.bezier)
+    ctx.bezierCurveTo(this.bezier[0].x, this.bezier[0].y, this.bezier[1].x, this.bezier[1].y, this.vs[1].x, this.vs[1].y);
+  else ctx.lineTo(this.vs[1].x, this.vs[1].y);
+  ctx.stroke();
+}
 /*iio.Line.prototype.contains = function(v, y) {
   if (typeof(y) != 'undefined') v = {
     x: v,
@@ -33,23 +52,3 @@ iio.Line.prototype.bottom = iio.Polygon.prototype.bottom;
   }
   return false;
 }*/
-iio.Line.prototype.prep_ctx_color = function(ctx){
-  if(this.color instanceof iio.Gradient)
-    ctx.strokeStyle = this.color.canvasGradient(ctx);
-  else ctx.strokeStyle = this.color.rgbaString();
-  ctx = this.prep_ctx_lineWidth(ctx);
-  return ctx;
-}
-iio.Line.prototype.prep_ctx_lineWidth = function(ctx){
-  ctx.lineWidth = this.width || 1;
-  return ctx;
-}
-
-iio.Line.prototype.draw_shape = function(ctx) {
-  ctx.beginPath();
-  ctx.moveTo(this.vs[0].x, this.vs[0].y);
-  if (this.bezier)
-    ctx.bezierCurveTo(this.bezier[0].x, this.bezier[0].y, this.bezier[1].x, this.bezier[1].y, this.vs[1].x, this.vs[1].y);
-  else ctx.lineTo(this.vs[1].x, this.vs[1].y);
-  ctx.stroke();
-}

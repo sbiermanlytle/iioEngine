@@ -34,17 +34,17 @@ iio.Ellipse.prototype.draw_shape = function(ctx) {
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
   if (this.img) {
-    if (this.noImageRounding)
+    if (this.imageRounding)
       ctx.drawImage(this.img,
-        -this.radius,
-        -(this.vRadius||this.radius),
-        this.radius*2,
-        (this.vRadius||this.radius)*2);
+        Math.floor(-this.radius),
+        Math.floor(-(this.vRadius||this.radius)),
+        Math.floor(this.radius*2),
+        Math.floor((this.vRadius||this.radius)*2));
     else ctx.drawImage(this.img,
-      Math.floor(-this.radius),
-      Math.floor(-(this.vRadius||this.radius)),
-      Math.floor(this.radius*2),
-      Math.floor((this.vRadius||this.radius)*2));
+      -this.radius,
+      -(this.vRadius||this.radius),
+      this.radius*2,
+      (this.vRadius||this.radius)*2);
   }
   if(this.refLine){
     ctx.save();

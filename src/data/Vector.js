@@ -39,6 +39,18 @@ iio.Vector.vs = function ( points ){
   }
   return vs;
 }
+iio.Vector.leftmost = function( vs ){
+  return iio.specVec(vs,function(v1,v2){ return v1.x>v2.x }).x
+}
+iio.Vector.rightmost = function( vs ){
+  return iio.specVec(vs,function(v1,v2){ return v1.x<v2.x }).x 
+}
+iio.Vector.highest = function( vs ){
+  return iio.specVec(vs,function(v1,v2){ return v1.y>v2.y }).y
+}
+iio.Vector.lowest = function( vs ){
+  return iio.specVec(vs,function(v1,v2){ return v1.y<v2.y }).y
+}
 iio.Vector.add = function( v1,v2 ){
   var v = v1.clone();
   for (var p in v2)

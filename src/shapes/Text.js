@@ -100,10 +100,8 @@ iio.Text.prototype._shrink = function(s, r) {
 }
 iio.Text.prototype.draw_shape = function(ctx) {
   ctx.translate(0, this.height/2); 
-
   //ctx.strokeStyle = 'red';
   //ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
-
   ctx.font = this.size + 'px ' + this.font;
   ctx.textAlign = this.align;
   if (this.color) ctx.fillText(this.text, 0, 0);

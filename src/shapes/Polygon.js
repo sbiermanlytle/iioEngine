@@ -16,33 +16,17 @@ iio.Polygon.prototype.Polygon = function() {
 iio.Polygon.prototype.finish_path_shape = function(ctx){
   if (this.color) ctx.fill();
   if (this.img) {
-    if (this.noImageRounding)
-      ctx.drawImage(this.img,
-        iio.specVec( this.vs,
-          function(v1,v2){if(v1.x>v2.x)return true;return false}).x,
-        iio.specVec( this.vs,
-          function(v1,v2){if(v1.y>v2.y)return true;return false}).y,
-        iio.specVec( this.vs,
-          function(v1,v2){if(v1.x<v2.x)return true;return false}).x
-        - iio.specVec( this.vs,
-          function(v1,v2){if(v1.x>v2.x)return true;return false}).x,
-        iio.specVec( this.vs,
-          function(v1,v2){if(v1.y>v2.y)return true;return false}).y
-        - iio.specVec( this.vs,
-          function(v1,v2){if(v1.y<v2.y)return true;return false}).y);
-    else ctx.drawImage(this.img,
-        Math.floor(iio.specVec( this.vs,
-          function(v1,v2){if(v1.x>v2.x)return true;return false}).x),
-        Math.floor(iio.specVec( this.vs,
-          function(v1,v2){if(v1.y>v2.y)return true;return false}).y),
-        Math.floor(iio.specVec( this.vs,
-          function(v1,v2){if(v1.x<v2.x)return true;return false}).x
-        - iio.specVec( this.vs,
-          function(v1,v2){if(v1.x>v2.x)return true;return false}).x),
-       Math.floor( iio.specVec( this.vs,
-          function(v1,v2){if(v1.y>v2.y)return true;return false}).y
-        - iio.specVec( this.vs,
-          function(v1,v2){if(v1.y<v2.y)return true;return false}).y));
+    var left = iio.Vector.leftmost(this.vs);
+    var top = iio.Vector.highest(this.vs);
+    var right = iio.Vector.rightmost(this.vs);
+    var bottom = iio.Vector.lowest(this.vs);
+    if (this.imageRounding){
+      left = Math.floor(left);
+      right = Math.floor(right);
+      top = Math.floor(top);
+      bottom = Math.floor(bottom);
+    }
+    ctx.drawImage(this.img,left,top,right-left,bottom-top);
   }
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
@@ -93,32 +77,14 @@ iio.Polygon.prototype.trueVs = function() {
   return vs;
 }
 iio.Polygon.prototype.left = function(){ 
-  return iio.specVec( this.trueVs(),
-    function(v1,v2){
-      if(v1.x>v2.x)
-        return true;
-      return false
-    }).x
+  return iio.Vector.leftmost(this.trueVs())
 }
 iio.Polygon.prototype.right = function(){ 
-  return iio.specVec( this.trueVs(),
-    function(v1,v2){
-      if(v1.x<v2.x)
-        return true;
-      return false
-    }).x 
+  return iio.Vector.rightmost(this.trueVs())
 }
 iio.Polygon.prototype.top = function(){ 
-  return iio.specVec( this.trueVs(),
-    function(v1,v2){
-      if(v1.y>v2.y)
-        return true;
-      return false}).y
+  return iio.Vector.highest(this.trueVs())
 }
 iio.Polygon.prototype.bottom = function(){ 
-  return iio.specVec( this.trueVs(),
-    function(v1,v2){
-      if(v1.y<v2.y)
-        return true;
-      return false}).y
+  return iio.Vector.lowest(this.trueVs())
 }
