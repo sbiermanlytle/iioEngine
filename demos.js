@@ -8,14 +8,12 @@ show_demo_index = function(){
   add_demo_preview( iioApps, Snake, "Snake" );
   add_demo_preview( iioApps, Box2dDemo, "Box2d" );
   add_demo_preview( iioApps, Platformer, "Platformer" );
-  add_demo_preview( iioApps, ColorGrid, "ColorGrid", {w:20} );
   add_demo_preview( iioApps, MineSweeper, "MineSweeper", { color: new iio.Color(255,255,255) } );
   add_demo_preview( iioApps, BezierCurves, "BezierCurves" );
   add_demo_preview( iioApps, DragDrop, "DragDrop" );
   add_demo_preview( iioApps, TextEdit, "TextEdit" );
   add_demo_preview( iioApps, Panning, "Panning" );
   add_demo_preview( iioApps, ColorLines, "ColorLines", { lineWidth:20 } );
-  add_demo_preview( iioApps, TicTacToe, "TicTacToe" );
   add_demo_preview( iioApps, Squares, "Squares" );
   add_demo_preview( iioApps, Snow, "Snow" );
   page.append(clear);
