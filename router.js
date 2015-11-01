@@ -25,7 +25,6 @@ function goTo( hash ) {
 }
 
 refresh = function(){
-  console.log('refresh');
   current_hash = window.location.hash;
   page.empty();
   $('#main').append(bg_glow);
@@ -68,84 +67,86 @@ display_current = function(){
       anchor = path.substr( anchorPos );
       path = path.substr( 0, anchorPos );
     }
-    if( path == 'overview' )
+    if( path === 'overview' )
       show_api_basics();
-    else if( path == 'App-control' )
+    else if( path === 'App-control' )
       show_api( api.AppControl );
-    else if( path == 'Loader' )
+    else if( path === 'Loader' )
       show_api( api.Loader );
-    else if( path == 'Sound' )
+    else if( path === 'Sound' )
       show_api( api.Sound );
-    else if( path == 'Interface' )
+    else if( path === 'Interface' )
       show_api( api.Interface );
-    else if( path == 'Vector' )
+    else if( path === 'Vector' )
       show_api( api.Vector );
-    else if( path == 'Color' )
+    else if( path === 'Color' )
       show_api( api.Color );
-    else if( path == 'Gradient' )
+    else if( path === 'Gradient' )
       show_api( api.Gradient );
-    else if( path == 'Drawable' )
+    else if( path === 'Drawable' )
       show_api( api.Drawable );
-    else if( path == 'App' )
+    else if( path === 'App' )
       show_api( api.App );
-    else if( path == 'Shape' )
+    else if( path === 'Shape' )
       show_api( api.Shape );
-    else if( path == 'Line' )
+    else if( path === 'Line' )
       show_api( api.Line );
-    else if( path == 'Text' )
+    else if( path === 'Text' )
       show_api( api.Text );
-    else if( path == 'Ellipse' )
+    else if( path === 'Ellipse' )
       show_api( api.Ellipse );
-    else if( path == 'Polygon' )
+    else if( path === 'Polygon' )
       show_api( api.Polygon );
-    else if( path == 'Rectangle' )
+    else if( path === 'Rectangle' )
       show_api( api.Rectangle );
-    else if( path == 'Grid' )
+    else if( path === 'Grid' )
       show_api( api.Grid );
-    else if( path == 'Quad' )
+    else if( path === 'Quad' )
       show_api( api.Quad );
-    else if( path == 'QuadGrid' )
+    else if( path === 'QuadGrid' )
       show_api( api.QuadGrid );
   } 
 
   // DEMO ROUTER
-  else if( current_hash.substr( 0, 7 ) == '#demos-' ){
+  else if( current_hash.substr( 0, 7 ) === '#demos-' ){
     current = DEMOS;
     var path = current_hash.substr( 7 );
 
-    if( path == 'ScrollShooter' )
+    if( path === 'ScrollShooter' )
       show_demo( ScrollShooter, "ScrollShooter" );
-    else if( path == 'Snake' )
+    else if( path === 'Snake' )
       show_demo( Snake, "Snake" );
-    else if( path == 'ColorGrid' )
+    else if( path === 'ColorGrid' )
       show_demo( ColorGrid, "ColorGrid", { w:20 } );
-    else if( path == 'Squares' )
+    else if( path === 'Squares' )
       show_demo( Squares, "Squares" );
-    else if( path == 'Snow' )
+    else if( path === 'Snow' )
       show_demo( Snow, "Snow" );
-    else if( path == 'TicTacToe' )
+    else if( path === 'TicTacToe' )
       show_demo( TicTacToe, "TicTacToe" );
-    else if( path == 'MineSweeper' )
+    else if( path === 'MineSweeper' )
       show_demo( MineSweeper, "MineSweeper" );
-    else if( path == 'ColorLines' )
+    else if( path === 'ColorLines' )
       show_demo( ColorLines, "ColorLines" );
-    else if( path == 'BezierCurves' )
+    else if( path === 'BezierCurves' )
       show_demo( BezierCurves, "BezierCurves" );
-    else if( path == 'Panning' )
+    else if( path === 'Panning' )
       show_demo( Panning, "Panning" );
-    else if( path == 'DragDrop' )
+    else if( path === 'DragDrop' )
       show_demo( DragDrop, "DragDrop" );
-    else if( path == 'Platformer' )
+    else if( path === 'Platformer' )
       show_demo( Platformer, "Platformer" );
-    else if( path == 'Box2d' )
+    else if( path === 'Box2d' )
       show_demo( Box2dDemo, "Box2d" );
+    else if( path === 'TextEdit' )
+      show_demo( TextEdit, "TextEdit" );
 
   }
 
   highlight_menu();
   prettyPrint();
 
-  if( current_hash.substr( 0, 5 ) == '#api.' )
+  if( current_hash.substr( 0, 5 ) === '#api.' )
     $('.prettyprint ol.linenums').css('margin-left', '-40px');
 
   if(anchor){

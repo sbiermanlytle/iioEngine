@@ -12,6 +12,7 @@ show_demo_index = function(){
   add_demo_preview( iioApps, MineSweeper, "MineSweeper", { color: new iio.Color(255,255,255) } );
   add_demo_preview( iioApps, BezierCurves, "BezierCurves" );
   add_demo_preview( iioApps, DragDrop, "DragDrop" );
+  add_demo_preview( iioApps, TextEdit, "TextEdit" );
   add_demo_preview( iioApps, Panning, "Panning" );
   add_demo_preview( iioApps, ColorLines, "ColorLines", { lineWidth:20 } );
   add_demo_preview( iioApps, TicTacToe, "TicTacToe" );

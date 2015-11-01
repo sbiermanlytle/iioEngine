@@ -32,6 +32,6 @@ show_home = function(){
   add_demo_preview( iioApps2, ColorGrid, "ColorGrid", {w:20} );
   add_demo_preview( iioApps2, MineSweeper, "MineSweeper", { color: new iio.Color(255,255,255) } );
   add_demo_preview( iioApps2, Squares, "Squares" );
-  add_demo_preview( iioApps2, ColorLines, "ColorLines", { lineWidth:20 } );
+  add_demo_preview( iioApps2, TextEdit, "TextEdit" );
   add_demo_preview( iioApps2, Snow, "Snow" );
 };

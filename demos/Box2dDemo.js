@@ -229,7 +229,7 @@ Box2dDemo = function( app, settings ){
   app.onKeyDown = function(event, key){
     if (key === 'p')
       app.pauseB2World();
-    else if (key === 'd')
-      app.clear();
+    //else if (key === 'd')
+      //app.clear();
   }
 }

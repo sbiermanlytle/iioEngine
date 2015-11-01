@@ -351,7 +351,7 @@ iio.createGradient = function(ctx, g) {
 }
 
 
-/* Libraries
+/* iio.is
 ------------------
 */
 iio.is = {
@@ -359,22 +359,21 @@ iio.is = {
     return typeof fn === 'function'
   },
   number: function(o) {
-    if (typeof o === 'number') return true;
-    //return (o - 0) == o && o.length > 0;
+    return typeof o === 'number'
   },
   string: function(s) {
-    return typeof s == 'string' || s instanceof String
+    return typeof s === 'string' || s instanceof String
   },
   filetype: function(file, extensions) {
     return extensions.some(function(ext) {
-      return (file.indexOf('.' + ext) != -1)
+      return (file.indexOf('.' + ext) !== -1)
     });
   },
   image: function(file) {
-    return this.filetype(file, ['png', 'jpg', 'gif', 'tiff']);
+    return this.filetype(file, ['png', 'jpg', 'gif', 'tiff'])
   },
   sound: function(file) {
-    return this.filetype(file, ['wav', 'mp3', 'aac', 'ogg']);
+    return this.filetype(file, ['wav', 'mp3', 'aac', 'ogg'])
   },
   between: function(val, min, max) {
     if (max < min) {
@@ -382,7 +381,7 @@ iio.is = {
       min = max;
       max = tmp;
     }
-    return (val >= min && val <= max);
+    return (val >= min && val <= max)
   },
   Polygon: function(o){
     if (o instanceof iio.Polygon
@@ -406,6 +405,9 @@ iio.is = {
   }
 }
 
+/* iio.convert
+------------------
+*/
 iio.convert = {
   property: {
     color: function(o,c){
@@ -435,139 +437,9 @@ iio.convert = {
   }
 }
 
-iio.point = {
-  rotate: function(x, y, r) {
-    if (typeof x.x != 'undefined') {
-      r = y;
-      y = x.y;
-      x = x.x;
-    }
-    if (typeof r == 'undefined' || r == 0) 
-      return new iio.Vector(x,y);
-    var newX = x * Math.cos(r) - y * Math.sin(r);
-    var newY = y * Math.cos(r) + x * Math.sin(r);
-    return new iio.Vector(newX,newY);
-  },
-  vector: function(points) {
-    var vecs = [];
-    if (!(points instanceof Array)) points = [points];
-    for (var i = 0; i < points.length; i++) {
-      if (typeof points[i].x != 'undefined')
-        vecs.push(points[i]);
-      else {
-        vecs.push({
-          x: points[i],
-          y: points[i + 1]
-        });
-        i++;
-      }
-    }
-    return vecs;
-  }
-}
-
-iio.keys = {
-      8: 'backspace',
-      9: 'tab',
-      13: 'enter',
-      16: 'shift',
-      17: 'ctrl',
-      18: 'alt',
-      19: 'pause',
-      20: 'caps lock',
-      27: 'escape',
-      32: 'space',
-      33: 'page up',
-      34: 'page down',
-      35: 'end',
-      36: 'home',
-      37: 'left arrow',
-      38: 'up arrow',
-      39: 'right arrow',
-      40: 'down arrow',
-      45: 'insert',
-      46: 'delete',
-      48: '0',
-      49: '1',
-      50: '2',
-      51: '3',
-      52: '4',
-      53: '5',
-      54: '6',
-      55: '7',
-      56: '8',
-      57: '9',
-      65: 'a',
-      66: 'b',
-      67: 'c',
-      68: 'd',
-      69: 'e',
-      70: 'f',
-      71: 'g',
-      72: 'h',
-      73: 'i',
-      74: 'j',
-      75: 'k',
-      76: 'l',
-      77: 'm',
-      78: 'n',
-      79: 'o',
-      80: 'p',
-      81: 'q',
-      82: 'r',
-      83: 's',
-      84: 't',
-      85: 'u',
-      86: 'v',
-      87: 'w',
-      88: 'x',
-      89: 'y',
-      90: 'z',
-      91: 'left window',
-      92: 'right window',
-      93: 'select key',
-      96: 'n0',
-      97: 'n1',
-      98: 'n2',
-      99: 'n3',
-      100: 'n4',
-      101: 'n5',
-      102: 'n6',
-      103: 'n7',
-      104: 'n8',
-      105: 'n9',
-      106: 'multiply',
-      107: 'add',
-      109: 'subtract',
-      110: 'dec',
-      111: 'divide',
-      112: 'f1',
-      113: 'f2',
-      114: 'f3',
-      115: 'f4',
-      116: 'f5',
-      117: 'f6',
-      118: 'f7',
-      119: 'f8',
-      120: 'f9',
-      121: 'f10',
-      122: 'f11',
-      123: 'f12',
-      144: 'num lock',
-      156: 'scroll lock',
-      186: 'semi-colon',
-      187: 'equal',
-      188: 'comma',
-      189: 'dash',
-      190: 'period',
-      191: 'forward slash',
-      192: 'grave accent',
-      219: 'open bracket',
-      220: 'back slash',
-      221: 'close bracket',
-      222: 'single quote'
-}
-
+/* iio.key
+------------------
+*/
 iio.key = {
   string: function(e) {
     return iio.keys[e.keyCode];
@@ -580,17 +452,119 @@ iio.key = {
     });
   }
 }
+iio.keys = {
+  8: 'backspace',
+  9: 'tab',
+  13: 'enter',
+  16: 'shift',
+  17: 'ctrl',
+  18: 'alt',
+  19: 'pause',
+  20: 'caps lock',
+  27: 'escape',
+  32: 'space',
+  33: 'page up',
+  34: 'page down',
+  35: 'end',
+  36: 'home',
+  37: 'left arrow',
+  38: 'up arrow',
+  39: 'right arrow',
+  40: 'down arrow',
+  45: 'insert',
+  46: 'delete',
+  48: '0',
+  49: '1',
+  50: '2',
+  51: '3',
+  52: '4',
+  53: '5',
+  54: '6',
+  55: '7',
+  56: '8',
+  57: '9',
+  65: 'a',
+  66: 'b',
+  67: 'c',
+  68: 'd',
+  69: 'e',
+  70: 'f',
+  71: 'g',
+  72: 'h',
+  73: 'i',
+  74: 'j',
+  75: 'k',
+  76: 'l',
+  77: 'm',
+  78: 'n',
+  79: 'o',
+  80: 'p',
+  81: 'q',
+  82: 'r',
+  83: 's',
+  84: 't',
+  85: 'u',
+  86: 'v',
+  87: 'w',
+  88: 'x',
+  89: 'y',
+  90: 'z',
+  91: 'left window',
+  92: 'right window',
+  93: 'select key',
+  96: 'n0',
+  97: 'n1',
+  98: 'n2',
+  99: 'n3',
+  100: 'n4',
+  101: 'n5',
+  102: 'n6',
+  103: 'n7',
+  104: 'n8',
+  105: 'n9',
+  106: 'multiply',
+  107: 'add',
+  109: 'subtract',
+  110: 'dec',
+  111: 'divide',
+  112: 'f1',
+  113: 'f2',
+  114: 'f3',
+  115: 'f4',
+  116: 'f5',
+  117: 'f6',
+  118: 'f7',
+  119: 'f8',
+  120: 'f9',
+  121: 'f10',
+  122: 'f11',
+  123: 'f12',
+  144: 'num lock',
+  156: 'scroll lock',
+  186: 'semi-colon',
+  187: 'equal',
+  188: 'comma',
+  189: 'dash',
+  190: 'period',
+  191: 'forward slash',
+  192: 'grave accent',
+  219: 'open bracket',
+  220: 'back slash',
+  221: 'close bracket',
+  222: 'single quote'
+}
 
+/* iio.canvas
+------------------
+*/
 iio.canvas = {
   create: function(w, h) {
     var c = document.createElement('canvas');
-
     //create with size
     if (w) {
       c.width = w;
       c.height = h;
     }
-
     //create fullscreen
     else {
       c.margin = 0;
@@ -607,7 +581,6 @@ iio.canvas = {
         c.height = window.innerHeight;
       }
     }
-
     return c;
   },
   prep: function(id, d) {
@@ -671,6 +644,9 @@ iio.canvas = {
   }
 }
 
+/* iio.collision
+------------------
+*/
 iio.collision = {
   check: function(o1, o2) {
     if (!o1 || !o2) return false;
@@ -991,14 +967,6 @@ iio.collision = {
   }
 }
 
-iio.draw = {
-  line: function( ctx, x1, y1, x2, y2 ){
-    ctx.beginPath();
-    ctx.moveTo(x1,y1);
-    ctx.lineTo(x2,y2);
-    ctx.stroke();
-  }
-}
 /* Interface
 ------------------
 */
@@ -1060,6 +1028,34 @@ iio.Vector.prototype.Vector = function( v,y ) {
 
 //STATIC FUNCTIONS
 //------------------------------------------------------------
+iio.Vector.vs = function ( points ){
+  var vs = [];
+  if (!(points instanceof Array)) points = [points];
+  for (var i = 0; i < points.length; i++) {
+    if (typeof points[i].x != 'undefined')
+      vs.push(points[i]);
+    else {
+      vs.push({
+        x: points[i],
+        y: points[i + 1]
+      });
+      i++;
+    }
+  }
+  return vs;
+}
+iio.Vector.leftmost = function( vs ){
+  return iio.specVec(vs,function(v1,v2){ return v1.x>v2.x }).x
+}
+iio.Vector.rightmost = function( vs ){
+  return iio.specVec(vs,function(v1,v2){ return v1.x<v2.x }).x 
+}
+iio.Vector.highest = function( vs ){
+  return iio.specVec(vs,function(v1,v2){ return v1.y>v2.y }).y
+}
+iio.Vector.lowest = function( vs ){
+  return iio.specVec(vs,function(v1,v2){ return v1.y<v2.y }).y
+}
 iio.Vector.add = function( v1,v2 ){
   var v = v1.clone();
   for (var p in v2)
@@ -1110,6 +1106,18 @@ iio.Vector.lerp = function( v1,v2,x2,y2,p ){
   if (typeof v1.x != 'undefined')
     return new iio.Vector(v1).lerp(v2,x2,y2);
   else return new iio.Vector(v1,v2).lerp(x2, y2, p);
+}
+iio.Vector.rotate = function( x,y,r ){
+  if (typeof x.x != 'undefined') {
+    r = y;
+    y = x.y;
+    x = x.x;
+  }
+  if (typeof r == 'undefined' || r == 0) 
+    return new iio.Vector(x,y);
+  var newX = x * Math.cos(r) - y * Math.sin(r);
+  var newY = y * Math.cos(r) + x * Math.sin(r);
+  return new iio.Vector(newX,newY);
 }
 
 // MEMBER FUNCTIONS
@@ -1176,6 +1184,15 @@ iio.Vector.prototype.lerp = function( v,y,p ){
   if (typeof v.x !== 'undefined')
     this.add(iio.Vector.sub(v,this).mult(y));
   else this.add(iio.Vector.sub(v,y,this).mult(p));
+  return this;
+}
+iio.Vector.prototype.rotate = function( r ){
+  if (typeof r == 'undefined' || r == 0) 
+    return this;
+  var x = this.x;
+  var y = this.y;
+  this.x = x * Math.cos(r) - y * Math.sin(r);
+  this.y = y * Math.cos(r) + x * Math.sin(r);
   return this;
 }
 /* Color
@@ -1355,7 +1372,7 @@ iio.Drawable.prototype.localizeRotation = function(v,n){
   if (this.rotation) {
     if (this.origin)
       v.sub(this.origin);
-    v = iio.point.rotate(v.x, v.y, (n ? this.rotation : -this.rotation));
+    v.rotate( n ? this.rotation : -this.rotation );
     if (this.origin)
       v.add(this.origin);
   }
@@ -1417,8 +1434,11 @@ iio.Drawable.prototype.add = function() {
       }
 
     // infer size if Text object
-    if (arguments[0] instanceof iio.Text)
+    if (arguments[0] instanceof iio.Text){
       arguments[0].inferSize();
+      if (arguments[0].showCursor)
+        arguments[0].init_cursor();
+    }
 
     // set default z index
     if (typeof(arguments[0].z) == 'undefined') 
@@ -2121,20 +2141,20 @@ iio.Shape.prototype.orient_ctx = function(ctx){
   ctx.save();
 
   //translate & rotate
-  if (this.pos) {
-    if (this.pixelRounding)
+  if (this.pos){
+    if (this.imageRounding)
       ctx.translate(Math.floor(this.pos.x), Math.floor(this.pos.y));
-    else ctx.translate(this.pos.x, this.pos.y);
+    else ctx.translate(this.pos.x, this.pos.y); 
   }
   if(this.rotation){
-    if (this.origin) {
-      if (this.pixelRounding)
+    if (this.origin){
+      if (this.imageRounding)
         ctx.translate(Math.floor(this.origin.x), Math.floor(this.origin.y));
       else ctx.translate(this.origin.x, this.origin.y);
     }
     ctx.rotate(this.rotation);
-    if (this.origin) {
-      if (this.pixelRounding)
+    if (this.origin){
+      if (this.imageRounding)
         ctx.translate(Math.floor(-this.origin.x), Math.floor(-this.origin.y));
       else ctx.translate(-this.origin.x, -this.origin.y);
     }
@@ -2183,17 +2203,17 @@ iio.Shape.prototype.prep_ctx_dash = function(ctx){
 iio.Shape.prototype.finish_path_shape = function(ctx){
   if (this.color) ctx.fill();
   if (this.img) {
-    if (this.noImageRounding)
+    if (this.imageRounding)
       ctx.drawImage(this.img,
-        -this.width/2,
-        -this.height/2,
-        this.width,
-        this.height);
-    else ctx.drawImage(this.img,
         Math.floor(-this.width/2),
         Math.floor(-this.height/2),
         Math.floor(this.width),
         Math.floor(this.height));
+    else ctx.drawImage(this.img,
+      -this.width/2,
+      -this.height/2,
+      this.width,
+      this.height);
   }
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
@@ -2253,81 +2273,17 @@ iio.Shape.prototype.draw_line = function(ctx, x1, y1, x2, y2){
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Ellipse = function(){ this.Ellipse.apply(this, arguments) };
 iio.inherit(iio.Ellipse, iio.Shape);
 iio.Ellipse.prototype._super = iio.Shape.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Ellipse.prototype.Ellipse = function() {
   this._super.Shape.call(this,iio.merge_args(arguments));
 }
 
-iio.Ellipse.prototype.convert_props = function(){
-  iio.Ellipse.prototype._super.convert_props.call(this, iio.merge_args(arguments));
-  iio.convert.property.color(this,"refLine");
-}
-
-//FUNCTIONS
-iio.Ellipse.prototype.draw_shape = function(ctx) {
-  ctx.beginPath();
-  if (this.vRadius !== undefined) {
-    if (ctx.ellipse) {
-      ctx.ellipse(0,0, this.radius, this.vRadius, 0, 0,2*Math.PI, false)
-    } else {
-      ctx.save();
-      if (this.pixelRounding)
-        ctx.translate(Math.floor(-this.radius), Math.floor(-this.vRadius));
-      else ctx.translate(-this.radius, -this.vRadius);
-      ctx.scale(this.radius, this.vRadius);
-      ctx.arc(1, 1, 1, 0, 2 * Math.PI, false);
-      ctx.restore();
-    }
-  } else {
-    ctx.arc(0,0, this.radius, 0,2*Math.PI, false);
-  }
-  if (this.color) ctx.fill();
-  if (this.outline) ctx.stroke();
-  if (this.clip) ctx.clip();
-  if (this.img) {
-    if (this.noImageRounding)
-      ctx.drawImage(this.img,
-        -this.radius,
-        -(this.vRadius||this.radius),
-        this.radius*2,
-        (this.vRadius||this.radius)*2);
-    else ctx.drawImage(this.img,
-      Math.floor(-this.radius),
-      Math.floor(-(this.vRadius||this.radius)),
-      Math.floor(this.radius*2),
-      Math.floor((this.vRadius||this.radius)*2));
-  }
-  if(this.refLine){
-    ctx.save();
-    ctx.lineWidth = this.refLineWidth || this.lineWidth || 1;
-    if (this.refLine instanceof iio.Color)
-      ctx.strokeStyle = this.refLine.rgbaString();
-    else if (this.color)
-      ctx.strokeStyle = this.color.rgbaString();
-    else ctx.strokeStyle = this.outline.rgbaString();
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.lineTo(0,this.radius);
-    ctx.stroke();
-    ctx.restore();
-  }
-}
-iio.Ellipse.prototype.contains = function(v, y) {
-  if (typeof(y) !== 'undefined') v = { x:v, y:y }
-  if ((!this.vRadius || this.radius === this.vRadius) && iio.Vector.dist(v, this.pos) < this.radius)
-    return true;
-  v = this.localize(v);
-  if (Math.pow(v.x, 2) / Math.pow(this.radius, 2) + Math.pow(v.y, 2) / Math.pow(this.vRadius, 2) <= 1)
-    return true;
-  return false;
-}
-iio.Ellipse.prototype.size = function(){ return this.radius }
-iio.Ellipse.prototype.setSize = function(s){ this.radius = s/2 }
+// OVERRIDE FUNCTIONS
 iio.Ellipse.prototype.left = function(){
   return this.pos.x - this.radius
 }
@@ -2350,61 +2306,129 @@ iio.Ellipse.prototype._shrink = function(s, r) {
     return true;
   }
 }
+
+// IMPLEMENT ABSTRACT FUNCTIONS
+iio.Ellipse.prototype.size = function(){ return this.radius }
+iio.Ellipse.prototype.setSize = function(s){ this.radius = s/2 }
+iio.Ellipse.prototype.contains = function(v, y) {
+  if (typeof(y) !== 'undefined') v = { x:v, y:y }
+  if ((!this.vRadius || this.radius === this.vRadius) && iio.Vector.dist(v, this.pos) < this.radius)
+    return true;
+  v = this.localize(v);
+  if (Math.pow(v.x, 2) / Math.pow(this.radius, 2) + Math.pow(v.y, 2) / Math.pow(this.vRadius, 2) <= 1)
+    return true;
+  return false;
+}
+iio.Ellipse.prototype.draw_shape = function(ctx) {
+  ctx.beginPath();
+  if (this.vRadius !== undefined) {
+    if (ctx.ellipse) {
+      ctx.ellipse(0,0, this.radius,this.vRadius, 0, 0,2*Math.PI, false)
+    } else {
+      ctx.save();
+      ctx.translate(-this.radius, -this.vRadius);
+      ctx.scale(this.radius, this.vRadius);
+      ctx.arc(1, 1, 1, 0, 2 * Math.PI, false);
+      ctx.restore();
+    }
+  } else ctx.arc(0,0, this.radius, 0,2*Math.PI, false);
+  if (this.color) ctx.fill();
+  if (this.outline) ctx.stroke();
+  if (this.clip) ctx.clip();
+  if (this.img) {
+    if (this.imageRounding)
+      ctx.drawImage(this.img,
+        Math.floor(-this.radius),
+        Math.floor(-(this.vRadius||this.radius)),
+        Math.floor(this.radius*2),
+        Math.floor((this.vRadius||this.radius)*2));
+    else ctx.drawImage(this.img,
+      -this.radius,
+      -(this.vRadius||this.radius),
+      this.radius*2,
+      (this.vRadius||this.radius)*2);
+  }
+  if(this.refLine){
+    ctx.save();
+    ctx.lineWidth = this.refLineWidth || this.lineWidth || 1;
+    if (this.refLine instanceof iio.Color)
+      ctx.strokeStyle = this.refLine.rgbaString();
+    else if (this.color)
+      ctx.strokeStyle = this.color.rgbaString();
+    else ctx.strokeStyle = this.outline.rgbaString();
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(0,this.radius);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
 /* Polygon
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Polygon = function(){ this.Polygon.apply(this, arguments) };
 iio.inherit(iio.Polygon, iio.Shape);
 iio.Polygon.prototype._super = iio.Shape.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Polygon.prototype.Polygon = function() {
   this._super.Shape.call(this,iio.merge_args(arguments));
 }
 
-//FUNCTIONS
+// OVERRIDE FUNCTIONS
+iio.Polygon.prototype.left = function(){ 
+  return iio.Vector.leftmost(this.trueVs())
+}
+iio.Polygon.prototype.right = function(){ 
+  return iio.Vector.rightmost(this.trueVs())
+}
+iio.Polygon.prototype.top = function(){ 
+  return iio.Vector.highest(this.trueVs())
+}
+iio.Polygon.prototype.bottom = function(){ 
+  return iio.Vector.lowest(this.trueVs())
+}
 iio.Polygon.prototype.finish_path_shape = function(ctx){
   if (this.color) ctx.fill();
   if (this.img) {
-    if (this.noImageRounding)
-      ctx.drawImage(this.img,
-        iio.specVec( this.vs,
-          function(v1,v2){if(v1.x>v2.x)return true;return false}).x,
-        iio.specVec( this.vs,
-          function(v1,v2){if(v1.y>v2.y)return true;return false}).y,
-        iio.specVec( this.vs,
-          function(v1,v2){if(v1.x<v2.x)return true;return false}).x
-        - iio.specVec( this.vs,
-          function(v1,v2){if(v1.x>v2.x)return true;return false}).x,
-        iio.specVec( this.vs,
-          function(v1,v2){if(v1.y>v2.y)return true;return false}).y
-        - iio.specVec( this.vs,
-          function(v1,v2){if(v1.y<v2.y)return true;return false}).y);
-    else ctx.drawImage(this.img,
-        Math.floor(iio.specVec( this.vs,
-          function(v1,v2){if(v1.x>v2.x)return true;return false}).x),
-        Math.floor(iio.specVec( this.vs,
-          function(v1,v2){if(v1.y>v2.y)return true;return false}).y),
-        Math.floor(iio.specVec( this.vs,
-          function(v1,v2){if(v1.x<v2.x)return true;return false}).x
-        - iio.specVec( this.vs,
-          function(v1,v2){if(v1.x>v2.x)return true;return false}).x),
-       Math.floor( iio.specVec( this.vs,
-          function(v1,v2){if(v1.y>v2.y)return true;return false}).y
-        - iio.specVec( this.vs,
-          function(v1,v2){if(v1.y<v2.y)return true;return false}).y));
+    var left = iio.Vector.leftmost(this.vs);
+    var top = iio.Vector.highest(this.vs);
+    var right = iio.Vector.rightmost(this.vs);
+    var bottom = iio.Vector.lowest(this.vs);
+    if (this.imageRounding){
+      left = Math.floor(left);
+      right = Math.floor(right);
+      top = Math.floor(top);
+      bottom = Math.floor(bottom);
+    }
+    ctx.drawImage(this.img,left,top,right-left,bottom-top);
   }
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
+}
+
+// IMPLEMENT ABSTRACT FUNCTIONS
+iio.Polygon.prototype.contains = function(v, y) {
+  v = this.localize(v,y);
+  var i=j=c=0;
+  for (i=0, j=this.vs.length-1; i<this.vs.length; j=i++) {
+    if (((this.vs[i].y > v.y) !== (this.vs[j].y > v.y)) &&
+      (v.x < (this.vs[j].x - this.vs[i].x)
+        * (v.y - this.vs[i].y) / (this.vs[j].y - this.vs[i].y) 
+        + this.vs[i].x))
+      c = !c;
+  }
+  return c;
 }
 iio.Polygon.prototype.draw_shape = function(ctx) {
   ctx.beginPath();
   ctx.moveTo(this.vs[0].x, this.vs[0].y);
   if (this.bezier) {
-    var _i = 0;
-    for (var i = 1; i < this.vs.length; i++)
+    var _i=0;
+    for (var i=1; i<this.vs.length; i++)
       ctx.this.bezierCurveTo(this.bezier[_i++] || this.vs[i - 1].x, 
         this.bezier[_i++] || this.vs[i - 1].y, 
         this.bezier[_i++] || this.vs[i].x, 
@@ -2420,23 +2444,15 @@ iio.Polygon.prototype.draw_shape = function(ctx) {
     }
   } else for(var i=1; i<this.vs.length; i++)
     ctx.lineTo(this.vs[i].x, this.vs[i].y);
-  if (typeof(this.open) == 'undefined' || !this.open)
+  if (!this.open)
     ctx.closePath();
   this.finish_path_shape(ctx);
 }
-iio.Polygon.prototype.contains = function(v, y) {
-  v = this.localize(v,y);
-  var i = j = c = 0;
-  for (i = 0, j = this.vs.length - 1; i < this.vs.length; j = i++) {
-    if (((this.vs[i].y > v.y) != (this.vs[j].y > v.y)) &&
-      (v.x < (this.vs[j].x - this.vs[i].x) * (v.y - this.vs[i].y) / (this.vs[j].y - this.vs[i].y) + this.vs[i].x))
-      c = !c;
-  }
-  return c;
-}
+
+// POLYGON FUNCTIONS
 iio.Polygon.prototype.trueVs = function() {
   var vs = [];
-  for(var v,i=0;i<this.vs.length;i++){
+  for(var v,i=0; i<this.vs.length; i++){
     v = this.localizeRotation(this.vs[i].clone(),true);
     v.x += this.pos.x;
     v.y += this.pos.y;
@@ -2444,58 +2460,49 @@ iio.Polygon.prototype.trueVs = function() {
   }
   return vs;
 }
-iio.Polygon.prototype.left = function(){ 
-  return iio.specVec( this.trueVs(),
-    function(v1,v2){
-      if(v1.x>v2.x)
-        return true;
-      return false
-    }).x
-}
-iio.Polygon.prototype.right = function(){ 
-  return iio.specVec( this.trueVs(),
-    function(v1,v2){
-      if(v1.x<v2.x)
-        return true;
-      return false
-    }).x 
-}
-iio.Polygon.prototype.top = function(){ 
-  return iio.specVec( this.trueVs(),
-    function(v1,v2){
-      if(v1.y>v2.y)
-        return true;
-      return false}).y
-}
-iio.Polygon.prototype.bottom = function(){ 
-  return iio.specVec( this.trueVs(),
-    function(v1,v2){
-      if(v1.y<v2.y)
-        return true;
-      return false}).y
-}
 /* Line
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Line = function(){ this.Line.apply(this, arguments) };
 iio.inherit(iio.Line, iio.Shape);
 iio.Line.prototype._super = iio.Shape.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Line.prototype.Line = function() {
   this._super.Shape.call(this,iio.merge_args(arguments));
 }
 
-//SHARED WITH POLYGON
+// SHARED POLYGON FUNCTIONS
 iio.Line.prototype.trueVs = iio.Polygon.prototype.trueVs;
 iio.Line.prototype.left = iio.Polygon.prototype.left;
 iio.Line.prototype.right = iio.Polygon.prototype.right;
 iio.Line.prototype.top = iio.Polygon.prototype.top;
 iio.Line.prototype.bottom = iio.Polygon.prototype.bottom;
 
-//FUNCTIONS
+// OVERRIDE FUNCTIONS
+iio.Line.prototype.prep_ctx_color = function(ctx){
+  if(this.color instanceof iio.Gradient)
+    ctx.strokeStyle = this.color.canvasGradient(ctx);
+  else ctx.strokeStyle = this.color.rgbaString();
+  ctx = this.prep_ctx_lineWidth(ctx);
+  return ctx;
+}
+iio.Line.prototype.prep_ctx_lineWidth = function(ctx){
+  ctx.lineWidth = this.width || 1;
+  return ctx;
+}
+
+// IMPLEMENT ABSTRACT FUNCTIONS
+iio.Line.prototype.draw_shape = function(ctx) {
+  ctx.beginPath();
+  ctx.moveTo(this.vs[0].x, this.vs[0].y);
+  if (this.bezier)
+    ctx.bezierCurveTo(this.bezier[0].x, this.bezier[0].y, this.bezier[1].x, this.bezier[1].y, this.vs[1].x, this.vs[1].y);
+  else ctx.lineTo(this.vs[1].x, this.vs[1].y);
+  ctx.stroke();
+}
 /*iio.Line.prototype.contains = function(v, y) {
   if (typeof(y) != 'undefined') v = {
     x: v,
@@ -2509,36 +2516,17 @@ iio.Line.prototype.bottom = iio.Polygon.prototype.bottom;
   }
   return false;
 }*/
-iio.Line.prototype.prep_ctx_color = function(ctx){
-  if(this.color instanceof iio.Gradient)
-    ctx.strokeStyle = this.color.canvasGradient(ctx);
-  else ctx.strokeStyle = this.color.rgbaString();
-  ctx = this.prep_ctx_lineWidth(ctx);
-  return ctx;
-}
-iio.Line.prototype.prep_ctx_lineWidth = function(ctx){
-  ctx.lineWidth = this.width || 1;
-  return ctx;
-}
 
-iio.Line.prototype.draw_shape = function(ctx) {
-  ctx.beginPath();
-  ctx.moveTo(this.vs[0].x, this.vs[0].y);
-  if (this.bezier)
-    ctx.bezierCurveTo(this.bezier[0].x, this.bezier[0].y, this.bezier[1].x, this.bezier[1].y, this.vs[1].x, this.vs[1].y);
-  else ctx.lineTo(this.vs[1].x, this.vs[1].y);
-  ctx.stroke();
-}
 /* Text
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Text = function(){ this.Text.apply(this, arguments) };
 iio.inherit(iio.Text, iio.Polygon);
 iio.Text.prototype._super = iio.Polygon.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Text.prototype.Text = function() {
   this._super.Polygon.call(this,iio.merge_args(arguments));
   this.size = this.size || 40;
@@ -2546,53 +2534,67 @@ iio.Text.prototype.Text = function() {
     this.color = this.color || new iio.Color();
   this.font = this.font || 'Arial';
   this.align = this.align || 'center';
-
-  /*var tX = this.getX(this.text.length);
-  this.cursor = this.add([tX, 10, tX, -this.size * .8], '2 ' + (this.color || this.outline), {
-    index: this.text.length,
-    shift: false
-  });
-  if (this.showCursor) {
-    this.loop(2, function(o) {
-      this.cursor.hidden = !this.cursor.hidden;
-    })
-  } else this.cursor.hidden = true;*/
 }
 
-iio.Text.getFontHeight = function(font) {
-
-  var text = $('<span>Hg</span>').css({ fontFamily: font });
-  var block = $('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
-
-  var div = $('<div></div>');
-  div.append(text, block);
-
-  var body = $('body');
-  body.append(div);
-
-  try {
-
-    var result = {};
-
-    block.css({ verticalAlign: 'baseline' });
-    result.ascent = block.offset().top - text.offset().top;
-
-    block.css({ verticalAlign: 'bottom' });
-    result.height = block.offset().top - text.offset().top;
-
-    result.descent = result.height - result.ascent;
-
-  } finally {
-    div.remove();
+// OVERRIDE FUNCTIONS
+iio.Text.prototype._shrink = function( s,r ) {
+  this.size *= 1-s;
+  this.inferSize();
+  if (this.size < .02 
+    || this.size < this.shrink.lowerBound 
+    || this.size > this.shrink.upperBound) {
+    if (r) return r(this);
+    else return true;
   }
+}
 
-  return result;
-};
+// IMPLEMENT ABSTRACT FUNCTIONS
+iio.Text.prototype.contains = function( v,y ) {
+  v = this.localize(v,y);
+  if ( (!this.align || this.align === 'left')
+    && v.x>0 && v.x<this.width && v.y<this.height/2 && v.y>-this.height/2)
+    return true;
+  else if (this.align === 'center'
+    && v.x>-this.width/2 && v.x<this.width/2 && v.y<this.height/2 && v.y>-this.height/2)
+    return true;
+  else if ( (this.align === 'right' || this.align === 'end')
+    && v.x>-this.width && v.x<0 && v.y<this.height/2 && v.y>-this.height/2)
+    return true;
+  return false;
+}
+iio.Text.prototype.draw_shape = function(ctx) {
+  ctx.translate(0, this.height/2); 
+  //ctx.strokeStyle = 'red';
+  //ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
+  ctx.font = this.size + 'px ' + this.font;
+  ctx.textAlign = this.align;
+  if (this.color) ctx.fillText(this.text, 0, 0);
+  if (this.outline) ctx.strokeText(this.text, 0, 0);
+  if (this.showCursor)
+    this.cursor.vs[0].x = this.cursor.vs[1].x = this.getX(this.cursor.index);
+}
 
-//FUNCTIONS
+// TEXT FUNCTIONS
+iio.Text.prototype.init_cursor = function(){
+  var tX = this.getX(this.text.length);
+  this.cursor = this.add(new iio.Line({
+    vs: [
+      [tX, this.size/2],
+      [tX, -this.size/2]
+    ],
+    width:2,
+    color: this.color || this.outline,
+    index: this.text.length,
+    shift: false
+  }));
+  if (this.showCursor) {
+    this.loop(2, function(o) {
+      o.cursor.hidden = !o.cursor.hidden;
+    })
+  } else this.cursor.hidden = true;
+}
 iio.Text.prototype.inferSize = function(ctx){
   this.ctx = ctx || this.ctx;
-
   this.app.ctx.font = this.size + 'px ' + this.font;
   this.width = this.app.ctx.measureText(this.text).width;
   this.height = this.app.ctx.measureText("H").width;
@@ -2619,63 +2621,43 @@ iio.Text.prototype.inferSize = function(ctx){
     ]
   }
 }
-iio.Text.prototype._shrink = function(s, r) {
-  this.size *= 1 - s;
-  this.inferSize();
-  if (this.size < .02 
-    || this.size < this.shrink.lowerBound 
-    || this.size > this.shrink.upperBound) {
-    if (r) return r(this);
-    else return true;
+iio.Text.getFontHeight = function(font) {
+  var text = $('<span>Hg</span>').css({ fontFamily: font });
+  var block = $('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
+  var div = $('<div></div>');
+  div.append(text, block);
+  var body = $('body');
+  body.append(div);
+  try {
+    var result = {};
+    block.css({ verticalAlign: 'baseline' });
+    result.ascent = block.offset().top - text.offset().top;
+    block.css({ verticalAlign: 'bottom' });
+    result.height = block.offset().top - text.offset().top;
+    result.descent = result.height - result.ascent;
+  } finally {
+    div.remove();
   }
-}
-iio.Text.prototype.draw_shape = function(ctx) {
-
-  if (this.pixelRounding)
-    ctx.translate(0, Math.floor(this.height/2));
-  else ctx.translate(0, this.height/2); 
-
-  //ctx.strokeStyle = 'red';
-  //ctx.strokeRect( -this.width/2, -this.height, this.width, this.height );
-
-  ctx.font = this.size + 'px ' + this.font;
-  ctx.textAlign = this.align;
-  if (this.color) ctx.fillText(this.text, 0, 0);
-  if (this.outline) ctx.strokeText(this.text, 0, 0);
-  if (this.showCursor)
-    this.cursor.pos.x = this.cursor.endPos.x = this.getX(this.cursor.index);
-}
-iio.Text.prototype.contains = function(v, y) {
-  v = this.localize(v,y);
-  if ((typeof(this.align) == 'undefined' || this.align == 'left')
-    && v.x>0 && v.x<this.width && v.y<this.height/2 && v.y>-this.height/2)
-    return true;
-  else if (this.align == 'center'
-    && v.x>-this.width/2 && v.x<this.width/2 && v.y<this.height/2 && v.y>-this.height/2)
-    return true;
-  else if ((this.align == 'right' || this.align == 'end')
-    && v.x>-this.width && v.x<0 && v.y<this.height/2 && v.y>-this.height/2)
-    return true;
-  return false;
+  return result;
 }
 iio.Text.prototype.charWidth = function(i) {
-  i = i || 0;
-  this.app.ctx.font = this.size + 'px ' + this.font;
+  i = i||0;
+  this.app.ctx.font = this.size+'px '+this.font;
   return this.app.ctx.measureText(this.text.charAt(i)).width;
 }
 iio.Text.prototype.getX = function(i) {
-  this.app.ctx.font = this.size + 'px ' + this.font;
-  if (typeof(this.align) == 'undefined' || this.align == 'left')
+  this.app.ctx.font = this.size+'px '+this.font;
+  if (!this.align || this.align === 'left')
     return this.app.ctx.measureText(this.text.substring(0, i)).width;
-  if (this.align == 'right' || this.align == 'end')
+  if (this.align === 'right' || this.align === 'end')
     return -this.app.ctx.measureText(this.text.substring(0, this.text.length - i)).width;
-  if (this.align == 'center') {
+  if (this.align === 'center') {
     var x = -Math.floor(this.app.ctx.measureText(this.text).width / 2);
     return x + this.app.ctx.measureText(this.text.substring(0, i)).width;
   }
 }
 iio.Text.prototype.onKeyUp = function(k) {
-  if (k == 'shift')
+  if (k === 'shift')
     this.cursor.shift = false;
 }
 iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
@@ -2768,12 +2750,12 @@ iio.Text.prototype.onKeyDown = function(key, cI, shift, fn) {
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Rectangle = function(){ this.Rectangle.apply(this, arguments) };
 iio.inherit(iio.Rectangle, iio.Polygon);
 iio.Rectangle.prototype._super = iio.Polygon.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Rectangle.prototype.Rectangle = function() {
   this._super.Polygon.call(this,iio.merge_args(arguments));
   this.height = this.height || this.width;
@@ -2785,40 +2767,46 @@ iio.Rectangle.prototype.Rectangle = function() {
   ];
 }
 
-//FUNCTIONS
+// IMPLEMENT ABSTRACT FUNCTIONS
+iio.Rectangle.prototype.size = function(){ return this.width }
+iio.Rectangle.prototype.setSize = function(w,h){
+  this.width = w;
+  this.height = h||w;
+}
+iio.Rectangle.prototype.contains = function(v, y) {
+  v = this.localize(v,y);
+  if (v.x > -this.width/2 
+   && v.x <  this.width/2
+   && v.y > -this.height/2 
+   && v.y <  this.height/2)
+    return true;
+  return false;
+}
 iio.Rectangle.prototype.draw_shape = function(ctx){
-  if (this.pixelRounding)
-    ctx.translate(Math.floor(-this.width/2),Math.floor(-this.height/2));
+  if (this.imageRounding)
+    ctx.translate(Math.floor(-this.width/2), Math.floor(-this.height/2));
   else ctx.translate(-this.width/2,-this.height/2);
-  if (this.bezier) {
+  /*if (this.bezier) {
     iio.draw.poly(ctx, this.trueVs(), this.bezier);
     this.finish_path_shape(ctx);
-  }
-  else if(this.round)
+  }*/
+  if(this.round)
     this.draw_rounded(ctx);
   else{
-    if (this.color) ctx.fillRect(0, 0, this.width, this.height)
-    if (this.img) {
-      if (this.noImageRounding)
-        ctx.drawImage(this.img, 0, 0, this.width, this.height);
-      else ctx.drawImage(this.img, 0, 0, Math.floor(this.width), Math.floor(this.height));
-    }
+    if (this.color) ctx.fillRect(0, 0, this.width, this.height);
+    if (this.img) ctx.drawImage(this.img, 0, 0, this.width, this.height);
     if (this.anims)
       ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
         this.anims[this.animKey].frames[this.animFrame].x,
         this.anims[this.animKey].frames[this.animFrame].y,
         this.anims[this.animKey].frames[this.animFrame].w,
         this.anims[this.animKey].frames[this.animFrame].h,
-        0, 0,
-        this.noImageRounding
-          ? this.width
-          : Math.floor(this.width),
-        this.noImageRounding
-          ? this.height
-          : Math.floor(this.height));
+        0, 0, this.width, this.height);
     if (this.outline) ctx.strokeRect(0, 0, this.width, this.height);
   }
 }
+
+// RECTANGLE FUNCTIONS
 iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.beginPath();
   ctx.moveTo(this.round[0], 0);
@@ -2835,105 +2823,36 @@ iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.fill();
   ctx.clip();
 }
-iio.Rectangle.prototype.contains = function(v, y) {
-  v = this.localize(v,y);
-  if (v.x > -this.width/2 
-   && v.x <  this.width/2
-   && v.y > -this.height/2 
-   && v.y <  this.height/2)
-    return true;
-  return false;
-}
-iio.Rectangle.prototype.size = function(){ return this.width }
-iio.Rectangle.prototype.setSize = function(w,h){
-  this.width = w;
-  this.height = h||w;
-}
+
 /* Grid
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Grid = function(){ this.Grid.apply(this, arguments) };
 iio.inherit(iio.Grid, iio.Rectangle);
 iio.Grid.prototype._super = iio.Rectangle.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
   this._super.Rectangle.call(this,iio.merge_args(arguments));
   this.init();
 }
 
-//FUNCTIONS
-iio.Grid.prototype.init = function(){
-  // set res if undefined
-  this.res = this.res || new iio.Vector(
-    this.width/this.C,
-    this.height/this.R
-  );
+// SHARED LINE FUNCTIONS
+iio.Grid.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;
 
-  // set width/height if undefined
-  this.width = this.width || this.C * this.res.x;
-  this.height = this.height || this.R * this.res.y;
-  
-  // initialize cells
-  this.init_cells();
-}
-iio.Grid.prototype.init_cells = function(){
-  this.cells = [];
-  var x = -this.res.x * (this.C - 1) / 2;
-  var y = -this.res.y * (this.R - 1) / 2;
-  for (var c = 0; c < this.C; c++) {
-    this.cells[c] = [];
-    for (var r = 0; r < this.R; r++) {
-      this.cells[c][r] = this.add(new iio.Quad({
-        pos: new iio.Vector( x,y ),
-        c: c,
-        r: r,
-        width: this.res.x,
-        height: this.res.y
-      }));
-      y += this.res.y;
-    }
-    y = -this.res.y * (this.R - 1) / 2;
-    x += this.res.x;
-  }
-}
-iio.Grid.prototype.infer_res = function(){
-  this.res.x = this.width/this.C;
-  this.res.y = this.height/this.R;
-}
+// OVERRIDE FUNCTIONS
 iio.Grid.prototype.clear = function(noDraw){
   this.objs = [];
   this.init_cells();
   if(noDraw);
   else this.app.draw();
 }
-iio.Grid.prototype.cellCenter = function(c, r) {
-  return {
-    x: -this.width / 2 + c * this.res.x + this.res.x / 2,
-    y: -this.height / 2 + r * this.res.y + this.res.y / 2
-  }
-}
-iio.Grid.prototype.cellAt = function(x, y) {
-  if (x.x) return this.cells[Math.floor((x.x - this.left()) / this.res.x)][Math.floor((x.y - this.top()) / this.res.y)];
-  else return this.cells[Math.floor((x - this.left()) / this.res.x)][Math.floor((y - this.top()) / this.res.y)];
-}
-iio.Grid.prototype.foreachCell = function(fn, p) {
-  for (var c = 0; c < this.C; c++)
-    for (var r = 0; r < this.R; r++)
-      if (fn(this.cells[c][r], p) === false)
-        return [r, c];
-}
-iio.Grid.prototype.setSize = function(w,h){
-  this.width = w;
-  this.height = h;
-  this.infer_res();
-}
-iio.Grid.prototype._shrink = function(s, r) {
+iio.Grid.prototype._shrink = function( s,r ) {
   this.setSize( 
-    this.width * (1 - s),
-    this.height * (1 - s)
+    this.width * (1-s),
+    this.height * (1-s)
   );
   if (this.width < .02 
     || this.width < this.shrink.lowerBound 
@@ -2943,48 +2862,100 @@ iio.Grid.prototype._shrink = function(s, r) {
   }
 }
 
-//DRAW FUNCTIONS
-iio.Grid.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;
+// IMPLEMENT ABSTRACT FUNCTIONS
+iio.Grid.prototype.setSize = function( w,h ){
+  this.width = w;
+  this.height = h||w;
+  this.infer_res();
+}
 iio.Grid.prototype.draw_shape = function(ctx) {
-  //ctx.translate(-this.width / 2, -this.height / 2);
-  /*iio.draw.rect(ctx, this.width, this.height, {
-    c: this.color,
-    o: this.outline
-  }, {
-    img: this.img,
-    anims: this.anims,
-    mov: this.mov,
-    round: this.round
-  });*/
   if (this.color) {
-    for (var c = 1; c < this.C; c++) 
-      iio.draw.line(ctx, 
-        -this.width / 2 + c * this.res.x, -this.height / 2, 
-        -this.width / 2 + c * this.res.x, this.height / 2
-      );
-    for (var r = 1; r < this.R; r++) 
-      iio.draw.line(ctx, 
-        -this.width / 2, -this.height / 2 + r * this.res.y,
-        this.width / 2, -this.height / 2 + r * this.res.y
-      );
+    ctx.beginPath();
+    for (var c=1; c<this.C; c++){
+      ctx.moveTo(-this.width/2 + c*this.res.x, -this.height/2);
+      ctx.lineTo(-this.width/2 + c*this.res.x, this.height/2);
+    }
+    for (var r=1; r<this.R; r++){
+      ctx.moveTo(-this.width/2, -this.height/2 + r*this.res.y);
+      ctx.lineTo(this.width/2, -this.height/2 + r*this.res.y);
+    }
+    ctx.stroke();
   }
 }
+
+// GRID FUNCTIONS
+iio.Grid.prototype.init = function(){
+  // set res if undefined
+  this.res = this.res || new iio.Vector(
+    this.width/this.C,
+    this.height/this.R
+  );
+  // set width/height if undefined
+  this.width = this.width || this.C * this.res.x;
+  this.height = this.height || this.R * this.res.y;
+  // initialize cells
+  this.init_cells();
+}
+iio.Grid.prototype.init_cells = function(){
+  this.cells = [];
+  var x = -this.res.x * (this.C-1) / 2;
+  var y = -this.res.y * (this.R-1) / 2;
+  for (var r,c=0; c<this.C; c++) {
+    this.cells[c] = [];
+    for (r = 0; r<this.R; r++) {
+      this.cells[c][r] = this.add(new iio.Quad({
+        pos: new iio.Vector( x,y ),
+        c: c, r: r,
+        width: this.res.x,
+        height: this.res.y
+      }));
+      y += this.res.y;
+    }
+    y = -this.res.y * (this.R-1) / 2;
+    x += this.res.x;
+  }
+}
+iio.Grid.prototype.infer_res = function(){
+  this.res.x = this.width/this.C;
+  this.res.y = this.height/this.R;
+}
+iio.Grid.prototype.cellCenter = function( c,r ) {
+  return new iio.Vector(
+    -this.width/2 + c*this.res.x + this.res.x/2,
+    -this.height/2 + r*this.res.y + this.res.y/2
+  );
+}
+iio.Grid.prototype.cellAt = function( x,y ) {
+  if (x.x) return this.cells
+    [Math.floor((x.x - this.left()) / this.res.x)]
+    [Math.floor((x.y - this.top()) / this.res.y)];
+  else return this.cells
+    [Math.floor((x - this.left()) / this.res.x)]
+    [Math.floor((y - this.top()) / this.res.y)];
+}
+iio.Grid.prototype.foreachCell = function(fn, p) {
+  for (var c = 0; c < this.C; c++)
+    for (var r = 0; r < this.R; r++)
+      if (fn(this.cells[c][r], p) === false)
+        return [r,c];
+}
+
 /* Quad
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Quad = function(){ this.Quad.apply(this, arguments) };
 iio.inherit(iio.Quad, iio.Shape);
 iio.Quad.prototype._super = iio.Shape.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Quad.prototype.Quad = function() {
   this._super.Shape.call(this,iio.merge_args(arguments));
   this.height = this.height || this.width;
 }
 
-//FUNCTIONS SHARED WITH RECTANGLE
+// SHARED RECTANGLE FUNCTIONS
 iio.Quad.prototype.draw_shape = iio.Rectangle.prototype.draw_shape;
 iio.Quad.prototype.draw_rounded = iio.Rectangle.prototype.draw_rounded;
 iio.Quad.prototype.contains = iio.Rectangle.prototype.contains
@@ -2992,7 +2963,13 @@ iio.Quad.prototype.size = iio.Rectangle.prototype.size;
 iio.Quad.prototype.setSize = iio.Rectangle.prototype.setSize;
 iio.Quad.prototype._trueVs = iio.Polygon.prototype.trueVs;
 
-//FUNCTIONS
+// OVERRIDE FUNCTIONS
+iio.Quad.prototype.left = function(){ return this.pos.x - this.width/2 }
+iio.Quad.prototype.right = function(){ return this.pos.x + this.width/2 }
+iio.Quad.prototype.top = function(){ return this.pos.y - this.height/2 }
+iio.Quad.prototype.bottom = function(){ return this.pos.y + this.height/2 }
+
+// QUAD FUNCTIONS
 iio.Quad.prototype.trueVs = function() {
   this.vs = [
     new iio.Vector(-this.width/2, -this.height/2),
@@ -3012,26 +2989,22 @@ iio.Quad.prototype.trueVs = function() {
   }
   return this._trueVs()
 }
-iio.Quad.prototype.left = function(){ return this.pos.x - this.width/2 }
-iio.Quad.prototype.right = function(){ return this.pos.x + this.width/2 }
-iio.Quad.prototype.top = function(){ return this.pos.y - this.height/2 }
-iio.Quad.prototype.bottom = function(){ return this.pos.y + this.height/2 }
 /* QuadGrid
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.QuadGrid = function(){ this.QuadGrid.apply(this, arguments) };
 iio.inherit(iio.QuadGrid, iio.Quad);
 iio.QuadGrid.prototype._super = iio.Quad.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.QuadGrid.prototype.QuadGrid = function() {
   this._super.Quad.call(this,iio.merge_args(arguments));
   this.init();
 }
 
-//FUNCTIONS SHARED WITH GRID
+// SHARED GRID FUNCTIONS
 iio.QuadGrid.prototype.init = iio.Grid.prototype.init;
 iio.QuadGrid.prototype.init_cells = iio.Grid.prototype.init_cells;
 iio.QuadGrid.prototype.infer_res = iio.Grid.prototype.infer_res;
@@ -3385,7 +3358,7 @@ iio.Loader.prototype.load = function(assets, onComplete) {
 };
 
 
-/* Attach iio to Box2dWeb
+/* Attach iio to box2dWeb
 -------------------------
 */
 if (typeof Box2D != 'undefined'){
