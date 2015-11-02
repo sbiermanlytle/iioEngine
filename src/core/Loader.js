@@ -2,11 +2,16 @@
 ------------------
 */
 
+// DEFINITION
+iio.Loader = function(basePath) {
+  this.basePath = (basePath || '.') + '/';
+}
+
+// LOADER FUNCTIONS
 iio.loadSound = function(url, onLoad, onError) {
   var sound = new iio.Sound(url, onLoad, onError);
   return sound;
 }
-
 iio.loadImage = function(url, onLoad, onError) {
   var img = new Image();
   img.onload = onLoad;
@@ -14,11 +19,6 @@ iio.loadImage = function(url, onLoad, onError) {
   img.src = url;
   return img;
 }
-
-iio.Loader = function(basePath) {
-  this.basePath = (basePath || '.') + '/';
-};
-
 /*
  * @params:
  *   assets: Define the assets to load, can be of various formats
@@ -113,7 +113,7 @@ iio.Loader.prototype.load = function(assets, onComplete) {
   var postLoad = function() {
     loaded++;
     console.log(loaded);
-    if (loaded == total) onComplete(_assets);
+    if (loaded === total) onComplete(_assets);
   };
 
   // Helper function to load asset into _assets.
@@ -169,5 +169,4 @@ iio.Loader.prototype.load = function(assets, onComplete) {
   }
 
   return _assets;
-};
-
+}

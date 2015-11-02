@@ -2,10 +2,10 @@
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.SpriteMap.prototype.SpriteMap = function(src, p) {
   this.img = new Image();
   this.img.src = src;
@@ -13,7 +13,7 @@ iio.SpriteMap.prototype.SpriteMap = function(src, p) {
   return this;
 }
 
-//FUNCTIONS
+// SPRITEMAP FUNCTIONS
 iio.SpriteMap.prototype.sprite = function() {
   var args = iio.merge_args(arguments);
   var anim = {};
@@ -22,7 +22,7 @@ iio.SpriteMap.prototype.sprite = function() {
   args.origin = iio.convert.vector(args.origin);
   if (!args.frames) {
     anim.frames = [];
-    for (var i = 0; i < anim.numFrames; i++)
+    for (var i=0; i<anim.numFrames; i++)
       anim.frames[i] = {
         x: args.origin.x + args.width * i,
         y: args.origin.y,
@@ -31,9 +31,9 @@ iio.SpriteMap.prototype.sprite = function() {
       };
   } else anim.frames = args.frames;
   anim.frames.forEach(function(frame) {
-    if (typeof(frame.src) == 'undefined') frame.src = this.img;
-    if (typeof(frame.w) == 'undefined') frame.w = args.width;
-    if (typeof(frame.h) == 'undefined') frame.h = args.height;
+    if (!frame.src) frame.src = this.img;
+    if (!frame.w) frame.w = args.width;
+    if (!frame.h) frame.h = args.height;
   }, this);
   return anim;
 }

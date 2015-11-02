@@ -438,9 +438,3 @@ iio.Shape.prototype.draw = function(ctx){
   else this.draw_obj(ctx);
   ctx.restore();
 }
-iio.Shape.prototype.draw_line = function(ctx, x1, y1, x2, y2){
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x1, y1);
-  ctx.stroke();
-}

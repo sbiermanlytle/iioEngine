@@ -5,12 +5,12 @@
 // Single AudioContext shared across all iio apps
 iio.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-//DEFINITION
+// DEFINITION
 iio.Sound = function(){ this.Sound.apply(this, arguments) };
 iio.inherit(iio.Sound, iio.Interface);
 iio.Sound.prototype._super = iio.Interface.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Sound.prototype.Sound = function(url, onLoad, onError) {
   var sound = this;
   // Set up a GainNode for volume control
@@ -30,9 +30,10 @@ iio.Sound.prototype.Sound = function(url, onLoad, onError) {
   xhr.send();
 }
 
+// SOUND FUNCTIONS
 iio.Sound.prototype.play = function() {
   this.set(iio.merge_args(arguments), true);
-  if (this.buffer === undefined) return;
+  if (typeof this.buffer === undefined) return;
   this.source = iio.audioCtx.createBufferSource();
   this.source.buffer = this.buffer;
   if (this.loop)
@@ -43,7 +44,6 @@ iio.Sound.prototype.play = function() {
   this.source.start(this.delay || 0);
   return this;
 }
-
 iio.Sound.prototype.stop = function() {
   if (this.source)
     this.source.disconnect();

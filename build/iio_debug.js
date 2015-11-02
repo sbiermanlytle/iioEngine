@@ -30,9 +30,10 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 iio = {};
 iio.apps = [];
-iio.scripts = iio.scripts || {};
+//iio.scripts = iio.scripts || {};
 
-//INITIALIZATION
+// APP CONTROL
+//-------------------------------------------------------------------
 iio.start = function(app, id, d) {
   
   var c = iio.canvas.prep(id, d);
@@ -77,10 +78,10 @@ iio.stop = function( app ){
   if(!app)
     for(var i=0; i<iio.apps.length; i++)
       iio.apps[i].stop();
+  else app.stop();
 }
-
 iio.script = function() {
-  if (typeof CoffeeScript == 'undefined') return;
+  if (typeof CoffeeScript === 'undefined') return;
   var scripts = Array.prototype.slice.call(document.getElementsByTagName('script'));
   var iioScripts = scripts.filter(function(s) {
     return s.type === 'text/iioscript';
@@ -89,7 +90,7 @@ iio.script = function() {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", script.src, true);
     xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status == 0)){
+      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 0)){
         var appName = script.src.split("/").pop().replace(/\.[^/.]+$/, "");
         iio.scripts[appName] = eval("(function() {\nreturn function(app, settings) {\n" + 
 									   CoffeeScript.compile(xhr.responseText, {bare: true}) + 
@@ -100,31 +101,15 @@ iio.script = function() {
     xhr.send(null);
   });
 }
-
 // Listen for window load, both in decent browsers and in IE
-if (window.addEventListener)
-  window.addEventListener('DOMContentLoaded', iio.script, false);
-else
-  window.attachEvent('onload', iio.script);
+//if (window.addEventListener)
+  //window.addEventListener('DOMContentLoaded', iio.script, false);
+//else window.attachEvent('onload', iio.script);
 
-//JS ADDITIONS
-Array.prototype.insert = function(index, item) {
-  this.splice(index, 0, item);
-  return this;
-}
-if (Function.prototype.name === undefined){
-  // Add a custom property to all function values
-  // that actually invokes a method to get the value
-  Object.defineProperty(Function.prototype,'name',{
-    get:function(){
-      return /function ([^(]*)/.exec( this+"" )[1];
-    }
-  });
-}
-
-//UTIL FUNCTIONS
-function emptyFn() {};
+// UTIL FUNCTIONS
+//-------------------------------------------------------------------
 iio.inherit = function(child, parent) {
+  function emptyFn(){};
   var tmp = child;
   emptyFn.prototype = parent.prototype;
   child.prototype = new emptyFn();
@@ -168,20 +153,21 @@ iio.randomInt = function(min, max) {
 }
 iio.centroid = function(vs){
   var cX,cY;
-  for (var i=0;i<vs.length;i++){
+  for (var i=0; i<vs.length; i++){
      cX+=vs[i].x;
      cY+=vs[i].y;
-  } return new iio.Vector(cX/vs.length,cY/vs.length);
+  } return new iio.Vector(cX/vs.length, cY/vs.length);
 }
 iio.specVec = function(vs,comparator){
   var v = vs[0];
-  for (var i=0;i<vs.length;i++)
+  for (var i=0; i<vs.length; i++)
      if (comparator(v,vs[i]))
-        v=vs[i];
+        v = vs[i];
   return v;
 }
 
-//IO
+// IO
+//-------------------------------------------------------------------
 iio.load = function(src, onload) {
   var img = new Image();
   img.src = src;
@@ -198,11 +184,12 @@ iio.read = function(url, callback) {
   xhr.send(null);
 }
 
-//LOOPING
+// LOOPING
+//-------------------------------------------------------------------
 iio.loop = function(fps, caller, fn) {
 
   // LOOP USING setTimeout
-  if (iio.is.number(fps) || typeof window.requestAnimationFrame == 'undefined' || !fps.af) {
+  if (iio.is.number(fps) || typeof window.requestAnimationFrame === 'undefined' || !fps.af) {
     if (typeof(fps.af) != 'undefined' && typeof(fps.fps) == 'undefined') {
       fn = caller;
       caller = fps;
@@ -214,19 +201,19 @@ iio.loop = function(fps, caller, fn) {
 
     function loop() {
       var n = new Date().getTime();
-      if (typeof caller.last == 'undefined') var first = true;
+      if (typeof caller.last === 'undefined') var first = true;
       var correctedFPS = Math.floor(Math.max(0, 1000 / fps - (n - (caller.last || fps))));
       caller.last = n + correctedFPS;
       var nufps;
-      if (typeof first == 'undefined') {
-        if (typeof caller.fn == 'undefined')
+      if (typeof first === 'undefined') {
+        if (typeof caller.fn === 'undefined')
           nufps = caller.o._update(caller.o, correctedFPS);
         else if (iio.is.fn(caller.fn))
           nufps = caller.fn(caller.o, caller, correctedFPS);
         else nufps = caller.fn._update(caller, correctedFPS);
         caller.o.app.draw();
       }
-      if (typeof nufps == 'undefined')
+      if (typeof nufps === 'undefined')
         caller.id = window.setTimeout(loop, correctedFPS);
       else {
         fps = nufps;
@@ -244,7 +231,7 @@ iio.loop = function(fps, caller, fn) {
     caller = fps;
 
     function animloop() {
-      if (typeof caller.fn == 'undefined') caller.o.draw();
+      if (typeof caller.fn === 'undefined') caller.o.draw();
       else if (iio.is.fn(caller.fn)) caller.fn(caller.o);
       else {
         caller.fn._update();
@@ -267,7 +254,7 @@ iio.cancelLoops = function(o, c) {
   });
   if ( o.mainLoop ) 
     iio.cancelLoop(o.mainLoop.id);
-  if ( typeof c == 'undefined' && o.objs )
+  if ( typeof c === 'undefined' && o.objs )
     o.objs.forEach(function(obj) {
       iio.cancelLoops(obj);
     });
@@ -282,7 +269,8 @@ iio.requestTimeout = function(fps,lastTime,callback,callbackParams){
   lastTime = currTime + timeToCall;
 }
 
-//INPUT LISTENERS
+// INPUT LISTENERS
+//-------------------------------------------------------------------
 iio.resize = function() {
   iio.apps.forEach(function(app) {
     if (app.canvas.fullscreen) {
@@ -332,25 +320,22 @@ iio.prep_input = function() {
 }
 iio.prep_input();
 
-//DEPRECATED
-iio.createGradient = function(ctx, g) {
-  var gradient;
-  var p = g.split(':');
-  var ps = p[1].split(',');
-  if (ps.length == 4)
-    gradient = ctx.createLinearGradient(ps[0], ps[1], ps[2], ps[3]);
-  else gradient = ctx.createRadialGradient(ps[0], ps[1], ps[2], ps[3], ps[4], ps[5]);
-  var c;
-  p.forEach(function(_p) {
-    c = _p.indexOf(',');
-    var a = parseFloat(_p.substring(0, c));
-    var b = _p.substring(c + 1);
-    gradient.addColorStop(a, b);
-  });
-  return gradient;
+/* JS Extensions
+------------------
+*/
+Array.prototype.insert = function(index, item) {
+  this.splice(index, 0, item);
+  return this;
 }
-
-
+if (Function.prototype.name === undefined){
+  // Add a custom property to all function values
+  // that actually invokes a method to get the value
+  Object.defineProperty(Function.prototype,'name',{
+    get: function(){
+      return /function ([^(]*)/.exec( this+"" )[1];
+    }
+  });
+}
 /* iio.is
 ------------------
 */
@@ -585,14 +570,12 @@ iio.canvas = {
   },
   prep: function(id, d) {
     var c;
-
     //create with element id
     if (id) {
       c = document.getElementById(id);
       if (!c) {
-
         //create with existing canvas
-        if (id.tagName == 'CANVAS') c = id;
+        if (id.tagName === 'CANVAS') c = id;
 
         //create in existing element
         else if (iio.is.number(id) || id.x) {
@@ -617,9 +600,11 @@ iio.canvas = {
     function route_input(caller, e, handler){
       // orient position to canvas 0,0
       var ep = caller.parent.eventVector(e);
+
       // App.handler
       if (caller.parent[handler]) 
         caller.parent[handler](caller.parent, e, ep);
+      
       // App.objs.handler
       caller.parent.objs.forEach(function(obj, i) {
         if (i !== 0) ep = caller.parent.eventVector(e);
@@ -1007,12 +992,12 @@ iio.Interface.prototype.toString = function() {
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Vector = function(){ this.Vector.apply(this, arguments) };
 iio.inherit(iio.Vector, iio.Interface);
 iio.Vector.prototype._super = iio.Interface.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Vector.prototype.Vector = function( v,y ) {
   if(v instanceof Array){
     this.x = v[0] || 0;
@@ -1026,7 +1011,7 @@ iio.Vector.prototype.Vector = function( v,y ) {
   }
 }
 
-//STATIC FUNCTIONS
+// STATIC FUNCTIONS
 //------------------------------------------------------------
 iio.Vector.vs = function ( points ){
   var vs = [];
@@ -1120,7 +1105,7 @@ iio.Vector.rotate = function( x,y,r ){
   return new iio.Vector(newX,newY);
 }
 
-// MEMBER FUNCTIONS
+// VECTOR FUNCTIONS
 //------------------------------------------------------------
 iio.Vector.prototype.clone = function(){
   return new iio.Vector(this.x,this.y)
@@ -1187,8 +1172,7 @@ iio.Vector.prototype.lerp = function( v,y,p ){
   return this;
 }
 iio.Vector.prototype.rotate = function( r ){
-  if (typeof r == 'undefined' || r == 0) 
-    return this;
+  if (!r) return this;
   var x = this.x;
   var y = this.y;
   this.x = x * Math.cos(r) - y * Math.sin(r);
@@ -1206,30 +1190,38 @@ iio.Color.prototype._super = iio.Interface.prototype;
 
 // CONSTRUCTOR
 iio.Color.prototype.Color = function(r,g,b,a) {
-  // Input of hex color: new iio.Color("#FFF", 0.5)
-  if (typeof(r)==='string' && b === undefined && a === undefined) {
-    var hex = iio.Color.hexToRgb(r);
-    a = g;
-    r = hex.r;
-    g = hex.g;
-    b = hex.b;
+  if (iio.is.string(r) && typeof b === undefined && typeof a === undefined) {
+    if (iio.Color[r]) {
+      // Input of Constant color: new iio.Color('white')
+      var c = new iio.Color[r]();
+      this.r = c.r;
+      this.g = c.g;
+      this.b = c.b;
+      this.a = c.a;
+    } else {
+      // Input of hex color: new iio.Color("#FFF", 0.5)
+      var hex = iio.Color.hexToRgb(r);
+      a = g;
+      r = hex.r;
+      g = hex.g;
+      b = hex.b;
+    }
+  } else {
+    // Input of RGBA color: new iio.Color(255, 255, 255, 1)
+    this.r = r || 0;
+    this.g = g || 0;
+    this.b = b || 0;
+    this.a = a || 1;
   }
-
-  // Input of RGBA color: new iio.Color(255, 255, 255, 1)
-  this.r = r || 0;
-  this.g = g || 0;
-  this.b = b || 0;
-  this.a = a || 1;
-
   return this;
 }
 
 // STATIC FUNCTIONS
 //------------------------------------------------------------
+iio.Color.invert = function(c){ return new iio.Color(255-c.r,255-c.g,255-c.b,c.a) }
 iio.Color.random = function(){
   return new iio.Color(iio.randomInt(0,255),iio.randomInt(0,255),iio.randomInt(0,255))
 }
-iio.Color.invert = function(c){ return new iio.Color(255-c.r,255-c.g,255-c.b,c.a) }
 iio.Color.hexToRgb = function(hex) {
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -1248,9 +1240,8 @@ iio.Color.rgbToHex = function(r, g, b) {
   // TODO https://drafts.csswg.org/css-color/#hex-notation CSS4 will support 8 digit hex string (#RRGGBBAA)
   function componentToHex(c) {
     var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
+    return hex.length === 1 ? "0" + hex : hex;
   }
-
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
@@ -1281,36 +1272,47 @@ iio.Color.prototype.randomize = function(alpha){
 
 // COLOR CONSTANTS
 //------------------------------------------------------------
-iio.Color.iioblue = function(){ return new iio.Color(0,186,255) }
+// standard colors
 iio.Color.transparent = function(){ return new iio.Color(0,0,0,0) }
-iio.Color.black = function(){ return new iio.Color(0,0,0,1) }
-iio.Color.white = function(){ return new iio.Color(255,255,255,1) }
-iio.Color.gray = function(){ return new iio.Color(128,128,128,1) }
-iio.Color.red = function(){ return new iio.Color(255,0,0,1) }
-iio.Color.green = function(){ return new iio.Color(0,128,0,1) }
-iio.Color.blue = function(){ return new iio.Color(0,0,255,1) }
-iio.Color.lime = function(){ return new iio.Color(0,255,0,1) }
-iio.Color.aqua = function(){ return new iio.Color(0,255,255,1) }
-iio.Color.fuchsia = function(){ return new iio.Color(255,0,255,1) }
-iio.Color.maroon = function(){ return new iio.Color(128,0,0,1) }
-iio.Color.navy = function(){ return new iio.Color(0,0,128,1) }
-iio.Color.olive = function(){ return new iio.Color(128,128,0,1) }
+iio.Color.iioblue = function(){ return new iio.Color(0,186,255) }
+iio.Color.black = function(){ return new iio.Color(0,0,0) }
+iio.Color.white = function(){ return new iio.Color(255,255,255) }
+iio.Color.gray = function(){ return new iio.Color(128,128,128) }
+iio.Color.red = function(){ return new iio.Color(255,0,0) }
+iio.Color.green = function(){ return new iio.Color(0,128,0) }
+iio.Color.blue = function(){ return new iio.Color(0,0,255) }
+// CSS colors
+iio.Color.aliceblue = function(){ return new iio.Color(240,248,255) }
+iio.Color.antiquewhite = function(){ return new iio.Color(250,235,215) }
+iio.Color.aqua = function(){ return new iio.Color(0,255,255) }
+iio.Color.aquamarine = function(){ return new iio.Color(127,255,212) }
+iio.Color.azure = function(){ return new iio.Color(240,255,255) }
+iio.Color.beige = function(){ return new iio.Color(245,245,220) }
+iio.Color.bisque = function(){ return new iio.Color(255,228,196) }
+iio.Color.blanchedalmond = function(){ return new iio.Color(255,235,205) }
+iio.Color.blueviolet = function(){ return new iio.Color(138,43,226) }
+iio.Color.brown = function(){ return new iio.Color(165,42,42) }
+iio.Color.burlywood = function(){ return new iio.Color(222,184,135) }
+iio.Color.lime = function(){ return new iio.Color(0,255,0) }
+iio.Color.fuchsia = function(){ return new iio.Color(255,0,255) }
+iio.Color.maroon = function(){ return new iio.Color(128,0,0) }
+iio.Color.navy = function(){ return new iio.Color(0,0,128) }
+iio.Color.olive = function(){ return new iio.Color(128,128,0) }
 /* Gradient
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Gradient = function(){ this.Gradient.apply(this, arguments) };
 iio.inherit(iio.Gradient, iio.Interface);
 iio.Gradient.prototype._super = iio.Interface.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Gradient.prototype.Gradient = function() {
   this._super.Interface.call(this,iio.merge_args(arguments));
 }
 
-// MEMBER FUNCTIONS
-//------------------------------------------------------------
+// IMPLEMENT ABSTRACT FUNCTIONS
 iio.Gradient.prototype.convert_props = function(){
   iio.convert.property.vector(this, "start");
   iio.convert.property.vector(this, "end");
@@ -1318,16 +1320,22 @@ iio.Gradient.prototype.convert_props = function(){
     if(iio.is.string(this.stops[i][1]))
       this.stops[i][1] = iio.convert.color(this.stops[i][1]);
 }
+
+// GRADIENT FUNCTIONS
 iio.Gradient.prototype.canvasGradient = function(ctx){
   var gradient;
   if(this.startRadius)
-    gradient = ctx.createRadialGradient(this.start.x,this.start.y,this.startRadius,
-                                        this.end.x,this.end.y,this.endRadius);
-  else gradient = ctx.createLinearGradient(this.start.x,this.start.y,this.end.x,this.end.y);
+    gradient = ctx.createRadialGradient(
+      this.start.x,this.start.y,this.startRadius,
+      this.end.x,this.end.y,this.endRadius);
+  else gradient = ctx.createLinearGradient(
+    this.start.x,this.start.y,this.end.x,this.end.y);
   for(var i=0; i<this.stops.length; i++)
-    gradient.addColorStop(this.stops[i][0],this.stops[i][1].rgbaString());
+    gradient.addColorStop(
+      this.stops[i][0],this.stops[i][1].rgbaString());
   return gradient;
 }
+
 /* Drawable
 ------------------
 */
@@ -1370,11 +1378,15 @@ iio.Drawable.prototype.localFrameVector = function(v){
 }
 iio.Drawable.prototype.localizeRotation = function(v,n){
   if (this.rotation) {
-    if (this.origin)
-      v.sub(this.origin);
+    if (this.origin) {
+      v.x -= this.origin.x;
+      v.y -= this.origin.y;
+    }
     v.rotate( n ? this.rotation : -this.rotation );
-    if (this.origin)
-      v.add(this.origin);
+    if (this.origin){
+      v.x += this.origin.x;
+      v.y += this.origin.y;
+    }
   }
   return v;
 }
@@ -1433,7 +1445,7 @@ iio.Drawable.prototype.add = function() {
         arguments[0].objs[i].ctx = this.ctx; 
       }
 
-    // infer size if Text object
+    // initialize with context if Text
     if (arguments[0] instanceof iio.Text){
       arguments[0].inferSize();
       if (arguments[0].showCursor)
@@ -1441,15 +1453,15 @@ iio.Drawable.prototype.add = function() {
     }
 
     // set default z index
-    if (typeof(arguments[0].z) == 'undefined') 
+    if (typeof arguments[0].z === 'undefined') 
       arguments[0].z = 0;
 
     // insert into objs in order of z index
     var i = 0;
     while ( i < this.objs.length 
-      && typeof(this.objs[i].z) != 'undefined' 
+      && typeof this.objs[i].z !== 'undefined' 
       && arguments[0].z >= this.objs[i].z) i++;
-    this.objs.insert(i, arguments[0]);
+    this.objs.splice(i, 0, arguments[0]);
 
     // set loop if neccessary
     if ( arguments[0].app && 
@@ -1476,6 +1488,7 @@ iio.Drawable.prototype.add = function() {
   return arguments[0];
 }
 iio.Drawable.prototype.rmv = function() {
+  if (!this.objs) return false;
 
   // if input is Array
   if (arguments[0] instanceof Array)
@@ -1484,9 +1497,7 @@ iio.Drawable.prototype.rmv = function() {
 
   // input is a singular object
   else {
-
     var _argument = arguments[0];
-
     remove = function(c, i, arr) {
       if (c == _argument) {
         arr.splice(i, 1);
@@ -1498,22 +1509,17 @@ iio.Drawable.prototype.rmv = function() {
     if ( iio.is.number( arguments[0] ) ){
       if( arguments[0] < this.objs.length )
         _argument = this.objs.splice( arguments[0], 1 );
-
-      // passed index out of bounds
       else return false;
 
     // remove passed object
     } else if (this.objs) 
       this.objs.some(remove);
 
-    // return false if parent has no children
-    else return false;
-
-    // removed associated collisions
+    // remove associated collisions
     if (this.collisions) this.collisions.forEach(function(collision, i) {
 
       // remove collision referring only to removed object
-      if ( collision[0] == _argument || collision[1] == _argument )
+      if ( collision[0] === _argument || collision[1] === _argument )
         this.collisions.splice(i, 1);
       else {
         // remove reference to removed object from collision arrays
@@ -1574,7 +1580,7 @@ iio.Drawable.prototype.create = function(){
 
   if(props.vs){
     // infer Line
-    if(props.vs.length == 2)
+    if(props.vs.length === 2)
       return this.add(new iio.Line(props));
     // infer Polygon
     else return this.add(new iio.Polygon(props));
@@ -1587,10 +1593,10 @@ iio.Drawable.prototype.create = function(){
     return this.add(new iio.Text(props));
   // infer Grid
   else if(props.res || props.R || props.C)
-    return this.add(new iio.Grid(props));
+    return this.add(new iio.QuadGrid(props));
   // infer Rectangle
   else if(props.width)
-    return this.add(new iio.Rectangle(props));
+    return this.add(new iio.Quad(props));
   // infer Color
   else if(props.color)
     return props.color;
@@ -1609,20 +1615,24 @@ iio.Drawable.prototype.cCollisions = function(o1, o2, fn) {
       if (o2.length == 0) return;
       o1.forEach(function(_o1) {
         o2.forEach(function(_o2) {
-          if (iio.collision.check(_o1, _o2)) fn(_o1, _o2);
+          if (iio.collision.check(_o1, _o2))
+            fn(_o1, _o2);
         });
       });
     } else {
       o1.forEach(function(_o1) {
-        if (iio.collision.check(_o1, o2)) fn(_o1, o2);
+        if (iio.collision.check(_o1, o2))
+          fn(_o1, o2);
       });
     }
   } else {
     if (o2 instanceof Array) {
       o2.forEach(function(_o2) {
-        if (iio.collision.check(o1, _o2)) fn(o1, _o2);
+        if (iio.collision.check(o1, _o2))
+          fn(o1, _o2);
       });
-    } else if (iio.collision.check(o1, o2)) fn(o1, o2);
+    } else if (iio.collision.check(o1, o2))
+      fn(o1, o2);
   }
 }
 iio.Drawable.prototype._update = function(o,dt){
@@ -1638,27 +1648,23 @@ iio.Drawable.prototype._update = function(o,dt){
     this.objs.forEach(function(obj) {
       if (obj.update && obj.update(o, dt)) this.rmv(obj);
     }, this);
-  //this.draw();
   return nuFPS;
 }
 
 // LOOP MANAGMENT FUNCTIONS
 //-------------------------------------------------------------------
 iio.Drawable.prototype.loop = function(fps, callback) {
-
   // set looping flag
   this.looping = true;
 
   // create loop object
   var loop;
-
-  if (typeof callback == 'undefined') {
-
+  if (typeof callback === 'undefined') {
     // replace mainLoop: 60fps with no callback
-    if (typeof fps == 'undefined') {
-
+    if (typeof fps === 'undefined') {
       // cancel old mainLoop if it exists
-      if (this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
+      if (this.app.mainLoop)
+        iio.cancelLoop(this.app.mainLoop.id);
 
       // define new mainLoop
       loop = this.app.mainLoop = {
@@ -1684,9 +1690,9 @@ iio.Drawable.prototype.loop = function(fps, callback) {
       } 
       // replace mainLoop: given fps with callback
       else {
-
         // cancel old mainLoop if it exists
-        if (this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
+        if (this.app.mainLoop)
+          iio.cancelLoop(this.app.mainLoop.id);
         
         // define new mainLoop
         loop = this.app.mainLoop = {
@@ -1701,7 +1707,6 @@ iio.Drawable.prototype.loop = function(fps, callback) {
       }
     }
   } 
-
   // loop callback at given framerate
   else {
     loop = {
@@ -1715,13 +1720,6 @@ iio.Drawable.prototype.loop = function(fps, callback) {
 
   // add new loop to array
   this.loops.push(loop);
-
-  /*if(typeof o.app.fps=='undefined'||o.app.fps<fps){
-     if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
-     o.app.mainLoop={fps:fps,o:o.app,af:o.app.rqAnimFrame}
-     o.app.fps=fps;
-     o.app.mainLoop.id=iio.loop(o.app.mainLoop);
-  }*/
   
   // return id of new loop
   return loop.id;
@@ -1749,7 +1747,7 @@ iio.Drawable.prototype.unpause = function(c) {
         iio.loop(loop);
       }
     });
-    if (typeof c == 'undefined')
+    if (typeof c === 'undefined')
       this.objs.forEach(function(o) {
         o.loops.forEach(function(loop) {
           iio.loop(loop);
@@ -1762,10 +1760,10 @@ iio.Drawable.prototype.unpause = function(c) {
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.SpriteMap.prototype.SpriteMap = function(src, p) {
   this.img = new Image();
   this.img.src = src;
@@ -1773,7 +1771,7 @@ iio.SpriteMap.prototype.SpriteMap = function(src, p) {
   return this;
 }
 
-//FUNCTIONS
+// SPRITEMAP FUNCTIONS
 iio.SpriteMap.prototype.sprite = function() {
   var args = iio.merge_args(arguments);
   var anim = {};
@@ -1782,7 +1780,7 @@ iio.SpriteMap.prototype.sprite = function() {
   args.origin = iio.convert.vector(args.origin);
   if (!args.frames) {
     anim.frames = [];
-    for (var i = 0; i < anim.numFrames; i++)
+    for (var i=0; i<anim.numFrames; i++)
       anim.frames[i] = {
         x: args.origin.x + args.width * i,
         y: args.origin.y,
@@ -1791,9 +1789,9 @@ iio.SpriteMap.prototype.sprite = function() {
       };
   } else anim.frames = args.frames;
   anim.frames.forEach(function(frame) {
-    if (typeof(frame.src) == 'undefined') frame.src = this.img;
-    if (typeof(frame.w) == 'undefined') frame.w = args.width;
-    if (typeof(frame.h) == 'undefined') frame.h = args.height;
+    if (!frame.src) frame.src = this.img;
+    if (!frame.w) frame.w = args.width;
+    if (!frame.h) frame.h = args.height;
   }, this);
   return anim;
 }
@@ -2003,58 +2001,25 @@ iio.Shape.prototype.update_fade = function(){
   else return this._fade(this.fade);
 }
 iio.Shape.prototype.past_bounds = function(){
-  if (this.bounds.right && this.over_upper_limit(this.bounds.right, this.right(), this)) return true;
-  if (this.bounds.left && this.below_lower_limit(this.bounds.left, this.left(), this)) return true;
-  if (this.bounds.top && this.below_lower_limit(this.bounds.top, this.top(), this)) return true;
-  if (this.bounds.bottom && this.over_upper_limit(this.bounds.bottom, this.bottom(), this)) return true;
-  if (this.bounds.rightRotation && this.over_upper_limit(this.bounds.rightRotation, this.rotation, this)) return true;
-  if (this.bounds.leftRotation && this.below_lower_limit(this.bounds.leftRotation, this.rotation, this)) return true;
+  if (this.bounds.right
+   && this.over_upper_limit(this.bounds.right, this.right(), this))
+    return true;
+  if (this.bounds.left
+   && this.below_lower_limit(this.bounds.left, this.left(), this))
+    return true;
+  if (this.bounds.top
+   && this.below_lower_limit(this.bounds.top, this.top(), this))
+    return true;
+  if (this.bounds.bottom
+   && this.over_upper_limit(this.bounds.bottom, this.bottom(), this))
+    return true;
+  if (this.bounds.rightRotation
+   && this.over_upper_limit(this.bounds.rightRotation, this.rotation, this))
+    return true;
+  if (this.bounds.leftRotation
+   && this.below_lower_limit(this.bounds.leftRotation, this.rotation, this))
+    return true;
   return false;
-}
-iio.Shape.prototype.update_properties_deprecated = function(){
-  if (o.simple) {
-    if (!(o.bbx instanceof Array)) {
-      o.bbx = [o.bbx, o.bbx];
-    } else if (typeof(o.bbx[1] == 'undefined'))
-      o.bbx[1] = o.bbx[0];
-  }
-  if (o.anims) {
-    o.animKey = 0;
-    o.animFrame = 0;
-    if (!o.width) o.width = o.anims[o.animKey].frames[o.animFrame].w;
-    if (!o.height) o.height = o.anims[o.animKey].frames[o.animFrame].h;
-  }
-  if (o.bezier)
-    o.bezier.forEach(function(b, i) {
-      if (b === 'n') o.bezier[i] = undefined;
-    });
-  if (o.img && iio.is.string(o.img)) {
-    nd = false;
-    var src = o.img;
-    o.img = new Image();
-    o.img.src = src;
-    o.img.parent = o;
-    if ((typeof o.width == 'undefined' && typeof o.radius == 'undefined') || o.radius == 0)
-      o.img.onload = function(e) {
-        if (o.radius == 0) o.radius = o.width / 2;
-        else {
-          o.width = o.width || 0;
-          o.height = o.height || 0;
-        }
-        if (nd);
-        else o.app.draw();
-      }
-  } else if (o.img) {
-    if ((typeof o.width == 'undefined' && typeof o.radius == 'undefined') || o.radius == 0) {
-      if (o.radius == 0) o.radius = o.img.width / 2;
-      else {
-        o.width = o.img.width || 0;
-        o.height = o.img.height || 0;
-      }
-      if (nd);
-      else o.app.draw();
-    }
-  }
 }
 
 // ANIMATION FUNCTIONS
@@ -2080,7 +2045,7 @@ iio.Shape.prototype.setSprite = function(s, noDraw) {
   if (iio.is.string(s)) {
     var o = this;
     this.anims.some(function(anim, i) {
-      if (anim.name == s) {
+      if (anim.name === s) {
         o.animFrame = 0;
         o.animKey = i;
         o.width = anim.frames[o.animFrame].w;
@@ -2104,7 +2069,7 @@ iio.Shape.prototype.nextFrame = function(o) {
   o.animFrame++;
   if (o.animFrame >= o.anims[o.animKey].frames.length) {
     o.animFrame = 0;
-    if (typeof(o.animRepeat) != 'undefined') {
+    if (typeof o.animRepeat !== 'undefined') {
       if (o.animRepeat <= 1) {
         window.cancelAnimationFrame(id);
         window.clearTimeout(id);
@@ -2270,12 +2235,6 @@ iio.Shape.prototype.draw = function(ctx){
   //draw
   else this.draw_obj(ctx);
   ctx.restore();
-}
-iio.Shape.prototype.draw_line = function(ctx, x1, y1, x2, y2){
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x1, y1);
-  ctx.stroke();
 }
 /* Ellipse
 ------------------
@@ -3153,12 +3112,12 @@ iio.App.prototype.stop = function() {
 // Single AudioContext shared across all iio apps
 iio.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-//DEFINITION
+// DEFINITION
 iio.Sound = function(){ this.Sound.apply(this, arguments) };
 iio.inherit(iio.Sound, iio.Interface);
 iio.Sound.prototype._super = iio.Interface.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Sound.prototype.Sound = function(url, onLoad, onError) {
   var sound = this;
   // Set up a GainNode for volume control
@@ -3178,9 +3137,10 @@ iio.Sound.prototype.Sound = function(url, onLoad, onError) {
   xhr.send();
 }
 
+// SOUND FUNCTIONS
 iio.Sound.prototype.play = function() {
   this.set(iio.merge_args(arguments), true);
-  if (this.buffer === undefined) return;
+  if (typeof this.buffer === undefined) return;
   this.source = iio.audioCtx.createBufferSource();
   this.source.buffer = this.buffer;
   if (this.loop)
@@ -3191,7 +3151,6 @@ iio.Sound.prototype.play = function() {
   this.source.start(this.delay || 0);
   return this;
 }
-
 iio.Sound.prototype.stop = function() {
   if (this.source)
     this.source.disconnect();
@@ -3201,11 +3160,16 @@ iio.Sound.prototype.stop = function() {
 ------------------
 */
 
+// DEFINITION
+iio.Loader = function(basePath) {
+  this.basePath = (basePath || '.') + '/';
+}
+
+// LOADER FUNCTIONS
 iio.loadSound = function(url, onLoad, onError) {
   var sound = new iio.Sound(url, onLoad, onError);
   return sound;
 }
-
 iio.loadImage = function(url, onLoad, onError) {
   var img = new Image();
   img.onload = onLoad;
@@ -3213,11 +3177,6 @@ iio.loadImage = function(url, onLoad, onError) {
   img.src = url;
   return img;
 }
-
-iio.Loader = function(basePath) {
-  this.basePath = (basePath || '.') + '/';
-};
-
 /*
  * @params:
  *   assets: Define the assets to load, can be of various formats
@@ -3312,7 +3271,7 @@ iio.Loader.prototype.load = function(assets, onComplete) {
   var postLoad = function() {
     loaded++;
     console.log(loaded);
-    if (loaded == total) onComplete(_assets);
+    if (loaded === total) onComplete(_assets);
   };
 
   // Helper function to load asset into _assets.
@@ -3368,13 +3327,12 @@ iio.Loader.prototype.load = function(assets, onComplete) {
   }
 
   return _assets;
-};
-
+}
 
 /* Attach iio to box2dWeb
 -------------------------
 */
-if (typeof Box2D != 'undefined'){
+if (Box2D){
   Box2D.Dynamics.Joints.b2Joint.prototype.set = iio.Drawable.prototype.set;
   Box2D.Dynamics.Joints.b2Joint.prototype.convert_props = iio.Drawable.prototype.convert_props;
   Box2D.Collision.Shapes.b2Shape.prototype.set = iio.Drawable.prototype.set;
@@ -3395,17 +3353,15 @@ if (typeof Box2D != 'undefined'){
   Box2D.Collision.Shapes.b2Shape.prototype.finish_path_shape=iio.Shape.prototype.finish_path_shape;
   Box2D.Collision.Shapes.b2Shape.prototype.draw_obj=iio.Shape.prototype.draw_obj;
   Box2D.Collision.Shapes.b2Shape.prototype.draw=iio.Shape.prototype.draw;
-  Box2D.Collision.Shapes.b2Shape.prototype.draw_line=iio.Shape.prototype.draw_line;
   Box2D.Collision.Shapes.b2CircleShape.prototype.draw_shape = iio.Ellipse.prototype.draw_shape;
   Box2D.Collision.Shapes.b2PolygonShape.prototype.draw_shape = iio.Polygon.prototype.draw_shape;
-
   Box2D.Dynamics.Joints.b2Joint.prototype.orient_ctx = iio.Shape.prototype.orient_ctx;
   Box2D.Dynamics.Joints.b2Joint.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;
   Box2D.Dynamics.Joints.b2Joint.prototype.prep_ctx_lineWidth=iio.Line.prototype.prep_ctx_lineWidth;
   Box2D.Dynamics.Joints.b2Joint.prototype.prep_ctx_shadow=iio.Shape.prototype.prep_ctx_shadow;
   Box2D.Dynamics.Joints.b2Joint.prototype.prep_ctx_dash=iio.Shape.prototype.prep_ctx_dash;
   Box2D.Dynamics.Joints.b2Joint.prototype.draw_obj=iio.Shape.prototype.draw_obj;
-  Box2D.Dynamics.Joints.b2Joint.prototype.draw=function(ctx){
+  Box2D.Dynamics.Joints.b2Joint.prototype.draw = function(ctx){
     this.draw_obj(ctx);
   }
   Box2D.Dynamics.Joints.b2Joint.prototype.draw_shape = function(ctx){
@@ -3452,8 +3408,7 @@ if (typeof Box2D != 'undefined'){
      }
      ctx.stroke();
   }
-
-  Box2D.Dynamics.b2Body.prototype.draw=function(ctx){
+  Box2D.Dynamics.b2Body.prototype.draw = function(ctx){
     for (f=this.m_fixtureList;f;f=f.m_next){
       s=f.GetShape(); 
       s.radius=s.m_radius*this.app.b2Scale;
@@ -3475,40 +3430,39 @@ if (typeof Box2D != 'undefined'){
   // iio.App
   //-------------------------------------------------------------------
   iio.App.prototype.addB2World = function(world,c){
-    this.b2World=world;
+    this.b2World = world;
     this.b2Scale = 30;
-    this.b2Cnv=c||0;
+    this.b2Cnv = c||0;
     return world;
   }
   iio.App.prototype.b2Loop = function( fps, callback ){
-    if (typeof this.b2lastTime == 'undefined')
-      this.b2lastTime=0;
-    if (typeof this.b2World!='undefined' && !this.b2Pause)
+    this.b2lastTime = this.b2lastTime || 0;
+    if (this.b2World && !this.b2Pause)
       this.b2World.Step(1/this.fps, 10, 10);
-    iio.requestTimeout(fps,this.b2lastTime, function(dt,args){
-      args[0].b2lastTime=dt;
+    iio.requestTimeout(fps, this.b2lastTime, function(dt,args){
+      args[0].b2lastTime = dt;
       args[0].b2Loop(fps,callback);
-      if (typeof args[0].b2World!='undefined' && !args[0].b2Pause)
+      if (args[0].b2World && !args[0].b2Pause)
         args[0].b2World.Step(1/fps, 10, 10);
       callback(dt);
-      if (typeof args[0].b2DebugDraw!='undefined'&&args[0].b2DebugDraw)
+      if (args[0].b2DebugDraw && args[0].b2DebugDraw)
         args[0].b2World.DrawDebugData();
       else args[0].draw(args[0].b2Cnv);
-      if (typeof this.b2World!='undefined')
+      if (this.b2World)
         args[0].b2World.ClearForces();
     }, [this]);
     return this;
   }
   iio.App.prototype.pauseB2World = function(pause){
-    if (typeof pause=='undefined'){
-      if (typeof this.b2Pause=='undefined')
+    if (typeof pause === 'undefined'){
+      if (typeof this.b2Pause === 'undefined')
         this.b2Pause = true;
       else this.b2Pause = !this.b2Pause;
     } else this.b2Pause = pause;
   }
   iio.App.prototype.activateB2Debugger = function(turnOn,c){
-    turnOn=turnOn||true;
-    c=c||0;
+    turnOn = turnOn||true;
+    c = c||0;
     if (turnOn){
       this.b2DebugDraw = new Box2D.Dynamics.b2DebugDraw();
       this.b2DebugDraw.SetSprite(this.ctxs[c]);
@@ -3521,13 +3475,13 @@ if (typeof Box2D != 'undefined'){
     }
   }
   iio.App.prototype.b2BodyAt = function(callback,v,y){
-    if (typeof v.x =='undefined')
-      v=new Box2D.Common.Math.b2Vec2(v,y);
+    if (typeof v.x === 'undefined')
+      v = new Box2D.Common.Math.b2Vec2(v,y);
     var aabb = new Box2D.Collision.b2AABB();
     aabb.lowerBound.Set(v.x - 0.001, v.y - 0.001);
     aabb.upperBound.Set(v.x + 0.001, v.y + 0.001);
     function getBodyCB(fixture){
-      if(fixture.GetBody().GetType() != Box2D.Dynamics.b2Body.b2_staticBody) 
+      if(fixture.GetBody().GetType() !== Box2D.Dynamics.b2Body.b2_staticBody) 
       if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), v)) 
         return fixture.GetBody();
       return false;
@@ -14404,7 +14358,7 @@ delete Box2D.postDefs;
 /* Attach iio to box2dWeb
 -------------------------
 */
-if (typeof Box2D != 'undefined'){
+if (Box2D){
   Box2D.Dynamics.Joints.b2Joint.prototype.set = iio.Drawable.prototype.set;
   Box2D.Dynamics.Joints.b2Joint.prototype.convert_props = iio.Drawable.prototype.convert_props;
   Box2D.Collision.Shapes.b2Shape.prototype.set = iio.Drawable.prototype.set;
@@ -14425,17 +14379,15 @@ if (typeof Box2D != 'undefined'){
   Box2D.Collision.Shapes.b2Shape.prototype.finish_path_shape=iio.Shape.prototype.finish_path_shape;
   Box2D.Collision.Shapes.b2Shape.prototype.draw_obj=iio.Shape.prototype.draw_obj;
   Box2D.Collision.Shapes.b2Shape.prototype.draw=iio.Shape.prototype.draw;
-  Box2D.Collision.Shapes.b2Shape.prototype.draw_line=iio.Shape.prototype.draw_line;
   Box2D.Collision.Shapes.b2CircleShape.prototype.draw_shape = iio.Ellipse.prototype.draw_shape;
   Box2D.Collision.Shapes.b2PolygonShape.prototype.draw_shape = iio.Polygon.prototype.draw_shape;
-
   Box2D.Dynamics.Joints.b2Joint.prototype.orient_ctx = iio.Shape.prototype.orient_ctx;
   Box2D.Dynamics.Joints.b2Joint.prototype.prep_ctx_color = iio.Line.prototype.prep_ctx_color;
   Box2D.Dynamics.Joints.b2Joint.prototype.prep_ctx_lineWidth=iio.Line.prototype.prep_ctx_lineWidth;
   Box2D.Dynamics.Joints.b2Joint.prototype.prep_ctx_shadow=iio.Shape.prototype.prep_ctx_shadow;
   Box2D.Dynamics.Joints.b2Joint.prototype.prep_ctx_dash=iio.Shape.prototype.prep_ctx_dash;
   Box2D.Dynamics.Joints.b2Joint.prototype.draw_obj=iio.Shape.prototype.draw_obj;
-  Box2D.Dynamics.Joints.b2Joint.prototype.draw=function(ctx){
+  Box2D.Dynamics.Joints.b2Joint.prototype.draw = function(ctx){
     this.draw_obj(ctx);
   }
   Box2D.Dynamics.Joints.b2Joint.prototype.draw_shape = function(ctx){
@@ -14482,8 +14434,7 @@ if (typeof Box2D != 'undefined'){
      }
      ctx.stroke();
   }
-
-  Box2D.Dynamics.b2Body.prototype.draw=function(ctx){
+  Box2D.Dynamics.b2Body.prototype.draw = function(ctx){
     for (f=this.m_fixtureList;f;f=f.m_next){
       s=f.GetShape(); 
       s.radius=s.m_radius*this.app.b2Scale;
@@ -14505,40 +14456,39 @@ if (typeof Box2D != 'undefined'){
   // iio.App
   //-------------------------------------------------------------------
   iio.App.prototype.addB2World = function(world,c){
-    this.b2World=world;
+    this.b2World = world;
     this.b2Scale = 30;
-    this.b2Cnv=c||0;
+    this.b2Cnv = c||0;
     return world;
   }
   iio.App.prototype.b2Loop = function( fps, callback ){
-    if (typeof this.b2lastTime == 'undefined')
-      this.b2lastTime=0;
-    if (typeof this.b2World!='undefined' && !this.b2Pause)
+    this.b2lastTime = this.b2lastTime || 0;
+    if (this.b2World && !this.b2Pause)
       this.b2World.Step(1/this.fps, 10, 10);
-    iio.requestTimeout(fps,this.b2lastTime, function(dt,args){
-      args[0].b2lastTime=dt;
+    iio.requestTimeout(fps, this.b2lastTime, function(dt,args){
+      args[0].b2lastTime = dt;
       args[0].b2Loop(fps,callback);
-      if (typeof args[0].b2World!='undefined' && !args[0].b2Pause)
+      if (args[0].b2World && !args[0].b2Pause)
         args[0].b2World.Step(1/fps, 10, 10);
       callback(dt);
-      if (typeof args[0].b2DebugDraw!='undefined'&&args[0].b2DebugDraw)
+      if (args[0].b2DebugDraw && args[0].b2DebugDraw)
         args[0].b2World.DrawDebugData();
       else args[0].draw(args[0].b2Cnv);
-      if (typeof this.b2World!='undefined')
+      if (this.b2World)
         args[0].b2World.ClearForces();
     }, [this]);
     return this;
   }
   iio.App.prototype.pauseB2World = function(pause){
-    if (typeof pause=='undefined'){
-      if (typeof this.b2Pause=='undefined')
+    if (typeof pause === 'undefined'){
+      if (typeof this.b2Pause === 'undefined')
         this.b2Pause = true;
       else this.b2Pause = !this.b2Pause;
     } else this.b2Pause = pause;
   }
   iio.App.prototype.activateB2Debugger = function(turnOn,c){
-    turnOn=turnOn||true;
-    c=c||0;
+    turnOn = turnOn||true;
+    c = c||0;
     if (turnOn){
       this.b2DebugDraw = new Box2D.Dynamics.b2DebugDraw();
       this.b2DebugDraw.SetSprite(this.ctxs[c]);
@@ -14551,13 +14501,13 @@ if (typeof Box2D != 'undefined'){
     }
   }
   iio.App.prototype.b2BodyAt = function(callback,v,y){
-    if (typeof v.x =='undefined')
-      v=new Box2D.Common.Math.b2Vec2(v,y);
+    if (typeof v.x === 'undefined')
+      v = new Box2D.Common.Math.b2Vec2(v,y);
     var aabb = new Box2D.Collision.b2AABB();
     aabb.lowerBound.Set(v.x - 0.001, v.y - 0.001);
     aabb.upperBound.Set(v.x + 0.001, v.y + 0.001);
     function getBodyCB(fixture){
-      if(fixture.GetBody().GetType() != Box2D.Dynamics.b2Body.b2_staticBody) 
+      if(fixture.GetBody().GetType() !== Box2D.Dynamics.b2Body.b2_staticBody) 
       if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), v)) 
         return fixture.GetBody();
       return false;

@@ -40,11 +40,15 @@ iio.Drawable.prototype.localFrameVector = function(v){
 }
 iio.Drawable.prototype.localizeRotation = function(v,n){
   if (this.rotation) {
-    if (this.origin)
-      v.sub(this.origin);
+    if (this.origin) {
+      v.x -= this.origin.x;
+      v.y -= this.origin.y;
+    }
     v.rotate( n ? this.rotation : -this.rotation );
-    if (this.origin)
-      v.add(this.origin);
+    if (this.origin){
+      v.x += this.origin.x;
+      v.y += this.origin.y;
+    }
   }
   return v;
 }
@@ -103,7 +107,7 @@ iio.Drawable.prototype.add = function() {
         arguments[0].objs[i].ctx = this.ctx; 
       }
 
-    // infer size if Text object
+    // initialize with context if Text
     if (arguments[0] instanceof iio.Text){
       arguments[0].inferSize();
       if (arguments[0].showCursor)
@@ -111,15 +115,15 @@ iio.Drawable.prototype.add = function() {
     }
 
     // set default z index
-    if (typeof(arguments[0].z) == 'undefined') 
+    if (typeof arguments[0].z === 'undefined') 
       arguments[0].z = 0;
 
     // insert into objs in order of z index
     var i = 0;
     while ( i < this.objs.length 
-      && typeof(this.objs[i].z) != 'undefined' 
+      && typeof this.objs[i].z !== 'undefined' 
       && arguments[0].z >= this.objs[i].z) i++;
-    this.objs.insert(i, arguments[0]);
+    this.objs.splice(i, 0, arguments[0]);
 
     // set loop if neccessary
     if ( arguments[0].app && 
@@ -146,6 +150,7 @@ iio.Drawable.prototype.add = function() {
   return arguments[0];
 }
 iio.Drawable.prototype.rmv = function() {
+  if (!this.objs) return false;
 
   // if input is Array
   if (arguments[0] instanceof Array)
@@ -154,9 +159,7 @@ iio.Drawable.prototype.rmv = function() {
 
   // input is a singular object
   else {
-
     var _argument = arguments[0];
-
     remove = function(c, i, arr) {
       if (c == _argument) {
         arr.splice(i, 1);
@@ -168,22 +171,17 @@ iio.Drawable.prototype.rmv = function() {
     if ( iio.is.number( arguments[0] ) ){
       if( arguments[0] < this.objs.length )
         _argument = this.objs.splice( arguments[0], 1 );
-
-      // passed index out of bounds
       else return false;
 
     // remove passed object
     } else if (this.objs) 
       this.objs.some(remove);
 
-    // return false if parent has no children
-    else return false;
-
-    // removed associated collisions
+    // remove associated collisions
     if (this.collisions) this.collisions.forEach(function(collision, i) {
 
       // remove collision referring only to removed object
-      if ( collision[0] == _argument || collision[1] == _argument )
+      if ( collision[0] === _argument || collision[1] === _argument )
         this.collisions.splice(i, 1);
       else {
         // remove reference to removed object from collision arrays
@@ -244,7 +242,7 @@ iio.Drawable.prototype.create = function(){
 
   if(props.vs){
     // infer Line
-    if(props.vs.length == 2)
+    if(props.vs.length === 2)
       return this.add(new iio.Line(props));
     // infer Polygon
     else return this.add(new iio.Polygon(props));
@@ -257,10 +255,10 @@ iio.Drawable.prototype.create = function(){
     return this.add(new iio.Text(props));
   // infer Grid
   else if(props.res || props.R || props.C)
-    return this.add(new iio.Grid(props));
+    return this.add(new iio.QuadGrid(props));
   // infer Rectangle
   else if(props.width)
-    return this.add(new iio.Rectangle(props));
+    return this.add(new iio.Quad(props));
   // infer Color
   else if(props.color)
     return props.color;
@@ -279,20 +277,24 @@ iio.Drawable.prototype.cCollisions = function(o1, o2, fn) {
       if (o2.length == 0) return;
       o1.forEach(function(_o1) {
         o2.forEach(function(_o2) {
-          if (iio.collision.check(_o1, _o2)) fn(_o1, _o2);
+          if (iio.collision.check(_o1, _o2))
+            fn(_o1, _o2);
         });
       });
     } else {
       o1.forEach(function(_o1) {
-        if (iio.collision.check(_o1, o2)) fn(_o1, o2);
+        if (iio.collision.check(_o1, o2))
+          fn(_o1, o2);
       });
     }
   } else {
     if (o2 instanceof Array) {
       o2.forEach(function(_o2) {
-        if (iio.collision.check(o1, _o2)) fn(o1, _o2);
+        if (iio.collision.check(o1, _o2))
+          fn(o1, _o2);
       });
-    } else if (iio.collision.check(o1, o2)) fn(o1, o2);
+    } else if (iio.collision.check(o1, o2))
+      fn(o1, o2);
   }
 }
 iio.Drawable.prototype._update = function(o,dt){
@@ -308,27 +310,23 @@ iio.Drawable.prototype._update = function(o,dt){
     this.objs.forEach(function(obj) {
       if (obj.update && obj.update(o, dt)) this.rmv(obj);
     }, this);
-  //this.draw();
   return nuFPS;
 }
 
 // LOOP MANAGMENT FUNCTIONS
 //-------------------------------------------------------------------
 iio.Drawable.prototype.loop = function(fps, callback) {
-
   // set looping flag
   this.looping = true;
 
   // create loop object
   var loop;
-
-  if (typeof callback == 'undefined') {
-
+  if (typeof callback === 'undefined') {
     // replace mainLoop: 60fps with no callback
-    if (typeof fps == 'undefined') {
-
+    if (typeof fps === 'undefined') {
       // cancel old mainLoop if it exists
-      if (this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
+      if (this.app.mainLoop)
+        iio.cancelLoop(this.app.mainLoop.id);
 
       // define new mainLoop
       loop = this.app.mainLoop = {
@@ -354,9 +352,9 @@ iio.Drawable.prototype.loop = function(fps, callback) {
       } 
       // replace mainLoop: given fps with callback
       else {
-
         // cancel old mainLoop if it exists
-        if (this.app.mainLoop) iio.cancelLoop(this.app.mainLoop.id);
+        if (this.app.mainLoop)
+          iio.cancelLoop(this.app.mainLoop.id);
         
         // define new mainLoop
         loop = this.app.mainLoop = {
@@ -371,7 +369,6 @@ iio.Drawable.prototype.loop = function(fps, callback) {
       }
     }
   } 
-
   // loop callback at given framerate
   else {
     loop = {
@@ -385,13 +382,6 @@ iio.Drawable.prototype.loop = function(fps, callback) {
 
   // add new loop to array
   this.loops.push(loop);
-
-  /*if(typeof o.app.fps=='undefined'||o.app.fps<fps){
-     if(o.app.mainLoop) iio.cancelLoop(o.app.mainLoop.id);
-     o.app.mainLoop={fps:fps,o:o.app,af:o.app.rqAnimFrame}
-     o.app.fps=fps;
-     o.app.mainLoop.id=iio.loop(o.app.mainLoop);
-  }*/
   
   // return id of new loop
   return loop.id;
@@ -419,7 +409,7 @@ iio.Drawable.prototype.unpause = function(c) {
         iio.loop(loop);
       }
     });
-    if (typeof c == 'undefined')
+    if (typeof c === 'undefined')
       this.objs.forEach(function(o) {
         o.loops.forEach(function(loop) {
           iio.loop(loop);

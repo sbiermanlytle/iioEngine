@@ -29,14 +29,12 @@ iio.canvas = {
   },
   prep: function(id, d) {
     var c;
-
     //create with element id
     if (id) {
       c = document.getElementById(id);
       if (!c) {
-
         //create with existing canvas
-        if (id.tagName == 'CANVAS') c = id;
+        if (id.tagName === 'CANVAS') c = id;
 
         //create in existing element
         else if (iio.is.number(id) || id.x) {
@@ -61,9 +59,11 @@ iio.canvas = {
     function route_input(caller, e, handler){
       // orient position to canvas 0,0
       var ep = caller.parent.eventVector(e);
+
       // App.handler
       if (caller.parent[handler]) 
         caller.parent[handler](caller.parent, e, ep);
+      
       // App.objs.handler
       caller.parent.objs.forEach(function(obj, i) {
         if (i !== 0) ep = caller.parent.eventVector(e);

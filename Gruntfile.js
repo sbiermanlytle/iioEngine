@@ -4,6 +4,7 @@ srcPath = 'src';
 coreSrc = [
   'core/license',
   'core/core.js',
+  'libs/jsextensions.js',
   'libs/is.js',
   'libs/convert.js',
   'libs/key.js',

@@ -2,12 +2,12 @@
 ------------------
 */
 
-//DEFINITION
+// DEFINITION
 iio.Vector = function(){ this.Vector.apply(this, arguments) };
 iio.inherit(iio.Vector, iio.Interface);
 iio.Vector.prototype._super = iio.Interface.prototype;
 
-//CONSTRUCTOR
+// CONSTRUCTOR
 iio.Vector.prototype.Vector = function( v,y ) {
   if(v instanceof Array){
     this.x = v[0] || 0;
@@ -21,7 +21,7 @@ iio.Vector.prototype.Vector = function( v,y ) {
   }
 }
 
-//STATIC FUNCTIONS
+// STATIC FUNCTIONS
 //------------------------------------------------------------
 iio.Vector.vs = function ( points ){
   var vs = [];
@@ -115,7 +115,7 @@ iio.Vector.rotate = function( x,y,r ){
   return new iio.Vector(newX,newY);
 }
 
-// MEMBER FUNCTIONS
+// VECTOR FUNCTIONS
 //------------------------------------------------------------
 iio.Vector.prototype.clone = function(){
   return new iio.Vector(this.x,this.y)
@@ -182,8 +182,7 @@ iio.Vector.prototype.lerp = function( v,y,p ){
   return this;
 }
 iio.Vector.prototype.rotate = function( r ){
-  if (typeof r == 'undefined' || r == 0) 
-    return this;
+  if (!r) return this;
   var x = this.x;
   var y = this.y;
   this.x = x * Math.cos(r) - y * Math.sin(r);
