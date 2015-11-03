@@ -202,14 +202,18 @@ h1,h2,h3,h4{
 }
 #api_content p{
   padding-bottom: 6px;
+  font-family: verdana;
+  font-size: 14px;
 }
 .api_list_item{
-  font-size: 16px;
+  font-size: 19px;
   margin: 0;
+  margin-top: 0px;
   border-left: 4px solid #e5e5e5;
   padding: 6px 10px;
   color: #e5e5e5;
   display: inline-block;
+  font-family: monospace;
 }
 .api_list_info{  
   display: inline-block;

@@ -35,9 +35,10 @@ show_demo_index = function(){
 }
 
 add_demo_preview = function( elem, app, title, settings ){
-  create_demo_canvas( elem, 200, title )
+  var href = '#demos/'+title.toLowerCase();
+  create_demo_canvas( elem, 200, title, href )
   $('#'+title).click(function(){
-    goTo('#demos-'+title);
+    goTo(href);
     return false;
   });
   if(settings)
@@ -65,12 +66,15 @@ show_demo = function( app, title, settings){
   else iio.start( app )
 }
 
-function create_demo_canvas( elem, SIZE, id ){
+function create_demo_canvas( elem, SIZE, id, href ){
   
-  var canvas, container, h, p;
+  var canvas, container, h, p, a;
   
   container = document.createElement('div');
   container.className += "demo_wrap";
+
+  a = document.createElement('a');
+  a.href = href;
 
   h = document.createElement('h4');
   h.innerHTML = id;
@@ -87,8 +91,9 @@ function create_demo_canvas( elem, SIZE, id ){
     codeWindow.moveTo(0,0);
   }*/
   
-  container.appendChild(canvas);
-  container.appendChild(h);
+  a.appendChild(canvas);
+  a.appendChild(h);
+  container.appendChild(a);
   elem.appendChild(container);
   return canvas;
 }

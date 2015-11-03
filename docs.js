@@ -29,17 +29,17 @@ show_docs_menu = function(){
     document.getElementById('api_item_'+toggle_ids[i]).onselectstart = function() { return false }
   }
 
-  append_api_item_sub_no_api('basics','overview');
+  append_api_item_sub_no_api('basics','Overview');
 
   //append_api_item_sub('functions','iio libraries');
   append_api_item_sub('basics', api.AppControl);
-  append_api_item_sub('basics', api.Loader);
 
   append_api_item_sub('data', api.Interface );
   append_api_item_sub('data', api.Vector );
   append_api_item_sub('data', api.Color );
   append_api_item_sub('data', api.Gradient );
   append_api_item_sub('data', api.Sound);
+  append_api_item_sub('data', api.Loader);
 
   append_api_item_sub('objects', api.Drawable );
   append_api_item_sub('objects', api.App );
@@ -56,7 +56,7 @@ show_docs_menu = function(){
 }
 
 show_unit_test = function( parent, test_function, test_class, id ){
-  parent.append( h2(test_class+' Unit Tests', "api."+test_class+'.unit-tests') );
+  parent.append( h2(test_class+' Unit Tests', "api/"+test_class+'/unit-tests') );
   parent.append('<h3>click any app to view the source code</h3>');
   iioapps = document.createElement('div');
   iioapps.className = 'iioapps';
@@ -76,7 +76,7 @@ show_api_basics = function(){
   api_content.append(h1('iio.js Documentation'));
   api_content.append('<h3><a href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">- Download iio.js 1.4</a></h3>');
 
-  api_content.append(p('iio.js is a JavaScript framework for HTML5 Canvas applications. iio allows for '+kwd('object oriented development')+' and '+kwd('automated object managment')+'.'));
+  api_content.append(p('iio.js is a JavaScript library for HTML5 Canvas applications. iio.js provides an environment for '+kwd('object oriented development')+' and '+kwd('automated object managment')+'.'));
 
   api_content.append(p('All code samples in the documentation are assumed to be running inside of an iio script with access to '+kwd('app')+', unless full code is provided.'));
 
@@ -86,7 +86,7 @@ show_api_basics = function(){
 
 show_api = function( api ){
   show_docs_menu();
-  page.append('<div id="api_content"><div id="'+'api.'+api.classname.replace(" ","-")+'.Overview" class="overview_anchor"></div></div>');
+  page.append('<div id="api_content"><div id="'+'api/'+api.classname.replace(" ","-").toLowerCase()+'" class="overview_anchor"></div></div>');
   var api_content = $('#api_content');
  
   // TITLE
@@ -116,8 +116,8 @@ show_api = function( api ){
     // FUNCTIONS & PROPERTIES
     for(var o in api.data ){
       var encoded = o;
-      encoded = encoded.replace(" ","-");
-      api_content.append( h2( o, "api."+api.classname.replace(" ","-")+'.'+encoded ) );
+      encoded = encoded.replace(" ","-").toLowerCase();
+      api_content.append( h2( o, "api/"+api.classname.replace(" ","-").toLowerCase()+'/'+encoded ) );
       api_content.append( api_list( encoded ) );
       var list = $( '#' + encoded );
       for(var i=0; i<api.data[o].length; i++ ){
@@ -150,26 +150,26 @@ toggle_menu = function( id, i ){
 append_api_item_sub_no_api = function( parent, href ){
   var title = href;
   href = title.replace(' ', '-');
-  var html = '<li class="api_item_sub"><a href="#api.'+href+'">'+title+'</a>';
+  var html = '<li class="api_item_sub"><a href="#api">'+title+'</a>';
   html += '<ul class="api_property"></ul>';
   html += '</li>';
   $('#'+parent).append(html);
 }
 append_api_item_sub = function( parent, api ){
   var title = api.classname;
-  var href = title.replace(' ', '-');
+  var href = title.replace(' ', '-').toLowerCase();
   var html = '<li class="api_item_sub"><a id="api_item_sub_h_'+parent+'-'+href+'"'
-    + ( ( current_hash.indexOf('#api.'+href+'.' ) >= 0 ) ? ' class="hashed"' : '' )
+    + ( ( current_hash.indexOf('#api/'+href+'/' ) >= 0 ) ? ' class="hashed"' : '' )
     +'>'+title+'</a>';
   html += '<ul class="api_property_list" id="'+parent+'-'+href+'">';
-  html += '<li class="api_property first_prop"><a href="#api.'+href+'.Overview"'
-  + ( ( current_hash == '#api.'+href+'.Overview' ) ? ' class="hashed"' : '' )
+  html += '<li class="api_property first_prop"><a href="#api/'+href+'"'
+  + ( ( current_hash === '#api/'+href ) ? ' class="hashed"' : '' )
   +'>Overview</a></li>';
   var html_prop;
   for( var prop in api.data ){
-    html_prop = prop.replace(' ','-');
-    html += '<li class="api_property"><a href="#api.'+href+'.'+html_prop+'"'
-    + ( ( current_hash == '#api.'+href+'.'+html_prop ) ? ' class="hashed"' : '' )
+    html_prop = prop.replace(' ','-').toLowerCase();
+    html += '<li class="api_property"><a href="#api/'+href+'/'+html_prop+'"'
+    + ( ( current_hash === '#api/'+href+'/'+html_prop ) ? ' class="hashed"' : '' )
     +'>'+prop+'</a></li>';
   }
   html += '</ul></li>';
@@ -181,7 +181,7 @@ append_api_item_sub = function( parent, api ){
   $('#api_item_sub_h_'+parent+'-'+href).click(function(){
     toggle_menu( toggle_ids[this.toggleIndex], this.toggleIndex );
   });
-  if( !(current_hash.indexOf('#api.'+href+'.') >= 0) && current_hash != '#api.'+href ){
+  if( !(current_hash.indexOf('#api/'+href+'/') >= 0) && current_hash != '#api/'+href ){
     $('#'+parent+'-'+href).hide();
     toggles[numToggles] = true;
   } else toggles[numToggles] = false;
