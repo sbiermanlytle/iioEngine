@@ -106,7 +106,7 @@ display_current = function(){
   }
 
   // DEMO ROUTER
-  else if( current_hash.substr( 0, 7 ) === '#demos/' ){
+  else if( current_hash.substr( 0, 7 ) === '#demos/' || current_hash.substr( 0, 7 ) === '#demos-' ){
     current = DEMOS;
     var path = current_hash.substr( 7 ).toLowerCase();
 
