@@ -68,19 +68,23 @@ var api = {
   },
   Interface: {
     classname: 'Interface',
-    overview: [ "An Interface root for all classes in iio. Every method defined here in Interface is available in every other class." ],
+    overview: [ "A root for all classes in iio. Every method defined in Interface is available in every other class." ],
     data: {
       'Functions': [
         { // set()
-          definition: 'set( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... ) | ' + small('returns ') + kwd('this'),
+          definition: 'set( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... , '+kwd('boolean')+' suppressDraw )',
+        },{
+          definition: '| '+small('returns ') + kwd('this'),
           descriptions: [
-            'Assigns the property and value of each given object to this object, and converts shorthand declarations into correct property data types.',
-            a('Vector')+' properties may be given as arrays: '+kwd('[ x, y ]')+'.',
-            a('Color')+' properties may be given as string keywords: '+kwd("'blue'")+'.'
+            'Assigns the property and value of each given object to this object, converts shorthand declarations into correct property data types, and redraws the parent application.',
+            a('Vector')+' properties may be given as arrays: '+kwd('[ x, y ]'),
+            a('Color')+' properties may be given as hexadecimal strings or '+ahref('CSS color', 'http://www.w3schools.com/cssref/css_colornames.asp')+' keywords: '+kwd("'blue'"),
+            'For optimal performance in logic loops or in looping apps, pass '+kwd('true')+' as the last parameter to suppress the redraw.'
           ],
           samples: [
             "// set an objects color to blue\nobj.set({ color: 'blue' });",
-            "// set multiple properties\nobj.set({\n\tcolor: 'red',\n\twidth: 100,\n\tmyVar: myVal\n});",
+            "// set multiple properties\nobj.set({\n\tcolor: 'red',\n\twidth: 100,\n\tmVar: mValue\n});",
+            "// set with multiple objects\nvar props0 = { color: '#FFF' };\nvar props1 = {\n\tpos: [ 20,20 ],\n\tvel: [ 1,1 ],\n}\nobj.set( props0, props1, {\n\tacc: [ 0.1,0 ]\n});",
             "// set properties and supress the redraw\nobj.set({\n\tcolor: 'red',\n\t//...\n}, true );"
           ],
           divider: true
@@ -102,14 +106,14 @@ var api = {
   Vector: {
     classname: 'Vector',
     inherits: [ 'Interface' ],
-    overview: [ "Represents a 2D vector or point. Contains static and instance mathmatics." ],
+    overview: [ "Represents a 2D vector. Contains static and instance vector operations." ],
     data: {
       'Constructors': [
         {
           definition: 'Vector()',
           descriptions: [ "create a vector with values 0,0" ]
         },{
-          definition: 'Vector( '+kwd('float')+' x, '+kwd('float')+' y )',
+          definition: 'Vector( '+kwd('number')+' x, '+kwd('number')+' y )',
           descriptions: [ 'create a vector with the given x and y values' ]
         },{
           definition: 'Vector( '+a('Vector')+' v )',
@@ -121,10 +125,10 @@ var api = {
       ],
       'Properties': [
         {
-          definition: kwd('float')+' x',
+          definition: kwd('number')+' x',
           descriptions: [ "the x (horizontal) coordinate value in pixels" ]
         },{
-          definition: kwd('float')+' y',
+          definition: kwd('number')+' y',
           descriptions: [ "the y (vertical) coordinate value in pixels" ],
           samples: [
             "// access the x and y values of a vector\nvar x = vector.x;\nvar y = vector.y;",
@@ -132,15 +136,207 @@ var api = {
           ]
         }
       ],
-      'Functions': [
-        {
-          definition: 'add( '+kwd('float')+' x, '+kwd('float')+' y ) | ' + small('returns ') + kwd('this'),
-          descriptions: [ 'add the given values to this vector' ]
+      'Static Functions': [
+        { // vs
+          definition: 'Vector.vs( '+kwd('Array')+'<'+kwd('number') + '|'+a('Vector')+'>'+' points )'
+        },{
+          definition: '| ' + small('returns ') + kwd('Array<'+a('Vector')+'>'),
+          descriptions: [ "takes an array of vectors, specified with numerical coordinates, "+a('Vector')+' objects, or a mixture of the two, and returns an array of equivalent '+a('Vector')+' objects.' ],
+          samples: [ "var vectors = iio.Vector.vs( 0,0, 10,20, 50,30 );",
+            "var vectors = iio.Vector.vs( 0,0, app.center, 50,30 );" ], 
+          divider: true,
+        },
+        { // leftmost
+          definition: 'Vector.leftmost( '+kwd('Array')+'<'+a('Vector')+'> vs ) | ' + small('returns ') + a('Vector'),
+        },
+        { // rightmost
+          definition: 'Vector.rightmost( '+kwd('Array')+'<'+a('Vector')+'> vs ) | ' + small('returns ') + a('Vector'),
+        },
+        { // highest
+          definition: 'Vector.highest( '+kwd('Array')+'<'+a('Vector')+'> vs ) | ' + small('returns ') + a('Vector'),
+        },
+        { // lowest
+          definition: 'Vector.lowest( '+kwd('Array')+'<'+a('Vector')+'> vs ) | ' + small('returns ') + a('Vector'),
+          descriptions: [ 'returns the leftmost/rightmost/lowest/highest vector in the given array of vectors.' ],
+          samples: [ "var leftside = iio.Vector.leftmost( vs );",
+            "var rightside = iio.Vector.rightmost( vs );",
+            "var top = iio.Vector.highest( vs );",
+            "var bottom = iio.Vector.lowest( vs );" ],
+          divider: true,
+        },
+        { // length
+          definition: 'Vector.length( '+kwd('number')+' x, '+kwd('number')+' y ) | ' + small('returns ') + kwd('number')
+        },{
+          definition: 'Vector.length( '+a('Vector')+' v ) | ' + small('returns ') + kwd('number'),
+          descriptions: [ 'returns the length of the given vector.' ],
+          samples: [ "var length = iio.Vector.length( 20,30 );",
+            "length = iio.Vector.length( vector );" ],
+          divider: true,
+        },
+        { // normalize
+          definition: 'Vector.normalize( '+kwd('number')+' x, '+kwd('number')+' y ) | ' + small('returns ') + a('Vector')
+        },{
+          definition: 'Vector.normalize( '+a('Vector')+' v ) | ' + small('returns ') + a('Vector'),
+          descriptions: [ 'returns a normalize copy of the given vector.' ],
+          samples: [ "var normalize = iio.Vector.normalize( 20,30 );",
+            "normalize = iio.Vector.normalize( vector );" ],
+          divider: true,
+        },
+        { // normalize
+          definition: 'Vector.normalize( '+kwd('number')+' x, '+kwd('number')+' y ) | ' + small('returns ') + a('Vector')
+        },{
+          definition: 'Vector.normalize( '+a('Vector')+' v ) | ' + small('returns ') + a('Vector'),
+          descriptions: [ 'returns a normalize copy of the given vector.' ],
+          samples: [ "var normalized = iio.Vector.normalize( 20,30 );",
+            "var normalized = iio.Vector.normalize( vector );" ],
+          divider: true,
+        },
+        { // rotate
+          definition: 'Vector.rotate( '+kwd('number')+' x, '+kwd('number')+' y, '+kwd('number')+' radians )'
+        },{
+          definition: 'Vector.rotate( '+a('Vector')+' v, '+kwd('number')+' radians )',
+        },{
+          definition: '| ' + small('returns ') + a('Vector'),
+          descriptions: [ 'returns a rotated copy of the given vector.' ],
+          samples: [ "var rotated = iio.Vector.rotate( 20,30, Math.PI/4 );",
+            "var rotated = iio.Vector.rotate( vector, Math.PI/4 );" ],
+          divider: true,
+        },
+        { // add
+          definition: 'Vector.add( '+a('Vector')+' v0, '+a('Vector')+' v1, ... ) | ' + small('returns ') + a('Vector'),
+          descriptions: [ 'returns the sum of all given vectors.' ],
+          samples: [ "var sum = iio.Vector.add( vector0, vector1, vector2 );" ],
+          divider: true,
+        },
+        { // sub
+          definition: 'Vector.sub( '+a('Vector')+' v0, '+a('Vector')+' v1, ... ) | ' + small('returns ') + a('Vector'),
+          descriptions: [ 'returns a clone of the first vector given, minus all other vectors given.' ],
+          samples: [ "var v = iio.Vector.sub( vector0, vector1, vector2 );" ],
+          divider: true,
+        },
+        { // mult
+          definition: 'Vector.mult( '+a('Vector')+' v, '+kwd('number')+' factor ) | ' + small('returns ') + a('Vector'),
+          descriptions: [ 'returns a clone given vector multiplied by the given factor.' ],
+          samples: [ "var v = iio.Vector.mult( vector, 5 );" ],
+          divider: true,
+        },
+        { // div
+          definition: 'Vector.div( '+a('Vector')+' v, '+kwd('number')+' divisor ) | ' + small('returns ') + a('Vector'),
+          descriptions: [ 'returns a clone given vector divided by the given value.' ],
+          samples: [ "var v = iio.Vector.div( vector, 5 );" ],
+          divider: true,
+        },
+        { // dot
+          definition: 'Vector.dot( '+kwd('number')+': x1, y1, x2, y2 ) | ' + small('returns ') + a('number')
+        },{
+          definition: 'Vector.dot( '+a('Vector')+' v, '+kwd('number')+' x2, y2 ) | ' + small('returns ') + a('number')
+        },{
+          definition: 'Vector.dot( '+a('Vector')+' v0, '+a('Vector')+' v1 ) | ' + small('returns ') + a('number'),
+          descriptions: [ 'returns the dot product of the given vectors.' ],
+          samples: [ "var dotProduct = iio.Vector.dot( 10,20, 40,60 );",
+            "var dotProduct = iio.Vector.dot( vector, 10,20 );",
+            "var dotProduct = iio.Vector.dot( vector0, vector1 );" ],
+          divider: true,
+        },
+        { // lerp
+          definition: 'Vector.lerp( '+kwd('number')+': x1, y1, x2, y2, interpolant )'
+        },{
+          definition: 'Vector.lerp( '+a('Vector')+' v, '+kwd('number')+': x, y, interpolant )'
+        },{
+          definition: 'Vector.lerp( '+a('Vector')+': v0, v1, '+kwd('number')+' interpolant )'
+        },{
+          definition: '| ' + small('returns ') + a('Vector'),
+          descriptions: [ 'returns a clone of the first given vector, linearly interpolated with the second given value.' ],
+          samples: [ "var lerped = iio.Vector.lerp( 10,20, 40,60, 0.5 );",
+            "var lerped = iio.Vector.lerp( vector, 10,20, 0.5 );",
+            "var lerped = iio.Vector.lerp( vector0, vector1, 0.5);" ],
+        },
+      ],
+      'Instance Functions': [
+        { // equals
+          definition: 'equals( '+kwd('number')+' x, '+kwd('number')+' y ) | ' + small('returns ') + kwd('boolean')
+        },{
+          definition: 'equals( '+a('Vector')+' v ) | ' + small('returns ') + kwd('boolean'),
+          descriptions: [ "returns true if this vector's values are equal to the given values or the given vector's values" ],
+          samples: [ "if (vector.equals( 20,30 ))\n\t...",
+            "if (vector.equals( vector1 ))\n\t..." ],
+          divider: true,
+        },
+        { // length
+          definition: 'length() | ' + small('returns ') + kwd('number'),
+          descriptions: [ 'returns the length of the vector.' ],
+          samples: [ "var vLength = vector.length();" ],
+          divider: true,
+        },
+        { // normalize
+          definition: 'normalize() | ' + small('returns ') + kwd('this'),
+          descriptions: [ 'reduces the length of the vector to 1.' ],
+          samples: [ "vector.normalize();" ],
+          divider: true,
+        },
+        { // rotate
+          definition: 'rotate( '+kwd('number')+' radians ) | ' + small('returns ') + kwd('this'),
+          descriptions: [ 'rotates the vector by the given radian value.' ],
+          samples: [ "vector.rotate( Math.PI / 4 );" ],
+          divider: true,
+        },
+        { // add
+          definition: 'add( '+kwd('number')+' x, '+kwd('number')+' y ) | ' + small('returns ') + kwd('this')
         },{
           definition: 'add( '+a('Vector')+' v ) | ' + small('returns ') + kwd('this'),
-          descriptions: [ 'add the given vector to this vector' ],
-          samples: [ "var v0 = new iio.Vector();\nv0.add( 20, 30 );\n\nvar v1 = new iio.Vector();\nv1.add( v0 );" ]
-        }
+          descriptions: [ 'add the given values or vector to this vector.' ],
+          samples: [ "vector.add( 20,30 );",
+            "vector.add( vector1 );" ],
+          divider: true,
+        },
+        { // sub
+          definition: 'sub( '+kwd('number')+' x, '+kwd('number')+' y ) | ' + small('returns ') + kwd('this')
+        },{
+          definition: 'sub( '+a('Vector')+' v ) | ' + small('returns ') + kwd('this'),
+          descriptions: [ 'subtract the given values or vector from this vector.' ],
+          samples: [ "vector.sub( 20,30 );",
+            "vector.sub( vector1 );" ],
+          divider: true,
+        },
+        { // mult
+          definition: 'mult( '+kwd('number')+' factor ) | ' + small('returns ') + kwd('this'),
+          descriptions: [ 'multiply the vector by the given factor.' ],
+          samples: [ "vector.mult( 3 );" ],
+          divider: true,
+        },
+        { // div
+          definition: 'div( '+kwd('number')+' divisor ) | ' + small('returns ') + kwd('this'),
+          descriptions: [ 'divides the vector by the given value.' ],
+          samples: [ "vector.div( 3 );" ],
+          divider: true,
+        },
+        { // dot
+          definition: 'dot( '+kwd('number')+' x, '+kwd('number')+' y ) | ' + small('returns ') + kwd('number')
+        },{
+          definition: 'dot( '+a('Vector')+' v ) | ' + small('returns ') + kwd('number'),
+          descriptions: [ 'returns the dot product of this vector and the given vector.' ],
+          samples: [ "var dotProduct = vector.dot( 2,3 );",
+            "var dotProduct = vector.dot( vector1 );" ],
+          divider: true,
+        },
+        { // dist
+          definition: 'dist( '+kwd('number')+' x, '+kwd('number')+' y ) | ' + small('returns ') + kwd('number')
+        },{
+          definition: 'dist( '+a('Vector')+' v ) | ' + small('returns ') + kwd('number'),
+          descriptions: [ 'returns the distance between this vector and the given vector.' ],
+          samples: [ "var distance = vector.dist( 20,30 );",
+            "var distance = vector.dist( vector1 );" ],
+          divider: true,
+        },
+        { // lerp
+          definition: 'lerp( '+kwd('number')+' x, '+kwd('number')+' y, '+kwd('number')+' interpolant )'
+        },{
+          definition: 'lerp( '+a('Vector')+' v, '+kwd('number')+' interpolant ) | ' + small('returns ') + kwd('this'),
+          descriptions: [ 'interpolates the vector with the given values or vector.',
+            kwd('interpolant')+' is the weight of the interpolation in the range '+kwd('[0,1]') ],
+          samples: [ "vector.lerp( 20,30, 0.5 );",
+            "vector.lerp( vector1, 0.3 );" ]
+        },
       ]
     }
   },
@@ -151,7 +347,7 @@ var api = {
     data: {
       'Constructor': [ 
         { // Color( r, g, b, a )
-          definition: 'Color( '+kwd('float')+' r, '+kwd('float')+' g, '+kwd('float')+' b, '+kwd('float')+' a )',
+          definition: 'Color( '+kwd('number')+' r, '+kwd('number')+' g, '+kwd('number')+' b, '+kwd('number')+' a )',
           descriptions: [ "Create a color with the given values. The default alpha value is 1, all colors default to 0." ],
           samples: [
             "// create a new color (black with full alpha)\nvar c0 = new iio.Color();",
@@ -162,19 +358,19 @@ var api = {
       ],
       'Properties': [
         {  // r
-          definition: kwd('float') + ' r',
+          definition: kwd('number') + ' r',
           descriptions: [ "Red color value in the range [ 0, 255 ]" ]
         },
         {  // g
-          definition: kwd('float') + ' g',
+          definition: kwd('number') + ' g',
           descriptions: [ "Green color value in the range [ 0, 255 ]" ]
         },
         {  // b
-          definition: kwd('float') + ' b',
+          definition: kwd('number') + ' b',
           descriptions: [ "Blue color value in the range [ 0, 255 ]" ]
         },
         {  // a
-          definition: kwd('float') + ' a',
+          definition: kwd('number') + ' a',
           descriptions: [ "Alpha color value in the range [ 0, 1 ]" ],
           samples: [
             "// access the properties of a color\nvar red = color.r;\nvar green = color.g;\nvar blue = color.b;\nvar alpha = color.a;",
@@ -189,7 +385,7 @@ var api = {
           samples: [ "var random_color = iio.Color.random();" ]
         }
       ],
-      'Member Functions': [
+      'Instance Functions': [
         {  // invert()
           definition: 'invert() | ' + small('returns ') + kwd('this'),
           descriptions: [ 'Inverts the r,g,b values of this color. Does not effect alpha.' ],
@@ -239,10 +435,10 @@ var api = {
           divider: true
         },
         { // startRadius
-          definition: kwd('float')+' startRadius',
+          definition: kwd('number')+' startRadius',
           descriptions: [ "An optional start radius for radial gradients" ]
         },{ // endRadius
-          definition: kwd('float')+' endRadius',
+          definition: kwd('number')+' endRadius',
           descriptions: [ "An optional end radius for radial gradients" ],
           samples: [
             "// access the start and end radii of a gradient\nvar start_radius = gradient.startRadius;\nvar end_radius = gradient.endRadius;",
@@ -271,11 +467,11 @@ var api = {
         ],
         Properties: [
           {
-            definition: kwd('Float') + ' gain',
+            definition: kwd('number') + ' gain',
             descriptions: [ "Gain (volume) level, must be between 0 and 1" ]
           },
           {
-            definition: kwd('Boolean') + ' loop',
+            definition: kwd('boolean') + ' loop',
             descriptions: [ "Flag to loop playback" ]
           },
           {
@@ -320,10 +516,10 @@ var api = {
           ],
           divider: true
         },{  // width
-          definition: kwd('float') + ' width',
+          definition: kwd('number') + ' width',
           descriptions: [ "Pixel width." ]
         },{  // height
-          definition: kwd('float') + ' height',
+          definition: kwd('number') + ' height',
           descriptions: [ "Pixel height." ],
           samples: [ 
             "// access a drawable's width value\nvar width = drawable.width;",
@@ -474,11 +670,11 @@ var api = {
         {  // loop()
           definition: 'loop() | ' + small('returns ') + kwd('int')
         },{
-          definition: 'loop( '+kwd('float')+' fps ) | ' + small('returns ') + kwd('int')
+          definition: 'loop( '+kwd('number')+' fps ) | ' + small('returns ') + kwd('int')
         },{
           definition: 'loop( '+kwd('function')+' callback ) | ' + small('returns ') + kwd('int')
         },{
-          definition: 'loop( '+kwd('float')+' fps, '+kwd('function')+' callback ) | ' + small('returns ') + kwd('int'),
+          definition: 'loop( '+kwd('number')+' fps, '+kwd('function')+' callback ) | ' + small('returns ') + kwd('int'),
           descriptions: [ 'Initiates a loop with or without a given callback at 60fps or the given framerate. Returns the new loop id.' ],
           samples: [
             "// add a 60 fps update loop\nvar loopId =  drawable.loop();",
@@ -543,7 +739,7 @@ var api = {
       "Initializes routines for movement, input handling, and rendering."
     ],
     data: {
-      'Movement Properties': [
+      'Translation Properties': [
         { // vel
           definition: a('Vector') + ' vel',
           descriptions: [ "Velocity in px/update" ]
@@ -559,7 +755,7 @@ var api = {
       ],
       'Rotation Properties': [
         { // rotation
-          definition: kwd('float') + ' rotation',
+          definition: kwd('number') + ' rotation',
           descriptions: [ "Rotation in radians." ],
           samples: [ 
             "// access a shape's rotation\nvar rotation = shape.rotation;",
@@ -568,10 +764,10 @@ var api = {
           ],
           divider: true
         },{ // rVel
-          definition: kwd('float') + ' rVel',
+          definition: kwd('number') + ' rVel',
           descriptions: [ "Rotational velocity in radians/update" ]
         },{  // rAcc
-          definition: kwd('float') + ' rAcc',
+          definition: kwd('number') + ' rAcc',
           descriptions: [ "Rotational accleration (torque) in radians/update" ],
           samples: [ 
             "// access a shape's rVel and rAcc\nvar rotational_velocity = shape.rVel;\nvar torque = shape.rAcc;",
@@ -600,14 +796,37 @@ var api = {
           ],
           divider: true
         },{ // alpha
-          definition: kwd('float')+' alpha',
+          definition: kwd('number')+' alpha',
           descriptions: [ "A value controlling opacity in the range "+kwd('[0,1]') ],
           samples: [ 
             "// access a shape's alpha value\nvar alpha = shape.alpha;",
             "// set a shape's alpha value directly\nshape.alpha = 0.5;",
             "// set a shape's alpha value using set\nshape.set({ alpha: 0.4 });"
           ],
+        },
+      ],
+      'Outline Properties': [
+        { // outline
+          definition: a('Color')+'|'+a('Gradient')+' outline',
+          descriptions: [ "The color of a shape outline.", a('Line')+" is the only object that does not have an "+kwd('outline')+'.' ],
+          samples: [ 
+            "// access a shape's outline color\nvar outline_color = shape.outline;",
+            "// set a shape's outline color directly\nshape.outline = iio.Color.red();",
+            "// set a shape's outline color using set\nshape.set({ outline: 'red' });"
+          ],
           divider: true
+        },{ // lineWidth
+          definition: kwd('number')+' lineWidth',
+          descriptions: [ 
+            "The width of all lines and outlines that are drawn for the object.", 
+            a('Line')+" uses "+kwd('width')+" instead of "+kwd('lineWidth')+" for its size value." 
+          ],
+          samples: [ 
+            "// access a shape's lineWidth\nvar lineWidth = shape.lineWidth;",
+            "// set a shape's lineWidth directly\nshape.lineWidth = 5;",
+            "// set a shape's lineWidth using set\nshape.set({ lineWidth: 5 });"
+          ],
+          divider: true,
         },{ // lineCap
           definition: kwd('String')+' lineCap',
           descriptions: [ 
@@ -621,38 +840,17 @@ var api = {
           ],
           divider: true
         },{ // dash
-          definition: a('Array') + '|'+kwd('float')+' dash',
+          definition: a('Array') + '|'+kwd('number')+' dash',
           descriptions: [ "A value or array of values specifying a dash width and spacing in pixels for the drawing of lines." ],
           samples: [ 
             "// access a shape's dash\nvar dash = shape.dash;",
             "// set a shape's dash directly\nshape.dash = 20;",
             "// set a shape's dash using set\nshape.set({ dash: [ 20,15,30 ] });"
           ],
-          divider: true
-        },{ // outline
-          definition: a('Color')+'|'+a('Gradient')+' outline',
-          descriptions: [ "The color of a shape outline.", a('Line')+" is the only object that does not have an "+kwd('outline')+'.' ],
-          samples: [ 
-            "// access a shape's outline color\nvar outline_color = shape.outline;",
-            "// set a shape's outline color directly\nshape.outline = iio.Color.red();",
-            "// set a shape's outline color using set\nshape.set({ outline: 'red' });"
-          ],
-          divider: true
-        },{ // lineWidth
-          definition: kwd('float')+' lineWidth',
-          descriptions: [ 
-            "The width of all lines and outlines that are drawn for the object.", 
-            a('Line')+" uses "+kwd('width')+" instead of "+kwd('lineWidth')+" for its size value." 
-          ],
-          samples: [ 
-            "// access a shape's lineWidth\nvar lineWidth = shape.lineWidth;",
-            "// set a shape's lineWidth directly\nshape.lineWidth = 5;",
-            "// set a shape's lineWidth using set\nshape.set({ lineWidth: 5 });"
-          ]
-        }
+        },
       ],
       'Shadow Properties': [
-      { // shadow
+        { // shadow
           definition: a('Color') + '|'+a('Gradient') +' shadow',
           descriptions: [ "The shadow color." ],
           samples: [ 
@@ -662,7 +860,7 @@ var api = {
           ],
           divider: true
         },{  // shadowBlur
-          definition: kwd('float') + ' shadowBlur',
+          definition: kwd('number') + ' shadowBlur',
           descriptions: [ "Shadow color blur distance in pixels." ],
           samples: [ 
             "// access a shape's shadow blur and rAcc\nvar shadowBlur = shape.shadowBlur;",
@@ -679,9 +877,97 @@ var api = {
             "// set a shape's shadowOffset using set\nshape.set({ shadowOffset: [ 20,20 ] });"
           ]
         }
-      ]
-        // fade
-        // shrink
+      ],
+      'Image Properties': [
+        { // img
+          definition: ahref('Image', 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image')+' img',
+          descriptions: [ "The attached image." ],
+          samples: [ 
+            "// access a shape's image\nvar img = shape.img;",
+            "// set a shape's image directly\nshape.img = new Image();\nshape.img.src = 'path/image.png'",
+            "// set a shape's image using set\nshape.set({ img: 'path/image.png' });"
+          ]
+        }
+      ],
+      'Animation Properties': [
+        { // anims
+          definition: kwd('Array')+'<'+a('anim')+'> anims',
+          descriptions: [ "An array of animations." ],
+          samples: [
+            "// access a shape's animations\nvar anims = shape.anims;",
+            "// set a shape's animations directly\nshape.anims = [ anim0, anim1, anim2 ];",
+            "// set a shape's animations using set\nshape.set({ anims: [ anim0, anim1, anim2 ] });"
+          ],
+          divider: true
+        },{ // animKey
+          definition: kwd('integer')+' animKey',
+          descriptions: [ "Index of the active animation object in "+kwd('anims')+"." ],
+          samples: [
+            "// access a shape's animation key\nvar animKey = shape.animKey;",
+            "// set a shape's animation index directly\nshape.animKey = 2;",
+            "// set a shape's animation index using set\nshape.set({ animKey: 2 });"
+          ],
+          divider: true
+        },{ // animFrame
+          definition: kwd('integer')+' animFrame',
+          descriptions: [ "Index of the active animation frame in "+kwd('anims')+"." ],
+          samples: [
+            "// access a shape's animation frame index\nvar animFrame = shape.animFrame;",
+            "// set a shape's animation frame index directly\nshape.animFrame = 2;",
+            "// set a shape's animation frame index using set\nshape.set({ animFrame: 2 });"
+          ],
+          divider: true,
+        },
+        { // fade
+          definition: kwd('Object')+' fade',
+          descriptions: [ "An object defining a shrink animation, which will continually adjust the shape's "+kwd('alpha')+" value.",
+            "If "+kwd('fade.callback')+' is undefined, the shape will remove itself from its parent when the animation is finished.' ],
+          samples: [
+            "// access a shape's fade animation\nvar fade = shape.fade;\nvar fadeSpeed = shape.fade.speed;\nvar fadeLowerBound = shape.fade.lowerBound;\nvar fadeUpperBound = shape.fade.upperBound;\nvar fadeCallback = shape.fade.callback;",
+            "// set a fade animation directly\nshape.fade = {\n\tspeed: 0.3,\n\tlowerBound: .2,\n\tupperBound: .9,\n\tcallback: function(shape) {\n\t\t//...\n\t}\n};",
+            "// set a fade animation with set\nshape.set({\n\tfade:\n\t\tspeed: 0.3,\n\t\tlowerBound: .2,\n\t\tupperBound: .9,\n\t\tcallback: function(shape) {\n\t\t\t//...\n\t\t}\n\t}\n)};",
+          ],
+          divider: true
+        },{ // shrink
+          definition: kwd('Object')+' shrink',
+          descriptions: [ "An object defining a fade animation, which will continually adjust the shape's "+kwd('width')+" and "+kwd('height')+", or equivalent values.",
+            "If "+kwd('shrink.callback')+' is undefined, the shape will remove itself from its parent when the animation is finished.' ],
+          samples: [
+            "// access a shape's shrink animation\nvar shrink = shape.shrink;\nvar shrinkSpeed = shape.shrink.speed;\nvar shrinkLowerBound = shape.shrink.lowerBound;\nvar shrinkUpperBound = shape.shrink.upperBound;\nvar shrinkCallback = shape.shrink.callback;",
+            "// set a shrink animation directly\nshape.shrink = {\n\tspeed: 0.3,\n\tlowerBound: .2,\n\tupperBound: .9,\n\tcallback: function(shape) {\n\t\t//...\n\t}\n};",
+            "// set a shrink animation with set\nshape.set({\n\tshrink:\n\t\tspeed: 0.3,\n\t\tlowerBound: .2,\n\t\tupperBound: .9,\n\t\tcallback: function(shape) {\n\t\t\t//...\n\t\t}\n\t}\n)};",
+          ]
+        },
+      ],
+      'Position Funtions': [
+        {  // left()
+          definition: 'left() | ' + small('returns ') + kwd('number'),
+        },{ // right()
+          definition: 'right() | ' + small('returns ') + kwd('number'),
+        },{ // top()
+          definition: 'top() | ' + small('returns ') + kwd('number'),
+        },{ // bottom()
+          definition: 'bottom() | ' + small('returns ') + kwd('number'),
+        },{
+          descriptions: [ 'returns the leftmost/rightmost x coordinate of the shape, or the highest/lowest y coordinate.' ],
+          samples: [ "var left = obj.left();",
+            "var right = obj.right();",
+            "var top = obj.top();",
+            "var bottom = obj.bottom();",
+            ],
+        },
+      ],
+      'Animation Funtions': [
+        {  // fade()
+          definition: 'left() | ' + small('returns ') + kwd('number'),
+          descriptions: [ 'Returns the leftmost/rightmost x coordinate of the shape, or the highest/lowest y coordinate.' ],
+          samples: [ "var left = obj.left();",
+            "var right = obj.right();",
+            "var top = obj.top();",
+            "var bottom = obj.bottom();",
+            ],
+        },
+      ],
     }
   },
   Quad: {
@@ -702,7 +988,7 @@ var api = {
       ],
       'Properties': [
         {  // width
-          definition: kwd('float')+' width',
+          definition: kwd('number')+' width',
           descriptions: [ "The width of a quad or the size of a square." ],
           samples: [
             "// access the width\nvar width = quad.width;",
@@ -711,7 +997,7 @@ var api = {
           divider: true
         },
         {  // height
-          definition: kwd('float')+' height',
+          definition: kwd('number')+' height',
           descriptions: [ "The height." ],
           samples: [
             "// access the height\nvar height = quad.height;",
@@ -822,7 +1108,7 @@ var api = {
       ],
       'Properties': [
         {  // radius
-          definition: kwd('float')+' radius',
+          definition: kwd('number')+' radius',
           descriptions: [ "The radius of a circle, or the horizontal radius of an ellipse." ],
           samples: [
             "// access the radius\nvar radius = ellipse.radius;",
@@ -831,7 +1117,7 @@ var api = {
           divider: true
         },
         {  // vRadius
-          definition: kwd('float')+' vRadius',
+          definition: kwd('number')+' vRadius',
           descriptions: [ "The verticle radius of an ellipse." ],
           samples: [
             "// access the vertical radius\nvar vertical_radius = ellipse.vRadius;",
@@ -898,7 +1184,7 @@ var api = {
           divider: true
         },
         { // size
-          definition: kwd('float')+' size',
+          definition: kwd('number')+' size',
           descriptions: [ "The font size." ],
           samples: [
             "// access font size\nvar font_size = textObj.size;",
@@ -946,7 +1232,7 @@ var api = {
       ],
       'Properties': [
         {  // width
-          definition: kwd('float')+' width',
+          definition: kwd('number')+' width',
           descriptions: [ "The width of a rectangle or the size of a square." ],
           samples: [
             "// access the width\nvar width = rectangle.width;",
@@ -955,7 +1241,7 @@ var api = {
           divider: true
         },
         {  // height
-          definition: kwd('float')+' height',
+          definition: kwd('number')+' height',
           descriptions: [ "The height." ],
           samples: [
             "// access the height\nvar height = rectangle.height;",
@@ -997,11 +1283,11 @@ var api = {
           divider: true
         },
         {  // width
-          definition: kwd('float')+' width',
+          definition: kwd('number')+' width',
           descriptions: [ "The width of the grid." ]
         },
         {  // height
-          definition: kwd('float')+' height',
+          definition: kwd('number')+' height',
           descriptions: [ "The height of the grid." ],
           samples: [
             "// access the grid width and height\nvar width = grid.width;\nvar height = grid.height;",

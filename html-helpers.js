@@ -8,8 +8,8 @@ h2 = function(html, name){
 }
 h3 = function(html){ return '<h3>'+html+'</h3>' }
 kwd = function(html){ return "<span class='kwd'>"+html+"</span>" }
-a = function(name){ return '<a href="#api.'+name+'">'+name+'</a>' }
-ahref = function(name, href){ return '<a href="'+href+'">'+name+'</a>' }
+a = function(name){ return '<a href="#api/'+name.toLowerCase()+'">'+name+'</a>' }
+ahref = function(name, href){ return '<a target="_blank" href="'+href+'">'+name+'</a>' }
 pre = function(html){ return "<pre class='prettyprint linenums:1'>"+html+"</span>" }
 p = function(html){ return '<p>'+html+'</p>' }
 api_list = function(id){ return '<ul class="api_list" id="'+id+'"></ul>' }

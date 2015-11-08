@@ -1,9 +1,9 @@
 show_docs_menu = function(){
 
   toggle_ids[0] = 'basics';
-  toggle_ids[1] = 'data';
-  toggle_ids[2] = 'objects';
-  toggle_ids[3] = 'shapes';
+  toggle_ids[1] = 'objects';
+  toggle_ids[2] = 'shapes';
+  toggle_ids[3] = 'data';
 
   page.append('<div id="api_menu"></div>');
   $('#api_menu').append('<ul id="api_items"></ul>');
@@ -34,17 +34,11 @@ show_docs_menu = function(){
   //append_api_item_sub('functions','iio libraries');
   append_api_item_sub('basics', api.AppControl);
 
-  append_api_item_sub('data', api.Interface );
-  append_api_item_sub('data', api.Vector );
-  append_api_item_sub('data', api.Color );
-  append_api_item_sub('data', api.Gradient );
-  append_api_item_sub('data', api.Sound);
-  append_api_item_sub('data', api.Loader);
-
+  append_api_item_sub('objects', api.Interface );
   append_api_item_sub('objects', api.Drawable );
   append_api_item_sub('objects', api.App );
-  append_api_item_sub('objects', api.Shape );
 
+  append_api_item_sub('shapes', api.Shape );
   append_api_item_sub('shapes', api.Quad );
   append_api_item_sub('shapes', api.Line );
   append_api_item_sub('shapes', api.Ellipse );
@@ -53,6 +47,12 @@ show_docs_menu = function(){
   append_api_item_sub('shapes', api.Rectangle );
   append_api_item_sub('shapes', api.Grid );
   append_api_item_sub('shapes', api.QuadGrid );
+
+  append_api_item_sub('data', api.Vector );
+  append_api_item_sub('data', api.Color );
+  append_api_item_sub('data', api.Gradient );
+  append_api_item_sub('data', api.Sound);
+  append_api_item_sub('data', api.Loader);
 }
 
 show_unit_test = function( parent, test_function, test_class, id ){

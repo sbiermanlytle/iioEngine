@@ -204,11 +204,11 @@ h1,h2,h3,h4{
   padding-bottom: 6px;
   font-family: verdana;
   font-size: 14px;
+  line-height: 1.4em;
 }
 .api_list_item{
-  font-size: 19px;
+  font-size: 17px;
   margin: 0;
-  margin-top: 0px;
   border-left: 4px solid #e5e5e5;
   padding: 6px 10px;
   color: #e5e5e5;
@@ -262,7 +262,7 @@ h1,h2,h3,h4{
 }
 .divide{
   border-top: 1px solid #6F6F6F;
-  margin: 25px 0;
+  margin: 35px 0 25px;
 }
 #api_menu .api_property_list{
   padding-left:4px;
@@ -344,12 +344,12 @@ h1,h2,h3,h4{
   pre .dec, code .dec { color: #89bdff; } /* decimal - blue */
 
   pre.prettyprint, code.prettyprint {
-        background-color: transparent;
+    background-color: transparent;
   }
 
   pre.prettyprint {
     width: 95%;
-    margin: 1em auto;
+    margin: 10px auto;
     padding: 0;
     border:none;
     overflow: auto;

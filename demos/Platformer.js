@@ -179,11 +179,11 @@ Platformer = function( app, settings ){
     input.update(key, true);
 
     // jump if not already jumping and up key is down
-    if (!mario.jumping && input.isUp(key))
+    if (mario && !mario.jumping && input.isUp(key))
         mario.jump();
 
     // if not walking or jumping
-    if (!mario.walking && !mario.jumping) {
+    if (mario && !mario.walking && !mario.jumping) {
 
       // walk right if right input is down
       if( input.isRight(key) ) 
@@ -219,7 +219,7 @@ Platformer = function( app, settings ){
       mario.duck();
 
     // stand if not jumping or walking
-    else if (!input.left && !input.right && !mario.jumping)
+    else if (mario && !input.left && !input.right && !mario.jumping)
       mario.stand();
   }
 }
