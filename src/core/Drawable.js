@@ -255,7 +255,7 @@ iio.Drawable.prototype.create = function(){
     return this.add(new iio.Text(props));
   // infer Grid
   else if(props.res || props.R || props.C)
-    return this.add(new iio.QuadGrid(props));
+    return this.add(new iio.Grid(props));
   // infer Rectangle
   else if(props.width)
     return this.add(new iio.Quad(props));

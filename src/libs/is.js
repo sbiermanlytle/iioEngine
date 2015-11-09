@@ -33,7 +33,6 @@ iio.is = {
   Polygon: function(o){
     if (o instanceof iio.Polygon
      || o instanceof iio.Rectangle
-     || o instanceof iio.Grid
      || o instanceof iio.Text)
       return true;
     return false;
@@ -46,7 +45,7 @@ iio.is = {
   Quad: function(o){
     if (o instanceof iio.Quad
      || o instanceof iio.App
-     || o instanceof iio.QuadGrid)
+     || o instanceof iio.Grid)
       return true;
     return false;
   }
