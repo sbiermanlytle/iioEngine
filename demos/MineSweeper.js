@@ -149,7 +149,7 @@ MineSweeper = function( app, settings ){
   app.canvas.oncontextmenu = function(){ return false };
 
   // create the game grid
-  var grid = app.add( new iio.QuadGrid({
+  var grid = app.add( new iio.Grid({
     pos: app.center,
     color: game_color,
     lineWidth: ( settings.preview ) ? 1 : 4,

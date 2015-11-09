@@ -44,9 +44,9 @@ show_docs_menu = function(){
   append_api_item_sub('shapes', api.Ellipse );
   append_api_item_sub('shapes', api.Polygon );
   append_api_item_sub('shapes', api.Text );
-  append_api_item_sub('shapes', api.Rectangle );
+  // append_api_item_sub('shapes', api.Rectangle );
   append_api_item_sub('shapes', api.Grid );
-  append_api_item_sub('shapes', api.QuadGrid );
+  // append_api_item_sub('shapes', api.QuadGrid );
 
   append_api_item_sub('data', api.Vector );
   append_api_item_sub('data', api.Color );
@@ -111,7 +111,6 @@ show_api = function( api ){
     // UNIT TESTS
     if( api.unitTests )
       show_unit_test( $('#api_content'), api.unitTests, api.classname )
-
 
     // FUNCTIONS & PROPERTIES
     for(var o in api.data ){

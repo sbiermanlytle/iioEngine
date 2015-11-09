@@ -1069,7 +1069,18 @@ var api = {
           ],
           samples: [ 
             "// get the global vertices of a quad\nvar corners = quad.trueVs();\n// access the new vs property\ncorners = quad.vs;",
-            "//get the rotated global vertices of a quad\nvar rotatedCorners = quad.trueVs( true );"
+            "// get the rotated global vertices of a quad\nvar rotatedCorners = quad.trueVs( true );"
+          ],
+          divider: true
+        },
+        {  // setSize
+          definition: 'setSize( '+kwd('number')+' width, '+kwd('number')+' height ) | ' + small('returns ') + kwd('this'),
+          descriptions: [ 
+            'Sets the width and height of the square or rectangle.'
+          ],
+          samples: [ 
+            "// set the width of a square\nsquare.setSize( 30 );",
+            "// set the width and height of an rectangle\nrectangle.setSize( 30, 40 );",
           ]
         }
       ]
@@ -1182,7 +1193,8 @@ var api = {
           descriptions: [ "Create an ellipse with the properties of any number of given objects." ],
           samples: [ 
             "// create a new ellispe\nvar ellipse = new iio.Ellipse({\n\tpos: app.center,\n\tradius: 40,\n\tvRadius: 60,\n\tcolor: 'red'\n});",
-            "// add the ellipse to the app\napp.add( ellipse );"
+            "// add the ellipse to the app\napp.add( ellipse );",
+            "// create a new circle and add it to the app\napp.create( app.center, 'red',{ radius: 10 });"
             ]
         }
       ],
@@ -1202,6 +1214,18 @@ var api = {
           samples: [
             "// access the vertical radius\nvar verticalRadius = ellipse.vRadius;",
             "// set the vertical radius\nellipse.vRadius = 60;"
+          ]
+        }
+      ],
+      'Functions': [
+        {  // setSize
+          definition: 'setSize( '+kwd('number')+' width, '+kwd('number')+' height ) | ' + small('returns ') + kwd('this'),
+          descriptions: [ 
+            'Sets the width and height of the circle or ellipse.'
+          ],
+          samples: [ 
+            "// set the width of a circle\ncircle.setSize( 30 );",
+            "// set the width and height of an ellipse\nellipse.setSize( 30, 40 );",
           ]
         }
       ]
@@ -1231,7 +1255,19 @@ var api = {
           samples: [
             "// access a polygon's vertices\nvar vertex0 = polygon.vs[0];\nvar vertex1 = polygon.vs[1];\nvar vertex2 = polygon.vs[2];\n//...",
             "// set a polygon's vertices\npolygon.vs[0] = new iio.Vector( 0, 20 );\npolygon.vs[1] = new iio.Vector( 20, 20 );\npolygon.vs[2] = new iio.Vector( -20, 20 );\n//...",
-            "// set a polygon's vertices using set\npolygon.set( {\n\tvs: [\n\t\t[ 0, 20 ],\n\t\t[ 20, 20 ],\n\t\t[ -20, 20 ],\n\t\t//...\n\t]\n} );"
+            "// set a polygon's vertices using set\npolygon.set( {\n\tvs: [\n\t\t[ 0, 20 ],\n\t\t[ 20, 20 ],\n\t\t[ -20, 20 ],\n\t\t//...\n\t]\n} );",
+            "// create a new polygon and add it to an app\napp.create( 'red', {\n\tvs: [ app.center, [10,10], [app.center.x,10] ],\n});",
+          ]
+        }
+      ],
+      'Functions': [
+        {  // trueVs
+          definition: 'trueVs() | ' + small('returns ') + kwd('Array')+'<'+a('Vector')+'>',
+          descriptions: [ 
+            'Returns a rotated copy of '+kwd('vs')+' relative to app origin.'
+          ],
+          samples: [ 
+            "// get the global vertices\nvar corners = polygon.trueVs();",
           ]
         }
       ]
@@ -1333,7 +1369,7 @@ var api = {
   },
   Grid: {
     classname: 'Grid',
-    inherits: [ 'Rectangle','Polygon','Shape','Drawable','Interface' ],
+    inherits: [ 'Quad','Shape','Drawable','Interface' ],
     overview: [ "A grid shape defined by a position, number of columns, number of rows, and either a cell resolution vector or a width and height." ],
     unitTests: iio.test.Grid,
     data: {
@@ -1343,7 +1379,8 @@ var api = {
           descriptions: [ "Create a grid with the properties of any number of given objects." ],
           samples: [ 
             "// create a new grid\nvar grid = new iio.Grid({\n\tpos: app.center,\n\twidth: 200,\n\theight: 200,\n\tR: 3,\n\tC: 3,\n\tlineWidth: 5,\n\tcolor: 'red'\n});",
-            "// add the grid to the app\napp.add( grid );"
+            "// add the grid to the app\napp.add( grid );",
+            "// create a new grid and add it to the app\napp.create( app.center, 200, 'red',{\n\tR: 3,\n\tC: 3,\n});"
             ]
         }
       ],
@@ -1386,22 +1423,9 @@ var api = {
           samples: [
             "// access the grid resolution\nvar cell_width = grid.res.x;\nvar cell_height = grid.res.y;",
             "// set grid resolution using set\ngrid.set({ res: [ 30,40 ] });"
-          ]
-        }
-      ],
-      'Functions': [
-        {  // onClick
-          definition: 'onClick( '+a('Grid')+' this, '+kwd('Event')+' event, '+a('Vector')+', pos '+a('Rectangle')+' cell ) | ' + small('returns ') + kwd('boolean'),
-          descriptions: [ 
-            "Called when a face or edge of the Grid is clicked. "+kwd('Event')+' is a JavaScript Event object.',
-            "Note that this function only runs by default on grids added directly to "+a('App')+'.'
           ],
-          samples: [ 
-            "// detect when the grid is clicked\ngrid.onClick = function( grid, event, pos, cell ){\n  // handle input...\n}",
-          ]
-        }
-      ],
-      'Object Arrays': [
+          divider: true
+        },
         {  // cells
           definition: kwd('Array')+'<'+a('Rectangle') + '> cells',
           descriptions: [ "Array of cells." ],
@@ -1409,13 +1433,42 @@ var api = {
             "// access a grids cells\nvar cell00 = grid.cells[0];\nvar cell01 = grid.cells[1];"
           ]
         }
-      ]
+      ],
+      'Functions': [
+        {  // onClick()
+          definition: 'onClick('+a('Grid')+' this, '+kwd('Event')+' event, '+a('Vector')+' pos, '+a('Quad')+' cell)',
+        },{
+          definition: '| ' + small('returns ') + kwd('boolean'),
+          descriptions: [ 
+            "Called when a face or edge of the Grid is clicked. "+kwd('Event')+' is a JavaScript Event object.',
+            "Note that this function only runs by default on grids added directly to "+a('App')+'.'
+          ],
+          samples: [ 
+            "// detect when the grid is clicked\ngrid.onClick = function( grid, event, pos, cell ){\n  // handle input...\n}",
+          ],
+          divider: true
+        },{ // cellAt()
+          definition: 'cellAt( '+kwd('number')+' x, '+kwd('number')+' y ) | ' + small('returns ') + a('Quad'),
+        },{
+          definition: 'cellAt( '+a('Vector')+' v ) | ' + small('returns ') + a('Quad'),
+          descriptions: [ 
+            "Returns the cell that contains the given vector.",
+          ],
+          samples: [ 
+            "// get the cell at the given coordinates\nvar cell = grid.cellAt( 40,10 );",
+            "// get the cell at the given vector\nvar cell = grid.cellAt( vector );"
+          ],
+          divider: true
+        },{ // cellCenter()
+          definition: 'cellCenter( '+kwd('number')+': row, column ) | ' + small('returns ') + a('Quad'),
+          descriptions: [ 
+            "Returns the center vector of the cell at the given grid coordinates.",
+          ],
+          samples: [ 
+            "// get the center of the first cell\nvar cellCenter = grid.cellCenter( 0,0 );"
+          ]
+        }
+      ],
     }
   },
-  QuadGrid: {
-    classname: 'QuadGrid',
-    inherits: [ 'Quad','Shape','Drawable','Interface' ],
-    overview: [ "A simplified grid shape defined by a position, number of columns, number of rows, and either a cell resolution vector or a width and height. All functions are as precise as "+a('iio.Grid')+", except for collision detection - "+kwd('QuadGrids do not account for rotation in collisions')+". QuadGrids use fewer calculations than Grids, so they should be used whenever possible. QuadGrids share all functions and properties with Grid." ],
-    unitTests: iio.test.QuadGrid,
-  }
 }

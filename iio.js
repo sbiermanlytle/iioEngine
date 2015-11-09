@@ -371,7 +371,6 @@ iio.is = {
   Polygon: function(o){
     if (o instanceof iio.Polygon
      || o instanceof iio.Rectangle
-     || o instanceof iio.Grid
      || o instanceof iio.Text)
       return true;
     return false;
@@ -384,7 +383,7 @@ iio.is = {
   Quad: function(o){
     if (o instanceof iio.Quad
      || o instanceof iio.App
-     || o instanceof iio.QuadGrid)
+     || o instanceof iio.Grid)
       return true;
     return false;
   }
@@ -1011,13 +1010,18 @@ iio.Vector.prototype.Vector = function( v,y ) {
   }
 }
 
+// OVERRIDE FUNCTIONS
+iio.Vector.prototype.clone = function(){
+  return new iio.Vector(this.x,this.y)
+}
+
 // STATIC FUNCTIONS
 //------------------------------------------------------------
 iio.Vector.vs = function ( points ){
   var vs = [];
   if (!(points instanceof Array)) points = [points];
   for (var i = 0; i < points.length; i++) {
-    if (typeof points[i].x != 'undefined')
+    if (typeof points[i].x !== 'undefined')
       vs.push(points[i]);
     else {
       vs.push({
@@ -1041,16 +1045,20 @@ iio.Vector.highest = function( vs ){
 iio.Vector.lowest = function( vs ){
   return iio.specVec(vs,function(v1,v2){ return v1.y<v2.y }).y
 }
-iio.Vector.add = function( v1,v2 ){
-  var v = v1.clone();
-  for (var p in v2)
-    if (v[p]) v[p] += v2[p];
+iio.Vector.add = function(){
+  var v = new iio.Vector();
+  for (var v2 in arguments){
+    v.x += v2.x;
+    v.y += v2.y;
+  }
   return v
 }
-iio.Vector.sub = function( v1,v2 ){
-  var v = v1.clone();
-  for (var p in v2)
-    if (v[p]) v[p] -= v2[p];
+iio.Vector.sub = function(){
+  var v = arguments[0].clone();
+  for (var i=1; i<arguments.length; i++){
+    v.x -= arguments[i].x;
+    v.y -= arguments[i].y;
+  }
   return v
 }
 iio.Vector.mult = function( v1,f ){
@@ -1070,7 +1078,7 @@ iio.Vector.length = function( v,y ){
      return Math.sqrt(v.x*v.x+v.y*v.y);
   else return Math.sqrt(v*v+y*y);
 }
-iio.Vector.normalized = function( v,y ){
+iio.Vector.normalize = function( v,y ){
   return new iio.Vector(v,y).normalize();
 }
 iio.Vector.dot = function ( v1,v2,x2,y2 ){
@@ -1107,9 +1115,6 @@ iio.Vector.rotate = function( x,y,r ){
 
 // VECTOR FUNCTIONS
 //------------------------------------------------------------
-iio.Vector.prototype.clone = function(){
-  return new iio.Vector(this.x,this.y)
-}
 iio.Vector.prototype.add = function( v,y ){
   if (typeof v.x !== 'undefined'){
     this.x += v.x;
@@ -1135,14 +1140,9 @@ iio.Vector.prototype.mult = function( f ){
   this.y *= f;
   return this;
 }
-iio.Vector.prototype.div = function( v,y ){
-  if (typeof v.x !== 'undefined'){
-    this.x /= v.x;
-    this.y /= v.y;
-  } else {
-    this.x /= v;
-    this.y /= y;
-  }
+iio.Vector.prototype.div = function( f ){
+  this.x /= f;
+  this.y /= f;
   return this;
 }
 iio.Vector.prototype.length = function(){
@@ -1545,7 +1545,7 @@ iio.Drawable.prototype.create = function(){
 
     // given string
     if( iio.is.string(arguments[i]) ){
-      var c = iio.Color[ arguments[i] ];
+      var c = iio.Color[ arguments[i] ]();
       // infer color
       if(c) props.color = c;
       // infer text
@@ -1593,7 +1593,7 @@ iio.Drawable.prototype.create = function(){
     return this.add(new iio.Text(props));
   // infer Grid
   else if(props.res || props.R || props.C)
-    return this.add(new iio.QuadGrid(props));
+    return this.add(new iio.Grid(props));
   // infer Rectangle
   else if(props.width)
     return this.add(new iio.Quad(props));
@@ -2028,13 +2028,13 @@ iio.Shape.prototype.playAnim = function() {
   var args = iio.merge_args(arguments);
   if (args.name) this.setSprite(args.name);
   this.animFrame = args.startFrame || 0;
-  this.animRepeat = args.repeat;
-  this.onAnimStop = args.onAnimStop;
+  this.animRepeats = args.repeat;
+  this.onAnimComplete = args.onAnimComplete;
   var loop;
   if (args.fps > 0) loop = this.loop(args.fps, this.nextFrame);
   else if (args.fps < 0) loop = this.loop(args.fps * -1, this.prevFrame);
   else this.app.draw();
-  return loop;
+  return this;
 }
 iio.Shape.prototype.stopAnim = function() {
   iio.cancelLoops(this);
@@ -2069,13 +2069,13 @@ iio.Shape.prototype.nextFrame = function(o) {
   o.animFrame++;
   if (o.animFrame >= o.anims[o.animKey].frames.length) {
     o.animFrame = 0;
-    if (typeof o.animRepeat !== 'undefined') {
-      if (o.animRepeat <= 1) {
+    if (typeof o.animRepeats !== 'undefined') {
+      if (o.animRepeats <= 1) {
         window.cancelAnimationFrame(id);
         window.clearTimeout(id);
-        if (o.onAnimStop) o.onAnimStop(id, o);
+        if (o.onAnimComplete) o.onAnimComplete(o);
         return;
-      } else o.animRepeat--;
+      } else o.animRepeats--;
     }
   }
 }
@@ -2188,6 +2188,27 @@ iio.Shape.prototype.finish_path_shape = function(ctx){
       this.width,
       this.height);
   }
+  if (this.anims) {
+    if (this.imageRounding)
+      ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+        this.anims[this.animKey].frames[this.animFrame].x,
+        this.anims[this.animKey].frames[this.animFrame].y,
+        this.anims[this.animKey].frames[this.animFrame].w,
+        this.anims[this.animKey].frames[this.animFrame].h,
+        Math.floor(-this.width/2),
+        Math.floor(-this.height/2),
+        Math.floor(this.width),
+        Math.floor(this.height));
+    else ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+        this.anims[this.animKey].frames[this.animFrame].x,
+        this.anims[this.animKey].frames[this.animFrame].y,
+        this.anims[this.animKey].frames[this.animFrame].w,
+        this.anims[this.animKey].frames[this.animFrame].h,
+      -this.width/2,
+      -this.height/2,
+      this.width,
+      this.height);
+  }
   if (this.outline) ctx.stroke();
   if (this.clip) ctx.clip();
 } 
@@ -2276,7 +2297,11 @@ iio.Ellipse.prototype._shrink = function(s, r) {
 
 // IMPLEMENT ABSTRACT FUNCTIONS
 iio.Ellipse.prototype.size = function(){ return this.radius }
-iio.Ellipse.prototype.setSize = function(s){ this.radius = s/2 }
+iio.Ellipse.prototype.setSize = function(r,r2){ 
+  this.radius = r/2;
+  this.vRadius = r2 ? r2/2 : undefined;
+  return this;
+}
 iio.Ellipse.prototype.contains = function(v, y) {
   if (typeof(y) !== 'undefined') v = { x:v, y:y }
   if ((!this.vRadius || this.radius === this.vRadius) && iio.Vector.dist(v, this.pos) < this.radius)
@@ -2388,7 +2413,6 @@ iio.Polygon.prototype.trueVs = function() {
   }
   return vs;
 }
-
 iio.Polygon.prototype.contains = function(v, y) {
   v = this.localize(v,y);
   var i=j=c=0;
@@ -2792,18 +2816,84 @@ iio.Rectangle.prototype.draw_rounded = function(ctx){
   ctx.clip();
 }
 
+/* Quad
+------------------
+*/
+
+// DEFINITION
+iio.Quad = function(){ this.Quad.apply(this, arguments) };
+iio.inherit(iio.Quad, iio.Shape);
+iio.Quad.prototype._super = iio.Shape.prototype;
+
+// CONSTRUCTOR
+iio.Quad.prototype.Quad = function() {
+  this._super.Shape.call(this,iio.merge_args(arguments));
+  this.height = this.height || this.width;
+}
+
+// SHARED RECTANGLE FUNCTIONS
+iio.Quad.prototype.draw_shape = iio.Rectangle.prototype.draw_shape;
+iio.Quad.prototype.draw_rounded = iio.Rectangle.prototype.draw_rounded;
+iio.Quad.prototype.contains = iio.Rectangle.prototype.contains
+iio.Quad.prototype.size = iio.Rectangle.prototype.size;
+iio.Quad.prototype.setSize = iio.Rectangle.prototype.setSize;
+iio.Quad.prototype._trueVs = iio.Polygon.prototype.trueVs;
+
+// OVERRIDE FUNCTIONS
+iio.Quad.prototype._left = iio.Polygon.prototype.left;
+iio.Quad.prototype.left = function(){
+  if (this.rotateVs) return this._left();
+  return this.pos.x - this.width/2
+}
+iio.Quad.prototype._right = iio.Polygon.prototype.right;
+iio.Quad.prototype.right = function(){
+  if (this.rotateVs) return this._right();
+  return this.pos.x + this.width/2
+}
+iio.Quad.prototype._top = iio.Polygon.prototype.top;
+iio.Quad.prototype.top = function(){
+  if (this.rotateVs) return this._top();
+  return this.pos.y - this.height/2
+}
+iio.Quad.prototype._bottom = iio.Polygon.prototype.bottom;
+iio.Quad.prototype.bottom = function(){
+  if (this.rotateVs) return this._bottom();
+  return this.pos.y + this.height/2
+}
+
+// IMPLEMENT ABSTRACT FUNCTIONS
+iio.Quad.prototype.trueVs = function(rotateVs) {
+  this.vs = [
+    new iio.Vector(-this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, -this.height/2),
+    new iio.Vector(this.width/2, this.height/2),
+    new iio.Vector(-this.width/2, this.height/2),
+  ];
+  if (!rotateVs && !this.rotateVs) {
+    var vs = [];
+    for(var v,i=0;i<this.vs.length;i++){
+      v = this.vs[i].clone();
+      v.x += this.pos.x;
+      v.y += this.pos.y;
+      vs[i]=v;
+    }
+    return vs;
+  }
+  return this._trueVs()
+}
+
 /* Grid
 ------------------
 */
 
 // DEFINITION
 iio.Grid = function(){ this.Grid.apply(this, arguments) };
-iio.inherit(iio.Grid, iio.Rectangle);
-iio.Grid.prototype._super = iio.Rectangle.prototype;
+iio.inherit(iio.Grid, iio.Quad);
+iio.Grid.prototype._super = iio.Quad.prototype;
 
 // CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
-  this._super.Rectangle.call(this,iio.merge_args(arguments));
+  this._super.Quad.call(this,iio.merge_args(arguments));
   this.init();
 }
 
@@ -2907,83 +2997,6 @@ iio.Grid.prototype.foreachCell = function(fn, p) {
       if (fn(this.cells[c][r], p) === false)
         return [r,c];
 }
-
-/* Quad
-------------------
-*/
-
-// DEFINITION
-iio.Quad = function(){ this.Quad.apply(this, arguments) };
-iio.inherit(iio.Quad, iio.Shape);
-iio.Quad.prototype._super = iio.Shape.prototype;
-
-// CONSTRUCTOR
-iio.Quad.prototype.Quad = function() {
-  this._super.Shape.call(this,iio.merge_args(arguments));
-  this.height = this.height || this.width;
-}
-
-// SHARED RECTANGLE FUNCTIONS
-iio.Quad.prototype.draw_shape = iio.Rectangle.prototype.draw_shape;
-iio.Quad.prototype.draw_rounded = iio.Rectangle.prototype.draw_rounded;
-iio.Quad.prototype.contains = iio.Rectangle.prototype.contains
-iio.Quad.prototype.size = iio.Rectangle.prototype.size;
-iio.Quad.prototype.setSize = iio.Rectangle.prototype.setSize;
-iio.Quad.prototype._trueVs = iio.Polygon.prototype.trueVs;
-
-// OVERRIDE FUNCTIONS
-iio.Quad.prototype.left = function(){ return this.pos.x - this.width/2 }
-iio.Quad.prototype.right = function(){ return this.pos.x + this.width/2 }
-iio.Quad.prototype.top = function(){ return this.pos.y - this.height/2 }
-iio.Quad.prototype.bottom = function(){ return this.pos.y + this.height/2 }
-
-// IMPLEMENT ABSTRACT FUNCTIONS
-iio.Quad.prototype.trueVs = function() {
-  this.vs = [
-    new iio.Vector(-this.width/2, -this.height/2),
-    new iio.Vector(this.width/2, -this.height/2),
-    new iio.Vector(this.width/2, this.height/2),
-    new iio.Vector(-this.width/2, this.height/2),
-  ];
-  if (!this.rotateVs) {
-    var vs = [];
-    for(var v,i=0;i<this.vs.length;i++){
-      v = this.vs[i].clone();
-      v.x += this.pos.x;
-      v.y += this.pos.y;
-      vs[i]=v;
-    }
-    return vs;
-  }
-  return this._trueVs()
-}
-
-/* QuadGrid
-------------------
-*/
-
-// DEFINITION
-iio.QuadGrid = function(){ this.QuadGrid.apply(this, arguments) };
-iio.inherit(iio.QuadGrid, iio.Quad);
-iio.QuadGrid.prototype._super = iio.Quad.prototype;
-
-// CONSTRUCTOR
-iio.QuadGrid.prototype.QuadGrid = function() {
-  this._super.Quad.call(this,iio.merge_args(arguments));
-  this.init();
-}
-
-// SHARED GRID FUNCTIONS
-iio.QuadGrid.prototype.init = iio.Grid.prototype.init;
-iio.QuadGrid.prototype.init_cells = iio.Grid.prototype.init_cells;
-iio.QuadGrid.prototype.infer_res = iio.Grid.prototype.infer_res;
-iio.QuadGrid.prototype.clear = iio.Grid.prototype.clear
-iio.QuadGrid.prototype.cellCenter = iio.Grid.prototype.cellCenter;
-iio.QuadGrid.prototype.cellAt = iio.Grid.prototype.cellAt;
-iio.QuadGrid.prototype.setSize = iio.Grid.prototype.setSize;
-iio.QuadGrid.prototype._shrink = iio.Grid.prototype._shrink;
-iio.QuadGrid.prototype.prep_ctx_color = iio.Grid.prototype.prep_ctx_color;
-iio.QuadGrid.prototype.draw_shape = iio.Grid.prototype.draw_shape;
 
 /* App
 ------------------
@@ -3332,7 +3345,7 @@ iio.Loader.prototype.load = function(assets, onComplete) {
 /* Attach iio to box2dWeb
 -------------------------
 */
-if (Box2D){
+if (typeof Box2D !== 'undefined'){
   Box2D.Dynamics.Joints.b2Joint.prototype.set = iio.Drawable.prototype.set;
   Box2D.Dynamics.Joints.b2Joint.prototype.convert_props = iio.Drawable.prototype.convert_props;
   Box2D.Collision.Shapes.b2Shape.prototype.set = iio.Drawable.prototype.set;

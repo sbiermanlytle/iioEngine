@@ -22,7 +22,7 @@ Panning = function( app, settings ){
   app.set({ color: 'black' });
 
   // add a grid larger than the window
-  var grid = app.add( new iio.QuadGrid({
+  var grid = app.add( new iio.Grid({
     pos:app.center.clone(),
     width:app.width*2,
     color:'white',
