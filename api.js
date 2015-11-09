@@ -891,7 +891,7 @@ var api = {
       ],
       'Animation Properties': [
         { // anims
-          definition: kwd('Array')+'<'+a('anim')+'> anims',
+          definition: kwd('Array')+'<'+a('Sprite')+'> anims',
           descriptions: [ "An array of animations." ],
           samples: [
             "// access a shape's animations\nvar anims = shape.anims;",
@@ -917,15 +917,33 @@ var api = {
             "// set a shape's animation frame index using set\nshape.set({ animFrame: 2 });"
           ],
           divider: true,
-        },
-        { // fade
+        },{ // animRepeat
+          definition: kwd('integer')+' animRepeats',
+          descriptions: [ "The number of times the animation will repeat.",
+            "If "+kwd('undefined')+", the animation will repeat indefinitely." ],
+          samples: [
+            "// access a shape's animation repeat value\nvar animRepeats = shape.animRepeats;",
+            "// set a shape's animation repeat value directly\nshape.animRepeats = 4;",
+            "// set a shape's animation repeat value using set\nshape.set({ animRepeats: 4 });"
+          ],
+          divider: true,
+        },{ // onAnimComplete
+          definition: kwd('boolean')+' onAnimComplete',
+          descriptions: [ "A callback run when the animation finishes." ],
+          samples: [
+            "// access a shape's animation repeat value\nvar onAnimStop = shape.onAnimStop;",
+            "// set a shape's animation repeat value directly\nshape.onAnimStop = true;",
+            "// set a shape's animation repeat value using set\nshape.set({ onAnimStop: true });"
+          ],
+          divider: true,
+        },{ // fade
           definition: kwd('Object')+' fade',
           descriptions: [ "An object defining a shrink animation, which will continually adjust the shape's "+kwd('alpha')+" value.",
             "If "+kwd('fade.callback')+' is undefined, the shape will remove itself from its parent when the animation is finished.' ],
           samples: [
             "// access a shape's fade animation\nvar fade = shape.fade;\nvar fadeSpeed = shape.fade.speed;\nvar fadeLowerBound = shape.fade.lowerBound;\nvar fadeUpperBound = shape.fade.upperBound;\nvar fadeCallback = shape.fade.callback;",
-            "// set a fade animation directly\nshape.fade = {\n\tspeed: 0.3,\n\tlowerBound: .2,\n\tupperBound: .9,\n\tcallback: function(shape) {\n\t\t//...\n\t}\n};",
-            "// set a fade animation with set\nshape.set({\n\tfade:\n\t\tspeed: 0.3,\n\t\tlowerBound: .2,\n\t\tupperBound: .9,\n\t\tcallback: function(shape) {\n\t\t\t//...\n\t\t}\n\t}\n)};",
+            "// set a fade animation directly\nshape.fade = {\n\tspeed: .3,\n\tlowerBound: .2,\n\tupperBound: .9,\n\tcallback: function(shape) {\n\t\t//...\n\t}\n};",
+            "// set a fade animation with set\nshape.set({\n\tfade:\n\t\tspeed: .3,\n\t\tlowerBound: .2,\n\t\tupperBound: .9,\n\t\tcallback: function(shape) {\n\t\t\t//...\n\t\t}\n\t}\n)};",
           ],
           divider: true
         },{ // shrink
@@ -934,8 +952,8 @@ var api = {
             "If "+kwd('shrink.callback')+' is undefined, the shape will remove itself from its parent when the animation is finished.' ],
           samples: [
             "// access a shape's shrink animation\nvar shrink = shape.shrink;\nvar shrinkSpeed = shape.shrink.speed;\nvar shrinkLowerBound = shape.shrink.lowerBound;\nvar shrinkUpperBound = shape.shrink.upperBound;\nvar shrinkCallback = shape.shrink.callback;",
-            "// set a shrink animation directly\nshape.shrink = {\n\tspeed: 0.3,\n\tlowerBound: .2,\n\tupperBound: .9,\n\tcallback: function(shape) {\n\t\t//...\n\t}\n};",
-            "// set a shrink animation with set\nshape.set({\n\tshrink:\n\t\tspeed: 0.3,\n\t\tlowerBound: .2,\n\t\tupperBound: .9,\n\t\tcallback: function(shape) {\n\t\t\t//...\n\t\t}\n\t}\n)};",
+            "// set a shrink animation directly\nshape.shrink = {\n\tspeed: .3,\n\tlowerBound: .2,\n\tupperBound: .9,\n\tcallback: function(shape) {\n\t\t//...\n\t}\n};",
+            "// set a shrink animation with set\nshape.set({\n\tshrink:\n\t\tspeed: .3,\n\t\tlowerBound: .2,\n\t\tupperBound: .9,\n\t\tcallback: function(shape) {\n\t\t\t//...\n\t\t}\n\t}\n)};",
           ]
         },
       ],
@@ -958,14 +976,35 @@ var api = {
         },
       ],
       'Animation Funtions': [
-        {  // fade()
-          definition: 'left() | ' + small('returns ') + kwd('number'),
-          descriptions: [ 'Returns the leftmost/rightmost x coordinate of the shape, or the highest/lowest y coordinate.' ],
-          samples: [ "var left = obj.left();",
-            "var right = obj.right();",
-            "var top = obj.top();",
-            "var bottom = obj.bottom();",
-            ],
+        { // setSprite
+          definition: 'setSprite( '+kwd('String')+' name, '+kwd('boolean')+' suppressDraw )',
+        },{
+          definition: 'setSprite( '+a('Sprite')+' sprite, '+kwd('boolean')+' suppressDraw )',
+        },{
+          definition: '| ' + small('returns ') + kwd('this'),
+          descriptions: [ "Sets the shape's current sprite to the given sprite or the sprite in "+a('anims')+" with the given name.",
+            "Redraws the parent app unless "+kwd('suppressDraw')+' is defined',
+            "If a "+a('Sprite')+' is given, it is inserted at the front of '+a('anims')+'.',
+          ],
+          samples: [
+            "// set the sprite to an existing sprite attachment\nshape.setSprite('walking');",
+            "// set the sprite to a new sprite\n// and suppress the redraw\nshape.setSprite( spritemap.map({\n\t//...\n}, true );",
+          ],
+          divider: true,
+        },{  // stopAnim()
+          definition: 'stopAnim() | ' + small('returns ') + kwd('this'),
+          descriptions: [ "Stops the active animations." ],
+          samples: [ "// stop a shape's animations \nshape.stopAnim();" ],
+          divider: true,
+        },{  // nextFrame()
+          definition: 'nextFrame( '+a('Shape')+' shape ) | ' + small('returns ') + kwd('this'),
+          descriptions: [ "Advances the "+kwd('animFrame')+", returns to index "+kwd("0")+" if the last frame is active." ],
+          samples: [ "// advance to the next frame\nshape.nextFrame(shape);" ],
+          divider: true,
+        },{  // prevFrame()
+          definition: 'prevFrame( '+a('Shape')+' shape ) | ' + small('returns ') + kwd('this'),
+          descriptions: [ "Returns to the previous "+kwd('animFrame')+", activates the last "+kwd('animFrame')+" if currently at index "+kwd("0")+"." ],
+          samples: [ "// return to the previous frame\nshape.prevFrame(shape);" ],
         },
       ],
     }
@@ -973,35 +1012,64 @@ var api = {
   Quad: {
     classname: 'Quad',
     inherits: [ 'Shape','Drawable','Interface' ],
-    overview: [ "A simplified rectangle shape defined by a position, width, and height. All functions are as precise as "+a('iio.Rectangle')+", except for collision detection - "+kwd('Quads do not account for rotation in collisions')+'. Quads use fewer calculations than any other Shape, so they should be used whenever possible.'],
+    overview: [ "A simplified rectangle shape defined by a position, width, and height. All functions are as precise as "+a('iio.Rectangle')+", except for collision detection - "+kwd('Quads do not account for rotation in collisions by default')+'.',
+      'Rotated collision detection can be activated with the '+kwd('rotatedVs')+' flag', 
+      'Quads use fewer calculations than any other Shape, so they should be used whenever possible.'],
     unitTests: iio.test.Quad,
     data: {
       'Constructor': [
         {
           definition: 'Quad( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... )',
           descriptions: [ "Create a quad with the properties of any number of given objects." ],
-          samples: [ 
-            "// create a new quad\nvar quad = new iio.Quad({\n\tpos: app.center,\n\twidth: 40,\n\theight: 60,\n\tcolor: 'red'\n});",
-            "// add the quad to the app\napp.add( quad );"
+          samples: [
+            "// create a new square quad\nvar quad = new iio.Quad({\n\tpos: app.center,\n\twidth: 40,\n\tcolor: 'red',\n});",
+            "// create a new rectangle quad\nvar quad = new iio.Quad({\n\tpos: app.center,\n\twidth: 40,\n\theight: 60,\n\tcolor: 'red',\n});",
+            "// add a quad to the app\napp.add( quad );",
+            "// create a new square quad and add it to app\nvar quad = app.create( app.center, 40, 'red' );",
             ]
         }
       ],
       'Properties': [
         {  // width
           definition: kwd('number')+' width',
-          descriptions: [ "The width of a quad or the size of a square." ],
+          descriptions: [ "The width of the rectangular quad or the size of the square quad." ],
           samples: [
             "// access the width\nvar width = quad.width;",
-            "// set the width\nquad.width = 40;"
+            "// set the width directly\nquad.width = 40;",
+            "// set the width using set\nquad.set({ width: 40 });",
           ],
           divider: true
         },
         {  // height
           definition: kwd('number')+' height',
-          descriptions: [ "The height." ],
+          descriptions: [ "The height of the quad." ],
           samples: [
             "// access the height\nvar height = quad.height;",
-            "// set the height\nquad.height = 60;"
+            "// set the height directly\nquad.height = 60;",
+            "// set the height using set\nquad.set({ height: 60 });",
+          ],
+          divider: true
+        },
+        {  // rotateVs
+          definition: kwd('boolean')+' rotateVs',
+          descriptions: [ "Rotate vertices when calculating collisions and checking bounds. Increases the number of calculations." ],
+          samples: [
+            "// access the value\nvar rotatedVs = quad.rotatedVs;",
+            "// set the value\nquad.rotatedVs = true;",
+            "// set the value using set\nquad.set({ rotatedVs: true });",
+          ]
+        }
+      ],
+      'Functions': [
+        {  // trueVs
+          definition: 'trueVs( '+kwd('boolean')+' rotateVs ) | ' + small('returns ') + kwd('Array')+'<'+a('Vector')+'>',
+          descriptions: [ 
+            'Adds the array '+kwd('vs')+' to the quad, and populates it with the vector of each corner, relative to the quads position, then returns an array of corner vertices relative to app origin.',
+            "Returned corner vectors will not be rotated unless "+kwd('rotateVs')+' or '+kwd('this.rotateVs')+' is '+kwd('true')+'.'
+          ],
+          samples: [ 
+            "// get the global vertices of a quad\nvar corners = quad.trueVs();\n// access the new vs property\ncorners = quad.vs;",
+            "//get the rotated global vertices of a quad\nvar rotatedCorners = quad.trueVs( true );"
           ]
         }
       ]
@@ -1010,31 +1078,22 @@ var api = {
   Line: {
     classname: 'Line',
     inherits: [ 'Shape','Drawable','Interface' ],
-    overview: [ "A line shape defined by a start and end position ("+kwd('vs')+').' ],
+    overview: [ "A line shape defined by two vectors, a start and end position ("+kwd('vs')+').' ],
     unitTests: iio.test.Line,
     data: {
       'Constructor': [
         {
           definition: 'Line( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... )',
           descriptions: [ "Create a line with the properties of any number of given objects." ],
-          samples: [ 
+          samples: [
             "// create a new line\n// with global coordinates\nvar line = new iio.Line({\n\t// set position coordinates\n\t// relative to app 0,0\n\tvs: {\n\t\t// start position\n\t\t[ 10, 10 ],\n\t\t// end position\n\t\t[ 100, 100 ],\n\t},\n\tcolor: 'red',\n\twidth: 5\n});",
             "// create a new line\n// with local coordinates\nvar line = new iio.Line({\n\t// set line shape position\n\t// relative to app 0,0\n\tpos: app.center,\n\t// set line coordinates\n\t// relative to pos\n\tvs: {\n\t\t// start position\n\t\t[ 10, 10 ],\n\t\t// end position\n\t\t[ 100, 100 ]\n\t},\n\tcolor: 'red',\n\twidth: 5\n});",
-            "// add a line shape to the app\napp.add( line );"
+            "// add a line shape to the app\napp.add( line );",
+            "// create a new line and add it to an app\napp.create( 10, 'red', {\n\tvs: [ app.center, [10,10] ],\n});",
             ]
         }
       ],
-      'Properties': [
-        {  // vs
-          definition: kwd('Array')+'<'+a('Vector')+'> vs',
-          descriptions: [ "An array of two coordinates defining the start and end positions of the line." ],
-          samples: [
-            "// access the start and end positions of a line\nvar start_pos = line.vs[0];\nvar end_pos = line.vs[1];",
-            "// set the start and end positions of a line\nline.vs[0] = new iio.Vector( 10,10 );\nline.vs[1] = new iio.Vector( 100,100 );",
-            "// set the start and end positions of a line using set\nline.set( { \n\tvs: [\n\t\t[ 10,10 ],\n\t\t[ 100,100 ]\n\t]\n} );"
-          ],
-          divider: true
-        },
+      'Position Properties': [
         { // width
           definition: kwd('Array')+' width',
           descriptions: [ "The width of the line." ],
@@ -1044,13 +1103,23 @@ var api = {
           ],
           divider: true
         },
+        {  // vs
+          definition: kwd('Array')+'<'+a('Vector')+'> vs',
+          descriptions: [ "An array of two coordinates defining the start and end positions of the line." ],
+          samples: [
+            "// access the start and end positions of a line\nvar startPos = line.vs[0];\nvar endPos = line.vs[1];",
+            "// set the start and end positions of a line\nline.vs[0] = new iio.Vector( 10,10 );\nline.vs[1] = new iio.Vector( 100,100 );",
+            "// set the start and end positions of a line using set\nline.set( { \n\tvs: [\n\t\t[ 10,10 ],\n\t\t[ 100,100 ]\n\t]\n} );"
+          ],
+          divider: true
+        },
         {  // vels
           definition: kwd('Array')+'<'+a('Vector')+'> vels',
           descriptions: [ "An array of velocity vectors associated with the position coordinates in "+kwd('vs')+'.' ],
           samples: [
             "// access the coordinate velocities of a line\nvar start_pos_vel = line.vels[0];\nvar end_pos_vel = line.vels[1];",
             "// set the coordinate velocities of a line\nline.vels[0] = new iio.Vector( 1,1 );\nline.vels[1] = new iio.Vector( -1,-1 );",
-            "// set the start and end positions of a line using set\nline.set( { \n\tvs: [\n\t\t[ 1,1 ],\n\t\t[ -1,-1 ]\n\t]\n} );"
+            "// set the start and end positions of a line using set\nline.set({ \n\tvs:[\n\t\t[ 1,1 ],\n\t\t[ -1,-1 ]\n\t]\n});"
           ]
         },
       ],
@@ -1087,8 +1156,19 @@ var api = {
             "// set the bezier handle acclerations using set\nline.set( { \n\tbezierAccs: [\n\t\t[ 1,1 ],\n\t\t[ -1,-1 ]\n\t]\n} );"
           ],
         }
+      ],
+      'Functions': [
+        {  // trueVs
+          definition: 'trueVs() | ' + small('returns ') + kwd('Array')+'<'+a('Vector')+'>',
+          descriptions: [ 
+            'Returns a rotated copy of '+kwd('vs')+' relative to app origin.'
+          ],
+          samples: [ 
+            "// get the global vertices of a line\nvar corners = line.trueVs();",
+          ]
+        }
       ]
-    }
+    },
   },
   Ellipse: {
     classname: 'Ellipse',
@@ -1120,7 +1200,7 @@ var api = {
           definition: kwd('number')+' vRadius',
           descriptions: [ "The verticle radius of an ellipse." ],
           samples: [
-            "// access the vertical radius\nvar vertical_radius = ellipse.vRadius;",
+            "// access the vertical radius\nvar verticalRadius = ellipse.vRadius;",
             "// set the vertical radius\nellipse.vRadius = 60;"
           ]
         }

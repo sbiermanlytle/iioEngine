@@ -85,9 +85,9 @@ display_current = function(){
       show_api( api.Shape );
     else if( path === 'line' )
       show_api( api.Line );
-    else if( path === 'Text' )
+    else if( path === 'text' )
       show_api( api.Text );
-    else if( path === 'eEllipse' )
+    else if( path === 'ellipse' )
       show_api( api.Ellipse );
     else if( path === 'polygon' )
       show_api( api.Polygon );
