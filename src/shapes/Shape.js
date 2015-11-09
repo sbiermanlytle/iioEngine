@@ -230,13 +230,13 @@ iio.Shape.prototype.playAnim = function() {
   var args = iio.merge_args(arguments);
   if (args.name) this.setSprite(args.name);
   this.animFrame = args.startFrame || 0;
-  this.animRepeat = args.repeat;
-  this.onAnimStop = args.onAnimStop;
+  this.animRepeats = args.repeat;
+  this.onAnimComplete = args.onAnimComplete;
   var loop;
   if (args.fps > 0) loop = this.loop(args.fps, this.nextFrame);
   else if (args.fps < 0) loop = this.loop(args.fps * -1, this.prevFrame);
   else this.app.draw();
-  return loop;
+  return this;
 }
 iio.Shape.prototype.stopAnim = function() {
   iio.cancelLoops(this);
@@ -271,13 +271,13 @@ iio.Shape.prototype.nextFrame = function(o) {
   o.animFrame++;
   if (o.animFrame >= o.anims[o.animKey].frames.length) {
     o.animFrame = 0;
-    if (typeof o.animRepeat !== 'undefined') {
-      if (o.animRepeat <= 1) {
+    if (typeof o.animRepeats !== 'undefined') {
+      if (o.animRepeats <= 1) {
         window.cancelAnimationFrame(id);
         window.clearTimeout(id);
-        if (o.onAnimStop) o.onAnimStop(id, o);
+        if (o.onAnimComplete) o.onAnimComplete(o);
         return;
-      } else o.animRepeat--;
+      } else o.animRepeats--;
     }
   }
 }
@@ -385,6 +385,27 @@ iio.Shape.prototype.finish_path_shape = function(ctx){
         Math.floor(this.width),
         Math.floor(this.height));
     else ctx.drawImage(this.img,
+      -this.width/2,
+      -this.height/2,
+      this.width,
+      this.height);
+  }
+  if (this.anims) {
+    if (this.imageRounding)
+      ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+        this.anims[this.animKey].frames[this.animFrame].x,
+        this.anims[this.animKey].frames[this.animFrame].y,
+        this.anims[this.animKey].frames[this.animFrame].w,
+        this.anims[this.animKey].frames[this.animFrame].h,
+        Math.floor(-this.width/2),
+        Math.floor(-this.height/2),
+        Math.floor(this.width),
+        Math.floor(this.height));
+    else ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+        this.anims[this.animKey].frames[this.animFrame].x,
+        this.anims[this.animKey].frames[this.animFrame].y,
+        this.anims[this.animKey].frames[this.animFrame].w,
+        this.anims[this.animKey].frames[this.animFrame].h,
       -this.width/2,
       -this.height/2,
       this.width,

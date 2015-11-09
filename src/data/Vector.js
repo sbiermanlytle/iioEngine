@@ -21,13 +21,18 @@ iio.Vector.prototype.Vector = function( v,y ) {
   }
 }
 
+// OVERRIDE FUNCTIONS
+iio.Vector.prototype.clone = function(){
+  return new iio.Vector(this.x,this.y)
+}
+
 // STATIC FUNCTIONS
 //------------------------------------------------------------
 iio.Vector.vs = function ( points ){
   var vs = [];
   if (!(points instanceof Array)) points = [points];
   for (var i = 0; i < points.length; i++) {
-    if (typeof points[i].x != 'undefined')
+    if (typeof points[i].x !== 'undefined')
       vs.push(points[i]);
     else {
       vs.push({
@@ -51,16 +56,20 @@ iio.Vector.highest = function( vs ){
 iio.Vector.lowest = function( vs ){
   return iio.specVec(vs,function(v1,v2){ return v1.y<v2.y }).y
 }
-iio.Vector.add = function( v1,v2 ){
-  var v = v1.clone();
-  for (var p in v2)
-    if (v[p]) v[p] += v2[p];
+iio.Vector.add = function(){
+  var v = new iio.Vector();
+  for (var v2 in arguments){
+    v.x += v2.x;
+    v.y += v2.y;
+  }
   return v
 }
-iio.Vector.sub = function( v1,v2 ){
-  var v = v1.clone();
-  for (var p in v2)
-    if (v[p]) v[p] -= v2[p];
+iio.Vector.sub = function(){
+  var v = arguments[0].clone();
+  for (var i=1; i<arguments.length; i++){
+    v.x -= arguments[i].x;
+    v.y -= arguments[i].y;
+  }
   return v
 }
 iio.Vector.mult = function( v1,f ){
@@ -80,7 +89,7 @@ iio.Vector.length = function( v,y ){
      return Math.sqrt(v.x*v.x+v.y*v.y);
   else return Math.sqrt(v*v+y*y);
 }
-iio.Vector.normalized = function( v,y ){
+iio.Vector.normalize = function( v,y ){
   return new iio.Vector(v,y).normalize();
 }
 iio.Vector.dot = function ( v1,v2,x2,y2 ){
@@ -117,9 +126,6 @@ iio.Vector.rotate = function( x,y,r ){
 
 // VECTOR FUNCTIONS
 //------------------------------------------------------------
-iio.Vector.prototype.clone = function(){
-  return new iio.Vector(this.x,this.y)
-}
 iio.Vector.prototype.add = function( v,y ){
   if (typeof v.x !== 'undefined'){
     this.x += v.x;
@@ -145,14 +151,9 @@ iio.Vector.prototype.mult = function( f ){
   this.y *= f;
   return this;
 }
-iio.Vector.prototype.div = function( v,y ){
-  if (typeof v.x !== 'undefined'){
-    this.x /= v.x;
-    this.y /= v.y;
-  } else {
-    this.x /= v;
-    this.y /= y;
-  }
+iio.Vector.prototype.div = function( f ){
+  this.x /= f;
+  this.y /= f;
   return this;
 }
 iio.Vector.prototype.length = function(){

@@ -55,7 +55,6 @@ iio.Polygon.prototype.trueVs = function() {
   }
   return vs;
 }
-
 iio.Polygon.prototype.contains = function(v, y) {
   v = this.localize(v,y);
   var i=j=c=0;

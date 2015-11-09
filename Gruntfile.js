@@ -16,7 +16,7 @@ coreSrc = [
   'data/Gradient.js',
   'core/Drawable.js',
   'data/SpriteMap.js',
-  'core/Shape.js',
+  'shapes/Shape.js',
   'shapes/Ellipse.js',
   'shapes/Polygon.js',
   'shapes/Line.js',

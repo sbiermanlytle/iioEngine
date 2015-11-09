@@ -1011,13 +1011,18 @@ iio.Vector.prototype.Vector = function( v,y ) {
   }
 }
 
+// OVERRIDE FUNCTIONS
+iio.Vector.prototype.clone = function(){
+  return new iio.Vector(this.x,this.y)
+}
+
 // STATIC FUNCTIONS
 //------------------------------------------------------------
 iio.Vector.vs = function ( points ){
   var vs = [];
   if (!(points instanceof Array)) points = [points];
   for (var i = 0; i < points.length; i++) {
-    if (typeof points[i].x != 'undefined')
+    if (typeof points[i].x !== 'undefined')
       vs.push(points[i]);
     else {
       vs.push({
@@ -1041,16 +1046,20 @@ iio.Vector.highest = function( vs ){
 iio.Vector.lowest = function( vs ){
   return iio.specVec(vs,function(v1,v2){ return v1.y<v2.y }).y
 }
-iio.Vector.add = function( v1,v2 ){
-  var v = v1.clone();
-  for (var p in v2)
-    if (v[p]) v[p] += v2[p];
+iio.Vector.add = function(){
+  var v = new iio.Vector();
+  for (var v2 in arguments){
+    v.x += v2.x;
+    v.y += v2.y;
+  }
   return v
 }
-iio.Vector.sub = function( v1,v2 ){
-  var v = v1.clone();
-  for (var p in v2)
-    if (v[p]) v[p] -= v2[p];
+iio.Vector.sub = function(){
+  var v = arguments[0].clone();
+  for (var i=1; i<arguments.length; i++){
+    v.x -= arguments[i].x;
+    v.y -= arguments[i].y;
+  }
   return v
 }
 iio.Vector.mult = function( v1,f ){
@@ -1070,7 +1079,7 @@ iio.Vector.length = function( v,y ){
      return Math.sqrt(v.x*v.x+v.y*v.y);
   else return Math.sqrt(v*v+y*y);
 }
-iio.Vector.normalized = function( v,y ){
+iio.Vector.normalize = function( v,y ){
   return new iio.Vector(v,y).normalize();
 }
 iio.Vector.dot = function ( v1,v2,x2,y2 ){
@@ -1107,9 +1116,6 @@ iio.Vector.rotate = function( x,y,r ){
 
 // VECTOR FUNCTIONS
 //------------------------------------------------------------
-iio.Vector.prototype.clone = function(){
-  return new iio.Vector(this.x,this.y)
-}
 iio.Vector.prototype.add = function( v,y ){
   if (typeof v.x !== 'undefined'){
     this.x += v.x;
@@ -1135,14 +1141,9 @@ iio.Vector.prototype.mult = function( f ){
   this.y *= f;
   return this;
 }
-iio.Vector.prototype.div = function( v,y ){
-  if (typeof v.x !== 'undefined'){
-    this.x /= v.x;
-    this.y /= v.y;
-  } else {
-    this.x /= v;
-    this.y /= y;
-  }
+iio.Vector.prototype.div = function( f ){
+  this.x /= f;
+  this.y /= f;
   return this;
 }
 iio.Vector.prototype.length = function(){
@@ -2028,13 +2029,13 @@ iio.Shape.prototype.playAnim = function() {
   var args = iio.merge_args(arguments);
   if (args.name) this.setSprite(args.name);
   this.animFrame = args.startFrame || 0;
-  this.animRepeat = args.repeat;
-  this.onAnimStop = args.onAnimStop;
+  this.animRepeats = args.repeat;
+  this.onAnimComplete = args.onAnimComplete;
   var loop;
   if (args.fps > 0) loop = this.loop(args.fps, this.nextFrame);
   else if (args.fps < 0) loop = this.loop(args.fps * -1, this.prevFrame);
   else this.app.draw();
-  return loop;
+  return this;
 }
 iio.Shape.prototype.stopAnim = function() {
   iio.cancelLoops(this);
@@ -2069,13 +2070,13 @@ iio.Shape.prototype.nextFrame = function(o) {
   o.animFrame++;
   if (o.animFrame >= o.anims[o.animKey].frames.length) {
     o.animFrame = 0;
-    if (typeof o.animRepeat !== 'undefined') {
-      if (o.animRepeat <= 1) {
+    if (typeof o.animRepeats !== 'undefined') {
+      if (o.animRepeats <= 1) {
         window.cancelAnimationFrame(id);
         window.clearTimeout(id);
-        if (o.onAnimStop) o.onAnimStop(id, o);
+        if (o.onAnimComplete) o.onAnimComplete(o);
         return;
-      } else o.animRepeat--;
+      } else o.animRepeats--;
     }
   }
 }
@@ -2183,6 +2184,27 @@ iio.Shape.prototype.finish_path_shape = function(ctx){
         Math.floor(this.width),
         Math.floor(this.height));
     else ctx.drawImage(this.img,
+      -this.width/2,
+      -this.height/2,
+      this.width,
+      this.height);
+  }
+  if (this.anims) {
+    if (this.imageRounding)
+      ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+        this.anims[this.animKey].frames[this.animFrame].x,
+        this.anims[this.animKey].frames[this.animFrame].y,
+        this.anims[this.animKey].frames[this.animFrame].w,
+        this.anims[this.animKey].frames[this.animFrame].h,
+        Math.floor(-this.width/2),
+        Math.floor(-this.height/2),
+        Math.floor(this.width),
+        Math.floor(this.height));
+    else ctx.drawImage(this.anims[this.animKey].frames[this.animFrame].src,
+        this.anims[this.animKey].frames[this.animFrame].x,
+        this.anims[this.animKey].frames[this.animFrame].y,
+        this.anims[this.animKey].frames[this.animFrame].w,
+        this.anims[this.animKey].frames[this.animFrame].h,
       -this.width/2,
       -this.height/2,
       this.width,
@@ -2388,7 +2410,6 @@ iio.Polygon.prototype.trueVs = function() {
   }
   return vs;
 }
-
 iio.Polygon.prototype.contains = function(v, y) {
   v = this.localize(v,y);
   var i=j=c=0;
