@@ -46,7 +46,6 @@ show_docs_menu = function(){
   append_api_item_sub('shapes', api.Text );
   // append_api_item_sub('shapes', api.Rectangle );
   append_api_item_sub('shapes', api.Grid );
-  // append_api_item_sub('shapes', api.QuadGrid );
 
   append_api_item_sub('data', api.Vector );
   append_api_item_sub('data', api.Color );
