@@ -4,12 +4,12 @@
 
 // DEFINITION
 iio.Grid = function(){ this.Grid.apply(this, arguments) };
-iio.inherit(iio.Grid, iio.Rectangle);
-iio.Grid.prototype._super = iio.Rectangle.prototype;
+iio.inherit(iio.Grid, iio.Quad);
+iio.Grid.prototype._super = iio.Quad.prototype;
 
 // CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
-  this._super.Rectangle.call(this,iio.merge_args(arguments));
+  this._super.Quad.call(this,iio.merge_args(arguments));
   this.init();
 }
 

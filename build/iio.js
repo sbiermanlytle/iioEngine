@@ -1546,7 +1546,7 @@ iio.Drawable.prototype.create = function(){
 
     // given string
     if( iio.is.string(arguments[i]) ){
-      var c = iio.Color[ arguments[i] ];
+      var c = iio.Color[ arguments[i] ]();
       // infer color
       if(c) props.color = c;
       // infer text
@@ -2298,7 +2298,11 @@ iio.Ellipse.prototype._shrink = function(s, r) {
 
 // IMPLEMENT ABSTRACT FUNCTIONS
 iio.Ellipse.prototype.size = function(){ return this.radius }
-iio.Ellipse.prototype.setSize = function(s){ this.radius = s/2 }
+iio.Ellipse.prototype.setSize = function(r,r2){ 
+  this.radius = r/2;
+  this.vRadius = r2 ? r2/2 : undefined;
+  return this;
+}
 iio.Ellipse.prototype.contains = function(v, y) {
   if (typeof(y) !== 'undefined') v = { x:v, y:y }
   if ((!this.vRadius || this.radius === this.vRadius) && iio.Vector.dist(v, this.pos) < this.radius)
@@ -2819,12 +2823,12 @@ iio.Rectangle.prototype.draw_rounded = function(ctx){
 
 // DEFINITION
 iio.Grid = function(){ this.Grid.apply(this, arguments) };
-iio.inherit(iio.Grid, iio.Rectangle);
-iio.Grid.prototype._super = iio.Rectangle.prototype;
+iio.inherit(iio.Grid, iio.Quad);
+iio.Grid.prototype._super = iio.Quad.prototype;
 
 // CONSTRUCTOR
 iio.Grid.prototype.Grid = function() {
-  this._super.Rectangle.call(this,iio.merge_args(arguments));
+  this._super.Quad.call(this,iio.merge_args(arguments));
   this.init();
 }
 
@@ -2953,20 +2957,36 @@ iio.Quad.prototype.setSize = iio.Rectangle.prototype.setSize;
 iio.Quad.prototype._trueVs = iio.Polygon.prototype.trueVs;
 
 // OVERRIDE FUNCTIONS
-iio.Quad.prototype.left = function(){ return this.pos.x - this.width/2 }
-iio.Quad.prototype.right = function(){ return this.pos.x + this.width/2 }
-iio.Quad.prototype.top = function(){ return this.pos.y - this.height/2 }
-iio.Quad.prototype.bottom = function(){ return this.pos.y + this.height/2 }
+iio.Quad.prototype._left = iio.Polygon.prototype.left;
+iio.Quad.prototype.left = function(){
+  if (this.rotateVs) return this._left();
+  return this.pos.x - this.width/2
+}
+iio.Quad.prototype._right = iio.Polygon.prototype.right;
+iio.Quad.prototype.right = function(){
+  if (this.rotateVs) return this._right();
+  return this.pos.x + this.width/2
+}
+iio.Quad.prototype._top = iio.Polygon.prototype.top;
+iio.Quad.prototype.top = function(){
+  if (this.rotateVs) return this._top();
+  return this.pos.y - this.height/2
+}
+iio.Quad.prototype._bottom = iio.Polygon.prototype.bottom;
+iio.Quad.prototype.bottom = function(){
+  if (this.rotateVs) return this._bottom();
+  return this.pos.y + this.height/2
+}
 
 // IMPLEMENT ABSTRACT FUNCTIONS
-iio.Quad.prototype.trueVs = function() {
+iio.Quad.prototype.trueVs = function(rotateVs) {
   this.vs = [
     new iio.Vector(-this.width/2, -this.height/2),
     new iio.Vector(this.width/2, -this.height/2),
     new iio.Vector(this.width/2, this.height/2),
     new iio.Vector(-this.width/2, this.height/2),
   ];
-  if (!this.rotateVs) {
+  if (!rotateVs && !this.rotateVs) {
     var vs = [];
     for(var v,i=0;i<this.vs.length;i++){
       v = this.vs[i].clone();
@@ -2978,33 +2998,6 @@ iio.Quad.prototype.trueVs = function() {
   }
   return this._trueVs()
 }
-
-/* QuadGrid
-------------------
-*/
-
-// DEFINITION
-iio.QuadGrid = function(){ this.QuadGrid.apply(this, arguments) };
-iio.inherit(iio.QuadGrid, iio.Quad);
-iio.QuadGrid.prototype._super = iio.Quad.prototype;
-
-// CONSTRUCTOR
-iio.QuadGrid.prototype.QuadGrid = function() {
-  this._super.Quad.call(this,iio.merge_args(arguments));
-  this.init();
-}
-
-// SHARED GRID FUNCTIONS
-iio.QuadGrid.prototype.init = iio.Grid.prototype.init;
-iio.QuadGrid.prototype.init_cells = iio.Grid.prototype.init_cells;
-iio.QuadGrid.prototype.infer_res = iio.Grid.prototype.infer_res;
-iio.QuadGrid.prototype.clear = iio.Grid.prototype.clear
-iio.QuadGrid.prototype.cellCenter = iio.Grid.prototype.cellCenter;
-iio.QuadGrid.prototype.cellAt = iio.Grid.prototype.cellAt;
-iio.QuadGrid.prototype.setSize = iio.Grid.prototype.setSize;
-iio.QuadGrid.prototype._shrink = iio.Grid.prototype._shrink;
-iio.QuadGrid.prototype.prep_ctx_color = iio.Grid.prototype.prep_ctx_color;
-iio.QuadGrid.prototype.draw_shape = iio.Grid.prototype.draw_shape;
 
 /* App
 ------------------
@@ -3353,7 +3346,7 @@ iio.Loader.prototype.load = function(assets, onComplete) {
 /* Attach iio to box2dWeb
 -------------------------
 */
-if (Box2D){
+if (typeof Box2D !== 'undefined'){
   Box2D.Dynamics.Joints.b2Joint.prototype.set = iio.Drawable.prototype.set;
   Box2D.Dynamics.Joints.b2Joint.prototype.convert_props = iio.Drawable.prototype.convert_props;
   Box2D.Collision.Shapes.b2Shape.prototype.set = iio.Drawable.prototype.set;

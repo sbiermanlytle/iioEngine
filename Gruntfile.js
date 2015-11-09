@@ -24,7 +24,6 @@ coreSrc = [
   'shapes/Rectangle.js',
   'shapes/Grid.js',
   'shapes/Quad.js',
-  'shapes/QuadGrid.js',
   'core/App.js',
   'data/Sound.js',
   'core/Loader.js',

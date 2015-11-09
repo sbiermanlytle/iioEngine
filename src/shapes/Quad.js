@@ -22,20 +22,36 @@ iio.Quad.prototype.setSize = iio.Rectangle.prototype.setSize;
 iio.Quad.prototype._trueVs = iio.Polygon.prototype.trueVs;
 
 // OVERRIDE FUNCTIONS
-iio.Quad.prototype.left = function(){ return this.pos.x - this.width/2 }
-iio.Quad.prototype.right = function(){ return this.pos.x + this.width/2 }
-iio.Quad.prototype.top = function(){ return this.pos.y - this.height/2 }
-iio.Quad.prototype.bottom = function(){ return this.pos.y + this.height/2 }
+iio.Quad.prototype._left = iio.Polygon.prototype.left;
+iio.Quad.prototype.left = function(){
+  if (this.rotateVs) return this._left();
+  return this.pos.x - this.width/2
+}
+iio.Quad.prototype._right = iio.Polygon.prototype.right;
+iio.Quad.prototype.right = function(){
+  if (this.rotateVs) return this._right();
+  return this.pos.x + this.width/2
+}
+iio.Quad.prototype._top = iio.Polygon.prototype.top;
+iio.Quad.prototype.top = function(){
+  if (this.rotateVs) return this._top();
+  return this.pos.y - this.height/2
+}
+iio.Quad.prototype._bottom = iio.Polygon.prototype.bottom;
+iio.Quad.prototype.bottom = function(){
+  if (this.rotateVs) return this._bottom();
+  return this.pos.y + this.height/2
+}
 
 // IMPLEMENT ABSTRACT FUNCTIONS
-iio.Quad.prototype.trueVs = function() {
+iio.Quad.prototype.trueVs = function(rotateVs) {
   this.vs = [
     new iio.Vector(-this.width/2, -this.height/2),
     new iio.Vector(this.width/2, -this.height/2),
     new iio.Vector(this.width/2, this.height/2),
     new iio.Vector(-this.width/2, this.height/2),
   ];
-  if (!this.rotateVs) {
+  if (!rotateVs && !this.rotateVs) {
     var vs = [];
     for(var v,i=0;i<this.vs.length;i++){
       v = this.vs[i].clone();

@@ -1,7 +1,7 @@
 /* Attach iio to box2dWeb
 -------------------------
 */
-if (Box2D){
+if (typeof Box2D !== 'undefined'){
   Box2D.Dynamics.Joints.b2Joint.prototype.set = iio.Drawable.prototype.set;
   Box2D.Dynamics.Joints.b2Joint.prototype.convert_props = iio.Drawable.prototype.convert_props;
   Box2D.Collision.Shapes.b2Shape.prototype.set = iio.Drawable.prototype.set;

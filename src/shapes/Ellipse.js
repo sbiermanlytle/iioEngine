@@ -38,7 +38,11 @@ iio.Ellipse.prototype._shrink = function(s, r) {
 
 // IMPLEMENT ABSTRACT FUNCTIONS
 iio.Ellipse.prototype.size = function(){ return this.radius }
-iio.Ellipse.prototype.setSize = function(s){ this.radius = s/2 }
+iio.Ellipse.prototype.setSize = function(r,r2){ 
+  this.radius = r/2;
+  this.vRadius = r2 ? r2/2 : undefined;
+  return this;
+}
 iio.Ellipse.prototype.contains = function(v, y) {
   if (typeof(y) !== 'undefined') v = { x:v, y:y }
   if ((!this.vRadius || this.radius === this.vRadius) && iio.Vector.dist(v, this.pos) < this.radius)
