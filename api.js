@@ -1284,8 +1284,9 @@ var api = {
           definition: 'Text( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... )',
           descriptions: [ "Create text with the properties of any number of given objects." ],
           samples: [ 
-            "// create a new text object\nvar textObj = new iio.Text({\n\tpos: app.center,\n\ttext: 'Hello World',\n\tcolor: 'red',\n\tsize: 40,\n\tfont: 'Arial',\n\talign: 'center'\n});",
-            "// add the text object to the app\napp.add( textObj );"
+            "// create a new text object\nvar textShape = new iio.Text({\n\tpos: app.center,\n\ttext: 'Hello World',\n\tcolor: 'red',\n\tsize: 40,\n\tfont: 'Arial',\n\talign: 'center'\n});",
+            "// add the text object to the app\napp.add( textShape );",
+            "// create a new text object and add it to the app\napp.create( app.center, 50, 'red', 'hello world' );"
             ]
         }
       ],
@@ -1294,8 +1295,8 @@ var api = {
           definition: kwd('String')+' text',
           descriptions: [ "A string identifying the text object's printed characters." ],
           samples: [
-            "// access the text string\nvar text_string = textObj.text;",
-            "// set the text string\ntextObj.text = 'new text value';"
+            "// access the text string\nvar textValue = textShape.text;",
+            "// set the text string\ntextShape.text = 'new text value';"
           ],
           divider: true
         },
@@ -1303,8 +1304,8 @@ var api = {
           definition: kwd('number')+' size',
           descriptions: [ "The font size." ],
           samples: [
-            "// access font size\nvar font_size = textObj.size;",
-            "// set the font size\ntextObj.size = 60;"
+            "// access font size\nvar fontSize = text.size;",
+            "// set the font size\ntext.size = 60;"
           ],
           divider: true
         },
@@ -1312,8 +1313,8 @@ var api = {
           definition: kwd('String')+' font',
           descriptions: [ "The font of the printed text." ],
           samples: [
-            "// access font\nvar font = textObj.font;",
-            "// set the font\ntextObj.font = 'Arial';"
+            "// access font\nvar font = text.font;",
+            "// set the font\ntext.font = 'Arial';"
           ],
           divider: true
         },
@@ -1322,11 +1323,42 @@ var api = {
           descriptions: [ "A string keyword indicating the alignmet of the printed text.",
             "Possible values are: "+kwd("'center'")+', '+kwd("'left'")+', '+kwd("'right'")+', '+kwd("'start'")+', or '+kwd("'end'")+'.' ],
           samples: [
-            "// access text alignment\nvar alignment = textObj.align;",
-            "// set the text alignment\ntextObj.align = 'center';"
+            "// access text alignment\nvar alignment = text.align;",
+            "// set the text alignment\ntext.align = 'center';"
           ],
           divider: true
+        },
+        { // showCursor
+          definition: kwd('boolean')+' showCursor',
+          descriptions: [ "A flag that activates the text cursor." ],
+          samples: [
+            "// access showCursor\nvar showCursor = text.showCursor;",
+            "// create a text object with a cursor\nvar text = new iio.Text({\n\tshowCursor: true,\n\tcolor: 'red',\n\ttext: 'hello world',\n});"
+          ],
+          divider: true
+        },
+        { // cursor
+          definition: kwd('Object')+' cursor',
+          descriptions: [ "A "+a('Line')+' with cursor properties.',
+            kwd('index')+': the index of the cursor in the '+kwd('text')+' string',
+            kwd('shift')+': a flag shifting input keys into uppercase and secondary characters',
+          ],
+          samples: [
+            "// access text cursor\nvar cursor = text.cursor;",
+            "// set text cursor properties\ntext.cursor.index = 0;\ntext.cursor.shift = true;"
+          ]
         }
+      ],
+      'Functions': [
+        {  // text
+          definition: kwd('String')+' text',
+          descriptions: [ "A string identifying the text object's printed characters." ],
+          samples: [
+            "// access the text string\nvar textValue = textShape.text;",
+            "// set the text string\ntextShape.text = 'new text value';"
+          ],
+          divider: true
+        },
       ]
     }
   },
