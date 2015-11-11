@@ -207,9 +207,9 @@ iio.Drawable.prototype.create = function(){
 
     // given string
     if( iio.is.string(arguments[i]) ){
-      var c = iio.Color[ arguments[i] ]();
       // infer color
-      if(c) props.color = c;
+      if( iio.Color[ arguments[i] ] )
+        props.color = iio.Color[ arguments[i] ]();
       // infer text
       else props.text = arguments[i]
     }
