@@ -8,6 +8,7 @@ h2 = function(html, name){
 }
 h3 = function(html){ return '<h3>'+html+'</h3>' }
 kwd = function(html){ return "<span class='kwd'>"+html+"</span>" }
+red = function(html){ return "<span class='red'>"+html+"</span>" }
 a = function(name){ return '<a href="#api/'+name.toLowerCase()+'">'+name+'</a>' }
 ahref = function(name, href){ return '<a target="_blank" href="'+href+'">'+name+'</a>' }
 pre = function(html){ return "<pre class='prettyprint linenums:1'>"+html+"</span>" }

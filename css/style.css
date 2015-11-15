@@ -510,6 +510,9 @@ a,h2,h5,canvas,input[type='submit'],.btn,#drag_overlay,.api_item{
 .kwd{
   color: #65B042;
 }
+.red{
+  color: red;
+}
 .small{
   font-weight: normal;
   font-size: 14px

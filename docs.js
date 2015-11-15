@@ -29,7 +29,7 @@ show_docs_menu = function(){
     document.getElementById('api_item_'+toggle_ids[i]).onselectstart = function() { return false }
   }
 
-  append_api_item_sub_no_api('basics','Overview');
+  append_api_item_sub_no_api('basics','Setup');
 
   //append_api_item_sub('functions','iio libraries');
   append_api_item_sub('basics', api.AppControl);
@@ -75,19 +75,28 @@ show_api_basics = function(){
   var api_content = $('#api_content');
 
   api_content.append(h1('iio.js Documentation'));
-  api_content.append('<h3><a href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">- Download iio.js 1.4</a></h3>');
+  api_content.append('<div class="arrows_btns"><img class="big-arrow left-arrow" src="img/arrow.png"/><p style="min-width:190px" class="big-btn"><a id="download-iio" style="padding:15px 26px" class="btn-iio" href="https://github.com/iioinc/iio.js/archive/master.zip">Download v1.4</a></p></div>');
 
-  api_content.append(p('iio.js is a JavaScript library for HTML5 Canvas applications. iio.js provides an environment for '+kwd('object oriented development')+' and '+kwd('automated object managment')+'.'));
+  api_content.append(p('iio.js is a '+kwd('dependency free')+' JavaScript library for HTML5 Canvas applications. iio.js provides an environment for '+kwd('object oriented development')+' and '+kwd('automated object managment')+'.'));
 
-  api_content.append(p('All code samples in the documentation are assumed to be running inside of an iio script with access to '+kwd('app')+', unless full code is provided.'));
+  api_content.append(p('All code samples in the documentation are assumed to be running with access to an '+a('App')+', unless full code is provided.'));
+
+  api_content.append(p('The iio.js library needs to be included in order to run an iio application. The file can be included locally, or directly from this website:'));
+
+  api_content.append(p(red('minified')+': '+kwd('http://iio.js.org/iio.min.js')));
+  api_content.append(p(red('unminified')+': '+kwd('http://iio.js.org/iio.js')));
+  api_content.append(p(red('debug')+': '+kwd('http://iio.js.org/iio.debug.js')));
+  api_content.append(divide);
+
+  api_content.append(p('Below is an example of a simple iio application, running full screen on a basic HTML page. You can copy and paste this code directly into a new file and the iio app will run if you open the file with a browser:'));
 
   api_content.append(h2('Hello World'));
-  api_content.append(pre("&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;body&gt;\n&lt;script type='text/javascript' src='iio.js'&gt;&lt;/script&gt;\n&lt;script type='text/javascript'&gt;\n\n// app is an App object\nHelloWorld = function( app ){\n\n\t// create and add a text object\n\tapp.create( app.center, 'Hello World' );\n\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;"));
+  api_content.append(pre("&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;body&gt;\n&lt;script type='text/javascript'\n\tsrc='http://iio.js.org/iio.js'&gt;\n&lt;/script&gt;\n&lt;script type='text/javascript'&gt;\n\n// app is an App object\nHelloWorld = function( app ){\n\n\t// create and add a text object\n\tapp.create( app.center, 'Hello World' );\n\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;"));
 }
 
 show_api = function( api ){
   show_docs_menu();
-  page.append('<div id="api_content"><div id="'+'api/'+api.classname.replace(" ","-").toLowerCase()+'" class="overview_anchor"></div></div>');
+  page.append('<div id="api_content"><div id="'+'api/'+api.classname.replace(/ /g,"-").toLowerCase()+'" class="overview_anchor"></div></div>');
   var api_content = $('#api_content');
  
   // TITLE
@@ -116,8 +125,8 @@ show_api = function( api ){
     // FUNCTIONS & PROPERTIES
     for(var o in api.data ){
       var encoded = o;
-      encoded = encoded.replace(" ","-").toLowerCase();
-      api_content.append( h2( o, "api/"+api.classname.replace(" ","-").toLowerCase()+'/'+encoded ) );
+      encoded = encoded.replace(/ /g,"-").toLowerCase();
+      api_content.append( h2( o, "api/"+api.classname.replace(/ /g ,"-").toLowerCase()+'/'+encoded ) );
       api_content.append( api_list( encoded ) );
       var list = $( '#' + encoded );
       for(var i=0; i<api.data[o].length; i++ ){
@@ -149,7 +158,7 @@ toggle_menu = function( id, i ){
 
 append_api_item_sub_no_api = function( parent, href ){
   var title = href;
-  href = title.replace(' ', '-');
+  href = title.replace(/ /g, '-');
   var html = '<li class="api_item_sub"><a href="#api">'+title+'</a>';
   html += '<ul class="api_property"></ul>';
   html += '</li>';
@@ -157,7 +166,7 @@ append_api_item_sub_no_api = function( parent, href ){
 }
 append_api_item_sub = function( parent, api ){
   var title = api.classname;
-  var href = title.replace(' ', '-').toLowerCase();
+  var href = title.replace(/ /g, '-').toLowerCase();
   var html = '<li class="api_item_sub"><a id="api_item_sub_h_'+parent+'-'+href+'"'
     + ( ( current_hash.indexOf('#api/'+href+'/' ) >= 0 ) ? ' class="hashed"' : '' )
     +'>'+title+'</a>';
@@ -167,7 +176,7 @@ append_api_item_sub = function( parent, api ){
   +'>Overview</a></li>';
   var html_prop;
   for( var prop in api.data ){
-    html_prop = prop.replace(' ','-').toLowerCase();
+    html_prop = prop.replace(/ /g,'-').toLowerCase();
     html += '<li class="api_property"><a href="#api/'+href+'/'+html_prop+'"'
     + ( ( current_hash === '#api/'+href+'/'+html_prop ) ? ' class="hashed"' : '' )
     +'>'+prop+'</a></li>';

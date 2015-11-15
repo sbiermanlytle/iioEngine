@@ -2,18 +2,48 @@ var api = {
   AppControl: {
     classname: 'App control',
     overview: [
-      "iio apps are wrapped in an application script so that they can be managed by iio's centralized app management system.",
-      "This design pattern will also allow you to utilize "+kwd('iio.start')+"."
+      "The primary entry point for an iio appliation should be wrapped in a main application function that provides access to iio's centralized app management system.",
+      "This structure also allows the use of the "+kwd('iio.start')+' method.'
     ],
     samples: [
-      "// define a new iio app\n// app is an App object\nHelloWorld = function( app ){\n\t//...\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n\n// start the app on an existing canvas\niio.start( HelloWorld, 'canvasId' );"
+      "// define a new iio app\n// app is an App object\nHelloWorld = function( app ){\n\t// objects added to app will be \n\t// drawn and managed automatically\n\tapp.add( ... );\n}",
     ],
     data: {
-      'App Settings': [
-        {
-          descriptions: [ "iio apps can be started with settings that are known to the app." ],
+      'Start and Stop': [
+        { // start()
+          definition: 'iio.start( '+kwd('function')+' appTitle )',
+        },{
+          definition: 'iio.start( '+kwd('function')+' appTitle, '+kwd('string')+' canvasId )',
+        },{
+          definition: ':: '+small('returns ')+a('App'),
+          descriptions: [
+            "Creates an App and starts an iio app fullscreen, or on an existing canvas.",
+            "Adds a reference to the new app to the global "+kwd('iio.apps')+' array.',
+            "Returns the newly created App."
+          ],
           samples: [
-            "// define a new iio app\nHelloWorld = function( app, settings ){\n\tsettings.mVar //...\n}\n\n// start the app fullscreen with settings\niio.start( [ HelloWorld, { mVar: mVal } ] );\n\n// start the app on an existing canvas\niio.start( [ HelloWorld, { mVar: mVal } ], 'canvasId' );"
+            "// start the app fullscreen\niio.start( HelloWorld );\n\n// start the app on an existing canvas\niio.start( HelloWorld, 'canvasId' );"
+          ],
+          divider: true
+        },{ // stop()
+          definition: 'iio.stop()',
+          descriptions: ['Stop all running apps in '+kwd('iio.apps')+'.' ]
+        },{
+          definition: 'iio.stop( '+a('App')+' app )',
+          descriptions: ['Stop the given app.'],
+          samples: ['// stop all running apps\niio.stop()', '// start an app\nvar app = iio.start( MyApp );\n// stop the app\niio.stop( app );\n// equivalent action\napp.stop();']
+        }
+      ],
+      'App Settings': [
+        { // start()
+          definition: 'iio.start([ '+kwd('function')+' appTitle, '+kwd('object')+' settings ])',
+        },{
+          definition: 'iio.start([ ... ], '+kwd('string')+' canvasId )',
+        },{
+          definition: ':: '+small('returns ')+a('App'),
+          descriptions: [ "iio apps can also be started with settings that are known to the app." ],
+          samples: [
+            "// define a new iio app\nHelloWorld = function( app, settings ){\n\tvar mVar = settings.mVar;\n}\n\n// start the app fullscreen with settings\niio.start([ HelloWorld, { mVar: mVal } ]);\n\n// start the app on an existing canvas\niio.start([ HelloWorld, { mVar: mVal } ], 'canvasId' );"
           ]
         }
       ]
@@ -883,6 +913,73 @@ var api = {
             "// get the event position, relative to the apps position\napp.onClick = function( app, event, pos ){\n\tvar eventPos = app.eventVector(event);\n\t// note that pos is equivalent to the eventPos vector\n\t// and already provided\n}"
           ]
         }
+      ],
+      'Input Handling': [
+        { // onResize
+          definition:'onResize()',
+          descriptions: [
+            "Called when the app is resized, the "+kwd('width')+', '+kwd('height')+', and '+kwd("center")+' will already be updated to the new dimensions.'
+          ],
+          samples: [
+            "// peform actions on app resize event\napp.onResize = function(){\n\t//...\n}"
+          ],
+          divider: true
+        },{ // onClick
+          definition: 'onClick( '+a('App')+' app, '+kwd('Event')+' event, '+a('Vector')+' pos )',
+          descriptions: [
+            "Called when the app is clicked.",
+            "The event parameter is a JavaScript Event object",
+            "Note that every "+a('Shape')+' added to app also has an '+kwd('onClick')+' callback.'
+          ],
+          samples: [
+            "// peform action when the app is clicked\napp.onClick = function( app, event, pos ){\n\t//...\n}"
+          ],
+          divider: true
+        },{ // onMouseDown
+          definition: 'onMouseDown( '+a('App')+' app, '+kwd('Event')+' event, '+a('Vector')+' pos )',
+        },{ // onMouseUp
+          definition: 'onMouseUp( '+a('App')+' app, '+kwd('Event')+' event, '+a('Vector')+' pos )',
+          descriptions: [
+            "Called on a mouse down or up event over app.",
+            "The event parameter is a JavaScript Event object",
+            "Note that every "+a('Shape')+' added to app also has '+kwd('onMouseDown')+' and '+kwd('onMouseUp')+' callbacks.'
+          ],
+          samples: [
+            "// peform action when the app is clicked\napp.onMouseDown = function( app, event, pos ){\n\t//...\n}",
+            "// peform action when the mouse is released over app\napp.onMouseUp = function( app, event, pos ){\n\t//...\n}"
+          ],
+          divider: true
+        },{ // mouse movement
+          definition: 'Mouse Movement',
+          descriptions: [ "Mouse movement is not tracked automatically. An event listener must be attached to the canvas in order to receive input:" ],
+          samples: [
+            "// attach a mouse move event listner\niio.addEvent(app.canvas, 'mousemove', function(event){\n\tvar mousePos = app.eventVector(event);\n\t//...\n}"
+          ],
+          divider: true
+        },{ // onKeyDown
+          definition: 'onKeyDown( '+kwd('Event')+' event, '+kwd('string')+' key )',
+        },{ // onKeyUp
+          definition: 'onKeyUp( '+kwd('Event')+' event, '+kwd('string')+' key )',
+          descriptions: [
+            "Called when a key is pressed or released.",
+            kwd('key')+' is the string representation of the JavaScript Event '+kwd('keyCode')+'.'
+          ],
+          samples: [
+            "// peform action when a key is pressed\napp.onKeyDown = function( app, key ){\n\t//...\n}",
+            "// peform action when a key is released\napp.onKeyUp = function( app, key ){\n\t//...\n}",
+          ],
+          divider: true
+        },{ // onScroll
+          definition: 'onScroll( '+kwd('Event')+' event, '+kwd('string')+' key )',
+          descriptions: [
+            "Called when the page is scrolled.",
+            kwd('key')+' is the string representation of the JavaScript Event '+kwd('keyCode')+'.',
+            'Note that the apps position vector will already be updated according to the new page origin.'
+          ],
+          samples: [
+            "// peform action when the app is scrolled\napp.onScroll = function( app, key ){\n\t//...\n}"
+          ],
+        }
       ]
     }
   },
@@ -905,6 +1002,17 @@ var api = {
             "// access a shape's velocity and accleration\nvar velocity = shape.vel;\nvar acceleration = shape.acc;",
             "// set a shape's velocity and acceleration directly\nshape.vel = new iio.Vector( 2,3 );\nshape.acc = new iio.Vector( .02, .03 );",
             "// set a shape's velocity and acceleration using set\nshape.set({ vel: [ 2,3 ] });\nshape.set({ acc: [ .02, .03 ] });"
+          ],
+          divider: true
+        },{ // bounds
+          definition: kwd('object')+' bounds',
+          descriptions: [
+            "A data structure containing boundary values and callbacks.",
+            "If a "+kwd('callback')+' is '+kwd('undefined')+' or returns '+kwd('false')+' for a boundary, the shape is removed when the boundary is crossed.',
+          ],
+          samples: [
+            "// specify all four bounds\nvar bounds = {\n\tleft: {\n\t\tbound: 0,\n\t\tcallback: reverseX,\n\t},\n\tright: {\n\t\tbound: 0,\n\t\tcallback: reverseX,\n\t},\n\ttop: {\n\t\tbound: 0,\n\t\tcallback: reverseY,\n\t},\n\tbottom: {\n\t\tbound: 0,\n\t\tcallback: reverseY,\n\t}\n}",
+            "// create a shape with bounds\nvar shape = new iio.Quad( bounds,{\n\t//...\n});"
           ]
         }
       ],
