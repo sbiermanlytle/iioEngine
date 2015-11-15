@@ -611,7 +611,7 @@ iio.canvas = {
           if (obj[handler]) {
             if (obj.cellAt) {
               var c = obj.cellAt(ep);
-              obj[handler](obj, e, ep, c, obj.cellCenter(c.c, c.r));
+              obj[handler](obj, e, ep, c);
             } else obj[handler](obj, e, ep);
           }
       }, caller)
@@ -1245,7 +1245,7 @@ iio.Color.rgbToHex = function(r, g, b) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-// MEMBER FUNCTIONS
+// COLOR FUNCTIONS
 //------------------------------------------------------------
 iio.Color.prototype.clone = function() {
   return new iio.Color( this.r, this.g, this.b, this.a );
@@ -1764,10 +1764,10 @@ iio.Drawable.prototype.unpause = function(c) {
 iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
 
 // CONSTRUCTOR
-iio.SpriteMap.prototype.SpriteMap = function(src, p) {
+iio.SpriteMap.prototype.SpriteMap = function(src, onLoad) {
   this.img = new Image();
   this.img.src = src;
-  this.img.onload = p.onLoad;
+  this.img.onload = onLoad;
   return this;
 }
 
@@ -1945,7 +1945,7 @@ iio.Shape.prototype.update = function() {
   if (this.bezierAccs) this.update_bezier_accs();
   if (this.bezierVels) this.update_bezier_vels();
 
-  if (this.onUpdate) this.onUpdate();
+  if (this.onUpdate) this.onUpdate(this);
 }
 iio.Shape.prototype.update_vel = function(){
   if(this.pos){
@@ -2706,12 +2706,12 @@ iio.Text.prototype.draw_shape = function(ctx) {
   if (this.color) ctx.fillText(this.text, 0, 0);
   if (this.outline) ctx.strokeText(this.text, 0, 0);
   if (this.showCursor)
-    this.cursor.vs[0].x = this.cursor.vs[1].x = this.getX(this.cursor.index);
+    this.cursor.vs[0].x = this.cursor.vs[1].x = this.charX(this.cursor.index);
 }
 
 // TEXT FUNCTIONS
 iio.Text.prototype.init_cursor = function(){
-  var tX = this.getX(this.text.length);
+  var tX = this.charX(this.text.length);
   this.cursor = this.add(new iio.Line({
     vs: [
       [tX, this.size/2],
@@ -2755,6 +2755,7 @@ iio.Text.prototype.inferSize = function(ctx){
       new iio.Vector(-this.width,this.height/2),
     ]
   }
+  return this;
 }
 iio.Text.getFontHeight = function(font) {
   var text = $('<span>Hg</span>').css({ fontFamily: font });
@@ -2780,7 +2781,7 @@ iio.Text.prototype.charWidth = function(i) {
   this.app.ctx.font = this.size+'px '+this.font;
   return this.app.ctx.measureText(this.text.charAt(i)).width;
 }
-iio.Text.prototype.getX = function(i) {
+iio.Text.prototype.charX = function(i) {
   this.app.ctx.font = this.size+'px '+this.font;
   if (!this.align || this.align === 'left')
     return this.app.ctx.measureText(this.text.substring(0, i)).width;
@@ -3053,7 +3054,7 @@ iio.App.prototype.App = function(view, script, settings) {
 iio.App.prototype.update = function(){
   var nuFPS;
   if(this.onUpdate) 
-    nuFPS = this.onUpdate();
+    nuFPS = this.onUpdate(this);
   this.draw();
   return nuFPS;
 }
@@ -3116,6 +3117,7 @@ iio.App.prototype.stop = function() {
   iio.cancelLoops(this);
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
   this.clear();
+  return this;
 }
 
 /* Sound

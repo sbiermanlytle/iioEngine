@@ -51,6 +51,8 @@ show_docs_menu = function(){
   append_api_item_sub('data', api.Color );
   append_api_item_sub('data', api.Gradient );
   append_api_item_sub('data', api.Sound);
+  append_api_item_sub('data', api.Sprite);
+  append_api_item_sub('data', api.SpriteMap);
   append_api_item_sub('data', api.Loader);
 }
 

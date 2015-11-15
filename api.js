@@ -39,7 +39,8 @@ var api = {
           ],
           samples: [
             "loader.load( 'sprite.png', function(assets) { ... } );"
-          ]
+          ],
+          divider: true
         },
         {
           definition: 'load( ' + kwd('Array') + ' assets, ' + kwd('function') + ' onComplete )',
@@ -50,7 +51,8 @@ var api = {
           samples: [
             "loader.load([\n\t'sprite1.png',\n\t'ping.wav',\n\t'background.jpg'\n], function(assets) { ... })",
             "loader.load([\n\t{ name: 'sprite1.png', callback: processImage },\n\t{ name: 'ping.wav', callback: processSound },\n\t{ name: 'background.png', callback: processImage }\n], function(assets) { ... })"
-          ]
+          ],
+          divider: true
         },
         {
           definition: 'load( ' + kwd('object') + ' assets, ' + kwd('function') + ' onComplete )',
@@ -381,22 +383,55 @@ var api = {
       'Static Functions': [
         {  // Color.random()
           definition: 'Color.random() | ' + small('returns ') + a('Color'),
-          descriptions: [ "Returns a random "+a('Color')+" with full alpha." ],
-          samples: [ "var random_color = iio.Color.random();" ]
+          descriptions: [ "Returns a random Color with full alpha." ],
+          samples: [ "var randomColor = iio.Color.random();" ],
+          divider: true,
+        },{  // Color.invert()
+          definition: 'Color.invert( '+a("Color")+' color ) | ' + small('returns ') + a('Color'),
+          descriptions: [ "Returns a new Color with the inverse color value of the given color object." ],
+          samples: [ "var color = iio.Color();\nvar inverseColor = iio.Color.invert(color);" ],
+          divider: true,
+        },{  // Color.hexToRgb()
+          definition: 'Color.hexToRgb( '+kwd("string")+' hex ) | ' + small('returns ') + kwd('object'),
+          descriptions: [ "Returns an object with "+kwd('r')+','+kwd('g')+','+kwd('b')+' values' ],
+          samples: [ "var rgb = iio.Color.hexToRgb('#00BAFF');\nvar r = rgb.r;\nvar g = rgb.g;\nvar b = rgb.b;" ],
+          divider: true,
+        },{  // Color.rgbToHex()
+          definition: 'Color.rgbToHex( '+kwd("number")+': r, g, b ) | ' + small('returns ') + kwd('string'),
+          descriptions: [ "Returns a hexadecimal string representing the given rgb color" ],
+          samples: [ "var hex = iio.Color.rgbToHex(255,0,0);" ],
+          divider: true,
+        },{ // Color.<constant>
+          definition: 'Color.<'+kwd('constant')+'>() }| '+small('returns ')+a('Color'),
+          descriptions: [
+            'Returns a new Color corresponding the the given constant. All '+ahref('CSS color', 'http://www.w3schools.com/cssref/css_colornames.asp')+' keywords are available.'
+          ],
+          samples: [
+            "var red = iio.Color.red();\nvar aqua = iio.Color.aqua();\nvar transparent = iio.Color.transparent();"
+          ]
         }
       ],
       'Instance Functions': [
-        {  // invert()
+        {  // randomize()
+          definition: 'randomize() | ' + small('returns ') + kwd('this'),
+          descriptions: [ 'Randomizes the r,g,b values of this color. Does not effect alpha.' ],
+          samples: [ "color.randomize();" ],
+          divider: true
+        },{  // invert()
           definition: 'invert() | ' + small('returns ') + kwd('this'),
           descriptions: [ 'Inverts the r,g,b values of this color. Does not effect alpha.' ],
           samples: [ "color.invert();" ],
           divider: true
+        },{  // rgbaString()
+          definition: 'rgbaString() | ' + small('returns ') + kwd('string'),
+          descriptions: [ 'Returns a string in the format: '+kwd('rgba(r,g,b,a)') ],
+          samples: [ "var rgbaString = color.rgbaString();" ],
+          divider: true
+        },{  // hexString()
+          definition: 'hexString() | ' + small('returns ') + kwd('string'),
+          descriptions: [ 'Returns a hexadecimal color string.' ],
+          samples: [ "var hexString = color.hexString();" ]
         },
-        {  // randomize()
-          definition: 'randomize() | ' + small('returns ') + kwd('this'),
-          descriptions: [ 'Randomizes the r,g,b values of this color. Does not effect alpha.' ],
-          samples: [ "color.randomize();" ]
-        }
       ]
     }
   },
@@ -455,7 +490,7 @@ var api = {
       data: {
         Constructor: [
           {
-            definition: 'Sound( '+kwd('string')+' soundFile, '+kwd('function')+' onLoad , '+kwd('function')+' onError )',
+            definition: 'Sound( '+kwd('string')+' soundFile, '+kwd('function')+': onLoad, onError )',
             descriptions: [ 
               "Create a Sound instance from the audio file located at soundFile",
               "Call optional callback functions for success and error."
@@ -488,15 +523,18 @@ var api = {
         ],
         Functions: [
           {
-            definition: 'play( [ ' +kwd('Integer') + ' delay, ' + kwd('Object') + ' properties ] )',
+            definition: 'play( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... ) | '+small('returns ')+kwd('this'),
             descriptions: [
-              "Play the sound through iio's AudioContext, with an optional delay",
-              "Subject to it's properties at that moment in time",
-              "Or optionally provide properties to be set before being played."
+              "Play the sound through iio's AudioContext, with an the given properties or the previously set sound properties.",
             ],
             samples: [
               "// set volume to 75% before playing\n// loop playback\nsound.play({ gain: 0.75, loop: true })"
-            ]
+            ],
+            divider: true,
+          },{
+            definition: 'stop() | '+small('returns ')+kwd('this'),
+            descriptions: ['Stops the sound from playing.' ],
+            samples: [ 'sound.stop();' ]
           }
         ]
       }
@@ -504,9 +542,9 @@ var api = {
   Drawable: {
     classname: 'Drawable',
     inherits: [ 'Interface' ],
-    overview: [ "A root class for all drawable objects classes in iio. Initializes data and provides functions for iio's object management features." ],
+    overview: [ "A root class for all drawable and managed object classes in iio." ],
     data: {
-      'Properties': [
+      'Position Properties': [
         {  // pos
           definition: a('Vector') + ' pos',
           descriptions: [ "xy position coordinates." ],
@@ -524,19 +562,42 @@ var api = {
           samples: [ 
             "// access a drawable's width value\nvar width = drawable.width;",
             "// access a drawable's height value\nvar height = drawable.height;",
-          ],
-          divider: true
-        },{  // color
+          ]
+        },
+      ],
+      'Display Properties': [
+        {  // color
           definition: a('Color') + '|' + a('Gradient') + ' color',
           descriptions: [ "Draw color." ],
           samples: [ 
             "// access a drawable's color\nvar color = drawable.color;",
             "// set a drawable's color to a Color\ndrawable.set({ color: 'blue' });",
             "// set a drawable's color to a Gradient\ndrawable.set({ color: new iio.Gradient({\n\tstart: [ 0, -50 ] ),\n\tend: [ 0, 50 ],\n\tstops: [\n\t\t[ 0, 'black' ],\n\t\t[ 0.5, 'blue' ],\n\t\t[ 1, 'blue' ]\n\t]\n})});"
+          ]
+        },
+      ],
+      'Loop Properties': [
+        {
+          definition: kwd('function')+' onUpdate',
+          descriptions: [
+            "A custom callback run before every draw in a looping drawable.",
+            "A reference to the object is passed as a parameter."
           ],
-          divider: true
-        },{  // paused
-          definition: kwd('bool') + ' paused',
+          samples: [
+            "// randomize the color before every draw\ndrawable.onUpdate = function(drawable){\n\tdrawable.color.randomize();\n}"
+          ],
+          divider: true,
+        },
+        {  // loops
+          definition: kwd('Array')+'<'+kwd('object') + '> loops',
+          descriptions: [ "Array of loop objects." ],
+          samples: [ 
+            "// access loop properties\nvar loopId = drawable.loops[0].id;\nvar loopCallback = drawable.loops[0].fn;",
+          ],
+          divider: true,
+        },
+        {  // paused
+          definition: kwd('boolean') + ' paused',
           descriptions: [ "A toggle indicating whether or not this objects "+kwd('loops')+' are running.' ],
           samples: [ 
             "// access a drawable's paused property\nvar paused = drawable.paused;",
@@ -544,36 +605,24 @@ var api = {
           ]
         }
       ],
-      'Functions': [
-        {  // onClick
-          definition: 'onClick( '+a('Drawable')+' this, '+kwd('Event')+' event, '+a('Vector')+' pos ) | ' + small('returns ') + kwd('boolean'),
-          descriptions: [ 
-            "Called when a face or edge of the object is clicked. "+kwd('Event')+' is a JavaScript Event object.',
-            "Note that this function only runs by default on "+a('App')+' and App.'+a('objs')+'.'
-          ],
-          samples: [ 
-            "// detect when the app is clicked\napp.onClick = function( app, event, pos ){\n  // handle input...\n}",
-            "// detect when an object added to app is clicked\napp.add( new iio.Rectangle({\n  //...\n  onClick: function( rectangle, event, pos ){\n    // handle input...\n  })\n});",
-            "// simulate a click on the app\napp.onClick( app, null, app.center );"
-          ]
-        }
-      ],
-      'Associated Objects': [
+      'Parent Properties': [
         {  // app
           definition: a('App') + ' app',
           descriptions: [ "Associated App." ],
-          samples: [ "// access a drawable's app\nvar app = drawable.app;" ]
+          samples: [ "// access a drawable's app\nvar app = drawable.app;" ],
+          divider: true,
         },{  // ctx
           definition: a('Context') + ' ctx',
           descriptions: [ "Associated Canvas 2d Context." ],
-          samples: [ "// access a drawable's ctx\nvar ctx = drawable.ctx;" ]
+          samples: [ "// access a drawable's ctx\nvar ctx = drawable.ctx;" ],
+          divider: true,
         },{  // parent
           definition: a('Drawable') + ' parent',
           descriptions: [ "Parent object." ],
           samples: [ "// access a drawable's parent\nvar parent = drawable.parent;" ]
         }
       ],
-      'Object Arrays': [
+      'Child Properties': [
         {  // objs
           definition: kwd('Array')+'<'+a('Shape') + '> objs',
           descriptions: [ "Array of child shapes." ],
@@ -586,22 +635,81 @@ var api = {
           divider: true
         },{  // collisions
           definition: kwd('Array')+'<'+a('Object') + '> collisions',
-          descriptions: [ "Array of collision objects." ],
+          descriptions: [ "Array of collision definitions." ],
           samples: [ 
-            "// access collision object properties\nvar group0 = drawable.collisions[0][0];\nvar group1 = drawable.collisions[0][1];\nvar collision_callback = drawable.collisions[0][2];\n"
-          ],
-          divider: true
-        },{  // loops
-          definition: kwd('Array')+'<'+a('Object') + '> loops',
-          descriptions: [ "Array of loop objects." ],
-          samples: [ 
-            "// access loop properties\nvar loopId = drawable.loops[0].id;\nvar loop_callback = drawable.loops[0].fn;",
+            "// access collision object properties\nvar group0 = drawable.collisions[0][0];\nvar group1 = drawable.collisions[0][1];\nvar collisionCallback = drawable.collisions[0][2];\n"
           ]
         }
       ],
-      'Object Management': [
+      'Position Functions': [
+        { // localize()
+          definition: 'localize( '+a('Vector')+' v ) | '+small('returns ')+a('Vector'),
+        },{
+          definition: 'localize( '+kwd('number')+' x, '+kwd('number')+' y ) | '+small('returns ')+a('Vector'),
+          descriptions: [
+            'Returns the given vector, localized relative to the objects position, rotation, and origin.',
+            'Effectively a combination of '+kwd('localFrameVector')+' and '+kwd('localizeRotation')+'.'
+          ],
+          samples: [
+            'var localV = drawable.localize(v);'
+          ],
+          divider: true
+        },{ // localizeRotation()
+          definition: 'localizeRotation( '+a('Vector')+' v, '+kwd('boolean')+' reverse )'
+        },{
+          definition: '| '+small('returns ')+a('Vector'),
+          descriptions: [
+            'Rotates the given vector about the objects origin to the objects rotation.' 
+          ],
+          samples: [
+            'var rotatedV = drawable.localizeRotation(v);'
+          ],
+          divider: true
+        },{ // localFrameVector()
+          definition: 'localFrameVector( '+a('Vector')+' v ) | '+small('returns ')+a('Vector'),
+          descriptions: [
+            'Returns the given vector relative to the objects position.' 
+          ],
+          samples: [
+            'var localV = drawable.localFrameVector(v);'
+          ],
+          divider: true
+        },{ // LocalLeft()
+          definition: 'localLeft() | '+small('returns ') + kwd('number'),
+        },{  // localRight()
+          definition: 'localRight() | '+small('returns ') + kwd('number'),
+        },{  // localTop()
+          definition: 'localTop() | '+small('returns ') + kwd('number'),
+        },{ // localBottom()
+          definition: 'localBottom() | '+small('returns ') + kwd('number'),
+          descriptions: [ "Returns the x or y coordinate relative to the objects position." ],
+          samples: [ "var left = drawable.localLeft();\nvar right = drawable.localRight();\nvar top = drawable.localTop();\nvar bottom = drawable.localBottom();" ]
+        },
+      ],
+      'Input Functions': [
+        { // onClick
+          definition: 'onClick( '+a('Drawable')+' this, '+kwd('Event')+' event, '+a('Vector')+' pos )',
+        },{  // onMouseDown
+          definition: 'onMouseDown( '+a('Drawable')+' this, '+kwd('Event')+' event, '+a('Vector')+' pos )',
+        },{  // onMouseUp
+          definition: 'onMouseUp( '+a('Drawable')+' this, '+kwd('Event')+' event, '+a('Vector')+' pos )',
+        },{
+          definition: '| ' + small('returns ') + kwd('boolean'),
+          descriptions: [
+            "Input handlers that are called when the object is clicked.",
+            kwd('Event')+' is a JavaScript Event object.',
+            "Note that this function only runs by default on "+a('App')+' and App.'+a('objs')+'.'
+          ],
+          samples: [ 
+            "// detect when the app is clicked\napp.onClick = function( app, event, pos ){\n  // handle input...\n}",
+            "// detect when an object added to app is clicked\napp.add( new iio.Rectangle({\n  //...\n  onMouseDown: function( rectangle, event, pos ){\n    // handle input...\n  })\n});",
+            "// simulate a mouse release on the app\napp.onMouseUp( app, null, app.center );"
+          ]
+        },
+      ],
+      'Child Functions': [
         {  // clear()
-          definition: 'clear( '+kwd('bool')+' noDraw ) | ' + small('returns ') + kwd('this'),
+          definition: 'clear( '+kwd('boolean')+' noDraw ) | ' + small('returns ') + kwd('this'),
           descriptions: [ 'Clears the '+kwd('objs')+' array and cancels all loops in the cleared objects. Redraws the associated '+a('App')+' if noDraw is undefined or false.' ],
           samples: [
             "// clear all app objects\napp.clear();",
@@ -610,9 +718,11 @@ var api = {
           divider: true
         },
         {  // add()
-          definition: 'add( '+a('Shape')+' shape, '+kwd('bool')+' noDraw ) | ' + small('returns ') + a('Shape')
+          definition: 'add( '+a('Shape')+' shape, '+kwd('boolean')+' noDraw ) | ' + small('returns ') + a('Shape')
         },{
-          definition: 'add( [ '+a('Shape')+' s0, '+a('Shape')+' s1, ... ], '+kwd('bool')+' noDraw ) | ' + small('returns ') + kwd('Array'),
+          definition: 'add( [ '+a('Shape')+' s0, '+a('Shape')+' s1, ... ], '+kwd('boolean')+' noDraw )'
+        },{
+          definition: ' | ' + small('returns ') + kwd('Array'),
           descriptions: [ 'Adds the given shape or array of shapes to this objects '+kwd('objs')+' array in '+kwd('z')+' index order, then returns the argument.',
             'Adds a '+kwd('z')+' value of '+kwd('0')+' if '+kwd('z')+' is undefined.',
             'Redraws the associated '+a('App')+' if '+kwd('noDraw')+' is undefined or false.'
@@ -626,11 +736,13 @@ var api = {
           divider: true
         },
         {  // rmv()
-          definition: 'rmv( '+a('Shape')+' shape, '+kwd('bool')+' noDraw ) | ' + small('returns ') + a('Shape')
+          definition: 'rmv( '+a('Shape')+' shape, '+kwd('boolean')+' noDraw ) | ' + small('returns ') + a('Shape')
         },{
-          definition: 'rmv( [ '+a('Shape')+' s0, '+a('Shape')+' s1, ... ], '+kwd('bool')+' noDraw ) | ' + small('returns ') + kwd('Array')
+          definition: 'rmv( [ '+a('Shape')+' s0, '+a('Shape')+' s1, ... ], '+kwd('boolean')+' noDraw )'
         },{
-          definition: 'rmv( '+kwd('int')+' index, '+kwd('bool')+' noDraw ) | ' + small('returns ') + a('Shape'),
+          definition: ' | ' + small('returns ') + kwd('Array')
+        },{
+          definition: 'rmv( '+kwd('int')+' index, '+kwd('boolean')+' noDraw ) | ' + small('returns ') + a('Shape'),
           descriptions: [ 'Removes the given shape, array of shapes, or shape at the given index from this objects '+kwd('objs')+' array, then returns the removed shape or array of shapes.',
             'Stops all associated loops from the removed shape and all of its child shapes.',
             'Removes the shape from all collision references in this object.',
@@ -645,28 +757,32 @@ var api = {
         },
         {  // create( p0, p1, ... )
           definition: 'create( '+kwd('p0')+', '+kwd('p1')+', ... ) | ' + small('returns ') + kwd('Object'),
-          descriptions: [ 'Classifies given values by their type and creates and adds a new object with correct property value pairs. Possible objects created and returned can be: '+a('Vector')+', '+a('Color')+', '+a('Line')+', '+a('Text')+', '+a('Ellipse')+', '+a('Polygon')+', '+a('Rectangle')+', '+a('Grid')+'.' ],
+          descriptions: [ 'Classifies given values by their type and creates and adds a new object with correct property value pairs. Possible objects created and returned can be: '+a('Vector')+', '+a('Color')+', '+a('Line')+', '+a('Text')+', '+a('Ellipse')+', '+a('Polygon')+', '+a('Quad')+', '+a('Grid')+'.' ],
           samples: [ 
             "// create a Vector\nvar vector = app.create( [10,20] );",
             "// create a Color\nvar color = app.create( 'red' );",
-            "// create a Text at app center\nvar text = app.create( app.center, 'hello world' );",
-            "// create a Rectangle at app center\nvar rectangle = app.create( app.center, 50, 'red' );",
+            "// create a Text at app center\nvar text = app.create( app.center, 'hello world', 'red' );",
+            "// create a Quad at app center\nvar rectangle = app.create( app.center, 50, 'red' );",
             "// create a Line\nvar line = app.create( 'red', {\n\tvs: [\n\t\t[ 10,10 ],\n\t\t[ 80,80 ]\n\t]\n});",
             "// create a circle at app center\nvar circle = app.create( app.center, 'red', {\n\tradius: 20\n});"
           ],
           divider: true
         },
         {  // collision()
-          definition: 'collision( '+a('Shape')+' s0, '+a('Shape')+' s1, '+kwd('function')+' callback ) | ' + small('returns ') + kwd('int')
+          definition: 'collision( '+a('Shape')+' s0, '+a('Shape')+' s1, '+kwd('function')+' callback )'
         },{
-          definition: 'collision( '+kwd('Array')+' g0, '+kwd('Array')+' g1, '+kwd('function')+' callback ) | ' + small('returns ') + kwd('int'),
-          descriptions: [ 'Creates a collision object which tests collisions between two '+a('Shape')+' objects, two arrays of '+a('Shape')+' objects, or a mix of both types, and runs the given callback function, passing the two colliding objects as parameters.' ],
+          definition: ' | ' + small('returns ') + kwd('int')
+        },{
+          definition: 'collision( '+kwd('Array')+' g0, '+kwd('Array')+' g1, '+kwd('function')+' callback )'
+        },{
+          definition: ' | ' + small('returns ') + kwd('int'),
+          descriptions: [ 'Creates a collision definition which tests collisions between two '+a('Shape')+' objects, two arrays of '+a('Shape')+' objects, or a mix of both types, and runs the given callback function, passing the two colliding objects as parameters.' ],
           samples: [ 
             "// add a collision object\ndrawable.collision( objA, objB, callback );\n\n// add a collision object with arrays\n// and an inline callback function\nvar groupA = [ shape0, shape1, shape2 ];\nvar groupB = [ shape3, shape4 ];\nvar index = drawable.collision( groupA, groupB, function( A, B ){\n\t//...\n});"
           ]
         }
       ],
-      'Loop Management': [
+      'Loop Functions': [
         {  // loop()
           definition: 'loop() | ' + small('returns ') + kwd('int')
         },{
@@ -684,11 +800,22 @@ var api = {
             "// cancel a loop\niio.cancelLoop( loopId );",
           ],
           divider: true
-        },{ // pause
+        },{ // pause()
           definition: 'pause() | ' + small('returns ') + kwd('this'),
+          descriptions: [ 'Pause all loops in the '+kwd('loops')+' array.' ],
+        },{ // unPause()
+          definition: 'unPause() | ' + small('returns ') + kwd('this'),
+          descriptions: [ 'play all paused loops in the '+kwd('loops')+' array.' ],
+          samples: [
+            "// pause loops\ndrawable.pause();",
+            "// play paused loops\ndrawable.unPause();"
+          ],
+          divider: true
+        },{ // togglePause
+          definition: 'togglePause() | ' + small('returns ') + kwd('this'),
           descriptions: [ 'Pauses or unpauses all loops in the '+kwd('loops')+' array, depending upon the value of the '+kwd('paused')+' property.' ],
           samples: [
-            "// pause or unpause\ndrawable.pause();"
+            "// pause or unpause\ndrawable.togglePause();"
           ],
         }
       ]
@@ -709,16 +836,17 @@ var api = {
         {  // canvas
           definition: a('Canvas') + ' canvas',
           descriptions: [ "Associated HTML Canvas element." ],
-          samples: [ "// access an app's canvas\nvar canvas = drawable.canvas;" ]
+          samples: [ "// access an app's canvas\nvar canvas = app.canvas;" ],
+          divider: true,
         },{  // center
           definition: a('Vector') + ' center',
           descriptions: [ "The center coordinate of the app." ],
-          samples: [ "// access an app's center coordinate\nvar center = drawable.center;" ]
+          samples: [ "// access an app's center coordinate\nvar center = app.center;" ]
         }
       ],
       'Functions':[
-        {  // draw
-          definition: 'draw( '+kwd('bool')+' noClear ) | ' + small('returns ') + kwd('this'),
+        {  // draw()
+          definition: 'draw( '+kwd('boolean')+' noClear ) | ' + small('returns ') + kwd('this'),
           descriptions: [ 
             "Draws the background color and all objects in "+kwd('objs')+' in '+kwd('z')+' index order.',
             "The canvas will first be cleared unless "+kwd('noClear')+' is '+kwd('true')+'.'
@@ -726,6 +854,33 @@ var api = {
           samples: [ 
             "// redraw the app\napp.draw();",
             "// redraw the app without clearing the last render\napp.draw( true );"
+          ],
+          divider: true
+        },{  // stop()
+          definition: 'stop() | ' + small('returns ') + kwd('this'),
+          descriptions: [ 
+            'Clears the app child objects and cancels all app loops and sounds.',
+          ],
+          samples: [ 
+            "// start an App\nvar app = iio.start( iioApp );\n// stop an iio app\napp.stop();"
+          ],
+          divider: true,
+        },{  // trueVs
+          definition: 'trueVs() | ' + small('returns ') + kwd('Array')+'<'+a('Vector')+'>',
+          descriptions: [ 
+            'Adds the array '+kwd('vs')+' to the app, and populates it with the vector of each corner, then returns an a copy of that array.'
+          ],
+          samples: [ 
+            "// get the vertices of an app\nvar appCorners = app.trueVs();\n// access the new vs property\ncorners = app.vs;"
+          ],
+          divider: true
+        },{  // eventVector()
+          definition: 'eventVector( '+kwd('Event')+' event ) | ' + small('returns ') + a('Vector'),
+          descriptions: [ 
+            'Returns a Vector representation of the events position, relative to the apps position.',
+          ],
+          samples: [ 
+            "// get the event position, relative to the apps position\napp.onClick = function( app, event, pos ){\n\tvar eventPos = app.eventVector(event);\n\t// note that pos is equivalent to the eventPos vector\n\t// and already provided\n}"
           ]
         }
       ]
@@ -787,7 +942,7 @@ var api = {
       ],
       'Display Properties': [
         { // hidden
-          definition: kwd('bool')+' hidden',
+          definition: kwd('boolean')+' hidden',
           descriptions: [ "A toggle that suppresses rendering and collision detections." ],
           samples: [ 
             "// access a shape's hidden value\nvar hidden = shape.hidden;",
@@ -1340,8 +1495,8 @@ var api = {
         { // cursor
           definition: kwd('Object')+' cursor',
           descriptions: [ "A "+a('Line')+' with cursor properties.',
-            kwd('index')+': the index of the cursor in the '+kwd('text')+' string',
-            kwd('shift')+': a flag shifting input keys into uppercase and secondary characters',
+            kwd('cursor.index')+': the index of the cursor in the '+kwd('text')+' string',
+            kwd('cursor.shift')+': a flag shifting input keys into uppercase and secondary characters',
           ],
           samples: [
             "// access text cursor\nvar cursor = text.cursor;",
@@ -1350,15 +1505,59 @@ var api = {
         }
       ],
       'Functions': [
-        {  // text
-          definition: kwd('String')+' text',
-          descriptions: [ "A string identifying the text object's printed characters." ],
-          samples: [
-            "// access the text string\nvar textValue = textShape.text;",
-            "// set the text string\ntextShape.text = 'new text value';"
+        {  // onKeyDown()
+          definition: 'onKeyDown( '+kwd('string')+' key, '+kwd('number')+' index, '+kwd('boolean')+' shift )',
+        },{
+          definition: '| ' + small('returns ') + kwd('number'),
+          descriptions: [
+            'Modifies the '+kwd('text')+' by inserting the given key character, or deleting the previous/next character if backspace/delete are given.',
+            'If '+kwd('index')+' is '+kwd('undefined')+', the index value of the '+kwd('cursor')+' object is used.',
+            'The '+kwd('shift')+' flag forces the key in uppercase or secondary character mode. If '+kwd('undefined')+', the shift value of the '+kwd('cursor')+' object is used.',
+            'Returns the new '+kwd('cursor')+' index.',
+            'Note that this function does not run by default, you must call it in the '+a('App.onClick')+' callback.'
           ],
-          divider: true
-        },
+          samples: [ 
+            "// create a text object with a cursor\nvar text = app.add(new iio.Text({\n\t//...\n\tshowCursor: true,\n});\n\n// modify the text on key presses\napp.onKeyDown = function(event, key){\n\ttext.onKeyDown(key);\n}",
+          ],
+          divider: true,
+        },{ // onKeyUp()
+          definition: 'onKeyUp( '+kwd('string')+' key )',
+          descriptions: [
+            'If '+kwd('shift')+' is given, sets '+kwd('cursor.shift')+' to false.'
+          ],
+          samples: [
+            "// pass key up events to a text object\napp.onKeyUp = function(event, key){\n\ttext.onKeyDown(key);\n}"
+          ],
+          divider: true,
+        },{ // inferSize()
+          definition: 'inferSize( '+ahref('Context','https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D')+' context ) | returns '+kwd('this'),
+          descriptions: [
+            'Update the '+kwd('vs')+', '+kwd('width')+', and '+kwd('height')+' based on the current '+kwd('text')+' value.',
+            'This function should be called whenever '+kwd('text')+' changes, if collision detection is needed.',
+            'If '+kwd('context')+' is '+kwd('undefined')+', the parent app context is used.'
+          ],
+          samples: [
+            '// update the text size values\ntext.inferSize();'
+          ],
+          divider: true,
+        },{ // charWidth()
+          definition: 'charWidth( '+kwd('number')+' index ) | returns '+kwd('number'),
+          descriptions: [ 
+            'Returns the width of the character in '+kwd('text')+" at the given index, based on the objects current "+kwd('size')+'.'
+          ],
+          samples: [
+            "// set the text value\ntextObj.text = 'hello';\n// get the width of h\nvar hWidth = textObj.charWidth(0);\n// get the width of e\nvar eWidth = textObj.charWidth(1);"
+          ],
+          divider: true,
+        },{ // charX()
+          definition: 'charX( '+kwd('number')+' index ) | returns '+kwd('number'),
+          descriptions: [ 
+            'Returns the x coordinate position of the character in '+kwd('text')+' at the given index, relative to the objects position and alignment.'
+          ],
+          samples: [
+            "// set the text value\ntextObj.text = 'hello';\n// get the x coordinate of h\nvar hx = textObj.charX(0);\n// get the x coordinate of e\nvar ex = textObj.charX(1);"
+          ],
+        }
       ]
     }
   },
@@ -1459,7 +1658,7 @@ var api = {
           divider: true
         },
         {  // cells
-          definition: kwd('Array')+'<'+a('Rectangle') + '> cells',
+          definition: kwd('Array')+'<'+a('Quad') + '> cells',
           descriptions: [ "Array of cells." ],
           samples: [ 
             "// access a grids cells\nvar cell00 = grid.cells[0];\nvar cell01 = grid.cells[1];"
@@ -1473,7 +1672,8 @@ var api = {
           definition: '| ' + small('returns ') + kwd('boolean'),
           descriptions: [ 
             "Called when a face or edge of the Grid is clicked. "+kwd('Event')+' is a JavaScript Event object.',
-            "Note that this function only runs by default on grids added directly to "+a('App')+'.'
+            "Note that this function only runs by default on grids added directly to "+a('App')+'.',
+            kwd('pos')+' is the position of the click, relative to app origin.'
           ],
           samples: [ 
             "// detect when the grid is clicked\ngrid.onClick = function( grid, event, pos, cell ){\n  // handle input...\n}",
@@ -1503,4 +1703,71 @@ var api = {
       ],
     }
   },
+  Sprite: {
+    classname: 'Sprite',
+    overview: [ "A data structure for a frame animation. Sprites can use a sprite sheet, or a series of individual images." ],
+    data: {
+      'Creation': [
+        {
+          descriptions: [ "Sprites can be created manually or with "+a('SpriteMap.sprite') ],
+          samples: [
+            "// create a Sprite with a single image SpriteMap\nvar sprite = spriteMap.sprite({\n\tname: 'walking',\n\torigin: [0,0],\n\twidth: 16,\n\theight: 32,\n\tnumFrames: 4,\n});",
+            "// create a single image Sprite manually\nvar anim = {\n\tname: 'walking',\n\torigin: [0,0],\n\tframes: [{\n\t\tsrc: 'path/image.png',\n\t\tx: 16,\n\t\ty: 0,\n\t\tw: 16,\n\t\th: 32,\n\t},{\n\t\tsrc: 'path/image.png',\n\t\tx: 0,\n\t\ty: 0,\n\t\tw: 16,\n\t\th: 32,\n\t},\n\t//...\n\t]\n};",
+            "// create a Sprite with multiple images\nvar anim = {\n\tname: 'walking',\n\torigin: [0,0],\n\tframes: [\n\t\t{ src: 'path/image0.png' },\n\t\t{ src: 'path/image1.png' },\n\t\t//...\n\t]\n};",
+          ]
+        }
+      ],
+      'Properties': [
+        {  // name
+          definition: kwd('string') + ' name',
+          descriptions: [ "The name of the animation." ],
+        },{  // origin
+          definition: a('Vector') + ' origin',
+          descriptions: [ "The origin of the frames on the source image." ],
+        },{  // numFrames
+          definition: kwd('number') + ' numFrames',
+          descriptions: [ "The number of frames." ],
+        },{  // frames
+          definition: kwd('Array')+'<'+kwd('object')+'> frames',
+          descriptions: [ 
+          "An array of frames.",
+          'frame.'+kwd('src')+': the path of the frames source image',
+          'frame.'+kwd('x')+': the x position of the frame on the source image',
+          'frame.'+kwd('y')+': the y position of the frame on the source image',
+          'frame.'+kwd('w')+': the width of the frame on the source image',
+          'frame.'+kwd('h')+': the height of the frame on the source image',
+          ],
+        }
+      ],
+    }
+  },
+  SpriteMap: {
+    classname: 'SpriteMap',
+    overview: [ "A wrapper for a sprite sheet that can be used to make "+a('Sprite')+' objects.' ],
+    data: {
+      'Constructor': [
+        {
+          definition: 'SpriteMap( '+kwd('string')+' source, '+kwd('function')+' onLoad )',
+          descriptions: [ "Create a spritemap with the given image and onload callback." ],
+          samples: [ 
+            "var map = new iio.SpriteMap('img/mariobros_cmp.png');"
+          ]
+        }
+      ],
+      'Properties': [
+        { // img
+          definition: ahref('Image', 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image')+' img',
+          descriptions: [ 'The the source image object.' ],
+          samples: [ "// set the soure image\n\tmap.img.src = 'path/image.png';" ]
+        }
+      ],
+      'Functions': [
+        { // sprite()
+          definition: 'sprite( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... ) | '+small('returns ')+' '+a('Sprite'),
+          descriptions: [ 'Creates a sprite with all properties of the given objects.' ],
+          samples: [ "// create a Sprite with a single image SpriteMap\nvar sprite = map.sprite({\n\tname: 'walking',\n\torigin: [0,0],\n\twidth: 16,\n\theight: 32,\n\tnumFrames: 4,\n});", ]
+        }
+      ],
+    }
+  }
 }

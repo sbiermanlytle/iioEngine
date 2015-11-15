@@ -97,6 +97,10 @@ display_current = function(){
       show_api( api.Grid );
     else if( path === 'quad' )
       show_api( api.Quad );
+    else if( path === 'sprite' )
+      show_api( api.Sprite );
+    else if( path === 'spritemap' )
+      show_api( api.SpriteMap );
   } 
   else if( current_hash.substr( 0, 4 ) === '#api' ){
     current = DOCS;

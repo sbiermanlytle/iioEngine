@@ -42,9 +42,9 @@ Platformer = function( app, settings ){
   var w = 16; // sprite width
   var h = 32; // sprite height
   // load mario spritemap
-  var map = new iio.SpriteMap('assets/images/mariobros_cmp.png',{
+  var map = new iio.SpriteMap('assets/images/mariobros_cmp.png',
     // when load is complete
-    onLoad:function(){
+    function(){
       // width and height are common sprite properties
       var common = {
         width: w,
@@ -135,7 +135,6 @@ Platformer = function( app, settings ){
       }),true);
       // set mario's initial sprite
       mario.setSprite('standing');
-    }
   });
 
   // input controller object
