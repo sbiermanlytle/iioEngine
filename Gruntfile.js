@@ -43,7 +43,7 @@ module.exports = function(grunt) {
       },
       debug: {
         src: ['<%= concat.iio.dest %>', 'src/extras/*.js'],
-        dest: 'build/iio_debug.js',
+        dest: 'build/iio.debug.js',
         nonull: true
       }
     },
