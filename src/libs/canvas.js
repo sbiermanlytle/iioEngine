@@ -71,7 +71,7 @@ iio.canvas = {
           if (obj[handler]) {
             if (obj.cellAt) {
               var c = obj.cellAt(ep);
-              obj[handler](obj, e, ep, c, obj.cellCenter(c.c, c.r));
+              obj[handler](obj, e, ep, c);
             } else obj[handler](obj, e, ep);
           }
       }, caller)

@@ -64,7 +64,7 @@ iio.Color.rgbToHex = function(r, g, b) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-// MEMBER FUNCTIONS
+// COLOR FUNCTIONS
 //------------------------------------------------------------
 iio.Color.prototype.clone = function() {
   return new iio.Color( this.r, this.g, this.b, this.a );

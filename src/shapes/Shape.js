@@ -147,7 +147,7 @@ iio.Shape.prototype.update = function() {
   if (this.bezierAccs) this.update_bezier_accs();
   if (this.bezierVels) this.update_bezier_vels();
 
-  if (this.onUpdate) this.onUpdate();
+  if (this.onUpdate) this.onUpdate(this);
 }
 iio.Shape.prototype.update_vel = function(){
   if(this.pos){

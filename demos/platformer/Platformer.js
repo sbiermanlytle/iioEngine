@@ -42,99 +42,96 @@ Platformer = function( app, settings ){
   var w = 16; // sprite width
   var h = 32; // sprite height
   // load mario spritemap
-  var map = new iio.SpriteMap('img/mariobros_cmp.png',{
-    // when load is complete
-    onLoad:function(){
-      // width and height are common sprite properties
-      var common = {
-        width: w,
-        height: h,
-      }
-      // create and add mario
-      mario = app.add(new iio.Quad({
-        pos: [150, groundPos],
-        imageRounding: true, // prevent edge blurring
-        walking: false,
-        jumping: false,
-        speed: 1,
-        jumpSpeed: 3.5,
-        vel: [0,0],
-        // add animations from the sprite sheet
-        anims:[
-          map.sprite(common,{ name:'standing', origin: [w*6,0] }),
-          map.sprite(common,{ name:'jumping', origin: [w*4,0] }),
-          map.sprite(common,{ name:'ducking', origin: [w*5,0] }),
-          map.sprite(common,{ name:'walking', origin: [0,0],   numFrames: 3 }),
-          // change the origin y value for more colors
-          map.sprite(common,{ name:'red_walking', origin: [0,h*2], numFrames: 3 }),
-          map.sprite(common,{ name:'green_walking', origin: [0,h*6], numFrames: 3 }),
-        ],
-        // make mario stand
-        stand: function(){
-          this.set({
-            walking: false,
-            vel: [0.0],
-          }).setSprite('standing');
-        },
-        // make mario jump
-        jump: function(){
-          if (soundOn)
-            jumpSound.play({ gain: 0.5 });
-          this.walking = false;
-          this.jumping = true;
-          this.vel.y = -this.jumpSpeed;
-          this.setSprite('jumping');
-        },
-        // make mario duck
-        duck: function(){
-          this.set({
-            walking: false,
-            vel: [0.0],
-          }).setSprite('ducking');
-        },
-        // make mario walk left
-        walkLeft: function(){
-          this.set({
-            flip: 'x',
-            walking: true,
-            vel: [-this.speed,0],
-          }).playAnim({ fps:6, name: 'walking' });
-        },
-        // make mario walk right
-        walkRight: function(){
-          this.set({
-            flip: false,
-            walking: true,
-            vel: [this.speed,0],
-          }).playAnim({ fps:6, name: 'walking' });
-        },
-        // update marios jump
-        onUpdate: function(){
-          if(this.jumping){
+  var map = new iio.SpriteMap('img/mariobros_cmp.png',function(){
+    // width and height are common sprite properties
+    var common = {
+      width: w,
+      height: h,
+    }
+    // create and add mario
+    mario = app.add(new iio.Quad({
+      pos: [150, groundPos],
+      imageRounding: true, // prevent edge blurring
+      walking: false,
+      jumping: false,
+      speed: 1,
+      jumpSpeed: 3.5,
+      vel: [0,0],
+      // add animations from the sprite sheet
+      anims:[
+        map.sprite(common,{ name:'standing', origin: [w*6,0] }),
+        map.sprite(common,{ name:'jumping', origin: [w*4,0] }),
+        map.sprite(common,{ name:'ducking', origin: [w*5,0] }),
+        map.sprite(common,{ name:'walking', origin: [0,0],   numFrames: 3 }),
+        // change the origin y value for more colors
+        map.sprite(common,{ name:'red_walking', origin: [0,h*2], numFrames: 3 }),
+        map.sprite(common,{ name:'green_walking', origin: [0,h*6], numFrames: 3 }),
+      ],
+      // make mario stand
+      stand: function(){
+        this.set({
+          walking: false,
+          vel: [0.0],
+        }).setSprite('standing');
+      },
+      // make mario jump
+      jump: function(){
+        if (soundOn)
+          jumpSound.play({ gain: 0.5 });
+        this.walking = false;
+        this.jumping = true;
+        this.vel.y = -this.jumpSpeed;
+        this.setSprite('jumping');
+      },
+      // make mario duck
+      duck: function(){
+        this.set({
+          walking: false,
+          vel: [0.0],
+        }).setSprite('ducking');
+      },
+      // make mario walk left
+      walkLeft: function(){
+        this.set({
+          flip: 'x',
+          walking: true,
+          vel: [-this.speed,0],
+        }).playAnim({ fps:6, name: 'walking' });
+      },
+      // make mario walk right
+      walkRight: function(){
+        this.set({
+          flip: false,
+          walking: true,
+          vel: [this.speed,0],
+        }).playAnim({ fps:6, name: 'walking' });
+      },
+      // update marios jump
+      onUpdate: function(){
+        if(this.jumping){
 
-            // add gravity to y velocity
-            this.vel.y += gravity;
-            
-            // stop jumping if mario has reached the ground 
-            if (this.pos.y >= groundPos){
-              this.jumping = false;
-              this.vel.y = 0;
-              this.pos.y = groundPos;
-              // walk left if left input is down
-              if (input.left)
-                this.walkLeft();
-              // walk right if right input is down
-              else if (input.right)
-                this.walkRight();
-              // otherwise, stand
-              else this.stand();
-            }
+          // add gravity to y velocity
+          this.vel.y += gravity;
+          
+          // stop jumping if mario has reached the ground 
+          if (this.pos.y >= groundPos){
+            this.jumping = false;
+            this.vel.y = 0;
+            this.pos.y = groundPos;
+            // walk left if left input is down
+            if (input.left)
+              this.walkLeft();
+            // walk right if right input is down
+            else if (input.right)
+              this.walkRight();
+            // otherwise, stand
+            else this.stand();
           }
         }
-      }),true);
-      // set mario's initial sprite
-      mario.setSprite('standing');
-    }
+      }
+    }),true);
+    // set mario's initial sprite
+    mario.setSprite('standing');
   });
 
   // input controller object

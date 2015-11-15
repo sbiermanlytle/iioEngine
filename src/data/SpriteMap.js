@@ -6,10 +6,10 @@
 iio.SpriteMap = function() {this.SpriteMap.apply(this, arguments) }
 
 // CONSTRUCTOR
-iio.SpriteMap.prototype.SpriteMap = function(src, p) {
+iio.SpriteMap.prototype.SpriteMap = function(src, onLoad) {
   this.img = new Image();
   this.img.src = src;
-  this.img.onload = p.onLoad;
+  this.img.onload = onLoad;
   return this;
 }
 

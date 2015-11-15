@@ -52,12 +52,12 @@ iio.Text.prototype.draw_shape = function(ctx) {
   if (this.color) ctx.fillText(this.text, 0, 0);
   if (this.outline) ctx.strokeText(this.text, 0, 0);
   if (this.showCursor)
-    this.cursor.vs[0].x = this.cursor.vs[1].x = this.getX(this.cursor.index);
+    this.cursor.vs[0].x = this.cursor.vs[1].x = this.charX(this.cursor.index);
 }
 
 // TEXT FUNCTIONS
 iio.Text.prototype.init_cursor = function(){
-  var tX = this.getX(this.text.length);
+  var tX = this.charX(this.text.length);
   this.cursor = this.add(new iio.Line({
     vs: [
       [tX, this.size/2],
@@ -101,6 +101,7 @@ iio.Text.prototype.inferSize = function(ctx){
       new iio.Vector(-this.width,this.height/2),
     ]
   }
+  return this;
 }
 iio.Text.getFontHeight = function(font) {
   var text = $('<span>Hg</span>').css({ fontFamily: font });
@@ -126,7 +127,7 @@ iio.Text.prototype.charWidth = function(i) {
   this.app.ctx.font = this.size+'px '+this.font;
   return this.app.ctx.measureText(this.text.charAt(i)).width;
 }
-iio.Text.prototype.getX = function(i) {
+iio.Text.prototype.charX = function(i) {
   this.app.ctx.font = this.size+'px '+this.font;
   if (!this.align || this.align === 'left')
     return this.app.ctx.measureText(this.text.substring(0, i)).width;

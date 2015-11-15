@@ -53,7 +53,7 @@ iio.App.prototype.App = function(view, script, settings) {
 iio.App.prototype.update = function(){
   var nuFPS;
   if(this.onUpdate) 
-    nuFPS = this.onUpdate();
+    nuFPS = this.onUpdate(this);
   this.draw();
   return nuFPS;
 }
@@ -116,4 +116,5 @@ iio.App.prototype.stop = function() {
   iio.cancelLoops(this);
   if (this.mainLoop) iio.cancelLoop(this.mainLoop.id);
   this.clear();
+  return this;
 }
