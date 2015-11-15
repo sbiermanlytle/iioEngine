@@ -1,6 +1,6 @@
 show_docs_menu = function(){
 
-  toggle_ids[0] = 'basics';
+  toggle_ids[0] = 'general';
   toggle_ids[1] = 'objects';
   toggle_ids[2] = 'shapes';
   toggle_ids[3] = 'data';
@@ -29,10 +29,11 @@ show_docs_menu = function(){
     document.getElementById('api_item_'+toggle_ids[i]).onselectstart = function() { return false }
   }
 
-  append_api_item_sub_no_api('basics','Setup');
+  append_api_item_sub_no_api('general','Setup');
 
   //append_api_item_sub('functions','iio libraries');
-  append_api_item_sub('basics', api.AppControl);
+  append_api_item_sub('general', api.AppControl);
+  append_api_item_sub('general', api.Libraries);
 
   append_api_item_sub('objects', api.Interface );
   append_api_item_sub('objects', api.Drawable );
