@@ -34,6 +34,7 @@ show_docs_menu = function(){
   //append_api_item_sub('functions','iio libraries');
   append_api_item_sub('general', api.AppControl);
   append_api_item_sub('general', api.Libraries);
+  append_api_item_sub('general', api.Extras);
 
   append_api_item_sub('objects', api.Interface );
   append_api_item_sub('objects', api.Drawable );
@@ -86,10 +87,10 @@ show_api_basics = function(){
 
   api_content.append(p(red('minified')+': '+kwd('http://iio.js.org/iio.min.js')));
   api_content.append(p(red('unminified')+': '+kwd('http://iio.js.org/iio.js')));
-  api_content.append(p(red('debug')+': '+kwd('http://iio.js.org/iio.debug.js')));
+  //api_content.append(p(red('debug')+': '+kwd('http://iio.js.org/iio.debug.js')));
   api_content.append(divide);
 
-  api_content.append(p('Below is an example of a simple iio application, running full screen on a basic HTML page. You can copy and paste this code directly into a new file and the iio app will run if you open the file with a browser:'));
+  api_content.append(p('Below is an example of a simple iio application, running full screen on a basic HTML page. You can '+kwd('copy and paste this code directly into a new file')+' and the iio app will run if you open the file in a browser:'));
 
   api_content.append(h2('Hello World'));
   api_content.append(pre("&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;body&gt;\n&lt;script type='text/javascript'\n\tsrc='http://iio.js.org/iio.js'&gt;\n&lt;/script&gt;\n&lt;script type='text/javascript'&gt;\n\n// app is an App object\nHelloWorld = function( app ){\n\n\t// create and add a text object\n\tapp.create( app.center, 'Hello World' );\n\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;"));

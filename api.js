@@ -80,6 +80,16 @@ var api = {
           ],
           divider: true
         },
+        { // centroid(src,max)
+          definition: 'iio.centroid( '+kwd('Array')+'<'+kwd('Vector')+'> vertices ) :: '+small('returns ')+a('Vector'),
+          descriptions: [
+            'Returns the centroid of the given vertices.'
+          ],
+          samples: [
+            "// get the centroid of a polygons vertices\nvar centroid = iio.centroid( polygon.vs );"
+          ],
+          divider: true
+        },
         { // load(src,max)
           definition: 'iio.load( '+kwd('string')+' source, '+kwd('function')+' onLoad )',
           descriptions: [
@@ -99,18 +109,30 @@ var api = {
           samples: [
             "// define a child class\niio.QuadChild = function(){\n\tthis.QuadChild.apply(this, arguments)\n};\n// set the parent of the child class\niio.inherit(iio.QuadChild, iio.Quad);\n// create a super access to the parents functions\niio.QuadChild.prototype._super = iio.Quad.prototype;\n\n// define a constructor\niio.QuadChild.prototype.QuadChild = function() {\n\t// call the parent constructor\n\tthis._super.Quad.call(this,iio.merge_args(arguments));\n\t//...\n}"
           ],
-          //divider: true
-        },
-        /*{ // addEvent()
-          definition: 'iio.addEvent( '+kwd('object')+' element, '+kwd('string')+' event )',
+          divider: true
+        },{ // merge
+          definition: 'iio.merge( '+kwd('object')+ ' obj1, '+kwd('object')+ ' obj2 ) :: '+small('returns ')+kwd("object"),
           descriptions: [
-            'Loads the file from the given path, calling the given callback when complete.'
+            'Merge all properties of '+kwd("obj2")+' into '+kwd('obj1')+', then return '+kwd('obj1')+'.',
           ],
           samples: [
-            "// load an image and add attach it to a new quad when complete\nvar image = iio.load( 'path/image.png', function(){\n\tapp.add(new iio.Quad({ img: image }));\n});"
+            "// merge ob2 properites into obj1\nvar obj1 = iio.merge( obj1, obj2 );"
           ],
           divider: true
-        },*/
+        },
+        { // addEvent()
+          definition: 'iio.addEvent( '+kwd('object')+' element, '+kwd('string')+' event, '
+        },{
+          definition: kwd('function')+' callback, '+kwd('boolean')+' useCapture )',
+        },{
+          definition: ':: '+small('returns ')+kwd('boolean'),
+          descriptions: [
+            'Attaches a JavaScript '+ahref('EventListener','http://www.w3schools.com/js/js_htmldom_eventlistener.asp')+' to the given element.'
+          ],
+          samples: [
+            "// attach a mouse move event listner\niio.addEvent(app.canvas, 'mousemove', function(event){\n\tvar mousePos = app.eventVector(event);\n\t//...\n}"
+          ]
+        },
       ],
       'is': [
         { // string()
@@ -2002,6 +2024,70 @@ var api = {
           definition: 'sprite( '+kwd('Object')+' p0, '+kwd('Object')+' p1, ... ) :: '+small('returns ')+' '+a('Sprite'),
           descriptions: [ 'Creates a sprite with all properties of the given objects.' ],
           samples: [ "// create a Sprite with a single image SpriteMap\nvar sprite = map.sprite({\n\tname: 'walking',\n\torigin: [0,0],\n\twidth: 16,\n\theight: 32,\n\tnumFrames: 4,\n});", ]
+        }
+      ],
+    }
+  },
+  Extras: {
+    classname: 'Extras',
+    overview: [
+      'iio has a '+kwd('debug')+' build with some useful debugging features and an extension file that attaches it to '+ahref('Box2dWeb','https://github.com/hecht-software/box2dweb')+', a robust 2d physics engine used in many commercial applications.'
+    ],
+    data: {
+      /*'Debugger': [
+
+      ],*/
+      'Box2d': [
+        {
+          descriptions: [
+            "iio.js acts solely as the rendering engine when attached to "+ahref('Box2dWeb','https://github.com/hecht-software/box2dweb')+". Box2d applications can be developed normally, using iio's "+kwd('set')+' function to add display properties to shapes.',
+            kwd('b2Shape')+' and '+kwd('b2Joint')+' are given access to all of '+a('Shapes')+" display properties and functions.",
+            'For Box2d documentation, visit '+ahref('Box2DFlash', 'http://www.box2dflash.org/docs/2.1a/reference/')+', the version of the library that Box2dWeb was ported from.',
+            "To see a full example demo of a Box2d app using iio.js, checkout the Box2d demo: "+ahref('iio.js.org/#demos/box2d', 'http://iio.js.org/#demos/box2d')
+          ], divider: true
+        },
+        { // b2World
+          definition: kwd('b2World')+' App.b2World',
+          descriptions: [ 'The attached b2World.']
+        },{ // b2Scale
+          definition: kwd('number')+' App.b2Scale',
+          descriptions: [ 'The scale of the '+kwd('b2World')+'.']
+        },{ // b2Pause
+          definition: kwd('boolean')+' App.b2Pause',
+          descriptions: [ 'A flag indicating whether the '+kwd('b2World')+' is paused.' ],
+          divider: true
+        },
+        { // addB2World
+          definition: 'App.addB2World( '+kwd('b2World')+' world ) :: '+small('returns ')+kwd('b2World'),
+          descriptions: [
+            'Add a '+kwd('b2World')+' to the app, so that the app can track '+kwd('b2World')+' updates, and draw each frame.'
+          ],
+          samples: [
+            '// add a new b2World to app\nvar world = app.addB2World(new b2World(\n\tnew b2Vec2(0, 10), //gravity\n\ttrue //allow sleep\n));'
+          ],
+          divider: true
+        },
+        { // b2Loop
+          definition: 'App.b2Loop( '+kwd('number')+' fps, '+kwd('function')+' callback )'
+        },{
+          definition:':: '+small('returns ')+kwd('this'),
+          descriptions: [
+            'Start a loop at the given framerate that calls '+kwd('b2World.Step')+' and the given callback.'
+          ],
+          samples: [
+            '// start a b2World loop at 60fps\napp.b2Loop(60, function(){\n\t//...\n}'
+          ],
+          divider: true
+        },
+        { // b2Loop
+          definition: 'App.pauseB2World( '+kwd('boolean')+' pause ) :: '+small('returns ')+kwd('this'),
+          descriptions: [
+            'Pause or unpause the b2World, depending upon the given value.'
+          ],
+          samples: [
+            '// pause a b2World\napp.pauseB2World( true );',
+            '// unpause a b2World\napp.pauseB2World( false );'
+          ]
         }
       ],
     }

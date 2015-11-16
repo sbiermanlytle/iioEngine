@@ -67,6 +67,8 @@ display_current = function(){
       show_api( api.AppControl );
     else if( path === 'libraries' )
       show_api( api.Libraries );
+    else if( path === 'extras' )
+      show_api( api.Extras );
     else if( path === 'loader' )
       show_api( api.Loader );
     else if( path === 'sound' )
