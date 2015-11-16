@@ -2,7 +2,6 @@
 
 iio.js v1.4.0
 =============
-11/15/2015
 
 iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all published copies and working editions of iio.js.
 
