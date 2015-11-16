@@ -286,7 +286,7 @@ iio.resize = function() {
     app.height = app.canvas.height;
     app.center.x = app.canvas.width / 2;
     app.center.y = app.canvas.height / 2;
-    if (app.script.onResize) app.onResize();
+    if (app.onResize) app.onResize();
     app.draw();
   });
 }
@@ -3474,6 +3474,7 @@ if (typeof Box2D !== 'undefined'){
         this.b2Pause = true;
       else this.b2Pause = !this.b2Pause;
     } else this.b2Pause = pause;
+    return this;
   }
   iio.App.prototype.activateB2Debugger = function(turnOn,c){
     turnOn = turnOn||true;
