@@ -1,6 +1,6 @@
 /*
 iio.js
-Version 1.4beta
+Version 1.4.0
 
 iio.js is licensed under the BSD 2-clause Open Source license
 

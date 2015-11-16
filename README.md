@@ -1,7 +1,8 @@
 [![JS.ORG](https://img.shields.io/badge/js.org-iio-888888.svg?style=flat-square)](http://js.org)
 
-iio.js v1.4 BETA
-================
+iio.js v1.4.0
+=============
+11/15/2015
 
 iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all published copies and working editions of iio.js.
 
@@ -10,7 +11,7 @@ iio.js was formarly known as 'iio Engine'. The last version of iio Engine, v1.2.
 ## links
 Homepage: http://iio.js.org
 
-Documentation: http://iio.js.org/#api.overview
+Documentation: http://iio.js.org/#api
 
 Demos: http://iio.js.org/#demos
 
