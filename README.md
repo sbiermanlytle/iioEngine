@@ -20,7 +20,7 @@ Tutorials: http://iioinc.com/tutorials
 Twitter: @iioinc
 
 ## loading iio.js
-To use the library, load an iio.js build file:
+To use the library, load an iio.js build file (located in the builds folder):
 
     <script type="text/javascript" src="iio-1.4.0.js"></script>
 
