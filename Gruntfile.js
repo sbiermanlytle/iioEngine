@@ -38,12 +38,12 @@ module.exports = function(grunt) {
       },
       iio: {
         src: coreSrc,
-        dest: 'build/iio.js',
+        dest: 'build/iio-1.4.0.js',
         nonull: true
       },
       debug: {
         src: ['<%= concat.iio.dest %>', 'src/extras/*.js'],
-        dest: 'build/iio.debug.js',
+        dest: 'build/iio-1.4.0.debug.js',
         nonull: true
       }
     },
@@ -53,7 +53,7 @@ module.exports = function(grunt) {
           preserveComments: require('uglify-save-license')
         },
         files: {
-          'build/iio.min.js': ['<%= concat.iio.dest %>']
+          'build/iio-1.4.0.min.js': ['<%= concat.iio.dest %>']
         }
       },
       /*debug: {
