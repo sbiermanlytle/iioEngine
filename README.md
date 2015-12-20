@@ -3,9 +3,13 @@
 iio.js v1.4.0
 =============
 
-iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all published copies and working editions of iio.js.
+iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all versions iio.js, and the sourcecode of the accompanying documentation website (iio.js.org)
 
 iio.js was formarly known as iio Engine. Checkout the v1.2 branch or visit iioEngine.com for the old versions source code and documentation.
+
+This branch contains the cutting edge version of iio.js, updated regularly with new features.
+
+The last stable release was v1.4.0: https://github.com/iioinc/iio.js/tree/v1.4.0
 
 ## links
 Homepage: http://iio.js.org
@@ -19,13 +23,13 @@ Tutorials: http://iioinc.com/tutorials
 Twitter: @iioinc
 
 ## loading iio.js
-To use the library, load an iio.js build file from a local folder or the iio.js URL:
+To use the library, load the iio.js build file from a local folder or the iio.js URL:
 
-    <script type="text/javascript" src="http://iio.js.org/iio.min.js"></script>
+    <script type="text/javascript" src="http://iio.js.org/iio.js"></script>
 
-iio_debug.js has a debugging version with extra features:
+iio.js has a debugging version with extra features:
 
-    <script type="text/javascript" src="http://iio.js.org/iio_debug.js"></script>
+    <script type="text/javascript" src="http://iio.js.org/iio.debug.js"></script>
 
 ## building Source Files (optional)
 If you would like to edit iio.js source code files, use Grunt to re-build. Grunt depends on nodejs and npm.
