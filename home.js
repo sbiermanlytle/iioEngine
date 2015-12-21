@@ -19,7 +19,7 @@ show_home = function(){
     '<div class="col_two">' +
       h2('Free &amp; Open Source') +
       p('The core platform is <span class="kwd">open source and free</span> to use for any purpose. The download includes production and development '+kwd('full source code')+' for all versions of the framework.') +
-      p('Submit additions, questions, and bugs on '+ahref('Github', 'https://github.com/iioinc/iio.js/issues')+'. General inquires may be sent to '+ahref('iioinc.com', 'http://iioinc.com/contact')+'.') +
+      p('Submit additions, questions, and bugs on '+ahref('Github', 'https://github.com/iioinc/iio.js/issues')+'. General inquires may be sent through '+ahref('iioinc.com', 'http://iioinc.com/contact')+'.') +
     '</div>' +
     clear +
     h3('click an app for full screen and more details')
