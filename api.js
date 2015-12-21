@@ -6,7 +6,7 @@ var api = {
       "This structure also allows the use of the "+kwd('iio.start')+' method.'
     ],
     samples: [
-      "// define a new iio app\n// app is an App object\nHelloWorld = function( app ){\n\t// objects added to app will be \n\t// drawn and managed automatically\n\tapp.add( ... );\n}",
+      "// define a main application function\n// (app is an App object)\nHelloWorld = function( app ){\n\t// objects added to app will be \n\t// drawn and managed automatically\n\tapp.add( ... );\n}",
     ],
     data: {
       'Start and Stop': [
@@ -17,9 +17,8 @@ var api = {
         },{
           definition: ':: '+small('returns ')+a('App'),
           descriptions: [
-            "Creates an App and starts an iio app fullscreen, or on an existing canvas.",
-            "Adds a reference to the new app to the global "+kwd('iio.apps')+' array.',
-            "Returns the newly created App."
+            "Starts an iio application fullscreen or on an existing canvas, returning the associated App object.",
+            "Adds an App reference to the global "+kwd('iio.apps')+' array.'
           ],
           samples: [
             "// start the app fullscreen\niio.start( HelloWorld );\n\n// start the app on an existing canvas\niio.start( HelloWorld, 'canvasId' );"
