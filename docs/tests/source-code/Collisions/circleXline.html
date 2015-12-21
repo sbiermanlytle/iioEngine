@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+CircleXLine = function( app, settings ){
+  
+  // line width
+  var oWidth = 8;
+  // object length
+  var oLength = 40;
+  // object speed
+  var speed = 1;
+
+  // reverse the given velocity
+  function reverse(o,p){ o[p]*=-1 }
+
+  // reverse x velocity
+  // and rotational velocity
+  function reverseX(o){
+    reverse(o.vel,'x');
+    reverse(o,'rVel');
+  }
+  // reverse y velocity
+  // and rotational velocity
+  function reverseY(o){ 
+    reverse(o.vel,'y');
+    reverse(o,'rVel');
+  }
+
+  // common object properties
+  var common = {
+    bounds: {
+      left: {
+        bound: 0,
+        callback: reverseX
+      },
+      right: {
+        bound: app.width,
+        callback: reverseX
+      },
+      top: {
+        bound: 0,
+        callback: reverseY
+      },
+      bottom: {
+        bound: app.height,
+        callback: reverseY
+      },
+    }
+  }
+
+  // add a red line
+  var line = app.add(new iio.Line(common,{
+    width: oWidth,
+    color: 'red',
+    vel: [ speed, speed/2 ],
+    rotation: Math.PI/4,
+    rVel: 0.02,
+    pos: [
+      app.width/3,
+      app.center.y
+    ],
+    vs: [
+      new iio.Vector(0,-oLength),
+      new iio.Vector(0,oLength),
+    ]
+  }));
+
+  // add a blue triangle
+  var circle = app.add(new iio.Ellipse(common,{
+    color: 'iioblue',
+    radius: oLength/2,
+    vel: [ -speed, -speed/2 ],
+    rotation: Math.PI/4,
+    pos: [
+      app.width*2/3,
+      app.center.y + 4
+    ]
+  }));
+
+  // add a collision callback
+  app.collision( line, circle,
+    function(line,circle){
+      // switch object velocities
+      var temp = line.vel;
+      line.vel = circle.vel;
+      circle.vel = temp;
+      // reverse lines rotational velocity
+      reverse(line,'rVel');
+    });
+}
+
+// start the app on an existing canvas
+iio.start( CircleXLine, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

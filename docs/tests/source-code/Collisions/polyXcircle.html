@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+PolyXCircle = function( app, settings ){
+
+  // object radius
+  var oRadius = 20;
+  // object speed
+  var speed = .8;
+
+  // reverse the given velocity
+  function reverse(o,p){ o[p]*=-1 }
+
+  // reverse x velocity
+  // and rotational velocity
+  function reverseX(o){
+    reverse(o.vel,'x');
+    reverse(o,'rVel');
+  }
+  // reverse y velocity
+  // and rotational velocity
+  function reverseY(o){ 
+    reverse(o.vel,'y');
+    reverse(o,'rVel');
+  }
+
+  // common object properties
+  var common = {
+    bounds: {
+      left: {
+        bound: 0,
+        callback: reverseX
+      },
+      right: {
+        bound: app.width,
+        callback: reverseX
+      },
+      top: {
+        bound: 0,
+        callback: reverseY
+      },
+      bottom: {
+        bound: app.height,
+        callback: reverseY
+      },
+    }
+  }
+
+  // add a red triangle
+  var triangle = app.add(new iio.Polygon(common,{
+    color: 'red',
+    vel: [ speed, speed/2 ],
+    rVel: 0.02,
+    pos: [
+      app.width/3,
+      app.center.y
+    ],
+    vs: [
+      [0, -oRadius],
+      [oRadius, oRadius],
+      [-oRadius, oRadius],
+    ],
+  }));
+
+  // add a blue circle
+  var circle = app.add(new iio.Ellipse(common,{
+    radius: oRadius,
+    color: 'iioblue',
+    vel: [ -speed, -speed/2 ],
+    pos: [
+      app.width*2/3,
+      app.center.y + 4
+    ],
+  }));
+
+  // add a collision callback
+  app.collision( triangle, circle,
+    function(t,c){
+      // switch object velocities
+      var temp = t.vel;
+      t.vel = c.vel;
+      c.vel = temp;
+      // reverse triangles rotational velocity
+      reverse(t,'rVel');
+    });
+}
+
+// start the app on an existing canvas
+iio.start( PolyXCircle, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

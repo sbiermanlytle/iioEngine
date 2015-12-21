@@ -1,0 +1,60 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+TestChild = function( app, settings ){
+
+  // define shared circle properties
+  var props = {
+    // set color to blue
+    color: 'blue',
+    // set line width to 5px
+    lineWidth: 5
+  }
+
+  // add a new triangle to the app
+  // with the shared properties
+  app.add(new iio.Polygon( props, {
+    // set position
+    pos: [
+      // pos.x
+      app.center.x,
+      // pos.y
+      app.center.y-10
+    ],
+    // set origin relative to pos
+    origin: [ 0, 10 ],
+    // set rotational velocity
+    // to .02 radians / update
+    rVel: .02
+    // set vertices relative to pos
+    vs: [
+      [   0,-24 ],
+      [  30, 30 ],
+      [ -30, 30 ]
+    ],
+
+    // add a new triangle to the triangle
+    // with the shared properties
+  })).add(new iio.Polygon( props, {
+    // set vertices relative to parent pos
+    vs: [
+      [   0,-4 ],
+      [  15, 20 ],
+      [ -15, 20 ]
+    ]
+  }));
+}
+
+// start the app on an existing canvas
+iio.start( TestChild, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

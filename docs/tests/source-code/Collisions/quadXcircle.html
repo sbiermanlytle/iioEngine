@@ -1,0 +1,76 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+QuadXCircle = function( app, settings ){
+
+  // object size
+  var oWidth = 40;
+  // object speed
+  var speed = .8;
+
+  // reverse the given velocity
+  function reverse(o,p){ o[p]*=-1 }
+
+  // reverse x velocity
+  function reverseX(o){
+    reverse(o.vel,'x');
+  }
+
+  // common object properties
+  var common = {
+    bounds: {
+      left: {
+        bound: 0,
+        callback: reverseX
+      },
+      right: {
+        bound: app.width,
+        callback: reverseX
+      },
+    }
+  }
+
+  // add a red square
+  var square = app.add(new iio.Quad(common,{
+    width: oWidth,
+    color: 'red',
+    vel: [ speed, 0 ],
+    pos: [
+      app.width/3,
+      app.center.y
+    ],
+  }));
+
+  // add a blue circle
+  var circle = app.add(new iio.Ellipse(common,{
+    radius: oWidth/2,
+    color: 'iioblue',
+    vel: [ -speed, 0 ],
+    pos: [
+      app.width*2/3,
+      app.center.y + 4
+    ],
+  }));
+
+  app.collision( square, circle,
+    function(s,c){
+      // switch object velocities
+      var temp = s.vel;
+      s.vel = c.vel;
+      c.vel = temp;
+    });
+}
+
+// start the app on an existing canvas
+iio.start( QuadXCircle, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+TestVelBounds = function( app, settings ){
+  
+  // define a speed variable
+  var speed = 0.6;
+
+  // reverse the given objects x velocity
+  function reverse(o){ o.vel.x *= -1 }
+
+  // add a new quad to the app
+  app.add(new iio.Quad({
+    // set position to app center
+    pos: app.center.clone(),
+    // set color to blue
+    color: 'blue',
+    // set dimensions to 30x60px
+    width: 30,
+    height: 60,
+    // set x velocity
+    vel: [ speed, 0 ],
+    // set bounds for movement
+    bounds: {
+      // define pos.x upper limit and callback
+      right: {
+        bound: app.width,
+        callback: reverse
+      },
+      // define pos.x lower limit and callback
+      left: {
+        bound: 0, 
+        callback: reverse
+      }
+    }
+  }));
+}
+
+// start the app on an existing canvas
+iio.start( TestVelBounds, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

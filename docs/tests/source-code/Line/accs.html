@@ -1,0 +1,75 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; Test &middot; Line</title>
+  <meta name="description" content="iio.Line unit tests">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+TestAccs = function( app, settings ){
+
+  // define a speed variable
+  var speed = 0.5;
+
+  // set the velocity of the given vertex
+  // if its position is outside the app screen
+  // vs are relative to pos
+  var checkBound = function(o,v){
+    // if the vertex position is over the limit
+    if( o.vs[v].x &gt; app.width/2 )
+      // set vertex x velocity
+      o.vels[v].x = -1;
+    // if the vertex position is below the limit
+    else if ( o.vs[v].x &lt; -app.width/2 )
+      // set vertex x velocity
+      o.vels[v].x = 1;
+  }
+
+  // add a new line to the app
+  app.add(new iio.Line({
+    // set position to app center
+    pos: app.center.clone(),
+    // set color to green
+    color: 'green',
+    // set width to 10px
+    width: 10,
+    // set vertices relative to pos
+    vs:[
+      // start vertex position
+      [ 0, 30 ],
+      // end vertex position
+      [ 0,-30 ]
+    ],
+    // set vertex x velocities
+    vels:[
+      // start vertex velocity
+      [  speed, 0 ],
+      // end vertex velocity
+      [ -speed, 0 ]
+    ],
+    // set vertex x accelerations
+    accs:[
+      // start vertex acceleration
+      [  .01, 0 ],
+      // end vertex acceleration
+      [ -.01, 0 ]
+    ],
+    // check the position of each
+    // vertex upon every update
+    onUpdate: function(){
+      // check start vertex position
+      checkBound( this,0 );
+      // check end vertex position
+      checkBound( this,1 );
+    }
+  }));
+}
+
+// start the app on an existing canvas
+iio.start( TestAccs, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

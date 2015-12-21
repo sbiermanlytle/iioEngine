@@ -1,0 +1,69 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; ColorGrid</title>
+  <meta name="description" content="iio ColorGrid demo source code">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">/* ColorGrid
+*  ------------------
+*  iio.js version 1.4 
+*/
+
+// define a new iio app
+function ColorGrid( app, settings ){
+
+  // set the background color to black
+  app.set({ color:'black' });
+
+  // set default width value
+  var w = 20;
+
+  // set width from settings
+  if( settings )
+    w = settings.w;
+
+  // define a function to be run when the app is resized
+  this.onResize = function(){
+
+    // clear all objects and loops from app
+    app.clear();
+
+    // create a grid of squares
+    for( var c=w/2; c&lt;app.width;  c+=w )
+    for( var r=w/2; r&lt;app.height; r+=w )
+      app.add( new iio.Quad({
+        // set position relative to row and column
+        pos: [c,r],
+        // set quad width
+        width: w,
+        // set quad color
+        color: 'white',
+        // define shrink animation with speed and callback
+        shrink:{
+          // set random shrink rate
+          speed: iio.random(.05,.2),
+          // when the shape is too small to be visible,
+          // reset its properties and randomize the color
+          callback: function( quad ){
+            quad.width = w;
+            quad.height = w;
+            quad.color = iio.Color.random();
+          }
+        }
+      // include true to prevent automatic drawing after add()
+      }), true);
+  }
+
+  // initialize the app
+  this.onResize();
+}
+
+// start the app fullscreen
+iio.start( ColorGrid );</pre>
+<script type="text/javascript" src="../../js/prettify.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+TextXText = function( app, settings ){
+
+  // text speed
+  var oSpeed = .8;
+
+  // reverse the given velocity
+  function reverse(o,p){ o[p]*=-1 }
+
+  // reverse x velocity
+  function reverseX(o){
+    reverse(o.vel,'x');
+    reverse(o,'rVel');
+  }
+  // reverse y velocity
+  function reverseY(o){
+    reverse(o.vel,'y');
+    reverse(o,'rVel');
+  }
+
+  // common object properties
+  var common = {
+    text: 'TEXT',
+    size: 20,
+    bounds: {
+      left: {
+        bound: 0,
+        callback: reverseX
+      },
+      right: {
+        bound: app.width,
+        callback: reverseX
+      },
+      top: {
+        bound: 0,
+        callback: reverseY
+      },
+      bottom: {
+        bound: app.height,
+        callback: reverseY
+      },
+    }
+  }
+
+  // add a red text object
+  var text0 = app.add(new iio.Text(common,{
+    color: 'red',
+    vel: [ oSpeed, oSpeed/2 ],
+    rVel: 0.02,
+    pos: [
+      app.width/3,
+      app.center.y
+    ],
+  }));
+
+  // add a blue text object
+  var text1 = app.add(new iio.Text(common,{
+    color: 'iioblue',
+    vel: [ -oSpeed, -oSpeed/2 ],
+    rVel: -0.02,
+    pos: [
+      app.width*2/3,
+      app.center.y + 4
+    ],
+  }));
+
+  // add a collision callback
+  app.collision( text0, text1,
+    function(t0,t1){
+      // switch object velocities
+      var temp = t0.vel;
+      t0.vel = t1.vel;
+      t1.vel = temp;
+      // reverse rotational velocities
+      reverse(t0,'rVel');
+      reverse(t1,'rVel');
+    });
+}
+
+// start the app on an existing canvas
+iio.start( TextXText, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

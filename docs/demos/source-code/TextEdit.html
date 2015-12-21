@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; TextEdit</title>
+  <meta name="description" content="iio TextEdit demo source code">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">/* TextEdit
+*  ------------------
+*  iio.js version 1.4 
+*/
+
+// define a new iio app
+function TextEdit( app, settings ){
+
+  // set a random background color
+  app.set({ color: iio.Color.random() });
+        
+  // add a new text object
+  var editText = app.add(new iio.Text({
+    pos: app.center,
+    text: settings && settings.preview
+      ? 'iio.js'
+      : 'edit this text',
+    font: 'Arial',
+    size: 40,
+    color: iio.Color.invert(app.color),
+    // render a cursor to keep track of edit position
+    showCursor: true,
+  }));
+
+  // pass the key press event to the text object
+  app.onKeyDown = function(event, key){
+    // prevent backspace from navigating to the previous page
+    if (key === 'backspace')
+      event.preventDefault();
+    editText.onKeyDown(key);
+  }
+
+  // pass the key release event to the text object
+  app.onKeyUp = function(event, key){
+    editText.onKeyUp(key);
+  }
+}
+
+// start the app fullscreen
+iio.start( TextEdit );</pre>
+<script type="text/javascript" src="../../js/prettify.js"></script>
+</body>
+</html>

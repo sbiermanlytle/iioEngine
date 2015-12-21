@@ -1,0 +1,58 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+TestrAccBounds = function( app, settings ){
+
+  // add a new rectangle to the app
+  app.add(new iio.Rectangle({
+    // set position to app center
+    pos: app.center.clone(),
+    // set rotation origin relative to pos
+    origin: [ 12, -12 ],
+    // set color to green
+    color: 'green',
+    // set dimensions to 30x60px
+    width: 30,
+    height: 60,
+    // set rotational acceleration
+    // to .0015 radians / update
+    rAcc: .0015,
+    // set bounds for movement
+    bounds: {
+      // define rotation upper limit and callback
+      rightRotation: {
+        bound: Math.PI/2,
+        callback: function(o){
+          // reverse rotational acceleration
+          o.rAcc *= -1; 
+          // set rotational velocity
+          o.rVel = -.01;
+        }
+      },
+      // define rotation lower limit and callback
+      leftRotation: {
+        bound: -Math.PI/2, 
+        callback: function(o){
+          // reverse rotational acceleration
+          o.rAcc *= -1; 
+          // set rotational velocity
+          o.rVel = .01;
+        }
+      }
+    }
+  }));
+}
+
+// start the app on an existing canvas
+iio.start( TestrAccBounds, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

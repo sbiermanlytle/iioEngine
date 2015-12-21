@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+TestDashRounded = function( app, settings ){
+
+  // define shared triangle properties
+  app.add(new iio.Polygon({
+    // set position to app center
+    pos: app.center.clone(),
+    // set outline color to green
+    outline: 'green',
+    // set line width to 8px
+    lineWidth: 8,
+    // set dash with .1px length, 16px spacing
+    dash: [ .1, 16 ],
+    // a round line cap and small dash length
+    // creates a dotted effect
+    lineCap: 'round',
+    // set a dash offset of 10px
+    dashOffset: 10,
+    // set vertices relative to pos
+    vs: [
+      [   0,-25 ],
+      [  25, 25 ],
+      [ -25, 25 ]
+    ]
+  }));
+}
+
+// start the app on an existing canvas
+iio.start( TestDashRounded, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>

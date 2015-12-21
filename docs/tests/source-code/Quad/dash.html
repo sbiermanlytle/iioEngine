@@ -1,0 +1,34 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio.js &middot; unit test</title>
+  <meta name="description" content="iio.js unit test">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="favicon/png" href="../../../img/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css">
+</head>
+<body onload="prettyPrint()">
+  <pre class="prettyprint linenums:1">// define a new iio app
+TestDash = function( app, settings ){
+
+  // define shared quad properties
+  app.add(new iio.Quad({
+    // set position to app center
+    pos: app.center.clone(),
+    // set dimensions to 30x60px
+    width: 30,
+    height: 60,
+    // set outline color to green
+    outline: 'green',
+    // set line width to 10px
+    lineWidth: 10,
+    // set dash with 5px length and spacing
+    dash: 5
+  }));
+}
+
+// start the app on an existing canvas
+iio.start( TestDash, 'canvasId' );</pre>
+<script type="text/javascript" src="../../../js/prettify.js"></script>
+</body>
+</html>
