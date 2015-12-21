@@ -16,6 +16,9 @@
 // define a new iio app
 function Squares( app, settings ){
 
+  // set the app background to black
+  app.set({ color: 'black' });
+
   // define the total number of squares
   var num = 120;
 
@@ -105,8 +108,8 @@ function Squares( app, settings ){
   this.onResize();
 }
 
-// start the app on an existing canvas
-iio.start( Squares, 'canvasId' );</pre>
+// start the app fullscreen
+iio.start( Squares );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>

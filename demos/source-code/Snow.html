@@ -16,6 +16,9 @@
 // define a new iio app
 function Snow( app, settings ){
 
+  // set the background to black
+  app.set({ color: 'black' });
+
   // define the total number of particles
   var num = 400;
 
@@ -105,8 +108,8 @@ function Snow( app, settings ){
   this.onResize();
 }
 
-// start the app on an existing canvas
-iio.start( Snow, 'canvasId' );</pre>
+// start the app fullscreen
+iio.start( Snow );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>

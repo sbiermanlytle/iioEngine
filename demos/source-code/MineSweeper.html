@@ -83,7 +83,7 @@ function MineSweeper( app, settings ){
   function checkforZero(c,r){
     if( c &gt;= 0 &amp;&amp; c &lt; grid.C &amp;&amp; r &gt;= 0 &amp;&amp; r &lt; grid.R 
       &amp;&amp; grid.cells[c][r].objs.length &gt; 1 
-      &amp;&amp; grid.cells[c][r].objs[0].text === '0' )
+      &amp;&amp; grid.cells[c][r].objs[0].text == '0' )
       return true;
     return false;
   }
@@ -252,7 +252,7 @@ function MineSweeper( app, settings ){
       
       // if the cell is touching 0 bombs
       // clear all surrounding 0 cells
-      if( cell.objs[0].text === "0" )
+      if( cell.objs[0].text == '0' )
         clearZeros( cell.c, cell.r );
 
       // if the cell has a bomb
@@ -274,14 +274,14 @@ function MineSweeper( app, settings ){
   if( settings.preview )
     for( c=1; c&lt;grid.C; c++ )
       for( r=1; r&lt;grid.R; r++ )
-        if( grid.cells[c][r].objs[0].text === "0" ){
+        if( grid.cells[c][r].objs[0].text == '0' ){
           grid.onMouseDown( grid, {}, {}, grid.cells[c][r] );
           break;
         }
 }
 
-// start the app on an existing canvas
-iio.start( MineSweeper, 'canvasId' );</pre>
+// start the app fullscreen
+iio.start( MineSweeper );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>

@@ -15,37 +15,37 @@
  * iio.js version 1.4
  */
 ScrollShooter = function( app, s ){
-
+ 
   // Arrays for holding references to objects created
   var meteors = [];
   var stars = [];
   var lasers = [];
-
+ 
   // The player object
   var player;
-
+ 
   // Number of space objects
   var numSmallStars = 50;
   var numBigStars = 26;
   var numSmallMeteors = 20;
   var numBigMeteors = 10;
-
+ 
   // But cut back if it's only a preview version
-  if( s &amp;&amp; s.preview ){
+  if( s && s.preview ){
     numSmallMeteors /= 2;
     numBigStars /= 2;
     numSmallMeteors /= 2;
     numBigMeteors /= 2;
   } else 
     app.set({ color:'black' });
-
+ 
   // callback function for bringing and object up to top of screen 
   // once its scrolled off the bottom
   function bringToTop(o){ 
     o.pos.y = -100; 
     o.pos.x = iio.random( 0, app.width );
   }
-
+ 
   // Callback function for creating space objects, scrolling in a random down angle
   // On reaching the bottom, bring it back to the top with bringToTop
   function createScrollObjects(num, arr, props){
@@ -76,10 +76,10 @@ ScrollShooter = function( app, s ){
         }
       })));
   }
-
+ 
   // Create a loader with a base path at ".assets"
   var loader = new iio.Loader('assets');
-
+ 
   // Define assets in a hash, with each asset associated with a asset ID.
   // in the form:
   //   assetId: 'path/to/asset'
@@ -97,15 +97,15 @@ ScrollShooter = function( app, s ){
     laserFlash: 'images/laserRedShot.png',
     theme: 'sounds/theme.mp3',
   }
-
+ 
   // The main body of this app
   // This will be the callback function to the loader
   // which will be called once all assets are completely loaded (or failed)
   var main = function(assets) {
     // Play the theme if not preview
-    if(!( s &amp;&amp; s.preview ))
+    if(assets.theme && !( s && s.preview ))
       assets.theme.play(0, {loop: true});
-
+ 
     // Create a bunch of small stars
     createScrollObjects( numSmallStars, stars, {
       img: assets.starSmall,
@@ -116,7 +116,7 @@ ScrollShooter = function( app, s ){
         y: { min: 1, max: 2 }
       }
     });
-
+ 
     // Create a bunch of big stars
     createScrollObjects( numBigStars, stars, {
       z: 10,
@@ -128,7 +128,7 @@ ScrollShooter = function( app, s ){
         y: { min: 2, max: 3 }
       }
     });
-
+ 
     // Shared by both big and small meteors
     var meteorProps = {
       z: 25,
@@ -139,27 +139,31 @@ ScrollShooter = function( app, s ){
         y: { min: 4, max: 6 }
       }
     }
-
+ 
     // Create a bunch of big meteors
     createScrollObjects( numBigMeteors, meteors, iio.merge({
       img: assets.meteorBig,
       health: 5
     }, meteorProps));
-
+ 
     // Create a bunch of small meteors
     createScrollObjects( numSmallMeteors, meteors, iio.merge({
       img: assets.meteorSmall,
       z: 25
     }, meteorProps));
-
-    // Set aside references to the sounds for laser firing
-    if(!( s &amp;&amp; s.preview )) {
-      var laserSound = assets.laserSound;
-      laserSound.set({gain: 0.125});
-      var explode = assets.explode;
-      explode.set({gain: 0.25});
+ 
+    // Define references to the sounds for laser firing
+    if(!( s && s.preview )) {
+      if (assets.laserSound){
+        var laserSound = assets.laserSound;
+        laserSound.set({gain: 0.125});
+      }
+      if (assets.explode){
+        var explode = assets.explode;
+        explode.set({gain: 0.25});
+      }
     }
-
+ 
     // Laser functions. Add a new object showing the laser firing
     var laser = assets.laser;
     var laserFlash = assets.laserFlash;
@@ -172,10 +176,10 @@ ScrollShooter = function( app, s ){
         bounds: { top: -100 }
       })));
       // Play laser sound if not preview
-      if(!( s &amp;&amp; s.preview ))
+      if(laserSound && !( s && s.preview ))
         laserSound.play();
     }
-
+ 
     // Set up controller
     var controller = { 
       LEFT: 0, 
@@ -196,7 +200,7 @@ ScrollShooter = function( app, s ){
       else if( k === 'space' || k === 'ctrl' ) 
         controller.SPACE = bool;
     }
-
+ 
     // Create player object, and hook it up to the controller
     var player = assets.player;
     var playerLeft = assets.playerLeft;
@@ -217,11 +221,11 @@ ScrollShooter = function( app, s ){
       laserSpeed:20,
       onUpdate:function(){
         
-        if( controller.RIGHT &amp;&amp; this.right() &lt; app.width ){
+        if( controller.RIGHT && this.right() &lt; app.width ){
           this.vel.x = this.xSpeed;
           this.img = playerRight;
         } 
-        else if( controller.LEFT &amp;&amp; this.left() > 0 ){
+        else if( controller.LEFT && this.left() > 0 ){
           this.vel.x = -this.xSpeed;
           this.img = playerLeft;
         } 
@@ -229,14 +233,14 @@ ScrollShooter = function( app, s ){
           this.vel.x = 0; 
           this.img = player;
         }
-
-        if( controller.UP &amp;&amp; this.top() > 0 )
+ 
+        if( controller.UP && this.top() > 0 )
           this.vel.y = -this.fSpeed;
-        else if( controller.DOWN &amp;&amp; this.bottom() &lt; app.height ) 
+        else if( controller.DOWN && this.bottom() &lt; app.height ) 
           this.vel.y = this.bSpeed;
         else this.vel.y = 0;
-
-        if( controller.SPACE &amp;&amp; this.laserTimer === 20 ){
+ 
+        if( controller.SPACE && this.laserTimer === 20 ){
           fireLaser( this.pos.x - this.width/3,
             this.pos.y + 10, this.laserSpeed );
           fireLaser( this.pos.x + this.width/3,
@@ -252,7 +256,7 @@ ScrollShooter = function( app, s ){
         }
       }
     }));
-
+ 
     // For updating direction on key presses
     app.onKeyDown = function(e,k){ 
       updateController(k,true) 
@@ -260,18 +264,18 @@ ScrollShooter = function( app, s ){
     app.onKeyUp = function(e,k){ 
       updateController(k,false) 
     }
-
+ 
     app.onResize=function(){
-      if(playerObj.right &gt; app.width)
+      if(playerObj.right > app.width)
         playerObj.pos.x = app.width - playerObj.width/2
     }
-
+ 
     // Set up collisions on laser hit
     app.collision( lasers, meteors, function( laser, meteor ){
       // Large meteors have health
-      if( typeof( meteor.health ) !=== 'undefined' ){
+      if( typeof( meteor.health ) !== 'undefined' ){
         // Decrement meteor health on hit if not completely depleted
-        if( meteor.health &gt; 0 ) meteor.health--;
+        if( meteor.health > 0 ) meteor.health--;
         else {
           // Break it for 5 small meteors
           for ( var i=0; i&lt;5; i++ )
@@ -301,7 +305,7 @@ ScrollShooter = function( app, s ){
         // Otherwise is small meteor, so just remove it
         app.rmv(meteor)
       }
-
+ 
       // Add in flashes on contact with a meteor
       app.add(new iio.Quad({
         z: 75,
@@ -314,19 +318,19 @@ ScrollShooter = function( app, s ){
         shrink: .2
       }));
       // Play the explosion sound if not preview
-      if(!( s &amp;&amp; s.preview ))
+      if(explode && !( s && s.preview ))
         explode.play();
-
+ 
       app.rmv(laser);
     });
   }
-
+ 
   // Load the assets, and run the main body of ScrollShooter
   loader.load(assets, main);
 }; 
-
-// start the app on an existing canvas
-iio.start( ScrollShooter, 'canvasId' );</pre>
+ 
+// start the app full screen
+iio.start( ScrollShooter );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>
