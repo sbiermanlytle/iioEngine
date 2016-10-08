@@ -30,7 +30,7 @@
 
         <div id="column">
         <div id="iio">
-          <a href="">iio</a>
+          <a id="iio-block" href="">iio</a>
         </div>
         <nav id="nav">
           <ul>
@@ -38,7 +38,7 @@
             <li><a id="docs" href="docs"><p>API</p></a></li>
             <li><a id="demos" href="demos"><p>Demos</p></a></li>
             <li><a target="_blank" href="http://iioinc.com/tutorials"><p>Tutorials</p></a></li>
-            <li><a target="_blank" href="http://iioengine.com"><p>iioEngine</p></a></li>
+            <li><a target="_blank" href="http://iioengine.iioinc.com"><p>iioEngine</p></a></li>
             <li><a target="_blank" href="https://github.com/iioinc/iio.js"><p>Github</p></a></li>
             <li><a target="_blank" href="https://twitter.com/iioinc"><p>Twitter</p></a></li>
           </ul>
@@ -103,6 +103,17 @@
 
   <!-- WEB PAGE CONTROLLER -->
   <script type="text/javascript">
+
+  // STYLE PATCHES
+  if (navigator.appVersion.indexOf("Mac")!=-1){
+    $('#iio').css('margin-bottom', 0);
+    $('#iio').css('margin-top', 4);
+    $('#nav ul').css('margin-top', 0);
+    $('#iio-block').css('padding-top', 12);
+    $('#nav p').css('padding-top', 10);
+    $('#footer p').css('padding-top', 5);
+    $('#footer .blue').css('padding-top', 3);
+  }
 
   var iioapps;
   var app_colors = [];

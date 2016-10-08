@@ -14,7 +14,7 @@
 */
 
 // define a new iio app
-BezierCurves = function(app) {
+BezierCurves = function(app, settings) {
 
   // padding from edge of view
   var padding = app.width/10;
@@ -98,8 +98,8 @@ BezierCurves = function(app) {
   }
 }
 
-// start the app on an existing canvas
-iio.start( BezierCurves, 'canvasId' );</pre>
+// start the app fullscreen
+iio.start( BezierCurves );</pre>
 <script type="text/javascript" src="../../js/prettify.js"></script>
 </body>
 </html>

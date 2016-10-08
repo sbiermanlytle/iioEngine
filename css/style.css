@@ -262,7 +262,7 @@ h1,h2,h3,h4{
 }
 .divide{
   border-top: 1px solid #6F6F6F;
-  margin: 35px 0 25px;
+  margin: 25px 0 25px;
 }
 #api_menu .api_property_list{
   padding-left:4px;
@@ -334,7 +334,7 @@ h1,h2,h3,h4{
   pre .str, code .str { color: #00baff; } /* string  - green */
   pre .kwd, code .kwd { color: #65B042; } /* keyword - dark pink */
   pre .com, code .com { color: #AEAEAE; font-style: italic; } /* comment - gray */
-  pre .typ, code .typ { color: #F00000; font-weight: bold; } /* type - light blue */
+  pre .typ, code .typ { color: #F00000; } /* type - light blue */
   pre .lit, code .lit { color: #00baff; } /* literal - blue */
   pre .pun, code .pun { color: #E8E8E8; } /* punctuation - white */
   pre .pln, code .pln { color: #E8E8E8; } /* plaintext - white */
@@ -381,7 +381,7 @@ h1,h2,h3,h4{
   }
   pre{
     background-color: black;
-    font-family: Consolas,'Bitstream Vera Sans Mono','Courier New',Courier,monospace;
+    font-family: monospace;
     font-size: 14px;
     tab-size: 2;
   }
