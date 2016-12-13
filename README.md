@@ -31,6 +31,28 @@ iio.js has a debugging version with extra features:
 
     <script type="text/javascript" src="http://iio.js.org/iio.debug.js"></script>
 
+## mobile deployment
+iio can run on iOS, Android, and other mobile environments using PhoneGap: http://phonegap.com
+
+A demo is provided in the `mobile/phonegap.www` directory. To use the demo, install phonegap using npm.
+
+    npm install -g phonegap@latest
+
+Then create a new phonegap project.
+
+    phonegap create myApp
+
+Then replace the contents of `myApp/www` with the contents of the `mobile/phonegap.www` directory in this repo.
+
+This is a complete phonegap environment that loads iio applications. You can test it by starting a local phonegap server.
+
+    phonegap serve
+
+You can now see the app in a browser at `localhost:3000` and on your mobile phone by downloading the PhoneGap developer 
+mobile application and signing in with the IP address given in the console logs when the phonegap server is created.
+
+More info is available here: http://docs.phonegap.com/getting-started/4-preview-your-app/cli/
+
 ## building Source Files (optional)
 If you would like to edit iio.js source code files, use Grunt to re-build. Grunt depends on nodejs and npm.
 
