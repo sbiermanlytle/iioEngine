@@ -95,9 +95,15 @@ iio.App.prototype.draw = function( noClear ) {
 // APP FUNCTIONS
 iio.App.prototype.eventVector = function(e) {
   this.update_pos();
+  var ex = e.clientX;
+  var ey = e.clientY;
+  if (e.touches && e.touches[0]) {
+    ex = e.touches[0].clientX;
+    ey = e.touches[0].clientY;
+  }
   return new iio.Vector( 
-    e.clientX - this.pos.x, 
-    e.clientY - this.pos.y
+    ex - this.pos.x, 
+    ey - this.pos.y
   )
 }
 iio.App.prototype.update_pos = function(){
