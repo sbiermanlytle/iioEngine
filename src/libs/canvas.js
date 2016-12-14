@@ -83,7 +83,9 @@ iio.canvas = {
       } else o[callback] = router;
     }
     attach_input_hook('onclick', function(e){ route_input(o, e, 'onClick') });
-    attach_input_hook('onmousedown', function(e){ route_input(o, e, 'onMouseDown') });
-    attach_input_hook('onmouseup', function(e){ route_input(o, e, 'onMouseUp') });
+    attach_input_hook('onmousedown', function(e){ route_input(o, e, 'onMouseDown'); route_input(o, e, 'onInputDown');  });
+    attach_input_hook('onmouseup', function(e){ route_input(o, e, 'onMouseUp'); route_input(o, e, 'onInputUp'); });
+    attach_input_hook('touchstart', function(e){ route_input(o, e, 'onInputDown'); });
+    attach_input_hook('touchend', function(e){ route_input(o, e, 'onInputUp'); });
   }
 }
