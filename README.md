@@ -1,35 +1,33 @@
 [![JS.ORG](https://img.shields.io/badge/js.org-iio-888888.svg?style=flat-square)](http://js.org)
 
-iio.js v1.4.0
-=============
+iio Engine v1.4.1
+=================
 
-iio.js is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all versions iio.js, and the sourcecode of the accompanying documentation website (iio.js.org)
+iio Engine is a javascript library that speeds the creation and deployment of HTML5 Canvas applications. This repo contains all versions iio Engine, and the sourcecode of the accompanying documentation website (iio.js.org)
 
-iio.js was formarly known as iio Engine. Checkout the v1.2 branch or visit iioEngine.com for the old versions source code and documentation.
+This branch contains the cutting edge version of iio Engine, updated regularly with new features.
 
-This branch contains the cutting edge version of iio.js, updated regularly with new features.
-
-The last stable release was v1.4.0: https://github.com/iioinc/iio.js/tree/v1.4.0
+The last stable release was v1.4.0: https://github.com/sbiermanlytle/iioEngine/tree/v1.4.0
 
 ## links
-Homepage: http://iio.js.org
+Homepage: http://iioengine.com
 
-Documentation: http://iio.js.org/#api
+Documentation: http://iioengine.com/#api
 
-Demos: http://iio.js.org/#demos
+Demos: http://iioengine.com/#demos
 
 Tutorials: http://iioinc.com/tutorials
 
 Twitter: @iioinc
 
-## loading iio.js
-To use the library, load the iio.js build file from a local folder or the iio.js URL:
+## loading iio Engine
+To use the library, load the iio Engine build file from a local folder or the iio Engine URL:
 
-    <script type="text/javascript" src="http://iio.js.org/iio.js"></script>
+    <script type="text/javascript" src="http://iioengine.com/iio.js"></script>
 
-iio.js has a debugging version with extra features:
+iio Engine has a debugging version with extra features:
 
-    <script type="text/javascript" src="http://iio.js.org/iio.debug.js"></script>
+    <script type="text/javascript" src="http://iioengine.com/iio.debug.js"></script>
 
 ## mobile deployment
 iio can run on iOS, Android, and other mobile environments using PhoneGap: http://phonegap.com
@@ -54,7 +52,7 @@ mobile application and signing in with the IP address given in the console logs 
 More info is available here: http://docs.phonegap.com/getting-started/4-preview-your-app/cli/
 
 ## building Source Files (optional)
-If you would like to edit iio.js source code files, use Grunt to re-build. Grunt depends on nodejs and npm.
+If you would like to edit iio Engine source code files, use Grunt to re-build. Grunt depends on nodejs and npm.
 
 #### installing nodejs and grunt
 If you have brew you can install node easily
@@ -69,7 +67,7 @@ Install dependencies with npm.
 
     npm install
 
-You can now run Grunt to build and minify iio.js
+You can now run Grunt to build and minify iio Engine
 
     grunt
 
@@ -79,7 +77,7 @@ Include the debug flag to build the debugging versions
 
 ## license
 
-iio.js is licensed under the BSD 2-clause Open Source license
+iio Engine is licensed under the BSD 2-clause Open Source license
 
 Copyright (c) 2014, Sebastian Bierman-Lytle
 All rights reserved.
