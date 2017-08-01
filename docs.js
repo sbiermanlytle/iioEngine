@@ -76,27 +76,27 @@ show_api_basics = function(){
   page.append('<div id="api_content"></div>');
   var api_content = $('#api_content');
 
-  api_content.append(h1('iio.js Documentation'));
-  api_content.append('<div class="arrows_btns"><img class="big-arrow left-arrow" src="img/arrow.png"/><p style="min-width:190px" class="big-btn"><a id="download-iio" style="padding:15px 26px" class="btn-iio" href="https://github.com/iioinc/iio.js/archive/master.zip">Download v1.4</a></p></div>');
+  api_content.append(h1('iio Engine Documentation'));
+  api_content.append('<div class="arrows_btns"><img class="big-arrow left-arrow" src="img/arrow.png"/><p style="min-width:190px" class="big-btn"><a id="download-iio" style="padding:15px 26px" class="btn-iio" href="https://github.com/sbiermanlytle/iioengine/archive/master.zip">Download v1.4</a></p></div>');
 
-  api_content.append(p('iio.js is a '+kwd('dependency free')+' JavaScript library for building distributable HTML5 Canvas applications. iio.js provides an environment for '+kwd('object oriented development')+' and '+kwd('automated object managment')+'.'));
+  api_content.append(p('iio Engine is a '+kwd('dependency free')+' JavaScript library for building distributable HTML5 Canvas applications. iio Engine provides an environment for '+kwd('object oriented development')+' and '+kwd('automated object managment')+'.'));
 
   api_content.append(p('All code samples in the documentation are assumed to be running with access to an '+a('App')+' object, unless full JavaScript code is provided.'));
   
   api_content.append(divide);
 
-  api_content.append(p('The iio.js build file needs to be included in order to run an iio application (located in the "builds" folder in the download). The file can be hosted locally, or directly from this website:'));
+  api_content.append(p('The iio Engine build file needs to be included in order to run an iio application (located in the "builds" folder in the download). The file can be hosted locally, or directly from this website:'));
 
-  api_content.append(p(red('minified latest')+': '+kwd('http://iio.js.org/iio.min.js')));
-  api_content.append(p(red('unminified latest')+': '+kwd('http://iio.js.org/iio.js')));
-  api_content.append(p(red('last stable release')+': '+kwd('http://iio.js.org/v1/iio-1.4.0.min.js')));
-  //api_content.append(p(red('debug')+': '+kwd('http://iio.js.org/iio.debug.js')));
+  api_content.append(p(red('minified latest')+': '+kwd('http://iioengine.com/iio.min.js')));
+  api_content.append(p(red('unminified latest')+': '+kwd('http://iioengine.com/iio.js')));
+  api_content.append(p(red('last stable release')+': '+kwd('http://iioengine.com/v1/iio-1.4.0.min.js')));
+  //api_content.append(p(red('debug')+': '+kwd('http://iioengine.com/iio.debug.js')));
   api_content.append(divide);
 
   api_content.append(p('Below is an example of a simple iio application, running full screen on a basic HTML page. You can '+kwd('copy and paste this code directly into a new HTML file')+' and the iio app will run if you open the file in a browser:'));
 
   api_content.append(h2('Hello World'));
-  api_content.append(pre("&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;body&gt;\n&lt;script type='text/javascript'\n\tsrc='http://iio.js.org/iio.js'&gt;\n&lt;/script&gt;\n&lt;script type='text/javascript'&gt;\n\n// app is an App object\nHelloWorld = function( app ){\n\n\t// create and add a text object\n\tapp.create( app.center, 'Hello World' );\n\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;"));
+  api_content.append(pre("&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;body&gt;\n&lt;script type='text/javascript'\n\tsrc='http://iioengine.com/iio.js'&gt;\n&lt;/script&gt;\n&lt;script type='text/javascript'&gt;\n\n// app is an App object\nHelloWorld = function( app ){\n\n\t// create and add a text object\n\tapp.create( app.center, 'Hello World' );\n\n}\n\n// start the app fullscreen\niio.start( HelloWorld );\n&lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;"));
 }
 
 show_api = function( api ){

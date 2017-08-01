@@ -103,7 +103,7 @@ var api = {
           definition: 'iio.inherit( '+kwd('function')+ ' child, '+kwd('function')+ ' parent )',
           descriptions: [
             'Use prototypal inheritance to subclass a given parent with a given child.',
-            'Child classes have direct access to parent properties and functions, and they can override parent functions by redefining them. Browse the '+ahref('source code of iio Shapes', 'https://github.com/iioinc/iio.js/tree/master/src/shapes')+' for more examples.'
+            'Child classes have direct access to parent properties and functions, and they can override parent functions by redefining them. Browse the '+ahref('source code of iio Shapes', 'https://github.com/sbiermanlytle/iioEngine/tree/master/src/shapes')+' for more examples.'
           ],
           samples: [
             "// define a child class\niio.QuadChild = function(){\n\tthis.QuadChild.apply(this, arguments)\n};\n// set the parent of the child class\niio.inherit(iio.QuadChild, iio.Quad);\n// create a super access to the parents functions\niio.QuadChild.prototype._super = iio.Quad.prototype;\n\n// define a constructor\niio.QuadChild.prototype.QuadChild = function() {\n\t// call the parent constructor\n\tthis._super.Quad.call(this,iio.merge_args(arguments));\n\t//...\n}"
@@ -210,11 +210,11 @@ var api = {
       'Box2d': [
         {
           descriptions: [
-            "iio.js acts solely as a rendering engine when attached to "+ahref('Box2dWeb','https://github.com/hecht-software/box2dweb')+". Box2d applications can be developed normally, using iio's "+kwd('set')+' function to add display properties to shapes.',
+            "iio Engine acts solely as a rendering engine when attached to "+ahref('Box2dWeb','https://github.com/hecht-software/box2dweb')+". Box2d applications can be developed normally, using iio's "+kwd('set')+' function to add display properties to shapes.',
             kwd('b2Shape')+' and '+kwd('b2Joint')+' are given access to all of '+a('Shape')+" display properties and functions.",
             'For Box2d documentation, visit '+ahref('Box2DFlash', 'http://www.box2dflash.org/docs/2.1a/reference/')+', the implementation that Box2dWeb was ported from.',
-            "To see a full example demo of a Box2d app using iio.js, checkout the Box2d demo: "+ahref('iio.js.org/#demos/box2d', 'http://iio.js.org/#demos/box2d'),
-            red("NOTE:")+' '+kwd("box2dweb.js")+' must be loaded before '+kwd('iio.js')+'.'
+            "To see a full example demo of a Box2d app using iio Engine, checkout the Box2d demo: "+ahref('iioengine.com/#demos/box2d', 'http://iioengine.com/#demos/box2d'),
+            red("NOTE:")+' '+kwd("box2dweb.js")+' must be loaded before '+kwd('iio Engine')+'.'
           ], divider: true
         },
         { // b2World

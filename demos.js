@@ -1,5 +1,5 @@
 show_demo_index = function(){
-  page.append(h1('iio.js App Demos'));
+  page.append(h1('iio Engine App Demos'));
   page.append('<h3>click any app to view the source code</h3>');
   var iioApps = document.createElement('div');
   iioApps.className = 'iioapps';
