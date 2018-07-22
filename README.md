@@ -79,7 +79,7 @@ Include the debug flag to build the debugging versions
 
 iio Engine is licensed under the BSD 2-clause Open Source license
 
-Copyright (c) 2014, Sebastian Bierman-Lytle
+Copyright (c) 2018, Sebastian Bierman-Lytle
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, 
