@@ -54,6 +54,11 @@ iio.App.prototype.update = function(){
   var nuFPS;
   if(this.onUpdate)
     nuFPS = this.onUpdate(this);
+  if (this.script.onUpdate) {
+    var result = this.script.onUpdate(this.script);
+    if (result !== undefined)
+      nuFPS = result;
+  }
   this.draw();
   return nuFPS;
 }

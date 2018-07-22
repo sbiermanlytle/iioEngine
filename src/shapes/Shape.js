@@ -438,9 +438,9 @@ iio.Shape.prototype.draw = function(ctx){
   ctx = this.orient_ctx(ctx);
   
   //draw objs in z index order
-  if (this.objs&&this.objs.length > 0) {
+  if (this.objs && this.objs.length > 0) {
     var drawnSelf = false;
-    for(var i=0; i<this.objs.length; i++){
+    for(var i = 0; i < this.objs.length; i++){
       if (!drawnSelf && this.objs[i].z >= this.z) {
         this.draw_obj(ctx);
         drawnSelf = true;

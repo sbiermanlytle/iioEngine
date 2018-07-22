@@ -301,6 +301,8 @@ iio.resize = function() {
     app.height = app.canvas.height;
     app.center.x = app.canvas.width / 2;
     app.center.y = app.canvas.height / 2;
+    if (app.onResize)
+      app.onResize();
     if (app.script && app.script.onResize)
       app.script.onResize();
     app.draw();
@@ -2387,9 +2389,9 @@ iio.Shape.prototype.draw = function(ctx){
   ctx = this.orient_ctx(ctx);
   
   //draw objs in z index order
-  if (this.objs&&this.objs.length > 0) {
+  if (this.objs && this.objs.length > 0) {
     var drawnSelf = false;
-    for(var i=0; i<this.objs.length; i++){
+    for(var i = 0; i < this.objs.length; i++){
       if (!drawnSelf && this.objs[i].z >= this.z) {
         this.draw_obj(ctx);
         drawnSelf = true;
@@ -3206,6 +3208,11 @@ iio.App.prototype.update = function(){
   var nuFPS;
   if(this.onUpdate)
     nuFPS = this.onUpdate(this);
+  if (this.script.onUpdate) {
+    var result = this.script.onUpdate(this.script);
+    if (result !== undefined)
+      nuFPS = result;
+  }
   this.draw();
   return nuFPS;
 }
