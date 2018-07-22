@@ -256,7 +256,8 @@ iio.resize = function() {
     app.height = app.canvas.height;
     app.center.x = app.canvas.width / 2;
     app.center.y = app.canvas.height / 2;
-    if (app.onResize) app.onResize();
+    if (app.script && app.script.onResize)
+      app.script.onResize();
     app.draw();
   });
 }

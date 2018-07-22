@@ -1,10 +1,10 @@
 /*
 iio.js
-Version 1.4.0
+Version 1.4.1-beta
 
 iio.js is licensed under the BSD 2-clause Open Source license
 
-Copyright (c) 2014, Sebastian Bierman-Lytle
+Copyright (c) 2018, Sebastian Bierman-Lytle
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, 
@@ -286,7 +286,8 @@ iio.resize = function() {
     app.height = app.canvas.height;
     app.center.x = app.canvas.width / 2;
     app.center.y = app.canvas.height / 2;
-    if (app.onResize) app.onResize();
+    if (app.script && app.script.onResize)
+      app.script.onResize();
     app.draw();
   });
 }
