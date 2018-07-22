@@ -183,7 +183,12 @@ iio.loop = function(fps, caller, fn) {
         else nufps = caller.fn._update(caller, correctedFPS);
         caller.o.app.draw();
       }
-      if (typeof nufps === 'undefined')
+      if (typeof nufps === 'boolean' && !nufps) {
+        if (caller.fn && caller.fn.looping)
+          caller.fn.looping = false;
+        return 0;
+      }
+      else if (typeof nufps === 'undefined')
         caller.id = window.setTimeout(loop, correctedFPS);
       else {
         fps = nufps;
@@ -201,13 +206,23 @@ iio.loop = function(fps, caller, fn) {
     caller = fps;
 
     function animloop() {
-      if (typeof caller.fn === 'undefined') caller.o.draw();
-      else if (iio.is.fn(caller.fn)) caller.fn(caller.o);
+      var result;
+      if (typeof caller.fn === 'undefined') {
+        caller.o.draw();
+      }
+      else if (iio.is.fn(caller.fn)) {
+        caller.fn(caller.o);
+      }
       else {
-        caller.fn._update();
+        result = caller.fn._update();
         caller.fn.draw();
       }
       caller.o.app.draw();
+      if (typeof result === 'boolean' && !result) {
+        if (caller.fn && caller.fn.looping)
+          caller.fn.looping = false;
+        return;
+      }
       caller.id = window.requestAnimationFrame(animloop);
     }
     caller.id = window.requestAnimationFrame(animloop);

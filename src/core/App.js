@@ -52,7 +52,7 @@ iio.App.prototype.App = function(view, script, settings) {
 // IMPLEMENT ABSTRACT FUNCTIONS
 iio.App.prototype.update = function(){
   var nuFPS;
-  if(this.onUpdate) 
+  if(this.onUpdate)
     nuFPS = this.onUpdate(this);
   this.draw();
   return nuFPS;

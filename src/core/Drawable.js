@@ -299,8 +299,13 @@ iio.Drawable.prototype.cCollisions = function(o1, o2, fn) {
 }
 iio.Drawable.prototype._update = function(o,dt){
   var nuFPS;
-  if (this.update)
-    nuFPS = this.update(dt);
+  if (this.objs && this.objs.length === 0)
+    nuFPS = false;
+  if (this.update) {
+    result = this.update(dt);
+    if (typeof result !== 'undefined')
+      nuFPS = result
+  }
   if (this.collisions && this.collisions.length > 0) {
     this.collisions.forEach(function(collision) {
       this.cCollisions(collision[0], collision[1], collision[2]);

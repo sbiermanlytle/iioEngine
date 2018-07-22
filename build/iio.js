@@ -213,7 +213,12 @@ iio.loop = function(fps, caller, fn) {
         else nufps = caller.fn._update(caller, correctedFPS);
         caller.o.app.draw();
       }
-      if (typeof nufps === 'undefined')
+      if (typeof nufps === 'boolean' && !nufps) {
+        if (caller.fn && caller.fn.looping)
+          caller.fn.looping = false;
+        return 0;
+      }
+      else if (typeof nufps === 'undefined')
         caller.id = window.setTimeout(loop, correctedFPS);
       else {
         fps = nufps;
@@ -231,13 +236,23 @@ iio.loop = function(fps, caller, fn) {
     caller = fps;
 
     function animloop() {
-      if (typeof caller.fn === 'undefined') caller.o.draw();
-      else if (iio.is.fn(caller.fn)) caller.fn(caller.o);
+      var result;
+      if (typeof caller.fn === 'undefined') {
+        caller.o.draw();
+      }
+      else if (iio.is.fn(caller.fn)) {
+        caller.fn(caller.o);
+      }
       else {
-        caller.fn._update();
+        result = caller.fn._update();
         caller.fn.draw();
       }
       caller.o.app.draw();
+      if (typeof result === 'boolean' && !result) {
+        if (caller.fn && caller.fn.looping)
+          caller.fn.looping = false;
+        return;
+      }
       caller.id = window.requestAnimationFrame(animloop);
     }
     caller.id = window.requestAnimationFrame(animloop);
@@ -1768,8 +1783,13 @@ iio.Drawable.prototype.cCollisions = function(o1, o2, fn) {
 }
 iio.Drawable.prototype._update = function(o,dt){
   var nuFPS;
-  if (this.update)
-    nuFPS = this.update(dt);
+  if (this.objs && this.objs.length === 0)
+    nuFPS = false;
+  if (this.update) {
+    result = this.update(dt);
+    if (typeof result !== 'undefined')
+      nuFPS = result
+  }
   if (this.collisions && this.collisions.length > 0) {
     this.collisions.forEach(function(collision) {
       this.cCollisions(collision[0], collision[1], collision[2]);
@@ -3184,7 +3204,7 @@ iio.App.prototype.App = function(view, script, settings) {
 // IMPLEMENT ABSTRACT FUNCTIONS
 iio.App.prototype.update = function(){
   var nuFPS;
-  if(this.onUpdate) 
+  if(this.onUpdate)
     nuFPS = this.onUpdate(this);
   this.draw();
   return nuFPS;
