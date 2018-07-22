@@ -8,8 +8,8 @@ Copyright (c) 2018, iio inc. All rights reserved.
 Rain = function( app, settings ){
   app.set({ color:'black' });
 
-  scale = settings.scale || 15;
-  speed = settings.speed || 4;
+  var scale = settings.scale || 15;
+  var speed = settings.speed || 4;
 
   // stop the lines from updating once they go off screen
   var stopUpdating = function() {
