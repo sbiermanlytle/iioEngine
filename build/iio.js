@@ -216,6 +216,8 @@ iio.loop = function(fps, caller, fn) {
       if (typeof nufps === 'boolean' && !nufps) {
         if (caller.fn && caller.fn.looping)
           caller.fn.looping = false;
+        else if (caller.o && caller.o.looping)
+          caller.o.looping = false;
         return 0;
       }
       else if (typeof nufps === 'undefined')
@@ -251,6 +253,8 @@ iio.loop = function(fps, caller, fn) {
       if (typeof result === 'boolean' && !result) {
         if (caller.fn && caller.fn.looping)
           caller.fn.looping = false;
+        else if (caller.o && caller.o.looping)
+          caller.o.looping = false;
         return;
       }
       caller.id = window.requestAnimationFrame(animloop);
@@ -3210,7 +3214,7 @@ iio.App.prototype.update = function(){
     nuFPS = this.onUpdate(this);
   if (this.script.onUpdate) {
     var result = this.script.onUpdate(this.script);
-    if (result !== undefined)
+    if (typeof result !== 'undefined')
       nuFPS = result;
   }
   this.draw();
