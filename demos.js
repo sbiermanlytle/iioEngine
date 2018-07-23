@@ -1,3 +1,7 @@
+add_clearfix = function() {
+  page.append('<div class="clear"></div>');
+}
+
 show_demo_index = function(){
   page.append(h1('iio Engine App Demos'));
   page.append('<h3>click any app to view the source code</h3>');
@@ -14,7 +18,11 @@ show_demo_index = function(){
   add_demo_preview( iioApps, TextEdit, "TextEdit" );
   add_demo_preview( iioApps, Panning, "Panning" );
   add_demo_preview( iioApps, ColorLines, "ColorLines", { lineWidth:20 } );
-  add_demo_preview( iioApps, Squares, "Squares" );
+  add_demo_preview( iioApps, ConwaysGameOfLife, "ConwaysGameOfLife", {
+    glider: true,
+    maxCellsInRow: 5,
+    preview: true
+  } );
   add_demo_preview( iioApps, Snow, "Snow" );
   page.append(clear);
 
@@ -52,7 +60,7 @@ show_demo = function( app, title, settings){
   $('#column').hide();
   $('#header').css({ 'left': 0, 'margin-left': 0 });
   $('#footer').css({ 'left': 0, 'margin-left': 0 });
-  $('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt;&lt; back</a> | <h1>'+title+'</h1> | <a id="source" href="">source code</a> </div>');
+  $('#header').append('<div id="fullscreen_header"><a id="back" href="">&lt; Back</a> | <h1>'+title+'</h1> | <a id="source" href="">Source Code</a> </div>');
   $('#back').click(function(){
     window.history.back()
   });

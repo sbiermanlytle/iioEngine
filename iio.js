@@ -1,10 +1,10 @@
 /*
 iio.js
-Version 1.4.0
+Version 1.4.1-beta
 
 iio.js is licensed under the BSD 2-clause Open Source license
 
-Copyright (c) 2014, Sebastian Bierman-Lytle
+Copyright (c) 2018, Sebastian Bierman-Lytle
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, 
@@ -213,7 +213,14 @@ iio.loop = function(fps, caller, fn) {
         else nufps = caller.fn._update(caller, correctedFPS);
         caller.o.app.draw();
       }
-      if (typeof nufps === 'undefined')
+      if (typeof nufps === 'boolean' && !nufps) {
+        if (caller.fn && caller.fn.looping)
+          caller.fn.looping = false;
+        else if (caller.o && caller.o.looping)
+          caller.o.looping = false;
+        return 0;
+      }
+      else if (typeof nufps === 'undefined')
         caller.id = window.setTimeout(loop, correctedFPS);
       else {
         fps = nufps;
@@ -231,13 +238,25 @@ iio.loop = function(fps, caller, fn) {
     caller = fps;
 
     function animloop() {
-      if (typeof caller.fn === 'undefined') caller.o.draw();
-      else if (iio.is.fn(caller.fn)) caller.fn(caller.o);
+      var result;
+      if (typeof caller.fn === 'undefined') {
+        caller.o.draw();
+      }
+      else if (iio.is.fn(caller.fn)) {
+        caller.fn(caller.o);
+      }
       else {
-        caller.fn._update();
+        result = caller.fn._update();
         caller.fn.draw();
       }
       caller.o.app.draw();
+      if (typeof result === 'boolean' && !result) {
+        if (caller.fn && caller.fn.looping)
+          caller.fn.looping = false;
+        else if (caller.o && caller.o.looping)
+          caller.o.looping = false;
+        return;
+      }
       caller.id = window.requestAnimationFrame(animloop);
     }
     caller.id = window.requestAnimationFrame(animloop);
@@ -286,7 +305,10 @@ iio.resize = function() {
     app.height = app.canvas.height;
     app.center.x = app.canvas.width / 2;
     app.center.y = app.canvas.height / 2;
-    if (app.onResize) app.onResize();
+    if (app.onResize)
+      app.onResize();
+    if (app.script && app.script.onResize)
+      app.script.onResize();
     app.draw();
   });
 }
@@ -1767,8 +1789,13 @@ iio.Drawable.prototype.cCollisions = function(o1, o2, fn) {
 }
 iio.Drawable.prototype._update = function(o,dt){
   var nuFPS;
-  if (this.update)
-    nuFPS = this.update(dt);
+  if (this.objs && this.objs.length === 0)
+    nuFPS = false;
+  if (this.update) {
+    result = this.update(dt);
+    if (typeof result !== 'undefined')
+      nuFPS = result
+  }
   if (this.collisions && this.collisions.length > 0) {
     this.collisions.forEach(function(collision) {
       this.cCollisions(collision[0], collision[1], collision[2]);
@@ -2366,9 +2393,9 @@ iio.Shape.prototype.draw = function(ctx){
   ctx = this.orient_ctx(ctx);
   
   //draw objs in z index order
-  if (this.objs&&this.objs.length > 0) {
+  if (this.objs && this.objs.length > 0) {
     var drawnSelf = false;
-    for(var i=0; i<this.objs.length; i++){
+    for(var i = 0; i < this.objs.length; i++){
       if (!drawnSelf && this.objs[i].z >= this.z) {
         this.draw_obj(ctx);
         drawnSelf = true;
@@ -3183,8 +3210,13 @@ iio.App.prototype.App = function(view, script, settings) {
 // IMPLEMENT ABSTRACT FUNCTIONS
 iio.App.prototype.update = function(){
   var nuFPS;
-  if(this.onUpdate) 
+  if(this.onUpdate)
     nuFPS = this.onUpdate(this);
+  if (this.script.onUpdate) {
+    var result = this.script.onUpdate(this.script);
+    if (typeof result !== 'undefined')
+      nuFPS = result;
+  }
   this.draw();
   return nuFPS;
 }

@@ -121,9 +121,9 @@ display_current = function(){
     else if( path === 'snake' )
       show_demo( Snake, "Snake" );
     else if( path === 'colorgrid' )
-      show_demo( ColorGrid, "ColorGrid", { w:20 } );
-    else if( path === 'squares' )
-      show_demo( Squares, "Squares" );
+      show_demo( ColorGrid, "ColorGrid", { w: 20 } );
+    else if( path === 'conwaysgameoflife' )
+      show_demo( ConwaysGameOfLife, "ConwaysGameOfLife" , { pulsar: true, maxCellsInRow: 18 } );
     else if( path === 'snow' )
       show_demo( Snow, "Snow" );
     else if( path === 'tictactoe' )
