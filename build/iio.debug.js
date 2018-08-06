@@ -443,6 +443,31 @@ iio.convert = {
   }
 }
 
+/* iio.html
+------------------ */
+
+iio.html = {
+  defaults: {
+    tag: 'div',
+    style: {
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      margin: '0',
+      padding: '0'
+    }
+  },
+  create: function(opts) {
+    var elem = document.createElement(opts.tag || iio.html.defaults.tag);
+    elem.innerHTML = opts.innerHTML;
+    for (var style in iio.html.defaults.style)
+      elem.style[style] = iio.html.defaults.style[style];
+    for (var style in opts.style)
+      elem.style[style] = opts.style[style];
+    return elem;
+  }
+}
+
 /* iio.key
 ------------------
 */
@@ -568,6 +593,7 @@ iio.canvas = {
     var c = document.createElement('canvas');
     //create with size
     if (w) {
+      c.style.position = 'relative';
       c.width = w;
       c.height = h;
     }
@@ -14707,6 +14733,7 @@ iio.Log = function(){ this.Log.apply(this, arguments) }
 iio.Log.SUCCESS = 1;
 iio.Log.FAILURE = 2;
 iio.Log.WARNING = 3;
+iio.Log.color = 'black';
 iio.Log.prototype.Log = function() {
   if(iio.is.string(arguments[0])){
     this.msg = arguments[0];
@@ -14722,8 +14749,9 @@ iio.show_logs = function(){
   iio.logDiv = document.createElement('div');
   iio.logDiv.id = 'iio_log';
   iio.logDiv.style.position = 'fixed';
-  iio.logDiv.style.bottom = '0';
-  iio.logDiv.style.right = '0';
+  iio.logDiv.style.top = '0';
+  iio.logDiv.style.left = '0';
+  iio.logDiv.style.zIndex = '10000';
   document.body.appendChild(iio.logDiv);
   for(var i=0; i<iio.logs.length; i++)
     iio.add_log(iio.logs[i]);
@@ -14732,6 +14760,9 @@ iio.show_logs = function(){
 iio.add_log = function(log){
   var p = document.createElement('p');
   p.innerHTML = log.msg;
+  p.style.padding = '0 5px';
+  p.style.margin = '0';
+  p.style.color = iio.Log.color;
   if(log.type == iio.Log.SUCCESS) p.style.color = 'green';
   if(log.type == iio.Log.FAILURE) p.style.color = 'red';
   if(log.type == iio.Log.WARNING) p.style.color = 'yellow';
@@ -14749,36 +14780,36 @@ iio.start = function(app, id, d){
 }
 
 //constructors
-iio.App.prototype._App = iio.App.prototype.App;
-iio.App.prototype.App = function(view, app, s) {
-  iio.log('enter CONSTRUCTOR: App');
-  this._App(view, app, s);
-  iio.log('- App.pos: '+this.pos.x+','+this.pos.y);
-  iio.log('- App.width: '+this.width);
-  iio.log('- App.height: '+this.height);
-  iio.log('end CONSTRUCTOR: App');
-}
-iio.Obj.prototype._Obj = iio.Obj.prototype.Obj;
-iio.Obj.prototype.Obj = function() {
-  iio.log('enter CONSTRUCTOR: Obj');
-  this._Obj(arguments[0]);
-  if(this.pos) iio.log('- Obj.pos: '+this.pos.x+','+this.pos.y);
-  if(this.color) iio.log('- Obj.color: '+this.color.toString());
-  iio.log('end CONSTRUCTOR: Obj');
-}
-iio.Drawable.prototype._Drawable = iio.Drawable.prototype.Drawable;
-iio.Drawable.prototype.Drawable = function() {
-  iio.log('enter CONSTRUCTOR: Drawable');
-  this._Drawable(arguments[0]);
-  iio.log('end CONSTRUCTOR: Drawable');
-}
-iio.Line.prototype._Line = iio.Line.prototype.Line;
-iio.Line.prototype.Line = function() {
-  iio.log('enter CONSTRUCTOR: Line');
-  this._Line(arguments[0]);
-  if(this.vs) iio.log('- Line.vs: ['+this.vs[0].x+','+this.vs[0].y+'] ['+this.vs[1].x+','+this.vs[1].y+']');
-  iio.log('end CONSTRUCTOR: Line');
-}
+// iio.App.prototype._App = iio.App.prototype.App;
+// iio.App.prototype.App = function(view, app, s) {
+//   iio.log('enter CONSTRUCTOR: App');
+//   this._App(view, app, s);
+//   iio.log('- App.pos: '+this.pos.x+','+this.pos.y);
+//   iio.log('- App.width: '+this.width);
+//   iio.log('- App.height: '+this.height);
+//   iio.log('end CONSTRUCTOR: App');
+// }
+// iio.Interface.prototype._Interface = iio.Interface.prototype.Interface;
+// iio.Interface.prototype.Interface = function() {
+//   iio.log('enter CONSTRUCTOR: Interface');
+//   this._Interface(arguments[0]);
+//   if(this.pos) iio.log('- Interface.pos: '+this.pos.x+','+this.pos.y);
+//   if(this.color) iio.log('- Interface.color: '+this.color.toString());
+//   iio.log('end CONSTRUCTOR: Interface');
+// }
+// iio.Drawable.prototype._Drawable = iio.Drawable.prototype.Drawable;
+// iio.Drawable.prototype.Drawable = function() {
+//   iio.log('enter CONSTRUCTOR: Drawable');
+//   this._Drawable(arguments[0]);
+//   iio.log('end CONSTRUCTOR: Drawable');
+// }
+// iio.Line.prototype._Line = iio.Line.prototype.Line;
+// iio.Line.prototype.Line = function() {
+//   iio.log('enter CONSTRUCTOR: Line');
+//   this._Line(arguments[0]);
+//   if(this.vs) iio.log('- Line.vs: ['+this.vs[0].x+','+this.vs[0].y+'] ['+this.vs[1].x+','+this.vs[1].y+']');
+//   iio.log('end CONSTRUCTOR: Line');
+// }
 /*
    iio engine
    Version 1.3- Working Version

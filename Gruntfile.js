@@ -7,6 +7,7 @@ coreSrc = [
   'libs/jsextensions.js',
   'libs/is.js',
   'libs/convert.js',
+  'libs/html.js',
   'libs/key.js',
   'libs/canvas.js',
   'libs/collision.js',
