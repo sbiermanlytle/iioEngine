@@ -1,140 +1,44 @@
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>iio Engine: JavaScript Game Engine for HTML5 Canvas</title>
-  <meta name="description" content="iio.js is a framework for HTML5 Canvas">
+  <title>iio Engine has moved to iioengine.com</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="canonical" href="http://iioengine.com">
-  <link rel="icon" href="img/favicon-16.png" sizes="16x16"> 
-  <link rel="icon" href="img/favicon-32.png" sizes="32x32"> 
-  <link rel="icon" href="img/favicon-48.png" sizes="48x48"> 
-  <link rel="icon" href="img/favicon-64.png" sizes="64x64"> 
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <!-- Google Analytics 4: property "iio.js.org" (iio archived account). Offline, the
-       tag simply fails to load; nothing on the page depends on it. -->
+  <!-- iio.js.org now redirects to iioengine.com. js.org runs this domain's DNS, so there is no
+       server-side 301: the canonical link and an immediate redirect tell search engines and
+       browsers where the site lives. iio.js, iio.min.js and the other files on this branch
+       stay, for pages that load them from here. GitHub Pages serves 404.html, the same page, for any other path. -->
+  <link rel="canonical" href="https://iioengine.com/">
+  <meta name="robots" content="noindex">
+  <!-- Without JavaScript, the browser follows this after 2 seconds. -->
+  <meta http-equiv="refresh" content="2; url=https://iioengine.com/">
+  <link rel="icon" href="img/favicon-32.png" sizes="32x32">
+  <!-- Google Analytics 4: property "iio.js.org" (iio archived account), to count who still
+       arrives here. The redirect waits for the page view to be sent, or 1 second at most. -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-487N7XG6DJ"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-487N7XG6DJ');
+    (function () {
+      var target = 'https://iioengine.com/'
+      var gone = false
+      function go() {
+        if (gone) return
+        gone = true
+        location.replace(target)
+      }
+      window.dataLayer = window.dataLayer || []
+      window.gtag = function () { dataLayer.push(arguments) }
+      gtag('js', new Date())
+      gtag('config', 'G-487N7XG6DJ', { transport_type: 'beacon', event_callback: go })
+      setTimeout(go, 1000)
+    })()
   </script>
+  <style>
+    body { font: 16px/1.5 -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; margin: 0;
+           min-height: 100vh; display: flex; align-items: center; justify-content: center; color: #333; }
+    a { color: #00baff; }
+  </style>
 </head>
-
 <body>
-  <div class="colorbar top"></div>
-  <div id="main">
-    <div id="content">
-      <header id="header">
-
-        <div id="column">
-        <div id="iio">
-          <a id="iio-block" href="">iio</a>
-        </div>
-        <nav id="nav">
-          <ul>
-            <li><a href="http://iioengine.com"><p class="active">Download</p></a></li>
-            <li><a href="http://iioengine.com/#docs"><p>API</p></a></li>
-            <li><a href="http://iioengine.com/#demos"><p>Demos</p></a></li>
-            <li><a target="_blank" href="http://iioinc.com/tutorials"><p>Tutorials</p></a></li>
-            <li><a target="_blank" href="http://v1.iioengine.com"><p>v1.2</p></a></li>
-            <li><a target="_blank" href="https://github.com/sbiermanlytle/iioscript"><p>iioScript</p></a></li>
-            <li><a target="_blank" href="https://github.com/sbiermanlytle/iioengine"><p>Github</p></a></li>
-            <li><a target="_blank" href="https://twitter.com/iioinc"><p>Twitter</p></a></li>
-          </ul>
-        </nav>
-        </div>
-      </header>
-
-      <div id="page_content"></div>
-
-      <footer id="footer">
-          <p>&copy; 2018 <a href="http://iioinc.com/"><span class="blue">iio</span> inc</a></p>
-          <p>created by Sebastian</p>
-      </footer>
-
-    </div> <!-- END CONTENT -->
-  </div> <!-- END MAIN -->
-
-  <div class="colorbar bottom"></div>
-
-  <!-- JS LIBRARIES -->
-  <script type="text/javascript" src="js/box2dweb.js"></script>
-  <script type="text/javascript" src="iio.js"></script>
-  <script type="text/javascript" src="js/prettify.js"></script>
-  <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-
-  <!-- LOCAL LIBRARIES -->
-  <script type="text/javascript" src="html-helpers.js"></script>
-  <script type="text/javascript" src="nav.js"></script>
-  <script type="text/javascript" src="tests/iio.test.functions.js"></script>
-  <script type="text/javascript" src="tests/iio.test.Collisions.js"></script>
-  <script type="text/javascript" src="tests/iio.test.Line.js"></script>
-  <script type="text/javascript" src="tests/iio.test.Ellipse.js"></script>
-  <script type="text/javascript" src="tests/iio.test.Polygon.js"></script>
-  <script type="text/javascript" src="tests/iio.test.Rectangle.js"></script>
-  <script type="text/javascript" src="tests/iio.test.Text.js"></script>
-  <script type="text/javascript" src="tests/iio.test.Grid.js"></script>
-  <script type="text/javascript" src="tests/iio.test.Quad.js"></script>
-
-  <!-- HOME -->
-  <script type="text/javascript" src="home.js"></script>
-
-  <!-- DOCS -->
-  <script type="text/javascript" src="docs.js"></script>
-  <script type="text/javascript" src="api.js"></script>
-
-  <!-- DEMOS -->
-  <script type="text/javascript" src="demos.js"></script>
-  <!-- <script type="text/javascript" src="demos/demo-functions.js"></script> -->
-  <script type="text/javascript" src="demos/ColorGrid.js"></script>
-  <script type="text/javascript" src="demos/TicTacToe.js"></script>
-  <script type="text/javascript" src="demos/Snow.js"></script>
-  <script type="text/javascript" src="demos/Snake.js"></script>
-  <script type="text/javascript" src="demos/MineSweeper.js"></script>
-  <script type="text/javascript" src="demos/Panning.js"></script>
-  <script type="text/javascript" src="demos/ColorLines.js"></script>
-  <script type="text/javascript" src="demos/ScrollShooter.js"></script>
-  <script type="text/javascript" src="demos/BezierCurves.js"></script>
-  <script type="text/javascript" src="demos/DragDrop.js"></script>
-  <script type="text/javascript" src="demos/Platformer.js"></script>
-  <script type="text/javascript" src="demos/Box2dDemo.js"></script>
-  <script type="text/javascript" src="demos/TextEdit.js"></script>
-  <script type="text/javascript" src="demos/ConwaysGameOfLife.js"></script>
-
-  <!-- WEB PAGE CONTROLLER -->
-  <script type="text/javascript">
-
-  // STYLE PATCHES
-  if (navigator.appVersion.indexOf("Mac")!=-1){
-    $('#iio').css('margin-bottom', 0);
-    $('#iio').css('margin-top', 4);
-    $('#nav ul').css('margin-top', 0);
-    $('#iio-block').css('padding-top', 12);
-    $('#nav p').css('padding-top', 10);
-    $('#footer p').css('padding-top', 5);
-    $('#footer .blue').css('padding-top', 3);
-  }
-
-  var iioapps;
-  var app_colors = [];
-  app_colors[1] = new iio.Color(0,186,255);
-  app_colors[0] = new iio.Color(101,176,66);
-
-  var page = $('#page_content');
-
-  var bg_glow = '<img id="bg_glow" src="img/bg_glow.jpg"/>';
-  $('#main').append(bg_glow);
-
-  // API menu 
-  var toggle_ids = [];
-  var toggles = [];
-  var numToggles = 0;
-
-  </script>
-
-  <!-- ROUTER -->
-  <script type="text/javascript" src="router.js"></script>
-
+  <p>iio Engine has moved to <a href="https://iioengine.com/">iioengine.com</a>.</p>
 </body>
 </html>
