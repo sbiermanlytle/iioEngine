@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>iio Engine has moved to iioengine.com</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- iio.js.org now redirects to iioengine.com. js.org runs this domain's DNS, so there is no
+       server-side 301: the canonical link and an immediate redirect tell search engines and
+       browsers where the site lives. iio.js, iio.min.js and the other files on this branch
+       stay, for pages that load them from here. GitHub Pages serves 404.html, the same page, for any other path. -->
+  <link rel="canonical" href="https://iioengine.com/">
+  <meta name="robots" content="noindex">
+  <!-- Without JavaScript, the browser follows this after 2 seconds. -->
+  <meta http-equiv="refresh" content="2; url=https://iioengine.com/">
+  <link rel="icon" href="img/favicon-32.png" sizes="32x32">
+  <!-- Google Analytics 4: property "iio.js.org" (iio archived account), to count who still
+       arrives here. The redirect waits for the page view to be sent, or 1 second at most. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-487N7XG6DJ"></script>
+  <script>
+    (function () {
+      var target = 'https://iioengine.com/'
+      var gone = false
+      function go() {
+        if (gone) return
+        gone = true
+        location.replace(target)
+      }
+      window.dataLayer = window.dataLayer || []
+      window.gtag = function () { dataLayer.push(arguments) }
+      gtag('js', new Date())
+      gtag('config', 'G-487N7XG6DJ', { transport_type: 'beacon', event_callback: go })
+      setTimeout(go, 1000)
+    })()
+  </script>
+  <style>
+    body { font: 16px/1.5 -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; margin: 0;
+           min-height: 100vh; display: flex; align-items: center; justify-content: center; color: #333; }
+    a { color: #00baff; }
+  </style>
+</head>
+<body>
+  <p>iio Engine has moved to <a href="https://iioengine.com/">iioengine.com</a>.</p>
+</body>
+</html>
